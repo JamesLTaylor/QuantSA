@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curves", "Curves\Curves.csproj", "{FC9FEC69-7E45-4CBE-AB9F-77320A595902}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurvesTest", "CurvesTest\CurvesTest.csproj", "{3B1B066B-F20E-4AB0-8E8E-F52E898F7974}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel", "Excel\Excel.csproj", "{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateXLFunctions", "UpdateXLFunctions\UpdateXLFunctions.csproj", "{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC9FEC69-7E45-4CBE-AB9F-77320A595902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC9FEC69-7E45-4CBE-AB9F-77320A595902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC9FEC69-7E45-4CBE-AB9F-77320A595902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC9FEC69-7E45-4CBE-AB9F-77320A595902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B1B066B-F20E-4AB0-8E8E-F52E898F7974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B1B066B-F20E-4AB0-8E8E-F52E898F7974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B1B066B-F20E-4AB0-8E8E-F52E898F7974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B1B066B-F20E-4AB0-8E8E-F52E898F7974}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
