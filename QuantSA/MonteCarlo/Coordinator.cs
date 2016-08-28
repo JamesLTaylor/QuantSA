@@ -1,4 +1,5 @@
-﻿using System;
+﻿using General;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,12 @@ namespace MonteCarlo
     {
         private List<Product> portfolio;
         private List<Simulator> simulators;
+
+        public Coordinator(List<Product> portfolio, List<Simulator> simulators)
+        {
+            this.portfolio = portfolio;
+            this.simulators = simulators;
+        }
 
         public double Value(Date valueDate)
         {
@@ -29,15 +36,20 @@ namespace MonteCarlo
                         }
                     }
                     if (!found) throw new IndexOutOfRangeException("Required index: " + index.ToString() + " is not provided by any of the simulators");
+                    indexSources[product] = indicesAndSources;
                 }
             }
 
-            // Set up the simulators
+            // Reset all the simulators
+            foreach (Simulator simulator in simulators)
+            { simulator.Reset(); }
+
+            // Set up the simulators for the times at which they will be queried
             foreach (Product product in portfolio)
             {                
                 foreach (KeyValuePair < MarketObservable, Simulator> entry in indexSources[product])
                 {
-                    double[] requiredTimes = product.GetRequiredTimes(valueDate, entry.Key);
+                    int[] requiredTimes = product.GetRequiredTimes(valueDate, entry.Key);
                     entry.Value.SetRequiredTimes(entry.Key, requiredTimes);
                 }
             }
@@ -46,14 +58,14 @@ namespace MonteCarlo
             {
                 foreach (Simulator simulator in simulators)
                 {
-                    simulator.RunSimulation(i, i + 1);
+                    simulator.RunSimulation(i);
                 }
                 foreach (Product product in portfolio)
                 {
                     foreach (MarketObservable index in product.GetRequiredIndices())
                     {
                         Simulator simulator = indexSources[product][index];
-                        double[] requiredTimes = product.GetRequiredTimes(valueDate, index);
+                        int[] requiredTimes = product.GetRequiredTimes(valueDate, index);
                         double[] indices = simulator.GetIndices(index, requiredTimes);
                         product.SetIndices(index, indices);                        
                     }
@@ -61,10 +73,6 @@ namespace MonteCarlo
                 }
 
             }
-
-
-
-
             return 0.0;
 
         }
