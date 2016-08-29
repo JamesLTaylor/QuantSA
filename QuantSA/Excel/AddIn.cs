@@ -36,6 +36,7 @@ public class MyAddIn : IExcelAddIn
     /// </summary>
     public void ExposeUserSelectedFunctions()
     {
+        //TODO: Add a default option so that visibility is controlled by release sometimes.
         Dictionary<string, bool> funcsAndVisibility = GetFunctionVisibility(FunctionsFilenameUser);
         Dictionary<string, MemberInfo> functions = GetQuantSAFunctions();
 
