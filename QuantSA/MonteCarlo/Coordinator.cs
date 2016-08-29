@@ -9,11 +9,13 @@ namespace MonteCarlo
 {
     public class Coordinator
     {
+        private NumeraireSimulator numeraire;
         private List<Product> portfolio;
         private List<Simulator> simulators;
 
-        public Coordinator(List<Product> portfolio, List<Simulator> simulators)
+        public Coordinator(NumeraireSimulator numeraire, List<Product> portfolio, List<Simulator> simulators)
         {
+            this.numeraire = numeraire;
             this.portfolio = portfolio;
             this.simulators = simulators;
         }
@@ -53,9 +55,18 @@ namespace MonteCarlo
                     entry.Value.SetRequiredTimes(entry.Key, requiredTimes);
                 }
             }
-            int N = 10;
+
+            // Run the simulation
+            Currency valueCurrency = numeraire.GetCurrency();            
+            int N = 10000;
+            // TODO: Rather store value for each product separately
+            double[] pathwiseValues = new double[N];
+            double totalValue = 0;
             for (int i=0; i< N; i++)
             {
+                pathwiseValues[i] = 0;
+                numeraire.RunSimulation(i);
+                double numeraireAtValue = numeraire.At(valueDate);
                 foreach (Simulator simulator in simulators)
                 {
                     simulator.RunSimulation(i);
@@ -69,11 +80,16 @@ namespace MonteCarlo
                         double[] indices = simulator.GetIndices(index, requiredTimes);
                         product.SetIndices(index, indices);                        
                     }
+                    // TODO: Generate cashflows per currency and then convert before using the numeraire for discounting
                     double[,] timesAndCFS = product.GetCFs();
+                    for (int cfCounter = 0; cfCounter<timesAndCFS.GetLength(0); cfCounter++)
+                    {
+                        pathwiseValues[i] += timesAndCFS[cfCounter, 1] * numeraireAtValue / numeraire.At(timesAndCFS[cfCounter, 0]);
+                    }
                 }
-
+                totalValue += pathwiseValues[i];
             }
-            return 0.0;
+            return totalValue/N;
 
         }
     }

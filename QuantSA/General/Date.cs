@@ -8,6 +8,12 @@ namespace General
         public DateTime date { get; private set; }
         public int value { get; private set; }
 
+        private Date(double value)
+        {
+            this.value = (int)value;
+            date = Epoch.AddDays(this.value);
+        }
+
         public Date(DateTime date)
         {
             this.date = date.Date;
@@ -32,6 +38,16 @@ namespace General
         static public implicit operator int (Date d)
         {
             return d.value;
+        }
+
+        static public implicit operator double (Date d)
+        {
+            return d.value;
+        }
+
+        static public implicit operator Date (double d)
+        {
+            return new Date(d);
         }
     }
 }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Currency.cs" />
     <Compile Include="Date.cs" />
     <Compile Include="DiscountingSource.cs" />
     <Compile Include="Formulae.cs" />

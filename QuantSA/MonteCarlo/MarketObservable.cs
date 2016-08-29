@@ -3,7 +3,7 @@
     public abstract class MarketObservable
     {
         /// <summary>
-        /// This needs to be implemented very carefully becasue it is used for generating hashcodes and 
+        /// This needs to be implemented very carefully because it is used for generating hashcodes and 
         /// testing equality.  Make sure that the string value will be unique for each unique instance.
         /// </summary>
         /// <returns></returns>
