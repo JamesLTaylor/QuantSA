@@ -58,7 +58,7 @@ namespace MonteCarlo
 
             // Run the simulation
             Currency valueCurrency = numeraire.GetCurrency();            
-            int N = 10000;
+            int N = 100000;
             // TODO: Rather store value for each product separately
             double[] pathwiseValues = new double[N];
             double totalValue = 0;
