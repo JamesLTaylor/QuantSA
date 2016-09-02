@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Curves
+namespace QuantSA
 {
-    public class NelsonSiegel
+    public class NelsonSiegel : ICurve
     {
         public double beta0 { get; private set; }
         public double beta1 { get; private set; }
@@ -32,7 +32,7 @@ namespace Curves
             double[] solution = nm.Solution;
             NelsonSiegel curve = new NelsonSiegel(solution[0], solution[1], solution[2], solution[3]);
 
-            double[] fittedValues = curve.Interp(t);
+            double[] fittedValues = curve.InterpAtTime(t);
             return curve;
         }
 
@@ -48,21 +48,31 @@ namespace Curves
         }
 
         /// <summary>
+        ///  Interpolate rates at provided time.        
+        /// </summary>
+        /// <param name="t">The times at which the rates are required.</param>
+        /// <returns></returns>
+        public double InterpAtTime(double t)
+        {
+            return Interp(beta0, beta1, beta2, tau, t);            
+        }
+
+        /// <summary>
         ///  Interpolate rates at provided times.        
         /// </summary>
         /// <param name="t">The times at which the rates are required.</param>
         /// <returns></returns>
-        public double[] Interp(double[] t)
+        public double[] InterpAtTime(double[] t)
         {
             double[] result = new double[t.Length];
-            for (int i=0; i<t.Length; i++)
+            for (int i = 0; i < t.Length; i++)
             {
                 result[i] = Interp(beta0, beta1, beta2, tau, t[i]);
             }
             return result;
         }
 
-        
+
         /// <summary>
         /// Apply the Nelson Siegel formula to a time.
         /// </summary>

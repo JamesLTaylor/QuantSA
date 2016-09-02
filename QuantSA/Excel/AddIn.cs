@@ -1,4 +1,4 @@
-﻿using Excel;
+﻿using QuantSA.Excel;
 using ExcelDna.Integration;
 using System;
 using System.Collections.Generic;
@@ -56,7 +56,11 @@ public class MyAddIn : IExcelAddIn
 
             //Create the function attribute
             QuantSAExcelFunctionAttribute quantsaAttribute = entry.Value.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-            quantsaAttribute.IsHidden = !funcsAndVisibility[quantsaAttribute.Name];
+            // If the function appears in the user function list use the isHidden value from there.  Otherwise use the default behaviour.
+            if (funcsAndVisibility.ContainsKey(quantsaAttribute.Name))
+            {
+                quantsaAttribute.IsHidden = !funcsAndVisibility[quantsaAttribute.Name];
+            }
             functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());            
 
             // Create the function argument attributes
@@ -64,7 +68,10 @@ public class MyAddIn : IExcelAddIn
             foreach (ParameterInfo param in method.GetParameters())
             {
                 var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
-                argAttrib.Name = param.Name;
+                if (argAttrib != null)
+                { 
+                    argAttrib.Name = param.Name;
+                }
                 thisArgumentAttributes.Add(argAttrib);
             }
             functionArgumentAttributes.Add(thisArgumentAttributes);

@@ -1,4 +1,4 @@
-﻿using General;
+﻿using QuantSA;
 using System;
 
 namespace MonteCarlo

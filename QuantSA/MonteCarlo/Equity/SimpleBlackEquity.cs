@@ -1,4 +1,4 @@
-﻿using General;
+﻿using QuantSA;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using System;

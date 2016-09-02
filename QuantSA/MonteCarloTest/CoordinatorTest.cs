@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonteCarlo.Equity;
 using MonteCarlo;
 using System.Collections.Generic;
-using General;
+using QuantSA;
 using MonteCarlo.Rates;
 
 namespace MonteCarloTest

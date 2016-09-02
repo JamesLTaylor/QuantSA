@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace General
+namespace QuantSA
 {
     public class Date
     {

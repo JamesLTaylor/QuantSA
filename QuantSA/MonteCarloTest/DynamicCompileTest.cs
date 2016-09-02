@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using General;
+using QuantSA;
 using MonteCarlo;
 using MonteCarlo.Equity;
 using MonteCarlo.Rates;

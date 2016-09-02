@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
 
@@ -25,9 +26,9 @@ namespace CurvesTest
                             0.0833,
                             0.0834,
                             0.0826 };
-            Curves.NelsonSiegel fitted = Curves.NelsonSiegel.Fit(t, r);
+            NelsonSiegel fitted = NelsonSiegel.Fit(t, r);
 
-            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.Interp(t));
+            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtTime(t));
             Vector<double> inputVals = Vector<double>.Build.Dense(r);
             double mse = fittedVals.Subtract(inputVals).PointwisePower(2).Mean();
             Assert.AreEqual(0, mse, 5e-7);
@@ -63,9 +64,9 @@ namespace CurvesTest
                             0.0833,
                             0.0834,
                             0.0826 };
-            Curves.NelsonSiegel fitted = Curves.NelsonSiegel.Fit(t, r);
+            NelsonSiegel fitted = NelsonSiegel.Fit(t, r);
 
-            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.Interp(t));
+            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtTime(t));
             Vector<double> inputVals = Vector<double>.Build.Dense(r);
             double mse = fittedVals.Subtract(inputVals).PointwisePower(2).Mean();
             Assert.AreEqual(0, mse, 5e-7);

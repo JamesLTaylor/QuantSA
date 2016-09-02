@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3B1B066B-F20E-4AB0-8E8E-F52E898F7974}</ProjectGuid>
+    <ProjectGuid>{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CurvesTest</RootNamespace>
-    <AssemblyName>CurvesTest</AssemblyName>
+    <RootNamespace>GeneralTest</RootNamespace>
+    <AssemblyName>GeneralTest</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -49,6 +49,10 @@
       <HintPath>..\packages\Accord.Math.3.2.0\lib\net45\Accord.Math.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Accord.Statistics, Version=3.2.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Statistics.3.2.0\lib\net45\Accord.Statistics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.13.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.13.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
@@ -69,16 +73,17 @@
   </Choose>
   <ItemGroup>
     <Compile Include="NelsonSiegelTest.cs" />
+    <Compile Include="RatesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\General\General.csproj">
+      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
+      <Name>General</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Curves\Curves.csproj">
-      <Project>{fc9fec69-7e45-4cbe-ab9f-77320a595902}</Project>
-      <Name>Curves</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

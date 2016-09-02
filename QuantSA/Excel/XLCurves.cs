@@ -1,8 +1,8 @@
-﻿using Curves;
-using ExcelDna.Integration;
+﻿using ExcelDna.Integration;
+using QuantSA;
 using System;
 
-namespace Excel
+namespace QuantSA.Excel
 {
     public static class XLCurves
     {
@@ -25,14 +25,14 @@ namespace Excel
         public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate")]String name,
         [ExcelArgument(Description = "The times at which interpolated rates are required.")]double[,] times)
         {
-            NelsonSiegel curve = (NelsonSiegel)ObjectMap.Instance.GetObjectFromID(name);
+            ICurve curve = (ICurve)ObjectMap.Instance.GetObjectFromID(name);
             object[,] result = new object[times.GetLength(0), times.GetLength(1)];
 
             for (int row = 0; row < times.GetLength(0); row += 1)
             {
                 for (int col = 0; col < times.GetLength(1); col += 1)
                 {
-                    result[row, col] = curve.Interp(new double[] { times[row, col] })[0];
+                    result[row, col] = curve.InterpAtTime(times[row, col]);
                 }
             }
             return result;

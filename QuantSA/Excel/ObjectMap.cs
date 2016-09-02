@@ -1,7 +1,11 @@
-﻿using System;
+﻿using ExcelDna.Integration;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Excel
+namespace QuantSA.Excel
 {
     public class ObjectMap
     {
@@ -32,8 +36,8 @@ namespace Excel
         /// <summary>
         /// Add an object onto the map.  Objects with the same name will overwrite each other.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="obj"></param>
+        /// <param name="name">The short name of the object on the map.  A longer name/ID will be provided automatically.</param>
+        /// <param name="obj">The object to be added.</param>
         /// <returns></returns>
         public string AddObject(string name, object obj)
         {
@@ -55,14 +59,22 @@ namespace Excel
             return uniqueID;
         }
 
-
+        /// <summary>
+        /// Get the object given the full id.  Strips everything to right of first dot and uses remaining as short name.
+        /// </summary>
+        /// <param name="uniqueID">Full id as returned by a call to <see cref="AddObject"/></param>
+        /// <returns></returns>
         public object GetObjectFromID(string uniqueID)
         {
             string[] nameParts = uniqueID.Split('.');            
             return GetObjectFromName(nameParts[0]);
         }
 
-
+        /// <summary>
+        /// Get the object on the map with the name provided.
+        /// </summary>
+        /// <param name="name">The name used to add the object to the map.</param>
+        /// <returns></returns>
         public object GetObjectFromName(string name)
         {
             if (!namesAndObjects.ContainsKey(name))
@@ -89,6 +101,46 @@ namespace Excel
                     return instance;
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Uses the Excel instance to add a serialized version of an object to the object map.  Allows different plugins to 
+        /// interact with each other.
+        /// </summary>
+        /// <param name="name">The short name of the object on the map.  A longer name/ID will be provided automatically.</param>
+        /// <param name="obj">The object to be added.</param>
+        /// <returns>A String.  If the string start with 'ERROR' then the call has failed.</returns>
+        public static string AddObjectPlugIn(string name, object obj)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            new BinaryFormatter().Serialize(stream, obj);
+            string serializedObject = Convert.ToBase64String(stream.ToArray());
+            stream.Close();
+
+            string objID =  XlCall.Excel(XlCall.xlUDF, "QSA.PutOnMap", name, serializedObject) as string;
+            if (objID.StartsWith("ERROR")) throw new Exception(objID);
+            return objID;
+        }
+
+        /// <summary>
+        /// Uses the Excel instance to retrieve a serialized version of an object on the object map.  Allows different plugins to 
+        /// interact with each other.
+        /// </summary>
+        /// <param name="name">The short name of the object on the map.</param>
+        /// <returns>A String.  If the string start with 'ERROR' then the call has failed.</returns>
+        public static object GetObjectPlugIn(string name)
+        {
+            string serializedObject = XlCall.Excel(XlCall.xlUDF, "QSA.GetFromMap", name) as string;
+            if (serializedObject.StartsWith("ERROR")) throw new Exception(serializedObject);
+
+            byte[] bytes = Convert.FromBase64String(serializedObject);
+            MemoryStream stream = new MemoryStream(bytes);
+            object obj = new BinaryFormatter().Deserialize(stream);
+            stream.Close();
+            
+            return obj;
         }
 
 

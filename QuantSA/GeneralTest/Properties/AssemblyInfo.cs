@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CurvesTest")]
+[assembly: AssemblyTitle("GeneralTest")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CurvesTest")]
+[assembly: AssemblyProduct("GeneralTest")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3b1b066b-f20e-4ab0-8e8e-f52e898f7974")]
+[assembly: Guid("38a22b8f-1fe7-4c9a-8e24-551ea6ce0a7c")]
 
 // Version information for an assembly consists of the following four values:
 //

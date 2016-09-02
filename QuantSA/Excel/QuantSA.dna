@@ -1,5 +1,6 @@
-<DnaLibrary Name="Excel Add-In" RuntimeVersion="v4.0">
+<DnaLibrary Name="QuantSA" RuntimeVersion="v4.0">
   <ExternalLibrary Path="Excel.dll" LoadFromBytes="true" Pack="true" />
+  <ExternalLibrary Path="DBSA.dll" LoadFromBytes="true" Pack="true" />
   
   <!-- 
        The RuntimeVersion attribute above allows two settings:

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Rates
+namespace QuantSA
 {
-    public class SingleRate : DiscountingSource
+    public class SingleRate : IDiscountingSource
     {
         private Date anchorDate;
         private double rate;
@@ -22,7 +22,7 @@ namespace General.Rates
             return new SingleRate(rate, anchorDate);
         }
 
-        public override double GetDF(Date date)
+        public double GetDF(Date date)
         {
             if (date.date < anchorDate.date) throw new IndexOutOfRangeException("Discount factors are only defined at dates on or after the anchor date");
             return Math.Exp(-rate * (date - anchorDate) / 365.0);

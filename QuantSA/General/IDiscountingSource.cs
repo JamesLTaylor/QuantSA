@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General
+namespace QuantSA
 {
-    public abstract class DiscountingSource
+    public interface IDiscountingSource
     {
-        public abstract double GetDF(Date date);
+        double GetDF(Date date);
     }
 }

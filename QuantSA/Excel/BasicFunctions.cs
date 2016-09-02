@@ -2,7 +2,7 @@
 using MathNet.Numerics.Interpolation;
 using System;
 
-namespace Excel
+namespace QuantSA.Excel
 {
     public static class BasicFunctions
     {
