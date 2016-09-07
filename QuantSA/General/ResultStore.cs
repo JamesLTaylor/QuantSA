@@ -81,7 +81,9 @@ namespace QuantSA
         /// <returns></returns>
         public string[] GetNames()
         {
-            return data.Keys.ToArray<string>();
+            string[] names = data.Keys.ToArray<string>();
+            Array.Sort<string>(names);
+            return names;
         }
 
         /// <summary>
