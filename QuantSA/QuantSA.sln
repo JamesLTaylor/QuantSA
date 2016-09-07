@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General", "General\General.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneralTest", "GeneralTest\GeneralTest.csproj", "{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBSA", "DBSA\DBSA.csproj", "{822767E7-33D2-4CC0-ACBD-10403D2E1FFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBSA", "..\..\QuantSA.Addins\DBSA\DBSA\DBSA.csproj", "{822767E7-33D2-4CC0-ACBD-10403D2E1FFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

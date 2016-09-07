@@ -116,7 +116,7 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "The rates.")]double[] rates)
         {
             try {
-                DatesAndRates curve = new DatesAndRates(dates, rates);
+                DatesAndRates curve = new DatesAndRates(ExcelUtilites.GetDates(dates), rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {

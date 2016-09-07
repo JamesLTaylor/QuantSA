@@ -7,69 +7,73 @@ using System.Threading.Tasks;
 
 namespace QuantSA
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class NelsonSiegel : ICurve
     {
+        private Date anchorDate;
         public double beta0 { get; private set; }
         public double beta1 { get; private set; }
         public double beta2 { get; private set; }
         public double tau { get; private set; }
 
-        public NelsonSiegel(double beta0, double beta1, double beta2, double tau)
+        private NelsonSiegel(Date anchorDate, double beta0, double beta1, double beta2, double tau)
         {
+            this.anchorDate = anchorDate;
             this.beta0 = beta0;
             this.beta1 = beta1;
             this.beta2 = beta2;
             this.tau = tau;
         }
 
-        public static NelsonSiegel Fit(double[] t, double[] r)
+        /// <summary>
+        ///  Interpolate the rate at required date.        
+        /// </summary>
+        /// <param name="date">The date at which the rate is required.</param>
+        /// <returns></returns>
+        public double InterpAtDate(Date date)
         {
-            Func<double[], double> f = (x) => ErrorFunction(x, t, r);            
+            return Interp(beta0, beta1, beta2, tau, date-anchorDate);            
+        }
+
+
+        #region static methods
+
+        /// <summary>
+        /// Fits a Nelson Siegel curve to data
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public static NelsonSiegel Fit(Date anchorDate, Date[] dates, double[] rates)
+        {
+            double[] times = new double[dates.Length];
+            for (int i=0; i<dates.Length; i++)
+            {
+                times[i] = dates[i] - anchorDate;
+            }
+
+            Func<double[], double> f = (x) => ErrorFunction(x, times, rates);
 
             var nm = new NelderMead(numberOfVariables: 4, function: f);
-            bool success = nm.Minimize(new double[] { r[0], r[0], r[0], t.Last() / 5.0 });
+            bool success = nm.Minimize(new double[] { rates[0], rates[0], rates[0], times.Last() / 5.0 });
             double minValue = nm.Value;
             double[] solution = nm.Solution;
-            NelsonSiegel curve = new NelsonSiegel(solution[0], solution[1], solution[2], solution[3]);
+            NelsonSiegel curve = new NelsonSiegel(anchorDate, solution[0], solution[1], solution[2], solution[3]);
 
-            double[] fittedValues = curve.InterpAtTime(t);
             return curve;
         }
 
         private static double ErrorFunction(double[] parameters, double[] t, double[] r)
         {
             double error = 0;
-            for (int i=0; i<t.Length; i++)
+            for (int i = 0; i < t.Length; i++)
             {
                 double diff = Interp(parameters[0], parameters[1], parameters[2], parameters[3], t[i]) - r[i];
                 error += diff * diff;
             }
             return error;
-        }
-
-        /// <summary>
-        ///  Interpolate rates at provided time.        
-        /// </summary>
-        /// <param name="t">The times at which the rates are required.</param>
-        /// <returns></returns>
-        public double InterpAtTime(double t)
-        {
-            return Interp(beta0, beta1, beta2, tau, t);            
-        }
-
-        /// <summary>
-        ///  Interpolate rates at provided times.        
-        /// </summary>
-        /// <param name="t">The times at which the rates are required.</param>
-        /// <returns></returns>
-        public double[] InterpAtTime(double[] t)
-        {
-            double[] result = new double[t.Length];
-            for (int i = 0; i < t.Length; i++)
-            {
-                result[i] = Interp(beta0, beta1, beta2, tau, t[i]);
-            }
-            return result;
         }
 
 
@@ -82,7 +86,7 @@ namespace QuantSA
         /// <param name="tau"></param>
         /// <param name="t">time at whihc the rate is required</param>
         /// <returns></returns>
-        public static double Interp(double beta0, double beta1, double beta2, double tau, double t)
+        private static double Interp(double beta0, double beta1, double beta2, double tau, double t)
         {
             double rate = beta0 +
                 (beta1 + beta2) * (1 - Math.Exp(-t / tau)) * tau / t -
@@ -90,5 +94,7 @@ namespace QuantSA
             
             return rate;
         }
+
+        #endregion // static methods
     }
 }

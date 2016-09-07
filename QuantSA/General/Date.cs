@@ -2,6 +2,10 @@
 
 namespace QuantSA
 {
+    /// <summary>
+    /// Dates should always be thought of as whole numbers in the QuantSA library.  They are treated as doubles
+    /// sometimes to make calculations easier but this should just be a double representation of an int value.
+    /// </summary>
     public class Date
     {
         private static DateTime Epoch = new DateTime(2000,1,1);
@@ -48,6 +52,26 @@ namespace QuantSA
         static public implicit operator Date (double d)
         {
             return new Date(d);
+        }
+
+    }
+
+    /// <summary>
+    /// Extansion methods for Dates and arrays of Dates
+    /// </summary>
+    public static class DateExtensionMethods
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dates">The array from which values are required.</param>
+        /// <returns></returns>
+        public static double[] GetValues(this Date[] dates)
+        {
+            double[] values = new double[dates.Length];
+            for (int i = 0; i < dates.Length; i++) { values[i] = dates[i]; }
+
+            return values;
         }
     }
 }

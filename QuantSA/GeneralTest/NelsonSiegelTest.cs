@@ -12,7 +12,7 @@ namespace CurvesTest
         [TestMethod]
         public void TestFitYears()
         {
-            Double[] t = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20 };
+            Date[] t = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20 };
             Double[] r = {0.0745,
                             0.0752,
                             0.0763,
@@ -26,9 +26,9 @@ namespace CurvesTest
                             0.0833,
                             0.0834,
                             0.0826 };
-            NelsonSiegel fitted = NelsonSiegel.Fit(t, r);
+            NelsonSiegel fitted = NelsonSiegel.Fit(0, t, r);
 
-            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtTime(t));
+            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtDates(t));
             Vector<double> inputVals = Vector<double>.Build.Dense(r);
             double mse = fittedVals.Subtract(inputVals).PointwisePower(2).Mean();
             Assert.AreEqual(0, mse, 5e-7);
@@ -38,7 +38,7 @@ namespace CurvesTest
         [TestMethod]
         public void TestFitDays()
         {
-            Double[] t = {365,
+            Date[] t = {365,
                             730,
                             1095,
                             1460,
@@ -64,9 +64,9 @@ namespace CurvesTest
                             0.0833,
                             0.0834,
                             0.0826 };
-            NelsonSiegel fitted = NelsonSiegel.Fit(t, r);
+            NelsonSiegel fitted = NelsonSiegel.Fit(0, t, r);
 
-            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtTime(t));
+            Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtDates(t));
             Vector<double> inputVals = Vector<double>.Build.Dense(r);
             double mse = fittedVals.Subtract(inputVals).PointwisePower(2).Mean();
             Assert.AreEqual(0, mse, 5e-7);

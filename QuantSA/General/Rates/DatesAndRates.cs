@@ -14,9 +14,9 @@ namespace QuantSA
         private double[] dates;
         private double[] rates;
         
-        public DatesAndRates(double[] dates, double[] rates)
+        public DatesAndRates(Date[] dates, double[] rates)
         {
-            this.dates = dates;
+            this.dates = dates.GetValues();
             this.rates = rates;            
         }
 
@@ -32,14 +32,14 @@ namespace QuantSA
 
 
         /// <summary>
-        /// Interpolate the curve.  Be careful to use the same time basis as the curve was constructed with.
+        /// Interpolate the curve.
         /// </summary>
         /// <param name="time">The time at which the rate is required.</param>
         /// <returns></returns>
-        public double InterpAtTime(double time)
+        public double InterpAtDate(Date date)
         {
             LinearSpline spline = LinearSpline.InterpolateSorted(dates, rates);
-            return spline.Interpolate(time);            
+            return spline.Interpolate(date);            
         }
     }
 }

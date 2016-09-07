@@ -9,33 +9,46 @@ namespace QuantSA.Excel
         [QuantSAExcelFunction(Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve.",
         Name = "QSA.FitCurveNelsonSiegel",
         Category = "QSA.General",
+        IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static string FitCurveNelsonSiegel([ExcelArgument(Description = "Name of object")]String name,
-                [ExcelArgument(Description = "Times at which rates apply.")]double[] times,
+                [ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can set to zero.")]double anchorDate,
+                [ExcelArgument(Description = "dates at which rates apply.")]double[] dates,
                 [ExcelArgument(Description = "Rates to be fitted")]Double[] rates)
         {
-            NelsonSiegel curve = NelsonSiegel.Fit(times, rates);
-            return ObjectMap.Instance.AddObject(name, curve);
+            try {
+                NelsonSiegel curve = NelsonSiegel.Fit(anchorDate, ExcelUtilites.GetDates(dates), rates);
+                return ObjectMap.Instance.AddObject(name, curve);
+            } catch (Exception e)
+            {
+                return e.Message;
+            }
         }
 
         [QuantSAExcelFunction(Description = "Find the interpolated value of any QuantSA created curve",
         Name = "QSA.CurveInterp",
         Category = "QSA.General",
+        IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate")]String name,
-        [ExcelArgument(Description = "The times at which interpolated rates are required.")]double[,] times)
+        [ExcelArgument(Description = "The dates at which interpolated rates are required.")]double[,] dates)
         {
-            ICurve curve = (ICurve)ObjectMap.Instance.GetObjectFromID(name);
-            object[,] result = new object[times.GetLength(0), times.GetLength(1)];
+            try {
+                ICurve curve = (ICurve)ObjectMap.Instance.GetObjectFromID(name);
+                object[,] result = new object[dates.GetLength(0), dates.GetLength(1)];
 
-            for (int row = 0; row < times.GetLength(0); row += 1)
-            {
-                for (int col = 0; col < times.GetLength(1); col += 1)
+                for (int row = 0; row < dates.GetLength(0); row += 1)
                 {
-                    result[row, col] = curve.InterpAtTime(times[row, col]);
+                    for (int col = 0; col < dates.GetLength(1); col += 1)
+                    {
+                        result[row, col] = curve.InterpAtDate(dates[row, col]);
+                    }
                 }
+                return result;
+            } catch (Exception e)
+            {
+                return ExcelUtilites.ErrorTo2D(e);
             }
-            return result;
         }
 
 
