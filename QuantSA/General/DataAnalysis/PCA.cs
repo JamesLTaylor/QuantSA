@@ -26,6 +26,7 @@ namespace QuantSA.General.DataAnalysis
 
         public static double[,] PCAFromCurves(double[,] curves)
         {
+            //TODO: Rather return a ResultStore with eigen vectors and eigen values separate
             // Find log returns
             double[,] data = new double[curves.GetLength(0) - 1, curves.GetLength(1)];
             for (int row = 0; row < curves.GetLength(0) - 1; row++)
@@ -47,27 +48,10 @@ namespace QuantSA.General.DataAnalysis
             var svd = new SingularValueDecomposition(data);
             double[] singularValues = svd.Diagonal;
             double[,] eigenvectors = svd.RightSingularVectors;
-            double[] eigenvalues = singularValues.Pow(2);
+            double[] eigenvalues = singularValues.Pow(2).Divide(curves.GetLength(0) - 1);
+
             eigenvectors = eigenvectors.Concatenate(eigenvalues);
-            //TODO: Use the Accord built in PCA method.
-
-            /*
-            double[,] covariance = data.Covariance();
-            PrincipalComponentAnalysis pca = PrincipalComponentAnalysis.FromCovarianceMatrix(mean, covariance);
-
-            var components = pca.ComponentVectors;
-            double[][] result = components.Concatenate(pca.ComponentProportions);
-
-            double[,] resultRect = new double[result.Length, result[0].Length];
-            /*for (int i = 0; i<resultRect.GetLength(0); i++)
-            {
-                for (int j = 0; j < resultRect.GetLength(1); j++)
-                {
-                    resultRect[i, j] = result[i][j];
-                }
-            }
-            result.CopyTo(resultRect);
-            */
+            //TODO: Use the Accord built-in PCA method.
 
             return eigenvectors;
         }

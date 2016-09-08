@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Currency.cs" />
+    <Compile Include="Curves\PCACurveSimulator.cs" />
     <Compile Include="Curves\NelsonSiegel.cs" />
     <Compile Include="DataAnalysis\PCA.cs" />
     <Compile Include="Date.cs" />

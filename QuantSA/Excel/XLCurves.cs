@@ -52,5 +52,61 @@ namespace QuantSA.Excel
         }
 
 
+        [ExcelFunction(Description = "",
+        Name = "QSA.CreatePCACurveSimulator",
+        Category = "QSA.General",
+        IsHidden = false,
+        HelpTopic = "https://www.google.co.za")]
+        public static object CreatePCACurveSimulator([ExcelArgument(Description = "")]string simulatorName,
+            [ExcelArgument(Description = "")]double anchorDate,
+            [ExcelArgument(Description = "")]double[] initialRates,
+            [ExcelArgument(Description = "")]double[] tenorMonths,
+            [ExcelArgument(Description = "")]double[,] components,
+            [ExcelArgument(Description = "")]double[] vols)
+
+        {
+            try
+            {
+                int[] tenorMonthsInt = new int[tenorMonths.Length];
+                for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
+                PCACurveSimulator curveSimulator = new PCACurveSimulator(anchorDate, initialRates, tenorMonthsInt, components, vols);
+                return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
+            }
+
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+
+        [ExcelFunction(Description = "",
+        Name = "QSA.PCACurveSimulatorGetRates",
+        Category = "QSA.General",
+        IsHidden = false,
+        HelpTopic = "https://www.google.co.za")]
+        public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "")]string simulatorName,
+            [ExcelArgument(Description = "")]double[] simulationDates,
+            [ExcelArgument(Description = "")]double[] requiredTenorMonths)
+
+        {
+            try
+            {
+                int[] tenorMonthsInt = new int[requiredTenorMonths.Length];
+                for (int i = 0; i < requiredTenorMonths.Length; i++) { tenorMonthsInt[i] = (int)requiredTenorMonths[i]; }
+
+
+                PCACurveSimulator curveSimulator = (PCACurveSimulator)ObjectMap.Instance.GetObjectFromID(simulatorName);
+                double[,] result = curveSimulator.GetSimulatedRates(ExcelUtilites.GetDates(simulationDates), tenorMonthsInt);
+                return ExcelUtilites.GetObjects(result);
+            }
+
+            catch (Exception e)
+            {
+                return ExcelUtilites.ErrorTo2D(e);
+            }
+        }
+
+
     }
 }
