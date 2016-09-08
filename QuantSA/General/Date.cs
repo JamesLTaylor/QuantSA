@@ -28,6 +28,10 @@ namespace QuantSA
         {            
         }
 
+        public Date(Date currentDate) : this(currentDate.date)
+        {
+        }
+
         /// <summary>
         /// Number of whole calendar days from d1 to d2
         /// </summary>
@@ -62,7 +66,7 @@ namespace QuantSA
     public static class DateExtensionMethods
     {
         /// <summary>
-        /// 
+        /// Returns a copy of the date values.
         /// </summary>
         /// <param name="dates">The array from which values are required.</param>
         /// <returns></returns>
