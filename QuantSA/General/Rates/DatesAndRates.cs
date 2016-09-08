@@ -17,7 +17,7 @@ namespace QuantSA
         public DatesAndRates(Date[] dates, double[] rates)
         {
             this.dates = dates.GetValues();
-            this.rates = rates;            
+            this.rates = rates.Clone() as double[];            
         }
 
         public double GetDF(Date date)
