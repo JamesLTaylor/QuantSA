@@ -106,22 +106,30 @@ namespace QuantSA.Excel
 
         /// <summary>
         /// Uses the Excel instance to add a serialized version of an object to the object map.  Allows different plugins to 
-        /// interact with each other.
+        /// interact with each other if they know the same object definitions.
         /// </summary>
         /// <param name="name">The short name of the object on the map.  A longer name/ID will be provided automatically.</param>
         /// <param name="obj">The object to be added.</param>
-        /// <returns>A String.  If the string start with 'ERROR' then the call has failed.</returns>
-        public static string AddObjectPlugIn(string name, object obj)
+        /// <returns>A String.</returns>
+        public static string AddObjectPlugIn(string name, object obj, bool serialize)
         {
-            IFormatter formatter = new BinaryFormatter();
-            MemoryStream stream = new MemoryStream();
-            new BinaryFormatter().Serialize(stream, obj);
-            string serializedObject = Convert.ToBase64String(stream.ToArray());
-            stream.Close();
+            if (serialize)
+            {
+                IFormatter formatter = new BinaryFormatter();
+                MemoryStream stream = new MemoryStream();
+                new BinaryFormatter().Serialize(stream, obj);
+                string serializedObject = Convert.ToBase64String(stream.ToArray());
+                stream.Close();
 
-            string objID =  XlCall.Excel(XlCall.xlUDF, "QSA.PutOnMap", name, serializedObject) as string;
-            if (objID.StartsWith("ERROR")) throw new Exception(objID);
-            return objID;
+                string objID = XlCall.Excel(XlCall.xlUDF, "QSA.PutOnMap", name, serializedObject, 1) as string;
+                if (objID.StartsWith("ERROR")) throw new Exception(objID);
+                return objID;
+            } else
+            {
+                string objID = XlCall.Excel(XlCall.xlUDF, "QSA.PutOnMap", name, (string)obj, 0) as string;
+                if (objID.StartsWith("ERROR")) throw new Exception(objID);
+                return objID;
+            }
         }
 
         /// <summary>
@@ -129,18 +137,27 @@ namespace QuantSA.Excel
         /// interact with each other.
         /// </summary>
         /// <param name="name">The short name of the object on the map.</param>
-        /// <returns>A String.  If the string start with 'ERROR' then the call has failed.</returns>
-        public static object GetObjectPlugIn(string name)
+        /// <returns>An instance of the object or a string representing the serialized version of the object.</returns>
+        public static object GetObjectPlugIn(string name, bool serialize)
         {
-            string serializedObject = XlCall.Excel(XlCall.xlUDF, "QSA.GetFromMap", name) as string;
+            int serializeValue = serialize ? 1 : 0;
+
+            string serializedObject = XlCall.Excel(XlCall.xlUDF, "QSA.GetFromMap", name, serializeValue) as string;
             if (serializedObject.StartsWith("ERROR")) throw new Exception(serializedObject);
 
-            byte[] bytes = Convert.FromBase64String(serializedObject);
-            MemoryStream stream = new MemoryStream(bytes);
-            object obj = new BinaryFormatter().Deserialize(stream);
-            stream.Close();
-            
-            return obj;
+            if (serialize)
+            {
+                byte[] bytes = Convert.FromBase64String(serializedObject);
+                MemoryStream stream = new MemoryStream(bytes);
+                object obj = new BinaryFormatter().Deserialize(stream);
+                stream.Close();
+
+                return obj;
+            }
+            else
+            {
+                return serializedObject;
+            }
         }
 
 

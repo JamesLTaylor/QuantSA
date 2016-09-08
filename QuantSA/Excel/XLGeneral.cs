@@ -18,14 +18,21 @@ namespace QuantSA.Excel
         Name = "QSA.PutOnMap",
         Category = "QSA.General",
         IsHidden = true)]
-        public static string PutOnMap(string name, string serializedObject)
+        public static string PutOnMap(string name, string serializedObject, int deserialize)
         {
-            try { 
-                byte[] bytes = Convert.FromBase64String(serializedObject);
-                MemoryStream stream = new MemoryStream(bytes);
-                object obj = new BinaryFormatter().Deserialize(stream);
-                stream.Close();
-                return ObjectMap.Instance.AddObject(name, obj);
+            try {
+                if (deserialize == 1)
+                {
+                    byte[] bytes = Convert.FromBase64String(serializedObject);
+                    MemoryStream stream = new MemoryStream(bytes);
+                    object obj = new BinaryFormatter().Deserialize(stream);
+                    stream.Close();
+                    return ObjectMap.Instance.AddObject(name, obj);
+                }
+                else
+                {
+                    return ObjectMap.Instance.AddObject(name, serializedObject);
+                }
             }
             catch (Exception e)
             {
@@ -38,17 +45,25 @@ namespace QuantSA.Excel
         Name = "QSA.GetFromMap",
         Category = "QSA.General",
         IsHidden = true)]
-        public static string GetFromMap(string objectName)
+        public static string GetFromMap(string objectName, int deserialize)
         {
             try
             {
-                object obj = ObjectMap.Instance.GetObjectFromID(objectName);
-                IFormatter formatter = new BinaryFormatter();
-                MemoryStream stream = new MemoryStream();
-                new BinaryFormatter().Serialize(stream, obj);
-                string serializedObject = Convert.ToBase64String(stream.ToArray());
-                stream.Close();
-                return serializedObject;
+                if (deserialize == 1)
+                {
+                    object obj = ObjectMap.Instance.GetObjectFromID(objectName);
+                    IFormatter formatter = new BinaryFormatter();
+                    MemoryStream stream = new MemoryStream();
+                    new BinaryFormatter().Serialize(stream, obj);
+                    string serializedObject = Convert.ToBase64String(stream.ToArray());
+                    stream.Close();
+                    return serializedObject;
+                }
+                else
+                {
+                    string serializedObject = ObjectMap.Instance.GetObjectFromID(objectName) as string;
+                    return serializedObject;
+                }
             }
             catch (Exception e)
             {
