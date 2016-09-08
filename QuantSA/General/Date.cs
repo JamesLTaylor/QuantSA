@@ -6,17 +6,28 @@ namespace QuantSA
     /// Dates should always be thought of as whole numbers in the QuantSA library.  They are treated as doubles
     /// sometimes to make calculations easier but this should just be a double representation of an int value.
     /// </summary>
+    /// <remarks>
+    /// The choice of Epoch for this class is completely arbitrary and exists only to make sure that calculations 
+    /// can easily be performed on number of days and move these backwards and forwards between dates without having to 
+    /// make new <see cref="DateTime"/>s.
+    /// </remarks>
+    [Serializable]
     public class Date
     {
         private static DateTime Epoch = new DateTime(2000,1,1);
         public DateTime date { get; private set; }
         public int value { get; private set; }
 
-        private Date(double value)
+        /// <summary>
+        /// Creates a Date from a value that reflects the number of days since the Epoch for this class.
+        /// </summary>
+        /// <param name="value"></param>
+        public Date(double value)
         {
             this.value = (int)value;
             date = Epoch.AddDays(this.value);
         }
+
 
         public Date(DateTime date)
         {
@@ -53,10 +64,10 @@ namespace QuantSA
             return d.value;
         }
 
-        static public implicit operator Date (double d)
+        /*static public implicit operator Date (double d)
         {
             return new Date(d);
-        }
+        }*/
 
     }
 

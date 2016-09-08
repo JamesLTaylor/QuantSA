@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
+using System.Linq;
 
 namespace CurvesTest
 {
@@ -12,7 +13,7 @@ namespace CurvesTest
         [TestMethod]
         public void TestFitYears()
         {
-            Date[] t = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20 };
+            Date[] t = (new double[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20 }).Select(date => new Date(date)).ToArray<Date>();
             Double[] r = {0.0745,
                             0.0752,
                             0.0763,
@@ -26,7 +27,7 @@ namespace CurvesTest
                             0.0833,
                             0.0834,
                             0.0826 };
-            NelsonSiegel fitted = NelsonSiegel.Fit(0, t, r);
+            NelsonSiegel fitted = NelsonSiegel.Fit(new Date(0), t, r);
 
             Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtDates(t));
             Vector<double> inputVals = Vector<double>.Build.Dense(r);
@@ -38,7 +39,7 @@ namespace CurvesTest
         [TestMethod]
         public void TestFitDays()
         {
-            Date[] t = {365,
+            Date[] t = (new double[]{365,
                             730,
                             1095,
                             1460,
@@ -50,7 +51,7 @@ namespace CurvesTest
                             3650,
                             4380,
                             5475,
-                            7300};
+                            7300}).Select(date => new Date(date)).ToArray<Date>();
             Double[] r = {0.0745,
                             0.0752,
                             0.0763,
@@ -64,7 +65,7 @@ namespace CurvesTest
                             0.0833,
                             0.0834,
                             0.0826 };
-            NelsonSiegel fitted = NelsonSiegel.Fit(0, t, r);
+            NelsonSiegel fitted = NelsonSiegel.Fit(new Date(0), t, r);
 
             Vector<double> fittedVals = Vector<double>.Build.Dense(fitted.InterpAtDates(t));
             Vector<double> inputVals = Vector<double>.Build.Dense(r);

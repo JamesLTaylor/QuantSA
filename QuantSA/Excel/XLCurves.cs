@@ -17,7 +17,7 @@ namespace QuantSA.Excel
                 [ExcelArgument(Description = "Rates to be fitted")]Double[] rates)
         {
             try {
-                NelsonSiegel curve = NelsonSiegel.Fit(anchorDate, ExcelUtilites.GetDates(dates), rates);
+                NelsonSiegel curve = NelsonSiegel.Fit(ExcelUtilites.GetDates(anchorDate), ExcelUtilites.GetDates(dates), rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {
@@ -35,19 +35,20 @@ namespace QuantSA.Excel
         {
             try {
                 ICurve curve = (ICurve)ObjectMap.Instance.GetObjectFromID(name);
-                object[,] result = new object[dates.GetLength(0), dates.GetLength(1)];
+                Date[,] dtDates = ExcelUtilites.GetDates(dates);
+                object[,] result = new object[dtDates.GetLength(0), dtDates.GetLength(1)];
 
-                for (int row = 0; row < dates.GetLength(0); row += 1)
+                for (int row = 0; row < dtDates.GetLength(0); row += 1)
                 {
-                    for (int col = 0; col < dates.GetLength(1); col += 1)
+                    for (int col = 0; col < dtDates.GetLength(1); col += 1)
                     {
-                        result[row, col] = curve.InterpAtDate(dates[row, col]);
+                        result[row, col] = curve.InterpAtDate(dtDates[row, col]);
                     }
                 }
                 return result;
             } catch (Exception e)
             {
-                return ExcelUtilites.ErrorTo2D(e);
+                return ExcelUtilites.Error2D(e);
             }
         }
 
@@ -69,13 +70,13 @@ namespace QuantSA.Excel
             {
                 int[] tenorMonthsInt = new int[tenorMonths.Length];
                 for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
-                PCACurveSimulator curveSimulator = new PCACurveSimulator(anchorDate, initialRates, tenorMonthsInt, components, vols);
+                PCACurveSimulator curveSimulator = new PCACurveSimulator(ExcelUtilites.GetDates(anchorDate), 
+                    initialRates, tenorMonthsInt, components, vols);
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
-
             catch (Exception e)
             {
-                return e.Message;
+                return ExcelUtilites.Error2D(e);                
             }
         }
 
@@ -103,7 +104,7 @@ namespace QuantSA.Excel
 
             catch (Exception e)
             {
-                return ExcelUtilites.ErrorTo2D(e);
+                return ExcelUtilites.Error2D(e);
             }
         }
 

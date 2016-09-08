@@ -72,7 +72,7 @@ namespace QuantSA
         /// <param name="result">An array of values</param>
         public void Add(string name, double[,] result)
         {
-            data[name] = result;
+            data[name] = result.Clone() as double[,];
         }
 
         /// <summary>

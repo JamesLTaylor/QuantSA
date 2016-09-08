@@ -137,6 +137,11 @@ namespace QuantSA.Excel
         /// interact with each other.
         /// </summary>
         /// <param name="name">The short name of the object on the map.</param>
+        /// <param name="serialize">Indicates whether the object has been strored directly or in serialized form.  
+        /// You need to know how it was added in the first place.  Generally if is an object deinfed in QuantSA it
+        /// will be added directly to objectMap while if it is defined in a plugin then it should be stored as a string.
+        /// <para/>true - return the object.
+        /// <para/>false - return the string for later deserialization.</param>
         /// <returns>An instance of the object or a string representing the serialized version of the object.</returns>
         public static object GetObjectPlugIn(string name, bool serialize)
         {

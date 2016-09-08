@@ -84,7 +84,7 @@ namespace MonteCarlo
                     double[,] timesAndCFS = product.GetCFs();
                     for (int cfCounter = 0; cfCounter<timesAndCFS.GetLength(0); cfCounter++)
                     {
-                        pathwiseValues[i] += timesAndCFS[cfCounter, 1] * numeraireAtValue / numeraire.At(timesAndCFS[cfCounter, 0]);
+                        pathwiseValues[i] += timesAndCFS[cfCounter, 1] * numeraireAtValue / numeraire.At(new Date(timesAndCFS[cfCounter, 0]));
                     }
                 }
                 totalValue += pathwiseValues[i];

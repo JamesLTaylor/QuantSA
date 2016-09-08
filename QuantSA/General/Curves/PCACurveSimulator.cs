@@ -65,7 +65,7 @@ namespace QuantSA
                 for (int i = 0; i < initialRates.Length; i++)
                 {
                     //TODO: Add months properly
-                    curveDates[i] = simulationDates[0] + 30 * tenorMonths[i];
+                    curveDates[i] = new Date(simulationDates[0] + 30 * tenorMonths[i]);
                     //TODO: add mean correction.
                     double exponent = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
                     currentRates[i] = previousRates[i] * Math.Exp(exponent);
@@ -94,24 +94,12 @@ namespace QuantSA
                 for (int i = 0; i < requiredTenorMonths.Length; i++)
                 {
                     //TODO: Add months properly
-                    Date curveDate = simulationDates[0] + 30 * tenorMonths[i];
+                    Date curveDate = new Date(simulationDates[0] + 30 * tenorMonths[i]);
                     rates[simCounter, i] = curves[simCounter].InterpAtDate(curveDate);
                 }
             }
             return rates;
         }
 
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="simNumber"></param>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        public double[,] GetSimulatedCurve(int simNumber, double date)
-        {
-            return new double[,] { { 1, 0.2 }, { 2, 0.3 } };
-        }
     }
 }
