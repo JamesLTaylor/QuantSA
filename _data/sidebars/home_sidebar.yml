@@ -1,0 +1,42 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: Sidebar
+  levels: one
+  folders:
+
+  - title: Overview
+    output: web
+    folderitems:
+    - title: Installation
+      url: /home_installation.html
+      output: web
+    
+  - title: FAQ
+    output: web
+    folderitems:
+    - title: FAQ
+      url: /home_faq.html 
+      output: web
+
+  - title: Excel Addin
+    output: web
+    folderitems:    
+    - title: Calling functions
+      url: /home_excel_calling_functions.html
+      output: web
+    - title: Creating Objects
+      url: /home_excel_creating_objects.html
+      output: web
+    - title: Getting help
+      url: /home_excel_help.html
+      output: web   
+
+  - title: Market Data
+    output: web
+    folderitems:
+    - title: Swaps
+      url: /home_swaps.html 
+      output: web       
+          
+         
