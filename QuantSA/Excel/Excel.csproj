@@ -92,11 +92,6 @@
       <Name>General</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="UpdateXLFunctions.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
