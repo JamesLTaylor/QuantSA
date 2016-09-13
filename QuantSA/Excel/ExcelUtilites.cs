@@ -109,5 +109,17 @@ namespace QuantSA.Excel
             }
             return resultObj;
         }
+
+        /// <summary>
+        /// Rounds the values and puts them into an array of ints.  Needed in Excel since taking in ints can be problematic.
+        /// </summary>
+        /// <param name="doubleArray"></param>
+        /// <returns></returns>
+        public static int[] GetInts(double[] doubleArray)
+        {
+            int[] result = new int[doubleArray.Length];
+            for (int i = 0; i<doubleArray.Length; i++) { result[i] = (int)Math.Round(doubleArray[i]); }
+            return result;
+        }
     }
 }
