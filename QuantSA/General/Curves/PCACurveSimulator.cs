@@ -12,9 +12,10 @@ namespace QuantSA
     {
         private int[] tenorMonths;
         private double[,] components;
-        private double[] vols;
-        private Date anchorDate;
+        private double[] vols;        
         private double[] initialRates;
+
+        public Date anchorDate { get; private set; }
 
 
         /// <summary>
