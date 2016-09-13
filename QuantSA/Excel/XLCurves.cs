@@ -63,7 +63,8 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "")]double[] initialRates,
             [ExcelArgument(Description = "")]double[] tenorMonths,
             [ExcelArgument(Description = "")]double[,] components,
-            [ExcelArgument(Description = "")]double[] vols)
+            [ExcelArgument(Description = "")]double[] vols,
+            [ExcelArgument(Description = "")]double multiplier)
 
         {
             try
@@ -71,7 +72,7 @@ namespace QuantSA.Excel
                 int[] tenorMonthsInt = new int[tenorMonths.Length];
                 for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
                 PCACurveSimulator curveSimulator = new PCACurveSimulator(ExcelUtilites.GetDates(anchorDate), 
-                    initialRates, tenorMonthsInt, components, vols);
+                    initialRates, tenorMonthsInt, components, vols, multiplier);
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
             catch (Exception e)

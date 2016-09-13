@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.Distributions;
+using Accord.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace QuantSA
         private double[,] components;
         private double[] vols;        
         private double[] initialRates;
+        private double multiplier;
 
         public Date anchorDate { get; private set; }
 
@@ -24,7 +26,7 @@ namespace QuantSA
         /// <param name="tenorMonths"></param>
         /// <param name="components"></param>
         /// <param name="vols"></param>
-        public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, double[] vols)
+        public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, double[] vols, double multiplier)
         {
             //TODO: Check that these are all the right size.            
             this.anchorDate = anchorDate;
@@ -32,6 +34,7 @@ namespace QuantSA
             this.tenorMonths = tenorMonths;
             this.components = components;
             this.vols = vols;
+            this.multiplier = multiplier;
         }
 
 
@@ -43,7 +46,7 @@ namespace QuantSA
         public ICurve[] GetSimulatedCurves(Date[] simulationDates)
         {
             ICurve[] results = new ICurve[simulationDates.Length];
-            Normal dist = new Normal();
+            MathNet.Numerics.Distributions.Normal dist = new MathNet.Numerics.Distributions.Normal();
             Date previousDate = anchorDate;
 
             double[] previousRates = initialRates.Clone() as double[];
@@ -71,6 +74,13 @@ namespace QuantSA
                     double exponent = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
                     currentRates[i] = previousRates[i] * Math.Exp(exponent);
                 }
+
+                for (int i = 0; i< currentRates.Length; i++)
+                {
+                    currentRates[i] *= multiplier;
+                } 
+                //currentRates = currentRates.Multiply(multiplier);
+                //TODO: Use Accord multiplier
                 results[simCounter] = new DatesAndRates(curveDates, currentRates);
                 previousRates = currentRates.Clone() as double[];
                 previousDate = new Date(currentDate);
