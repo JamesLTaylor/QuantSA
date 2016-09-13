@@ -64,6 +64,11 @@ namespace QuantSA
             return d.value;
         }
 
+        public Date AddMonths(int months)
+        {
+            return new Date(date.AddMonths(months));
+        }
+
         /*static public implicit operator Date (double d)
         {
             return new Date(d);
