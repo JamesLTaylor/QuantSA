@@ -110,17 +110,31 @@ namespace QuantSA.Excel
             return resultObj;
         }
 
+        public static int GetInts(double doubleValue, string argName="")
+        {
+            double intValue = Math.Round(doubleValue);
+            if (Math.Abs(doubleValue - intValue) > 1e-10) { throw new ArgumentException(argName + " value must be a whole number"); }
+            return (int)intValue;
+        }
+
         /// <summary>
         /// Rounds the values and puts them into an array of ints.  Needed in Excel since taking in ints can be problematic.
         /// </summary>
         /// <param name="doubleArray"></param>
         /// <returns></returns>
-        public static int[] GetInts(double[] doubleArray)
+        public static int[] GetInts(double[] doubleArray, string argName = "")
         {
             int[] result = new int[doubleArray.Length];
-            for (int i = 0; i<doubleArray.Length; i++) { result[i] = (int)Math.Round(doubleArray[i]); }
+            for (int i = 0; i < doubleArray.Length; i++)
+            {
+                double intValue = Math.Round(doubleArray[i]);
+                if (Math.Abs(doubleArray[i] - intValue) > 1e-10) { throw new ArgumentException(argName + " values must be a whole numbers"); }
+                result[i] = (int)intValue;
+            }
             return result;
         }
+
+
 
         /// <summary>
         /// 
@@ -138,5 +152,6 @@ namespace QuantSA.Excel
             }
             throw new ArgumentException("Boolean arguments must be passed as 'TRUE' and 'FALSE'.");
         }
+
     }
 }

@@ -121,7 +121,7 @@ namespace QuantSA.Excel
         }
 
 
-        [QuantSAExcelFunction(Description = "Create a curve of dates and rates",
+        [QuantSAExcelFunction(Description = "Create a curve of dates and rates.",
         Name = "QSA.CreateDatesAndRatesCurve",
         Category = "QSA.General",
         IsHidden = false,
@@ -131,7 +131,8 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "The rates.")]double[] rates)
         {
             try {
-                DatesAndRates curve = new DatesAndRates(ExcelUtilites.GetDates(dates), rates);
+                var dDates = ExcelUtilites.GetDates(dates);
+                DatesAndRates curve = new DatesAndRates(dDates[0], dDates, rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {

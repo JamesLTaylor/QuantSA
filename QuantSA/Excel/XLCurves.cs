@@ -64,7 +64,7 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "")]double[] tenorMonths,
             [ExcelArgument(Description = "")]double[,] components,
             [ExcelArgument(Description = "")]double[] vols,
-            [ExcelArgument(Description = "")]double multiplier)
+            [ExcelArgument(Description = "All rates will be multiplied by this amount.  This should almost always be 1.0.")]double multiplier)
 
         {
             try

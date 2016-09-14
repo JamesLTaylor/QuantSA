@@ -43,6 +43,11 @@ namespace QuantSA
         {
         }
 
+        public override string ToString()
+        {
+            return date.ToString("dd MMM yyyy");
+        }
+
         /// <summary>
         /// Number of whole calendar days from d1 to d2
         /// </summary>

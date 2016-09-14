@@ -11,13 +11,38 @@ namespace QuantSA
     [Serializable]
     public class DatesAndRates : IFloatingRateSource, IDiscountingSource, ICurve
     {
+        private double anchorDateValue;
         private double[] dates;
         private double[] rates;
         
-        public DatesAndRates(Date[] dates, double[] rates)
+        /// <summary>
+        /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
+        /// </summary>
+        /// <param name="anchorDate">Date from which the curve applies.  Interpolation before this date won't work.</param>
+        /// <param name="dates">Must be sorted in increasing order.</param>
+        /// <param name="rates"></param>
+        /// <param name="maximumDate">The date beyond which interpolation will not be allowed.  If it is null or left out then the last date in dates will be used.</param>
+        public DatesAndRates(Date anchorDate, Date[] dates, double[] rates, Date maximumDate=null)
         {
-            this.dates = dates.GetValues();
-            this.rates = rates.Clone() as double[];            
+            for (int i = 1; i<dates.Length; i++)
+            {
+                if (dates[i].value <= dates[i - 1].value) throw new ArgumentException("Dates must be strictly increasing");
+            }
+            List<double> datesList = new List<double>(dates.GetValues());
+            List<double> ratesList = new List<double>(rates.Clone() as double[]);
+            if (dates[0]>anchorDate)
+            {
+                datesList.Insert(0, anchorDate.value);
+                ratesList.Insert(0, rates[0]);                            
+            }
+            if (maximumDate!=null)
+            {
+                datesList.Add(maximumDate);
+                ratesList.Add(rates.Last());
+            }
+            this.anchorDateValue = anchorDate;
+            this.dates = datesList.ToArray();
+            this.rates = ratesList.ToArray();
         }
 
         public double GetDF(Date date)
@@ -34,10 +59,12 @@ namespace QuantSA
         /// <summary>
         /// Interpolate the curve.
         /// </summary>
-        /// <param name="time">The time at which the rate is required.</param>
+        /// <param name="date">The date at which the rate is required.</param>
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
+            if (date.value < anchorDateValue) throw new ArgumentException("Interpolation date  (" + date.ToString() + ") is before the anchor date of the curve.(" + (new Date(anchorDateValue)).ToString() + ")");
+            if (date.value > dates.Last()) throw new ArgumentException("Interpolation date (" + date.ToString() + ") is after the last date on the curve.(" + (new Date(dates.Last())).ToString() +")");
             LinearSpline spline = LinearSpline.InterpolateSorted(dates, rates);
             return spline.Interpolate(date);            
         }

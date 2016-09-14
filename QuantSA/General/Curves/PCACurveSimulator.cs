@@ -28,13 +28,14 @@ namespace QuantSA
         /// <param name="vols"></param>
         public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, double[] vols, double multiplier)
         {
+            if (multiplier < 0.1 || multiplier > 10) throw new ArgumentException("multiplier should be close to 1.0 for the simulation to make sense");
             //TODO: Check that these are all the right size.            
             this.anchorDate = anchorDate;
             this.initialRates = initialRates;
             this.tenorMonths = tenorMonths;
             this.components = components;
             this.vols = vols;
-            this.multiplier = multiplier;
+            this.multiplier = multiplier;            
         }
 
 
@@ -75,13 +76,8 @@ namespace QuantSA
                     currentRates[i] = previousRates[i] * Math.Exp(exponent);
                 }
 
-                for (int i = 0; i< currentRates.Length; i++)
-                {
-                    currentRates[i] *= multiplier;
-                } 
-                //currentRates = currentRates.Multiply(multiplier);
-                //TODO: Use Accord multiplier
-                results[simCounter] = new DatesAndRates(curveDates, currentRates);
+                currentRates = currentRates.Multiply(multiplier);
+                results[simCounter] = new DatesAndRates(simulationDates[simCounter], curveDates, currentRates, simulationDates[simCounter].AddMonths(360));
                 previousRates = currentRates.Clone() as double[];
                 previousDate = new Date(currentDate);
             }
