@@ -17,7 +17,7 @@ topnav_dropdowns:
         - title: Github Wiki
           external_url: https://github.com/JamesLTaylor/QuantSA/wiki         
         
-    - title: Products
+    - title: Help Category
       folderitems:
         - title: QuantSA
           url: /home_introduction.html

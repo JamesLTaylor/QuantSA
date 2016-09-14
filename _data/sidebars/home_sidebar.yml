@@ -35,8 +35,25 @@ entries:
   - title: Market Data
     output: web
     folderitems:
-    - title: Swaps
-      url: /home_swaps.html 
-      output: web       
+    - title: General
+      url: /home_data_general.html 
+      output: web
+
+  - title: Developers
+    output: web
+    folderitems:
+    - title: Setup environment
+      url: /home_setup.html 
+      output: web      
+    - title: Writing tests
+      url: /home_tests.html 
+      output: web
+    - title: Editing documentation
+      url: /home_edit_docs.html 
+      output: web
+    - title: Writing plugins
+      url: /home_plugins.html 
+      output: web
+             
           
          
