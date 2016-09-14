@@ -121,5 +121,22 @@ namespace QuantSA.Excel
             for (int i = 0; i<doubleArray.Length; i++) { result[i] = (int)Math.Round(doubleArray[i]); }
             return result;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="boolObject"></param>
+        /// <returns></returns>
+        public static bool GetBool(object boolObject)
+        {
+            if (boolObject.ToString().ToUpper().Equals("TRUE"))
+            {
+                return true;
+            }
+            if (boolObject.ToString().ToUpper().Equals("FALSE")) { 
+                return false;
+            }
+            throw new ArgumentException("Boolean arguments must be passed as 'TRUE' and 'FALSE'.");
+        }
     }
 }
