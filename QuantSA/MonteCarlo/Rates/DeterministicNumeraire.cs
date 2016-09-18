@@ -5,41 +5,62 @@ using System.Text;
 using System.Threading.Tasks;
 using QuantSA;
 
-namespace MonteCarlo.Rates
+namespace MonteCarlo
 {
     //TODO: This class must be extended to also handle curves.
     public class DeterministicNumeraire : NumeraireSimulator
     {
-        private Currency ccy;
+        private Currency currency;
         private Date anchorDate;
         private SingleRate singleRate;
 
         /// <summary>
         /// Create the simplest <see cref="NumeraireSimulator"/>.  Uses a single continuous rate and does no simulation.
         /// </summary>
-        /// <param name="ccy">The currency of the bank numeraire</param>
+        /// <param name="currency">The currency of the bank numeraire</param>
         /// <param name="anchorDate">The time at which the numeraire will be 1.</param>
         /// <param name="rate">The single continuous rsate that will be used for all discounting.</param>
-        public DeterministicNumeraire(Currency ccy, Date anchorDate, double rate)
+        public DeterministicNumeraire(Currency currency, Date anchorDate, double rate)
         {
-            this.ccy = ccy;
+            this.currency = currency;
             this.anchorDate = anchorDate;
             singleRate = SingleRate.Continuous(rate, anchorDate);
         }
 
-        public override double At(Date valueDate)
+        public override double Numeraire(Date valueDate)
         {
             return 1 / singleRate.GetDF(valueDate);
         }
 
-        public override Currency GetCurrency()
+        public override Currency GetNumeraireCurrency()
         {
-            return ccy;
+            return currency;
         }
 
         public override void RunSimulation(int i)
         {
             // Do nothing.
+        }
+
+        
+        public override bool ProvidesIndex(MarketObservable index)
+        {
+            return false; // Provides no MarketObservables.
+        }
+
+        public override void SetRequiredTimes(MarketObservable index, List<Date> requiredDates)
+        {
+            // Do nothing, it has no state
+        }
+
+        public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
+        {
+            throw new NotImplementedException("This method should be never be called.  The simulator provides no MarketObservables.");
+        }
+
+        public override void Reset()
+        {
+            // Do nothing, it has no state.
         }
     }
 }

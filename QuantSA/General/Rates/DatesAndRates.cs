@@ -8,9 +8,14 @@ using System.Threading.Tasks;
 
 namespace QuantSA
 {
-    [Serializable]
-    public class DatesAndRates : IFloatingRateSource, IDiscountingSource, ICurve
+    /// <summary>
+    /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 
+    /// discount factors or interpolated directly.
+    /// </summary>
+    [Serializable]    
+    public class DatesAndRates : IDiscountingSource, ICurve
     {
+        //TODO: Separate this class into one that discounts and one that interpolates.  It could be abused/misused in its current form
         private double anchorDateValue;
         private double[] dates;
         private double[] rates;
@@ -45,14 +50,16 @@ namespace QuantSA
             this.rates = ratesList.ToArray();
         }
 
+        /// <summary>
+        /// Get a discount factor assuming the rates are continuosly compounded and the daycount in actual/365
+        /// </summary>
+        /// <param name="date">The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to this date.</param>
+        /// <returns></returns>
         public double GetDF(Date date)
         {
-            throw new NotImplementedException();
-        }
-
-        public double GetForwardRate(Date date)
-        {
-            throw new NotImplementedException();
+            double rate = InterpAtDate(date);
+            double df = Math.Exp(-rate * (date - anchorDateValue) / 365.0);
+            return df;
         }
 
 

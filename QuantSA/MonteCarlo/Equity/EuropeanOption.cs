@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonteCarlo.Equity
+namespace MonteCarlo
 {
     public class EuropeanOption : Product
     {
@@ -13,39 +13,51 @@ namespace MonteCarlo.Equity
         private double fwdPrice;
         private Share share;
         private double strike;
+        private Date valueDate;
 
         public EuropeanOption(string shareCode, double strike, Date exerciseDate)
         {
-            share = new Share(shareCode);
+            share = new Share(shareCode, Currency.ZAR);
             this.strike = strike;
             this.exerciseDate = exerciseDate;
         }
 
-        public override double[,] GetCFs()
+        public override List<Cashflow> GetCFs()
         {
-            return new double[,] { { exerciseDate, Math.Max(0, fwdPrice-strike) } };
+            double amount = Math.Max(0, fwdPrice - strike);
+            return new List<Cashflow>() {new Cashflow(exerciseDate, amount, share.currency) };
         }
 
-        public override IEnumerable<MarketObservable> GetRequiredIndices()
+        public override List<MarketObservable> GetRequiredIndices()
         {
             return new List<MarketObservable> { share };
         }
 
-        public override int[] GetRequiredTimes(Date valueDate, MarketObservable index)
+        public override List<Date> GetRequiredIndexDates(MarketObservable index)
         {
-            if (valueDate.date <= exerciseDate.date)
+            if (valueDate <= exerciseDate)
             {
-                return new int[] { exerciseDate.value };
+                return new List<Date> {exerciseDate };
             }
             else
             {
-                return null;
+                return new List<Date>();
             }
         }
 
-        public override void SetIndices(MarketObservable index, double[] indices)
+        public override void SetIndexValues(MarketObservable index, double[] indices)
         {
             fwdPrice = indices[0];
+        }
+
+        public override void SetValueDate(Date valueDate)
+        {
+            this.valueDate = valueDate;
+        }
+
+        public override void Reset()
+        {
+            // Nothing to reset.
         }
     }
 }

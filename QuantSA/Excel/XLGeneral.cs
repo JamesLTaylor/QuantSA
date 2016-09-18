@@ -71,6 +71,41 @@ namespace QuantSA.Excel
             }
         }
 
+        [QuantSAExcelFunction(Description = "Create a C# representation of data in a spreadsheet.",
+        Name = "QSA.GetCSArray",
+        Category = "QSA.Developer",
+        IsHidden = false)]
+        public static object[,] GetCSArray([ExcelArgument(Description = "The block of values you want to use in C#.")]object[,] data,
+            double decimalPlaces)
+        {
+            try
+            {
+                int iDecimalPlaces = (int)decimalPlaces;
+                object[,] result = new object[data.GetLength(0), 1];
+                StringBuilder sb;
+                for (int i = 0; i<data.GetLength(0); i++)
+                {
+                    sb = new StringBuilder();
+                    sb.Append((i == 0) ? "{{" : "{");                    
+                    for (int j = 0; j < data.GetLength(1); j++)
+                    {
+                        if (j > 0) sb.Append(",");
+                        double value = (double)data[i, j];
+                        sb.Append(value.ToString($"F{iDecimalPlaces}"));                        
+                    }
+                    sb.Append((i == data.GetLength(0)-1) ? "}}" : "},");
+                    result[i, 0] = sb.ToString();
+                }
+                return result;
+                
+            }
+            catch (Exception e)
+            {
+                return new object[,] { { e.Message } };
+            }
+        }
+
+
 
         [QuantSAExcelFunction(Description = "Get a list of available results in the results object.",
         Name = "QSA.GetAvailableResults",

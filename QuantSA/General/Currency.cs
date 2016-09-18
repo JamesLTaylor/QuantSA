@@ -10,7 +10,7 @@ namespace QuantSA
     {
         private string code;
 
-        public Currency(string code)
+        private Currency(string code)
         { this.code = code.ToUpper(); }
 
         /// <summary>
@@ -30,6 +30,10 @@ namespace QuantSA
         {
             return ToString().GetHashCode();
         }
+
+        #region Stored Currencies
+        public static Currency ZAR = new Currency("ZAR");
+        #endregion
 
     }
 }

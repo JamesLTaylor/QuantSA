@@ -1,4 +1,6 @@
-﻿using System;
+﻿using QuantSA;
+using System;
+using System.Collections.Generic;
 
 namespace MonteCarlo
 {
@@ -18,13 +20,13 @@ namespace MonteCarlo
         /// </summary>
         /// <param name="index"></param>
         /// <param name="requiredTimes"></param>
-        public abstract void SetRequiredTimes(MarketObservable index, int[] requiredTimes);
+        public abstract void SetRequiredTimes(MarketObservable index, List<Date> requiredDates);
 
         /// <summary>
         /// Run the simulation and internally store the indices that will be required.  Should only be called 
-        /// after <see cref="SetRequiredTimes(MarketObservable, double[])"/>
+        /// after <see cref="SetRequiredTimes(MarketObservable, List{Date})"/>
         /// </summary>
-        /// <param name="simNumber">The simulation number.  Required if any variance reductions technigues are used.</param>
+        /// <param name="simNumber">The simulation number.  May be required for example if any variance reductions technigues are used.</param>
         public abstract void RunSimulation(int simNumber);
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace MonteCarlo
         /// <param name="index"></param>
         /// <param name="requiredTimes"></param>
         /// <returns></returns>
-        public abstract double[] GetIndices(MarketObservable index, int[] requiredTimes);
+        public abstract double[] GetIndices(MarketObservable index, List<Date> requiredDates);
 
         /// <summary>
         /// Clear any stored data so that the object can be reused.

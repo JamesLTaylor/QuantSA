@@ -9,15 +9,24 @@ namespace MonteCarlo
 {
     public class Coordinator
     {
+        private int N;
         private NumeraireSimulator numeraire;
         private List<Product> portfolio;
         private List<Simulator> simulators;
 
-        public Coordinator(NumeraireSimulator numeraire, List<Product> portfolio, List<Simulator> simulators)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numeraire">A special simulator that also includes the numeraire. There is only one of these.</param>
+        /// <param name="portfolio"></param>
+        /// <param name="simulators">Optionally any extra simulators independent of the first.  Can be an empty list.</param>
+        public Coordinator(NumeraireSimulator numeraire, List<Product> portfolio, List<Simulator> simulators, int N)
         {
             this.numeraire = numeraire;
             this.portfolio = portfolio;
             this.simulators = simulators;
+            this.simulators.Insert(0, numeraire);
+            this.N = N;
         }
 
         public double Value(Date valueDate)
@@ -51,22 +60,21 @@ namespace MonteCarlo
             {                
                 foreach (KeyValuePair < MarketObservable, Simulator> entry in indexSources[product])
                 {
-                    int[] requiredTimes = product.GetRequiredTimes(valueDate, entry.Key);
+                    product.SetValueDate(valueDate);
+                    List<Date> requiredTimes = product.GetRequiredIndexDates(entry.Key);
                     entry.Value.SetRequiredTimes(entry.Key, requiredTimes);
                 }
             }
 
             // Run the simulation
-            Currency valueCurrency = numeraire.GetCurrency();            
-            int N = 100000;
+            Currency valueCurrency = numeraire.GetNumeraireCurrency();            
             // TODO: Rather store value for each product separately
             double[] pathwiseValues = new double[N];
             double totalValue = 0;
             for (int i=0; i< N; i++)
             {
                 pathwiseValues[i] = 0;
-                numeraire.RunSimulation(i);
-                double numeraireAtValue = numeraire.At(valueDate);
+                double numeraireAtValue = numeraire.Numeraire(valueDate);
                 foreach (Simulator simulator in simulators)
                 {
                     simulator.RunSimulation(i);
@@ -76,15 +84,21 @@ namespace MonteCarlo
                     foreach (MarketObservable index in product.GetRequiredIndices())
                     {
                         Simulator simulator = indexSources[product][index];
-                        int[] requiredTimes = product.GetRequiredTimes(valueDate, index);
-                        double[] indices = simulator.GetIndices(index, requiredTimes);
-                        product.SetIndices(index, indices);                        
+                        List<Date> requiredDates = product.GetRequiredIndexDates(index);
+                        double[] indices = simulator.GetIndices(index, requiredDates);
+                        product.SetIndexValues(index, indices);                        
                     }
-                    // TODO: Generate cashflows per currency and then convert before using the numeraire for discounting
-                    double[,] timesAndCFS = product.GetCFs();
-                    for (int cfCounter = 0; cfCounter<timesAndCFS.GetLength(0); cfCounter++)
+                    List<Cashflow> timesAndCFS = product.GetCFs();
+                    foreach (Cashflow cf in timesAndCFS)
                     {
-                        pathwiseValues[i] += timesAndCFS[cfCounter, 1] * numeraireAtValue / numeraire.At(new Date(timesAndCFS[cfCounter, 0]));
+                        if (cf.currency.Equals(valueCurrency))
+                        {
+                            pathwiseValues[i] += cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                        }
+                        else
+                        {
+                            throw new Exception("No simulator to convert from " + cf.currency.ToString() + " to the valuation currency: " + valueCurrency.ToString());
+                        }
                     }
                 }
                 totalValue += pathwiseValues[i];

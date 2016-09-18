@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonteCarlo.Equity
+namespace MonteCarlo
 {
     public class SimpleBlackEquity : Simulator
     {
         private Date anchorDate;
         private double divYield;
-        private int[] allRequiredTimes;
+        private List<Date> allRequiredDates;
         private double riskfreeRate;
         private Share share;
         private Dictionary<int, double> simulation;
@@ -23,17 +23,17 @@ namespace MonteCarlo.Equity
         public SimpleBlackEquity(Date anchorDate, string shareCode, double spotPrice, double vol, double riskfreeRate, double divYield)
         {
             this.anchorDate = anchorDate;
-            share = new Share(shareCode);
+            share = new Share(shareCode, Currency.ZAR);
             this.spotPrice = spotPrice;
             this.vol = vol;
             this.riskfreeRate = riskfreeRate;
             this.divYield = divYield;
         }
 
-        public override double[] GetIndices(MarketObservable index, int[] requiredTimes)
+        public override double[] GetIndices(MarketObservable index, List<Date> requiredTimes)
         {
-            double[] result = new double[requiredTimes.Length];
-            for (int i = 0; i<requiredTimes.Length; i++)
+            double[] result = new double[requiredTimes.Count];
+            for (int i = 0; i<requiredTimes.Count; i++)
             {
                 result[i] = simulation[requiredTimes[i]];
             }
@@ -48,7 +48,7 @@ namespace MonteCarlo.Equity
 
         public override void Reset()
         {
-            allRequiredTimes = null;
+            allRequiredDates = null;
         }
 
 
@@ -58,21 +58,21 @@ namespace MonteCarlo.Equity
             simulation = new Dictionary<int, double>();
             double price = spotPrice;
 
-            for (int timeCounter = 0; timeCounter< allRequiredTimes.Length; timeCounter++)
+            for (int timeCounter = 0; timeCounter< allRequiredDates.Count; timeCounter++)
             {
-                double dt = timeCounter > 0 ? allRequiredTimes[timeCounter] - allRequiredTimes[timeCounter - 1] : allRequiredTimes[timeCounter] - anchorDate.value;
+                double dt = timeCounter > 0 ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1] : allRequiredDates[timeCounter] - anchorDate.value;
                 dt = dt / 365.0;
                 double sdt = Math.Sqrt(dt);
                 price = price * Math.Exp((riskfreeRate - divYield - 0.5 * vol * vol) * dt + vol * sdt * dist.Sample());
-                simulation[allRequiredTimes[timeCounter]] = price;
+                simulation[allRequiredDates[timeCounter]] = price;
             }
             
         }
 
-        public override void SetRequiredTimes(MarketObservable index, int[] requiredTimes)
+        public override void SetRequiredTimes(MarketObservable index, List<Date> requiredDates)
         {
-            this.allRequiredTimes = requiredTimes;
-            Array.Sort(this.allRequiredTimes);
+            allRequiredDates = requiredDates;
+            allRequiredDates.Sort();            
         }
     }
 }

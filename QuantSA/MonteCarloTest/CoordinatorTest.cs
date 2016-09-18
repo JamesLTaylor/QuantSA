@@ -1,10 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonteCarlo.Equity;
 using MonteCarlo;
 using System.Collections.Generic;
 using QuantSA;
-using MonteCarlo.Rates;
 
 namespace MonteCarloTest
 {
@@ -25,8 +23,8 @@ namespace MonteCarloTest
             double vol = 0.22;
             double spotPrice = 100.0;
             Simulator sim = new SimpleBlackEquity(valueDate, shareCode, spotPrice, vol, riskfreeRate, divYield);
-            NumeraireSimulator numeraire = new DeterministicNumeraire(new Currency("ZAR"), valueDate, riskfreeRate);
-            Coordinator coordinator = new Coordinator(numeraire, new List<Product> { p }, new List<Simulator> { sim });
+            NumeraireSimulator numeraire = new DeterministicNumeraire(Currency.ZAR, valueDate, riskfreeRate);
+            Coordinator coordinator = new Coordinator(numeraire, new List<Product> { p }, new List<Simulator> { sim }, 10000);
             double value = coordinator.Value(valueDate);
             double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice,
                                                     vol, riskfreeRate, divYield);

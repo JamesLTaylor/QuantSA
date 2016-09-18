@@ -69,6 +69,11 @@ namespace QuantSA
             return d.value;
         }
 
+        /// <summary>
+        /// Returns a new date <paramref name="months"/> after the current date.  Leaves the date unchanged. 
+        /// </summary>
+        /// <param name="months"></param>
+        /// <returns></returns>
         public Date AddMonths(int months)
         {
             return new Date(date.AddMonths(months));

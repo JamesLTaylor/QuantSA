@@ -2,8 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA;
 using MonteCarlo;
-using MonteCarlo.Equity;
-using MonteCarlo.Rates;
 using System.Diagnostics;
 
 namespace MonteCarloTest
@@ -29,11 +27,11 @@ namespace MonteCarloTest
             double vol = 0.22;
             double spotPrice = 100.0;
             Simulator sim = new SimpleBlackEquity(valueDate, shareCode, spotPrice, vol, riskfreeRate, divYield);
-            NumeraireSimulator numeraire = new DeterministicNumeraire(new Currency("ZAR"), valueDate, riskfreeRate);
+            NumeraireSimulator numeraire = new DeterministicNumeraire(Currency.ZAR, valueDate, riskfreeRate);
 
             // Value the runtime product
             Coordinator coordinator;
-            coordinator = new Coordinator(numeraire, new List<Product> { runtimeProduct }, new List<Simulator> { sim });
+            coordinator = new Coordinator(numeraire, new List<Product> { runtimeProduct }, new List<Simulator> { sim }, 10000);
             watch = Stopwatch.StartNew();
             double valueRuntime = coordinator.Value(valueDate);
             watch.Stop();
@@ -45,7 +43,7 @@ namespace MonteCarloTest
             Product staticProduct = new EuropeanOption(shareCode, strike, exerciseDate);
 
             // Value the static product
-            coordinator = new Coordinator(numeraire, new List<Product> { staticProduct }, new List<Simulator> { sim });
+            coordinator = new Coordinator(numeraire, new List<Product> { staticProduct }, new List<Simulator> { sim }, 10000);
             watch = Stopwatch.StartNew();
             double valueStatic = coordinator.Value(valueDate);
             watch.Stop();
