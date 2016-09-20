@@ -9,8 +9,10 @@ public class Ribbon : ExcelRibbon
 {
     public override string GetCustomUI(string uiName)
     {
+        // One can find the standard available button iamges at http://soltechs.net/customui/imageMso01.asp?gal=1&count=no
         string commonGroup = @"<group id='groupCommon' label='QuantSA'>
-            <button id='btnAbout' label='About' imageMso='PropertySheet' size='large' onAction='RunTagMacro' tag='QSA.ShowAbout' />
+            <button id='btnAbout' label='About' imageMso='PropertySheet' size='large' onAction='RunTagMacro' tag='QSA.ShowAbout' />            
+            <button id='btnLatestError' label='Latest Error' size='large' onAction='RunTagMacro' tag='QSA.LatestError' />
             </group >";
         string customUIStart = @"<customUI xmlns='http://schemas.microsoft.com/office/2006/01/customui' loadImage='LoadImage'>
                 <ribbon>

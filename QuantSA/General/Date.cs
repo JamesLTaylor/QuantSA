@@ -5,6 +5,11 @@ namespace QuantSA
     /// <summary>
     /// Dates should always be thought of as whole numbers in the QuantSA library.  They are treated as doubles
     /// sometimes to make calculations easier but this should just be a double representation of an int value.
+    /// 
+    /// It is also convenient to test for equality of dates when one is only considering days.
+    /// 
+    /// Operational requirements such as interacting with exchanges and other "real world" systems and events may
+    /// require a more precise definition of dates but this is outside the scope of this valuation library.
     /// </summary>
     /// <remarks>
     /// The choice of Epoch for this class is completely arbitrary and exists only to make sure that calculations 
@@ -12,7 +17,7 @@ namespace QuantSA
     /// make new <see cref="DateTime"/>s.
     /// </remarks>
     [Serializable]
-    public class Date
+    public class Date : IComparable<Date>
     {
         private static DateTime Epoch = new DateTime(2000,1,1);
         public DateTime date { get; private set; }
@@ -78,6 +83,52 @@ namespace QuantSA
         {
             return new Date(date.AddMonths(months));
         }
+
+        /// <summary>
+        /// Return a new date with the <paramref name="tenor"/> added to it.
+        /// </summary>
+        /// <param name="tenor">The amount of time to add to the date.</param>
+        /// <returns></returns>
+        public Date AddTenor(Tenor tenor)
+        {
+            DateTime newDate = date.AddYears(tenor.years);
+            newDate = newDate.AddMonths(tenor.months);
+            newDate = newDate.AddDays(tenor.weeks * 7 + tenor.days);
+            return new Date(newDate);
+        }
+
+        #region Comparisons
+        public int CompareTo(Date compareDate)
+        {
+            return value.CompareTo(compareDate.value);
+        }
+        public static bool operator ==(Date left, Date right)
+        {
+            if ((object)left == null && (object)right == null) return true;
+            if ((object)left != null && (object)right == null) return false;
+            if ((object)left == null && (object)right != null) return false;
+            return (left.GetHashCode() == right.GetHashCode());
+        }
+        public static bool operator !=(Date left, Date right)
+        {
+            return !(left == right);
+        }
+        //TODO: Handle nulls
+        public static bool operator <(Date left, Date right) { return left.value < right.value; }
+        public static bool operator >(Date left, Date right) { return left.value > right.value; }
+        public static bool operator <=(Date left, Date right) { return left.value <= right.value; }
+        public static bool operator >=(Date left, Date right) { return left.value >= right.value; }
+        public override bool Equals(object obj)
+        {
+            Date d = obj as Date;
+            if (d == null) return false;
+            return value == d.value;
+        }
+        public override int GetHashCode()
+        {
+            return value;
+        }
+        #endregion
 
         /*static public implicit operator Date (double d)
         {

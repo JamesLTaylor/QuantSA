@@ -17,7 +17,9 @@ namespace QuantSA
     public class ResultStore : IProvidesResultStore
     {
         private Dictionary<string, double[,]> data;
-        //TODO: Possibly add string and datetime dictionaries
+        private Dictionary<string, Date[,]> dataDates;
+        private Dictionary<string, string[,]> dataStrings;
+        
 
         /// <summary>
         /// Create an empty result store
@@ -25,13 +27,25 @@ namespace QuantSA
         public ResultStore()
         {
             data = new Dictionary<string, double[,]>();
+            dataDates = new Dictionary<string, Date[,]>();
+            dataStrings = new Dictionary<string, string[,]>();
+        }
+
+        /// <summary>
+        /// Add a string the ResultStore
+        /// </summary>
+        /// <param name="name">The name used by users to retrieve this piece of information</param>
+        /// <param name="result">A string value</param>
+        public void Add(string name, string result)
+        {
+            dataStrings[name] = new string[,] { { result } };
         }
 
         /// <summary>
         /// Add a scalar value to the ResultStore
         /// </summary>
         /// <param name="name">The name used by users to retrieve this piece of information</param>
-        /// <param name="result">A scalar value, such as a string, int or double</param>
+        /// <param name="result">A scalar value.</param>
         public void Add(string name, double result)
         {
             data[name] = new double[,] { { result } };
@@ -81,9 +95,11 @@ namespace QuantSA
         /// <returns></returns>
         public string[] GetNames()
         {
-            string[] names = data.Keys.ToArray<string>();
-            Array.Sort<string>(names);
-            return names;
+            List<string> nameList = data.Keys.ToList();
+            nameList.AddRange(dataDates.Keys);
+            nameList.AddRange(dataStrings.Keys);
+            nameList.Sort();
+            return nameList.ToArray<string>();
         }
 
         /// <summary>
@@ -101,12 +117,93 @@ namespace QuantSA
         }
 
         /// <summary>
+        /// Get the Date results stored with the provided name.
+        /// </summary>
+        /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.  
+        /// Use <see cref="IsDate(string)"/> to check if the result is of type Date.        /// 
+        /// <returns></returns>
+        public Date[,] GetDates(string name)
+        {
+            if (dataDates.ContainsKey(name))
+            {
+                return dataDates[name];
+            }
+            else throw new ArgumentException(name + " does not exist in this store.  Use GetNames to check all available names.");
+        }
+
+        /// <summary>
+        /// Get the Date results stored with the provided name.
+        /// </summary>
+        /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.  
+        /// Use <see cref="IsDate(string)"/> to check if the result is of type Date.        /// 
+        /// <returns></returns>
+        public string[,] GetStrings(string name)
+        {
+            if (dataStrings.ContainsKey(name))
+            {
+                return dataStrings[name];
+            }
+            else throw new ArgumentException(name + " does not exist in this store.  Use GetNames to check all available names.");
+        }
+
+        /// <summary>
+        /// Check if the required result set consists of <see cref="Date"/>s.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsDate(string name)
+        {
+            if (dataDates.ContainsKey(name)) return true;
+            else if (data.ContainsKey(name)) return false;
+            else if (dataStrings.ContainsKey(name)) return false;
+            else throw new ArgumentException(name + " does not exist in this store.  Use GetNames to check all available names.");
+        }
+
+        /// <summary>
+        /// Check if the required result set consists of strings.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsString(string name)
+        {
+            if (dataStrings.ContainsKey(name)) return true;
+            else if (data.ContainsKey(name)) return false;
+            else if (dataDates.ContainsKey(name)) return false;
+            else throw new ArgumentException(name + " does not exist in this store.  Use GetNames to check all available names.");
+        }
+
+
+
+        /// <summary>
         /// Returns itself.
         /// </summary>
         /// <returns></returns>
         public ResultStore GetResultStore()
         {
             return this;
+        }
+
+
+        public void Add(string name, Date[] result, bool column = true)
+        {
+            if (column)
+            {
+                Date[,] fullSizeResult = new Date[result.Length, 1];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    fullSizeResult[i, 0] = result[i];
+                }
+                dataDates[name] = fullSizeResult;
+            }
+            else
+            {
+                Date[,] fullSizeResult = new Date[1, result.Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    fullSizeResult[0, i] = result[i];
+                }
+                dataDates[name] = fullSizeResult;
+            }
         }
     }
 }

@@ -66,6 +66,10 @@ namespace MonteCarlo
                 }
             }
 
+            // Prepare all the simulators
+            foreach (Simulator simulator in simulators)
+            { simulator.Prepare(); }
+
             // Run the simulation
             Currency valueCurrency = numeraire.GetNumeraireCurrency();            
             // TODO: Rather store value for each product separately

@@ -27,6 +27,11 @@ namespace QuantSA
             return new Tenor(0, 0, months, 0);
         }
 
+        public static Tenor Days(int days)
+        {
+            return new Tenor(days, 0, 0, 0);
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

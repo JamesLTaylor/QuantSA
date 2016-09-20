@@ -17,6 +17,7 @@ namespace QuantSA
     {
         //TODO: Separate this class into one that discounts and one that interpolates.  It could be abused/misused in its current form
         private double anchorDateValue;
+        private Date anchorDate;
         private double[] dates;
         private double[] rates;
         
@@ -29,6 +30,7 @@ namespace QuantSA
         /// <param name="maximumDate">The date beyond which interpolation will not be allowed.  If it is null or left out then the last date in dates will be used.</param>
         public DatesAndRates(Date anchorDate, Date[] dates, double[] rates, Date maximumDate=null)
         {
+            this.anchorDate = anchorDate;
             for (int i = 1; i<dates.Length; i++)
             {
                 if (dates[i].value <= dates[i - 1].value) throw new ArgumentException("Dates must be strictly increasing");
@@ -48,6 +50,11 @@ namespace QuantSA
             this.anchorDateValue = anchorDate;
             this.dates = datesList.ToArray();
             this.rates = ratesList.ToArray();
+        }
+
+        public Date getAnchorDate()
+        {
+            return anchorDate;
         }
 
         /// <summary>

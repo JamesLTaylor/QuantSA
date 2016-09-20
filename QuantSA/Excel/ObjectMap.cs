@@ -59,12 +59,19 @@ namespace QuantSA.Excel
             return uniqueID;
         }
 
+        public T GetObjectFromID<T>(string objectName)
+        {
+            object obj = ObjectMap.Instance.GetObjectFromID(objectName);
+            if (obj is T) { return (T)obj; }
+            else throw new ArgumentException(objectName + " is not of required type: " + typeof(T).ToString());            
+        }
+
         /// <summary>
         /// Get the object given the full id.  Strips everything to right of first dot and uses remaining as short name.
         /// </summary>
         /// <param name="uniqueID">Full id as returned by a call to <see cref="AddObject"/></param>
         /// <returns></returns>
-        public object GetObjectFromID(string uniqueID)
+        private object GetObjectFromID(string uniqueID)
         {
             string[] nameParts = uniqueID.Split('.');            
             return GetObjectFromName(nameParts[0]);
@@ -75,7 +82,7 @@ namespace QuantSA.Excel
         /// </summary>
         /// <param name="name">The name used to add the object to the map.</param>
         /// <returns></returns>
-        public object GetObjectFromName(string name)
+        private object GetObjectFromName(string name)
         {
             if (!namesAndObjects.ContainsKey(name))
             {

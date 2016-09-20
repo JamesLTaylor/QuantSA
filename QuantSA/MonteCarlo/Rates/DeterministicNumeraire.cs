@@ -62,5 +62,10 @@ namespace MonteCarlo
         {
             // Do nothing, it has no state.
         }
+
+        public override void Prepare()
+        {
+            // Do nothing, it has no state.
+        }
     }
 }

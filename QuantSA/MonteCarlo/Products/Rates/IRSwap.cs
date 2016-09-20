@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuantSA
 {
-    public class IRSwap : Product
+    public class IRSwap : Product, IProvidesResultStore
     {
         // Product specs
         double payFixed; // -1 for payFixed, 1 for receive fixed
@@ -145,6 +145,21 @@ namespace QuantSA
                 }
             }
             return cfs;
+        }
+
+        public ResultStore GetResultStore()
+        {
+            ResultStore swapDetails = new ResultStore();
+            swapDetails.Add("payFixed", payFixed);
+            swapDetails.Add("indexDates", indexDates);
+            swapDetails.Add("payDates", payDates);
+            swapDetails.Add("index", index.ToString());
+            swapDetails.Add("spreads", spreads);
+            swapDetails.Add("accrualFractions", accrualFractions);
+            swapDetails.Add("notionals", notionals);
+            swapDetails.Add("fixedRate", fixedRate);
+            
+            return swapDetails;
         }
     }
 }

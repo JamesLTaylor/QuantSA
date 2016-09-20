@@ -9,11 +9,40 @@ using QuantSA;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using Excel;
 
 namespace QuantSA.Excel
 {
     public class XLGeneral
     {
+        [ExcelFunction(Description = "Adds a serialized object onto the object map.  Used by plugins to interact with the core library.",
+        Name = "QSA.LatestError",
+        Category = "QSA.General",
+        IsMacroType = true,
+        IsHidden = true)]
+        public static object LatestError(string name, string serializedObject, int deserialize)
+        {
+            try {
+                if (ExcelUtilities.latestException == null)
+                {
+                    LatestError latestError = new LatestError("No errors have occured.");
+                    latestError.ShowDialog();
+
+                }
+                else
+                {
+                    LatestError latestError = new LatestError(ExcelUtilities.latestException);
+                    latestError.ShowDialog();
+                }
+                return "";
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);
+            }
+        }
+        
+
         [ExcelFunction(Description = "Adds a serialized object onto the object map.  Used by plugins to interact with the core library.",
         Name = "QSA.PutOnMap",
         Category = "QSA.General",
@@ -51,7 +80,7 @@ namespace QuantSA.Excel
             {
                 if (deserialize == 1)
                 {
-                    object obj = ObjectMap.Instance.GetObjectFromID(objectName);
+                    object obj = ObjectMap.Instance.GetObjectFromID<object>(objectName);
                     IFormatter formatter = new BinaryFormatter();
                     MemoryStream stream = new MemoryStream();
                     new BinaryFormatter().Serialize(stream, obj);
@@ -61,7 +90,7 @@ namespace QuantSA.Excel
                 }
                 else
                 {
-                    string serializedObject = ObjectMap.Instance.GetObjectFromID(objectName) as string;
+                    string serializedObject = ObjectMap.Instance.GetObjectFromID<string>(objectName);
                     return serializedObject;
                 }
             }
@@ -116,8 +145,7 @@ namespace QuantSA.Excel
         {
             try
             {
-                IProvidesResultStore resultStore = ObjectMap.Instance.GetObjectFromID(objectName) as IProvidesResultStore;
-                if (resultStore == null) throw new ArgumentException("The provided object does not have a results object.");
+                IProvidesResultStore resultStore = ObjectMap.Instance.GetObjectFromID<IProvidesResultStore>(objectName);                
                 string[] temp = resultStore.GetResultStore().GetNames();
                 object[,] column = new object[temp.Length, 1];
                 for (int i = 0; i< temp.Length; i++)
@@ -142,16 +170,25 @@ namespace QuantSA.Excel
         {
             try
             {
-                IProvidesResultStore resultStore = ObjectMap.Instance.GetObjectFromID(objectName) as IProvidesResultStore;
+                IProvidesResultStore resultStore = ObjectMap.Instance.GetObjectFromID<IProvidesResultStore>(objectName);
                 if (resultStore == null) throw new ArgumentException("The provided object is not a results object.");
-                double[,] dArray = resultStore.GetResultStore().Get(resultName);
-                object[,] oArray = new object[dArray.GetLength(0), dArray.GetLength(1)];
-                Array.Copy(dArray, oArray, dArray.Length);
-                return oArray;
+                if (resultStore.GetResultStore().IsDate(resultName))
+                {
+                    Date[,] dates = resultStore.GetResultStore().GetDates(resultName);
+                    return ExcelUtilities.GetObjects(dates);
+                }
+                else if (resultStore.GetResultStore().IsString(resultName))
+                {
+                    return ExcelUtilities.GetObjects(resultStore.GetResultStore().GetStrings(resultName));
+                }
+                else
+                {
+                    return ExcelUtilities.GetObjects(resultStore.GetResultStore().Get(resultName));
+                }
             }
             catch (Exception e)
             {
-                return new object[,] { { e.Message } };
+                return ExcelUtilities.Error2D(e);                
             }
         }
 
@@ -166,7 +203,7 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "The rates.")]double[] rates)
         {
             try {
-                var dDates = ExcelUtilites.GetDates(dates);
+                var dDates = ExcelUtilities.GetDates(dates);
                 DatesAndRates curve = new DatesAndRates(dDates[0], dDates, rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)

@@ -22,6 +22,11 @@ namespace QuantSA
             return new SingleRate(rate, anchorDate);
         }
 
+        public Date getAnchorDate()
+        {
+            return anchorDate;
+        }
+
         public double GetDF(Date date)
         {
             if (date.date < anchorDate.date) throw new IndexOutOfRangeException("Discount factors are only defined at dates on or after the anchor date");

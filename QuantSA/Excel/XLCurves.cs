@@ -17,7 +17,7 @@ namespace QuantSA.Excel
                 [ExcelArgument(Description = "Rates to be fitted")]Double[] rates)
         {
             try {
-                NelsonSiegel curve = NelsonSiegel.Fit(ExcelUtilites.GetDates(anchorDate), ExcelUtilites.GetDates(dates), rates);
+                NelsonSiegel curve = NelsonSiegel.Fit(ExcelUtilities.GetDates(anchorDate), ExcelUtilities.GetDates(dates), rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {
@@ -34,8 +34,8 @@ namespace QuantSA.Excel
         [ExcelArgument(Description = "The dates at which interpolated rates are required.")]double[,] dates)
         {
             try {
-                ICurve curve = (ICurve)ObjectMap.Instance.GetObjectFromID(name);
-                Date[,] dtDates = ExcelUtilites.GetDates(dates);
+                ICurve curve = ObjectMap.Instance.GetObjectFromID<ICurve>(name);
+                Date[,] dtDates = ExcelUtilities.GetDates(dates);
                 object[,] result = new object[dtDates.GetLength(0), dtDates.GetLength(1)];
 
                 for (int row = 0; row < dtDates.GetLength(0); row += 1)
@@ -48,7 +48,7 @@ namespace QuantSA.Excel
                 return result;
             } catch (Exception e)
             {
-                return ExcelUtilites.Error2D(e);
+                return ExcelUtilities.Error2D(e);
             }
         }
 
@@ -71,13 +71,13 @@ namespace QuantSA.Excel
             {
                 int[] tenorMonthsInt = new int[tenorMonths.Length];
                 for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
-                PCACurveSimulator curveSimulator = new PCACurveSimulator(ExcelUtilites.GetDates(anchorDate), 
+                PCACurveSimulator curveSimulator = new PCACurveSimulator(ExcelUtilities.GetDates(anchorDate), 
                     initialRates, tenorMonthsInt, components, vols, multiplier);
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
             catch (Exception e)
             {
-                return ExcelUtilites.Error2D(e);                
+                return ExcelUtilities.Error2D(e);                
             }
         }
 
@@ -98,14 +98,14 @@ namespace QuantSA.Excel
                 for (int i = 0; i < requiredTenorMonths.Length; i++) { tenorMonthsInt[i] = (int)requiredTenorMonths[i]; }
 
 
-                PCACurveSimulator curveSimulator = (PCACurveSimulator)ObjectMap.Instance.GetObjectFromID(simulatorName);
-                double[,] result = curveSimulator.GetSimulatedRates(ExcelUtilites.GetDates(simulationDates), tenorMonthsInt);
-                return ExcelUtilites.GetObjects(result);
+                PCACurveSimulator curveSimulator = ObjectMap.Instance.GetObjectFromID< PCACurveSimulator>(simulatorName);
+                double[,] result = curveSimulator.GetSimulatedRates(ExcelUtilities.GetDates(simulationDates), tenorMonthsInt);
+                return ExcelUtilities.GetObjects(result);
             }
 
             catch (Exception e)
             {
-                return ExcelUtilites.Error2D(e);
+                return ExcelUtilities.Error2D(e);
             }
         }
 

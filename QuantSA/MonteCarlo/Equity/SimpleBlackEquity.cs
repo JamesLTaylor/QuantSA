@@ -48,7 +48,12 @@ namespace MonteCarlo
 
         public override void Reset()
         {
-            allRequiredDates = null;
+            allRequiredDates = new List<Date>();
+        }
+
+        public override void Prepare()
+        {
+            allRequiredDates.Sort();
         }
 
 
@@ -71,8 +76,7 @@ namespace MonteCarlo
 
         public override void SetRequiredTimes(MarketObservable index, List<Date> requiredDates)
         {
-            allRequiredDates = requiredDates;
-            allRequiredDates.Sort();            
+            allRequiredDates.AddRange(requiredDates); 
         }
     }
 }

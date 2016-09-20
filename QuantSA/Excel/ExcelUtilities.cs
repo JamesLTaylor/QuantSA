@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,14 @@ namespace QuantSA.Excel
     /// <summary>
     /// Functions that will be used in many places when gettting data ready to send to and from Excel
     /// </summary>
-    public class ExcelUtilites
+    public class ExcelUtilities
     {
+        public static Exception latestException = null;
+
+        public static void SetLatestException(Exception e)
+        {
+            latestException = e;
+        }
 
         /// <summary>
         /// Converts a double reflecting an Excel date into a <see cref="Date"/>.
@@ -41,6 +48,36 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
+        /// Convert a string to a tenor object
+        /// </summary>
+        /// <param name="tenor">String describing a tenor object.  Example '3M' or '5Y'.</param>
+        /// <returns></returns>
+        internal static Tenor GetTenor(object tenor)
+        {
+            string tenorStr = tenor as string;
+            if (tenorStr == null) throw new ArgumentException("The tenor must be provided as a string like: '3M' or '5Y'");
+            string numberStr = "";
+            int years = 0;
+            foreach (char c in tenorStr.ToUpper())
+            {
+                if (c>=48 && c<=57)
+                {
+                    numberStr += c;
+                }
+                else if (c=='Y')
+                {
+                    years = Int32.Parse(numberStr);
+                    numberStr = "";
+                }
+                else
+                {
+                    throw new ArgumentException(tenorStr + " is not a valid tenor String.");
+                }
+            }
+            return new Tenor(0, 0, 0, years);
+        }
+
+        /// <summary>
         /// Converts doubles reflecting Excel dates into <see cref="Date"/>s
         /// </summary>
         /// <param name="excelDates">2d array of Excel values.</param>
@@ -65,6 +102,7 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object Error0D(Exception e)
         {
+            ExcelUtilities.SetLatestException(e);
             return e.Message;
         }
 
@@ -75,6 +113,7 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[] Error1D(Exception e)
         {
+            ExcelUtilities.SetLatestException(e);
             return new object[] { e.Message };
         }
 
@@ -85,6 +124,7 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] Error2D(Exception e)
         {
+            ExcelUtilities.SetLatestException(e);
             return new object[,] { { e.Message } };
         }
 
@@ -130,6 +170,43 @@ namespace QuantSA.Excel
                 double intValue = Math.Round(doubleArray[i]);
                 if (Math.Abs(doubleArray[i] - intValue) > 1e-10) { throw new ArgumentException(argName + " values must be a whole numbers"); }
                 result[i] = (int)intValue;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Converts an array of <see cref="Date"/> to objects whose values represent Excel dates.
+        /// </summary>
+        /// <param name="dates"></param>
+        /// <returns></returns>
+        public static object[,] GetObjects(Date[,] dates)
+        {
+            object[,] result = new object[dates.GetLength(0), dates.GetLength(1)];
+            for (int i = 0; i < dates.GetLength(0); i++)
+            {
+                for (int j = 0; j < dates.GetLength(1); j++)
+                {
+                    result[i, j] = dates[i,j].date.ToOADate();
+                }
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// Converts an array of strings to objects.
+        /// </summary>
+        /// <param name="strValues"></param>
+        /// <returns></returns>
+        public static object[,] GetObjects(string[,] strValues)
+        {
+            object[,] result = new object[strValues.GetLength(0), strValues.GetLength(1)];
+            for (int i = 0; i < strValues.GetLength(0); i++)
+            {
+                for (int j = 0; j < strValues.GetLength(1); j++)
+                {
+                    result[i, j] = strValues[i, j];
+                }
             }
             return result;
         }

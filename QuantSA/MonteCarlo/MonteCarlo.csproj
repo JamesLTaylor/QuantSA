@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,21 +63,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cashflow.cs" />
     <Compile Include="Coordinator.cs" />
     <Compile Include="Equity\EuropeanOption.cs" />
     <Compile Include="Equity\Share.cs" />
     <Compile Include="Equity\SimpleBlackEquity.cs" />
-    <Compile Include="MarketObservable.cs" />
     <Compile Include="NumeraireSimulator.cs" />
     <Compile Include="Product.cs" />
-    <Compile Include="Products\Rates\FloatingIndex.cs" />
     <Compile Include="Products\Rates\SwapletFloating.cs" />
     <Compile Include="Products\Rates\IRSwap.cs" />
     <Compile Include="Products\Swap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rates\DeterministicNumeraire.cs" />
     <Compile Include="Rates\DeterminsiticCurves.cs" />
+    <Compile Include="Rates\HullWhite1F.cs" />
     <Compile Include="RuntimeProduct.cs" />
     <Compile Include="Simulator.cs" />
   </ItemGroup>

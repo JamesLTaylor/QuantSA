@@ -5,15 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using QuantSA;
 
-namespace MonteCarlo
+namespace QuantSA
 {
+    /// <summary>
+    /// An object to describe a floating rate index such as 3 Month Jibar.
+    /// </summary>
     public class FloatingIndex : MarketObservable
     {
         private Currency currency;
         private string name;
-        private Tenor tenor;
+        public Tenor tenor { get; private set; }        
 
-        public FloatingIndex(Currency currency, string name, Tenor tenor)
+        private FloatingIndex(Currency currency, string name, Tenor tenor)
         {
             this.currency = currency;
             this.name = name;
@@ -27,7 +30,7 @@ namespace MonteCarlo
         }
 
         #region Stored Indices
-        public static FloatingIndex JIBAR3M = new FloatingIndex(Currency.ZAR, "Jibar", Tenor.Months(3));
+        public static FloatingIndex JIBAR3M = new FloatingIndex(Currency.ZAR, "Jibar", Tenor.Months(3));        
         #endregion
     }
 }

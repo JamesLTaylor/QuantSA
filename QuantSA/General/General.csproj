@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cashflow.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="Curves\PCACurveSimulator.cs" />
     <Compile Include="Curves\NelsonSiegel.cs" />
@@ -73,9 +74,14 @@
     <Compile Include="IFloatingRateSource.cs" />
     <Compile Include="Formulae.cs" />
     <Compile Include="IProvidesResultStore.cs" />
+    <Compile Include="MarketObservable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rates\DatesAndRates.cs" />
+    <Compile Include="Rates\FloatingIndex.cs" />
+    <Compile Include="Rates\FloatingRateFixingCurve.cs" />
+    <Compile Include="Rates\FloatingRateFixingCurve1Rate.cs" />
     <Compile Include="Rates\ForecastCurve.cs" />
+    <Compile Include="Rates\ForecastCurveFromDiscount.cs" />
     <Compile Include="Rates\SingleRate.cs" />
     <Compile Include="Rates\ZARSwapCurveStripper.cs" />
     <Compile Include="ResultStore.cs" />

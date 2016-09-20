@@ -1,5 +1,6 @@
 ﻿using MonteCarlo;
 using System.Collections.Generic;
+using System;
 
 namespace QuantSA
 {
@@ -16,9 +17,9 @@ namespace QuantSA
             forecastCurves = new Dictionary<MarketObservable, IFloatingRateSource>();
         }
 
-        public void AddForecast(FloatingIndex index, IFloatingRateSource forecastCurve)
+        public void AddForecast(IFloatingRateSource forecastCurve)
         {
-            forecastCurves.Add(index, forecastCurve);
+            forecastCurves.Add(forecastCurve.GetFloatingIndex(), forecastCurve);
         }
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
@@ -41,6 +42,11 @@ namespace QuantSA
         }
 
         public override void Reset()
+        {
+            // Do nothing
+        }
+
+        public override void Prepare()
         {
             // Do nothing
         }

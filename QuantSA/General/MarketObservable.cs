@@ -1,4 +1,4 @@
-﻿namespace MonteCarlo
+﻿namespace QuantSA
 {
     public abstract class MarketObservable
     {
