@@ -55,5 +55,10 @@ entries:
       url: /home_plugins.html 
       output: web
              
-          
+  - title: Valuation    
+    output: web
+    folderitems:
+    - title: Principles
+      url: /home_valuatiion_principles.html 
+      output: web            
          

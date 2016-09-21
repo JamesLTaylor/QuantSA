@@ -16,6 +16,16 @@ entries:
       url: /GetResults.html
       output: web, pdf
 
+  - title: Rates
+    output: web, pdf
+    folderitems:
+    - title: CreateZARSwap
+      url: /CreateZARSwap.html
+      output: web, pdf
+    - title: ValueZARSwap
+      url: /ValueZARSwap.html
+      output: web, pdf      
+
   - title: Curves
     output: web, pdf
     folderitems:
