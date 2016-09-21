@@ -73,12 +73,10 @@
   <ItemGroup>
     <Compile Include="AddIn.cs" />
     <Compile Include="BasicFunctions.cs" />
-    <Compile Include="ExcelAttributes.cs" />
     <Compile Include="ExcelUtilities.cs" />
     <Compile Include="LatestError.xaml.cs">
       <DependentUpon>LatestError.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ribbon.cs" />
     <Compile Include="XLCurves.cs" />
@@ -102,6 +100,10 @@
     <ProjectReference Include="..\MonteCarlo\MonteCarlo.csproj">
       <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
       <Name>MonteCarlo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSAInterfaces\QuantSAInterfaces.csproj">
+      <Project>{ab407873-268c-4ae1-b1fb-62b9830df979}</Project>
+      <Name>QuantSAInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

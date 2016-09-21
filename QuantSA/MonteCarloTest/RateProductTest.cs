@@ -62,7 +62,7 @@ namespace QuantSA
             double flatCurveRate = 0.07;
             HullWhite1F hullWiteSim = new HullWhite1F(a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Product> { swap }, new List<Simulator>(), 100000);
+            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Product> { swap }, new List<Simulator>(), 10000);
 
             // Run the valuation
             double value = coordinator.Value(valueDate);

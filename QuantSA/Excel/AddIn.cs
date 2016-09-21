@@ -7,6 +7,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using Excel;
+using QuantSA;
 
 public class MyAddIn : IExcelAddIn
 {
@@ -25,6 +27,9 @@ public class MyAddIn : IExcelAddIn
         //Expose only those functions that appear in FunctionsFilenameUser with a true.  The
         //rest will still be there but as hidden.  So that users can share sheets.
         ExposeUserSelectedFunctions();
+
+        //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
+        ExposePlugins();
     }
 
     public void AutoClose()
@@ -213,6 +218,86 @@ public class MyAddIn : IExcelAddIn
             }
         }
         return quantSAFunctions;
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void ExposePlugins()
+    {
+        //TODO: Check through whole directory for possible plugins.
+        string dllPath = AppDomain.CurrentDomain.BaseDirectory + "\\PluginDemo.dll";
+        Assembly DLL;
+        try
+        {
+            DLL = Assembly.LoadFile(dllPath);
+        }
+        catch
+        {
+            return;
+        }
+        
+        string name = null;
+        foreach (Type type in DLL.GetExportedTypes())
+        {
+            if (typeof(IQuantSAPlugin).IsAssignableFrom(type)) // This class is a QuantSA plugin
+            {
+                object obj = Activator.CreateInstance(type);
+                IQuantSAPlugin plugin = (IQuantSAPlugin)obj;
+                plugin.setObjectMap(ObjectMap.Instance);
+                name = plugin.GetName();
+            }
+        }
+        if (name != null) // Is a plugin, look for excel exposed functions.
+        {
+            List<Delegate> delegates = new List<Delegate>();
+            List<object> functionAttributes = new List<object>();
+            List<List<object>> functionArgumentAttributes = new List<List<object>>();
+            foreach (Type type in DLL.GetExportedTypes())
+            {
+                foreach (MemberInfo member in type.GetMembers())
+                {
+                    QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+                    if (attribute != null) // We have found an excel exposed function.
+                    {
+                        // TODO: Check that the category and naming are all acceptable
+                        UpdateDelgatesAndAtribs((MethodInfo)member, delegates, functionAttributes, functionArgumentAttributes);
+                    }
+                }
+            }
+            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void UpdateDelgatesAndAtribs(MethodInfo method, List<Delegate> delegates, List<object> functionAttributes, List<List<object>> functionArgumentAttributes)
+    {
+        //Create the delgate, Taken from: http://stackoverflow.com/a/16364220
+        Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
+                (from parameter in method.GetParameters() select parameter.ParameterType)
+                .Concat(new[] { method.ReturnType })
+                .ToArray()));
+        delegates.Add(thisDelegate);
+
+        //Create the function attribute
+        QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+        functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
+
+        // Create the function argument attributes
+        List<object> thisArgumentAttributes = new List<object>();
+        foreach (ParameterInfo param in method.GetParameters())
+        {
+            var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
+            if (argAttrib != null)
+            {
+                argAttrib.Name = param.Name;
+            }
+            thisArgumentAttributes.Add(argAttrib);
+        }
+        functionArgumentAttributes.Add(thisArgumentAttributes);
     }
 
 }

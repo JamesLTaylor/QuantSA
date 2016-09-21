@@ -51,8 +51,7 @@ namespace QuantSA.Excel
                 FloatingIndex index = FloatingIndex.JIBAR3M;
                 Date dValueDate = ExcelUtilities.GetDates(valueDate);
                 IRSwap swapObj = ObjectMap.Instance.GetObjectFromID<IRSwap>(swap);
-                DatesAndRates curveObj = ObjectMap.Instance.GetObjectFromID<DatesAndRates>(curve);
-                IDiscountingSource discountCurve = curveObj;
+                IDiscountingSource discountCurve = ObjectMap.Instance.GetObjectFromID<IDiscountingSource>(curve);
 
                 // Calculate the first fixing off the curve to use at all past dates.
                 double df1 = discountCurve.GetDF(dValueDate);

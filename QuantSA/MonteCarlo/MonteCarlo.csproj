@@ -80,13 +80,13 @@
     <Compile Include="Simulator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\General\General.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>General</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.2.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.2.0\build\Accord.targets')" />
