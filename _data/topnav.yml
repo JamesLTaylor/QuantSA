@@ -3,8 +3,8 @@
 topnav:
 - title: Topnav
   items:
-    - title: News
-      url: /news
+    - title: Contact
+      url: /home_contact.html
 
 #Topnav dropdowns
 topnav_dropdowns:

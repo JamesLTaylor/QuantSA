@@ -54,6 +54,17 @@ entries:
     - title: Writing plugins
       url: /home_plugins.html 
       output: web
+    - title: Writing scripts
+      url: /home_scripts.html 
+      output: web
+    - title: Control exposed functions
+      url: /home_exposed_functions.html 
+      output: web            
              
-          
+  - title: Valuation    
+    output: web
+    folderitems:
+    - title: Principles
+      url: /home_valuatiion_principles.html 
+      output: web            
          
