@@ -8,9 +8,14 @@ namespace QuantSA
 {
     public class Tenor
     {
-        
+        public int days { get; private set; }
+        public int months { get; private set; }
+        public int weeks { get; private set; }
+        public int years { get; private set; }
+
         public Tenor(int days, int weeks, int months, int years)
         {
+            if ((days + weeks*7) >= 10000) throw new ArgumentException("Please use months or years rather than more than 10000 days.");            
             this.days = days;
             this.weeks = weeks;
             this.months = months;
@@ -42,10 +47,37 @@ namespace QuantSA
             return sb.ToString();
         }
 
-        public int days { get; private set; }
-        public int months { get; private set; }
-        public int weeks { get; private set; }
-        public int years { get; private set; }
+        #region Comparisons
+        public static bool operator ==(Tenor left, Tenor right)
+        {
+            if ((object)left == null && (object)right == null) return true;
+            if ((object)left != null && (object)right == null) return false;
+            if ((object)left == null && (object)right != null) return false;
+            return (left.days + 7 * left.weeks == right.days + 7 * right.weeks) && (left.months + 12 * left.years) == (right.months + 12 * right.years);
+        }
+        public static bool operator !=(Tenor left, Tenor right)
+        {
+            return !(left == right);
+        }
+        public override bool Equals(object obj)
+        {            
+            Tenor t = obj as Tenor;
+            if (t == null) return false;
+            return this==t;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 1 month can alias as 100000 days.        
+        /// The checks on the constructor will prevent this.
+        /// </remarks>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return days + weeks * 7 + (months  + years * 12) * 100000;            
+        }
+        #endregion
 
     }
 }

@@ -58,6 +58,9 @@ namespace QuantSA.Excel
             if (tenorStr == null) throw new ArgumentException("The tenor must be provided as a string like: '3M' or '5Y'");
             string numberStr = "";
             int years = 0;
+            int months = 0;
+            int weeks = 0;
+            int days = 0;
             foreach (char c in tenorStr.ToUpper())
             {
                 if (c>=48 && c<=57)
@@ -69,12 +72,27 @@ namespace QuantSA.Excel
                     years = Int32.Parse(numberStr);
                     numberStr = "";
                 }
+                else if (c == 'M')
+                {
+                    months = Int32.Parse(numberStr);
+                    numberStr = "";
+                }
+                else if (c == 'W')
+                {
+                    weeks = Int32.Parse(numberStr);
+                    numberStr = "";
+                }
+                else if (c == 'D')
+                {
+                    days = Int32.Parse(numberStr);
+                    numberStr = "";
+                }
                 else
                 {
                     throw new ArgumentException(tenorStr + " is not a valid tenor String.");
                 }
             }
-            return new Tenor(0, 0, 0, years);
+            return new Tenor(days, weeks, months, years);
         }
 
         /// <summary>

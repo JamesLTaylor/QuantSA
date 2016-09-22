@@ -22,7 +22,7 @@ namespace QuantSA.Excel
         [ExcelArgument(Description = "The fixed rate paid or received")]double rate,
         [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]object payFixed,
         [ExcelArgument(Description = "Flat notional for all dates.")]double notional)
-        {        
+        {
             try
             {
 
@@ -32,7 +32,32 @@ namespace QuantSA.Excel
             }
             catch (Exception e)
             {
-                return e.Message;
+                return ExcelUtilities.Error0D(e);
+            }
+        }
+
+        [QuantSAExcelFunction(Description = "Create a ZAR swap specifying the tenor for the fixed and Jibar payments",
+        Name = "DBSA.CreateZARSwapWithFreq",
+        Category = "DBSA",
+        IsHidden = false,
+        HelpTopic = "")]
+        public static object CreateZARSwapWithFreq([ExcelArgument(Description = "Name of object")]String name,
+        [ExcelArgument(Description = "First reset date of the swap")]double startDate,
+        [ExcelArgument(Description = "The tenor of the fixed and floating rates.  For 3month Jibar enter '3M'.")]object paymentTenor,
+        [ExcelArgument(Description = "The original tenor of swap, must be a whole number of years.  Example '5Y'.")]object matutityTenor,
+        [ExcelArgument(Description = "The fixed rate paid or received")]double rate,
+        [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]object payFixed,
+        [ExcelArgument(Description = "Flat notional for all dates.")]double notional)
+        {
+            try
+            {
+                IRSwap swap = IRSwap.CreateZARSwapWithFreq(rate, ExcelUtilities.GetBool(payFixed), notional,
+                    ExcelUtilities.GetDates(startDate), ExcelUtilities.GetTenor(matutityTenor), ExcelUtilities.GetTenor(paymentTenor));
+                return ObjectMap.Instance.AddObject(name, swap);
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);
             }
         }
 
@@ -47,11 +72,11 @@ namespace QuantSA.Excel
         {
             try
             {
-                // Get the required objects off the map
-                FloatingIndex index = FloatingIndex.JIBAR3M;
+                // Get the required objects off the map                
                 Date dValueDate = ExcelUtilities.GetDates(valueDate);
                 IRSwap swapObj = ObjectMap.Instance.GetObjectFromID<IRSwap>(swap);
                 IDiscountingSource discountCurve = ObjectMap.Instance.GetObjectFromID<IDiscountingSource>(curve);
+                FloatingIndex index = swapObj.GetFloatingIndex();
 
                 // Calculate the first fixing off the curve to use at all past dates.
                 double df1 = discountCurve.GetDF(dValueDate);
@@ -70,6 +95,25 @@ namespace QuantSA.Excel
                 // Run the valuation
                 double value = coordinator.Value(dValueDate);
                 return value;
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);
+            }
+        }
+
+        [QuantSAExcelFunction(Description = "Get the discount factor from a curve object.  The DF will be from the anchor date until the supplied date.",
+        Name = "QSA.GetDF",
+        Category = "QSA.Rates",
+        IsHidden = false,
+        HelpTopic = "http://cogn.co.za/QuantSA/ValueZARSwap.html")]
+        public static object GetDF([ExcelArgument(Description = "The curve from which the DF is required.")]String curve,
+            [ExcelArgument(Description = "The date on which the discount factor is required.  Cannot be before the anchor date of the curve.")]double date)
+        {
+            try
+            {
+                IDiscountingSource discountCurve = ObjectMap.Instance.GetObjectFromID<IDiscountingSource>(curve);
+                return discountCurve.GetDF(ExcelUtilities.GetDates(date));
             }
             catch (Exception e)
             {

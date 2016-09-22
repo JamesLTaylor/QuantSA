@@ -30,7 +30,9 @@ namespace QuantSA
         }
 
         #region Stored Indices
-        public static FloatingIndex JIBAR3M = new FloatingIndex(Currency.ZAR, "Jibar", Tenor.Months(3));        
+        public static FloatingIndex JIBAR3M = new FloatingIndex(Currency.ZAR, "Jibar", Tenor.Months(3));
+        public static FloatingIndex JIBAR6M = new FloatingIndex(Currency.ZAR, "Jibar", Tenor.Months(6));
+        public static FloatingIndex LIBOR3M = new FloatingIndex(Currency.USD, "Libor", Tenor.Months(3));
         #endregion
     }
 }

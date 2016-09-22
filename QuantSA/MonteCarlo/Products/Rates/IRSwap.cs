@@ -63,6 +63,68 @@ namespace QuantSA
             return newSwap;
         }
 
+        /// <summary>
+        /// Constructor for ZAR market standard, fixed for float 3m Jibar swap.
+        /// </summary>
+        /// <param name="rate">The fixed rate paid or received</param>
+        /// <param name="payFixed">Is the fixed rate paid?</param>
+        /// <param name="notional">Flat notional for all dates.</param>
+        /// <param name="startDate">First reset date of swap</param>
+        /// <param name="maturityTenor">Tenor of swap, must be a whole number of years.</param>
+        /// <param name="paymentTenor">Tenor of the floating and fixed rate payments.</param>
+        /// <returns></returns>
+        public static IRSwap CreateZARSwapWithFreq(double rate, bool payFixed, double notional, Date startDate, Tenor maturityTenor, Tenor paymentTenor)
+        {
+            IRSwap newSwap = new IRSwap();
+            int nPeriods;
+            if (paymentTenor == Tenor.Months(3))
+            {
+                nPeriods = maturityTenor.years * 4;
+                newSwap.index = FloatingIndex.JIBAR3M;
+            }
+            else if (paymentTenor == Tenor.Months(6))
+            {
+                nPeriods = maturityTenor.years * 2;
+                newSwap.index = FloatingIndex.JIBAR6M;
+            }
+            else
+            { throw new ArgumentException("This swap only handles paymentTenors of '3M' and '6M'"); }
+                
+            newSwap.payFixed = payFixed ? -1 : 1;
+            newSwap.indexDates = new Date[nPeriods];
+            newSwap.payDates = new Date[nPeriods];
+            newSwap.spreads = new double[nPeriods]; ;
+            newSwap.accrualFractions = new double[nPeriods]; ;
+            newSwap.notionals = new double[nPeriods];
+            newSwap.fixedRate = rate;
+            newSwap.ccy = Currency.ZAR;
+            newSwap.indexValues = new double[nPeriods];
+
+            Date date1 = new Date(startDate);
+            Date date2;
+
+            for (int i = 0; i < nPeriods; i++)
+            {
+                date2 = startDate.AddMonths(paymentTenor.months * (i + 1));
+                newSwap.indexDates[i] = new Date(date1);
+                newSwap.payDates[i] = new Date(date2);
+                newSwap.spreads[i] = 0.0;
+                newSwap.accrualFractions[i] = (date2 - date1) / 365.0;
+                newSwap.notionals[i] = notional;
+                date1 = new Date(date2);
+            }
+            return newSwap;
+        }
+
+        /// <summary>
+        /// Returns the single floating rate index underlying this swap.
+        /// </summary>
+        /// <returns></returns>
+        public FloatingIndex GetFloatingIndex()
+        {
+            return (FloatingIndex)index;
+        }
+
 
         /// <summary>
         /// Set the date after which all cashflows will be required.

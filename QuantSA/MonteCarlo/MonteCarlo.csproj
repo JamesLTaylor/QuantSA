@@ -69,7 +69,8 @@
     <Compile Include="Equity\SimpleBlackEquity.cs" />
     <Compile Include="NumeraireSimulator.cs" />
     <Compile Include="Product.cs" />
-    <Compile Include="Products\Rates\SwapletFloating.cs" />
+    <Compile Include="Products\FX\CCIRS.cs" />
+    <Compile Include="Products\Rates\FixedLeg.cs" />
     <Compile Include="Products\Rates\IRSwap.cs" />
     <Compile Include="Products\Swap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
