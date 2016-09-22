@@ -1,4 +1,5 @@
 ﻿using ExcelDna.Integration;
+using QuantSA;
 using QuantSA.Excel;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace PluginDemo
     public class ExcelFunctions
     {       
         [QuantSAExcelFunction(Description = "",
-            Name = "QSA.DEMO.CreateDiscount",
-            Category = "QSA.DEMO",
+            Name = "QSDEMO.CreateDiscount",
+            Category = "QSDEMO",
             IsHidden = false)]
         public static object CreateDiscount([ExcelArgument(Description = "Name of object")]String name,
             [ExcelArgument(Description = "")]double anchorDate,
@@ -25,8 +26,26 @@ namespace PluginDemo
             }
             catch (Exception e)
             {
-                return e.Message;
+                return ExcelUtilities.Error0D(e);
             }
-        }           
+        }
+
+        [QuantSAExcelFunction(Description = "",
+        Name = "QSDEMO.GetSpecialDF",
+        Category = "QSDEMO",
+        IsHidden = false)]
+        public static object GetSpecialDF([ExcelArgument(Description = "Name of discounting curve.")]String name,
+        [ExcelArgument(Description = "date")]double date)
+        {
+            try
+            {
+                IDiscountingSource discountCurve = QuantSA.objectMap.GetObjectFromID<IDiscountingSource>(name);
+                return discountCurve.GetDF(ExcelUtilities.GetDates(date));
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);                
+            }
+        }
     }
 }

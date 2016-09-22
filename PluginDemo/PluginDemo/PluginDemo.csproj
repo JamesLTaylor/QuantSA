@@ -46,8 +46,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Excel\bin\Debug\MonteCarlo.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSAInterfaces">
-      <HintPath>..\Excel\bin\Debug\QuantSAInterfaces.dll</HintPath>
+    <Reference Include="QuantSAInterfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSAInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,7 +70,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" $(SolutionDir)\Excel\$(OutDir)  /C /Y
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" $(SolutionDir)\..\QuantSA\Excel\$(OutDir)Plugins\  /C /Y
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
