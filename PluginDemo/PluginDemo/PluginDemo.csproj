@@ -30,25 +30,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Excel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Excel\bin\Debug\Excel.dll</HintPath>
-    </Reference>
     <Reference Include="ExcelDna.Integration, Version=0.33.5730.40390, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDna.Integration.0.33.9\lib\ExcelDna.Integration.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="General, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Excel\bin\Debug\General.dll</HintPath>
     </Reference>
     <Reference Include="MonteCarlo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Excel\bin\Debug\MonteCarlo.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSAInterfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSAInterfaces.dll</HintPath>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QauntSA.General">
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\QauntSA.General.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.Excel">
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.Interfaces">
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,12 +57,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExcelFunctions.cs" />
     <Compile Include="PluginDiscount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuantSA.cs" />
+    <Compile Include="PluginConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
