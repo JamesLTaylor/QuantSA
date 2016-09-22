@@ -7,13 +7,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using Excel;
-using QuantSA;
+using System.Resources;
+using System.Drawing;
 
 public class MyAddIn : IExcelAddIn
 {
     string FunctionsFilenameAll = AppDomain.CurrentDomain.BaseDirectory + "\\functions_all.csv"; // updated in build to include all functions and default visibility
     string FunctionsFilenameUser = AppDomain.CurrentDomain.BaseDirectory + "\\functions_user.csv"; // user editable to control which function appear
+
+    public static List<IQuantSAPlugin> plugins;
+    public static Dictionary<string, Bitmap> assemblyImageResources;
 
     // Called when addin opens
     public void AutoOpen()
@@ -29,7 +32,14 @@ public class MyAddIn : IExcelAddIn
         ExposeUserSelectedFunctions();
 
         //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
+        plugins = new List<IQuantSAPlugin>();
+        assemblyImageResources = new Dictionary<string, Bitmap>();
         ExposePlugins();
+        foreach (IQuantSAPlugin plugin in plugins)
+        {
+            plugin.SetObjectMap(ObjectMap.Instance);
+            plugin.SetInstance(plugin);
+        }
     }
 
     public void AutoClose()
@@ -222,53 +232,82 @@ public class MyAddIn : IExcelAddIn
 
 
     /// <summary>
-    /// 
+    /// Expose all plugins in the Plugins folder
     /// </summary>
     private void ExposePlugins()
     {
-        //TODO: Check through whole directory for possible plugins.
-        string dllPath = AppDomain.CurrentDomain.BaseDirectory + "\\PluginDemo.dll";
-        Assembly DLL;
-        try
+        string dllDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\Plugins";
+        string[] fileEntries = Directory.GetFiles(dllDirectory);
+        foreach (string file in fileEntries)
         {
-            DLL = Assembly.LoadFile(dllPath);
+            if (Path.GetExtension(file).ToLower().Equals(".dll"))
+            {
+                try {
+                    ExposePlugin(file);
+                }
+                catch (Exception e)
+                {
+                    ExcelMessage le = new ExcelMessage(e);
+                    le.ShowDialog();
+                }
+            }
         }
-        catch
-        {
-            return;
-        }
-        
-        string name = null;
+    }
+
+    /// <summary>
+    /// Expose a plugin from a dll filename, if the dll is a valid plugin.
+    /// </summary>
+    private void ExposePlugin(string filename)
+    {
+        Assembly DLL = Assembly.LoadFile(filename);
+        string[] names = DLL.GetManifestResourceNames();
+        //ResourceSet set = new ResourceSet(names[0]);
+
+        string shortName = null;
         foreach (Type type in DLL.GetExportedTypes())
         {
             if (typeof(IQuantSAPlugin).IsAssignableFrom(type)) // This class is a QuantSA plugin
             {
-                object obj = Activator.CreateInstance(type);
-                IQuantSAPlugin plugin = (IQuantSAPlugin)obj;
-                plugin.setObjectMap(ObjectMap.Instance);
-                name = plugin.GetName();
+                IQuantSAPlugin plugin = Activator.CreateInstance(type) as IQuantSAPlugin;
+                shortName = plugin.GetShortName();
+                MyAddIn.plugins.Add(plugin);
             }
         }
-        if (name != null) // Is a plugin, look for excel exposed functions.
+        if (shortName == null)
         {
-            List<Delegate> delegates = new List<Delegate>();
-            List<object> functionAttributes = new List<object>();
-            List<List<object>> functionArgumentAttributes = new List<List<object>>();
-            foreach (Type type in DLL.GetExportedTypes())
-            {
-                foreach (MemberInfo member in type.GetMembers())
-                {
-                    QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-                    if (attribute != null) // We have found an excel exposed function.
-                    {
-                        // TODO: Check that the category and naming are all acceptable
-                        UpdateDelgatesAndAtribs((MethodInfo)member, delegates, functionAttributes, functionArgumentAttributes);
-                    }
-                }
-            }
-            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
+            throw new Exception(Path.GetFileName(filename) + " is in the Plugins directory but is not a valid plugin.");
         }
+
+        List<Delegate> delegates = new List<Delegate>();
+        List<object> functionAttributes = new List<object>();
+        List<List<object>> functionArgumentAttributes = new List<List<object>>();
+        foreach (Type type in DLL.GetExportedTypes())
+        {
+            foreach (MemberInfo member in type.GetMembers())
+            {
+                QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+                if (attribute != null) // We have found an excel exposed function.
+                {
+                    if (!attribute.Category.Equals(shortName)) throw new Exception(attribute.Name + " in plugin " + shortName + " is not in the excel category " + shortName);
+                    string[] parts = attribute.Name.Split('.');
+                    if (!(parts.Length == 2 && parts[0].Equals(shortName))) throw new Exception(attribute.Name + " in plugin " + shortName + "does not following the naming convention: " + shortName + ".FunctionName");  
+
+                    // TODO: Check that the category and naming are all acceptable
+                    UpdateDelgatesAndAtribs((MethodInfo)member, delegates, functionAttributes, functionArgumentAttributes);
+                }
+                if (member.MemberType.Equals(MemberTypes.Method))
+                    if (((MethodInfo)member).ReturnType.Equals(typeof(System.Drawing.Bitmap)))
+                    {
+                        Bitmap image = ((MethodInfo)member).Invoke(null, null) as Bitmap;
+                        assemblyImageResources.Add(member.Name.Substring(4), image);                        
+                    }
+            }
+            
+        }
+        ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
     }
+       
+  
 
     /// <summary>
     /// 

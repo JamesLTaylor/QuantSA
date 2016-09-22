@@ -13,25 +13,33 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Excel
+namespace QuantSA.Excel
 {
     /// <summary>
-    /// Interaction logic for LatestError.xaml
+    /// Interaction logic for ExcelMessage.xaml
     /// </summary>
-    public partial class LatestError : Window
+    public partial class ExcelMessage : Window
     {
-        public LatestError(string message)
+        public ExcelMessage(string title, string message)
+        {            
+            InitializeComponent();
+            Title = title;
+            lblMessage.Content = message;
+            lblStackTrace.Content = "";
+        }
+
+        public ExcelMessage(string message)
         {
             InitializeComponent();
-            this.lblMessage.Content = message;
-            this.lblStackTrace.Content = "";
+            lblMessage.Content = message;
+            lblStackTrace.Content = "";
         }
 
         /// <summary>
         /// Construct a QuantSA error message with a stack trace
         /// </summary>
         /// <param name="e"></param>
-        public LatestError(Exception e)
+        public ExcelMessage(Exception e)
         {
             InitializeComponent();
             lblMessage.Content = e.Message;

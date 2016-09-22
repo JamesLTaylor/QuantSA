@@ -9,13 +9,12 @@ using QuantSA;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using Excel;
 
 namespace QuantSA.Excel
 {
     public class XLGeneral
     {
-        [ExcelFunction(Description = "Adds a serialized object onto the object map.  Used by plugins to interact with the core library.",
+        [ExcelFunction(Description = "",
         Name = "QSA.LatestError",
         Category = "QSA.General",
         IsMacroType = true,
@@ -25,13 +24,13 @@ namespace QuantSA.Excel
             try {
                 if (ExcelUtilities.latestException == null)
                 {
-                    LatestError latestError = new LatestError("No errors have occured.");
+                    ExcelMessage latestError = new ExcelMessage("No errors have occured.");
                     latestError.ShowDialog();
 
                 }
                 else
                 {
-                    LatestError latestError = new LatestError(ExcelUtilities.latestException);
+                    ExcelMessage latestError = new ExcelMessage(ExcelUtilities.latestException);
                     latestError.ShowDialog();
                 }
                 return "";
@@ -42,64 +41,6 @@ namespace QuantSA.Excel
             }
         }
         
-
-        [ExcelFunction(Description = "Adds a serialized object onto the object map.  Used by plugins to interact with the core library.",
-        Name = "QSA.PutOnMap",
-        Category = "QSA.General",
-        IsHidden = true)]
-        public static string PutOnMap(string name, string serializedObject, int deserialize)
-        {
-            try {
-                if (deserialize == 1)
-                {
-                    byte[] bytes = Convert.FromBase64String(serializedObject);
-                    MemoryStream stream = new MemoryStream(bytes);
-                    object obj = new BinaryFormatter().Deserialize(stream);
-                    stream.Close();
-                    return ObjectMap.Instance.AddObject(name, obj);
-                }
-                else
-                {
-                    return ObjectMap.Instance.AddObject(name, serializedObject);
-                }
-            }
-            catch (Exception e)
-            {
-                return "ERROR: " + e.Message;
-            }
-        }
-
-
-        [ExcelFunction(Description = "Returns a serialized version of an object from the map.  Used by plugins to interact with the core library.",
-        Name = "QSA.GetFromMap",
-        Category = "QSA.General",
-        IsHidden = true)]
-        public static string GetFromMap(string objectName, int deserialize)
-        {
-            try
-            {
-                if (deserialize == 1)
-                {
-                    object obj = ObjectMap.Instance.GetObjectFromID<object>(objectName);
-                    IFormatter formatter = new BinaryFormatter();
-                    MemoryStream stream = new MemoryStream();
-                    new BinaryFormatter().Serialize(stream, obj);
-                    string serializedObject = Convert.ToBase64String(stream.ToArray());
-                    stream.Close();
-                    return serializedObject;
-                }
-                else
-                {
-                    string serializedObject = ObjectMap.Instance.GetObjectFromID<string>(objectName);
-                    return serializedObject;
-                }
-            }
-            catch (Exception e)
-            {
-                return "ERROR: " + e.Message;
-            }
-        }
-
         [QuantSAExcelFunction(Description = "Create a C# representation of data in a spreadsheet.",
         Name = "QSA.GetCSArray",
         Category = "QSA.Developer",

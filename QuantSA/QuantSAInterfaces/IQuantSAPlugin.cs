@@ -5,13 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Excel
+namespace QuantSA.Excel
 {
     public interface IQuantSAPlugin
     {
+        string GetShortName();
         string GetName();
         string GetDeveloper();
-        void setObjectMap(ObjectMap objectMap);
-        ObjectMap getObjectMap();      
+        string GetAboutString();
+
+        string GetRibbonGroup();
+        string GetAboutMacro();
+
+        void SetInstance(IQuantSAPlugin itself);
+        void SetObjectMap(ObjectMap objectMap);
+        ObjectMap getObjectMap();        
     }
 }
