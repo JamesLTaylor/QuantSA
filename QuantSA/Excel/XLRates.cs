@@ -35,31 +35,6 @@ namespace QuantSA.Excel
             }
         }
 
-        [QuantSAExcelFunction(Description = "Create a ZAR swap specifying the tenor for the fixed and Jibar payments",
-        Name = "DBSA.CreateZARSwapWithFreq",
-        Category = "DBSA",
-        IsHidden = false,
-        HelpTopic = "")]
-        public static object CreateZARSwapWithFreq([ExcelArgument(Description = "Name of object")]String name,
-        [ExcelArgument(Description = "First reset date of the swap")]double startDate,
-        [ExcelArgument(Description = "The tenor of the fixed and floating rates.  For 3month Jibar enter '3M'.")]object paymentTenor,
-        [ExcelArgument(Description = "The original tenor of swap, must be a whole number of years.  Example '5Y'.")]object matutityTenor,
-        [ExcelArgument(Description = "The fixed rate paid or received")]double rate,
-        [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]object payFixed,
-        [ExcelArgument(Description = "Flat notional for all dates.")]double notional)
-        {
-            try
-            {
-                IRSwap swap = IRSwap.CreateZARSwapWithFreq(rate, ExcelUtilities.GetBool(payFixed), notional,
-                    ExcelUtilities.GetDates(startDate), ExcelUtilities.GetTenor(matutityTenor), ExcelUtilities.GetTenor(paymentTenor));
-                return ObjectMap.Instance.AddObject(name, swap);
-            }
-            catch (Exception e)
-            {
-                return ExcelUtilities.Error0D(e);
-            }
-        }
-
         [QuantSAExcelFunction(Description = "Basic swap valuation.  Uses the same curve for forecasting and discounting and uses the 3 month rate off the curve as the Jibar Fix.",
         Name = "QSA.ValueZARSwap",
         Category = "QSA.General",
