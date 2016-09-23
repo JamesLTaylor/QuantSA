@@ -52,7 +52,7 @@ namespace QuantSA.Excel
         /// </summary>
         /// <param name="tenor">String describing a tenor object.  Example '3M' or '5Y'.</param>
         /// <returns></returns>
-        internal static Tenor GetTenor(object tenor)
+        public static Tenor GetTenor(object tenor)
         {
             string tenorStr = tenor as string;
             if (tenorStr == null) throw new ArgumentException("The tenor must be provided as a string like: '3M' or '5Y'");

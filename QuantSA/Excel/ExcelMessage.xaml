@@ -7,8 +7,8 @@
              ResizeMode="CanResize" Title="QuantSA: Error" ShowInTaskbar="True" SizeToContent="WidthAndHeight" Topmost="True">
     <Grid>
         <StackPanel HorizontalAlignment="Left" Margin="0,10,0,10" Name="spOuter" VerticalAlignment="Top" Orientation="Vertical">
-            <Label Height="Auto" Name="lblMessage" MinWidth="300" Padding="5" Content="Empty for now" IsEnabled="False" Margin="5,10,5,0" />
-            <Label Height="Auto" Name="lblStackTrace" MinWidth="300" Padding="5" Content="Empty for now" IsEnabled="False" Margin="5,0,5,10"/>
+            <Label Height="Auto" Name="lblMessage" MinWidth="300" Padding="5" Content="Empty for now"  Margin="5,10,5,0" />
+            <Label Height="Auto" Name="lblStackTrace" MinWidth="300" Padding="5" Content="Empty for now" Margin="5,0,5,10"/>
 
             <StackPanel HorizontalAlignment="Center" Margin="0" Name="spButtons" VerticalAlignment="Top" Orientation="Horizontal">
                 <Button Content="OK" Height="23" HorizontalAlignment="Center" Margin="5" Name="btnOK" VerticalAlignment="Top" Width="50" Click="btnOK_Click" />
