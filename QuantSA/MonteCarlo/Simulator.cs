@@ -24,8 +24,8 @@ namespace MonteCarlo
         /// times.
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="requiredTimes"></param>
-        public abstract void SetRequiredTimes(MarketObservable index, List<Date> requiredDates);
+        /// <param name="requiredDates"></param>
+        public abstract void SetRequiredDates(MarketObservable index, List<Date> requiredDates);
 
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace MonteCarlo
 
         /// <summary>
         /// Run the simulation and internally store the indices that will be required.  Should only be called 
-        /// after <see cref="SetRequiredTimes(MarketObservable, List{Date})"/>
+        /// after <see cref="SetRequiredDates(MarketObservable, List{Date})"/>
         /// </summary>
         /// <param name="simNumber">The simulation number.  May be required for example if any variance reductions technigues are used.</param>
         public abstract void RunSimulation(int simNumber);

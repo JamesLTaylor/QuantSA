@@ -74,7 +74,7 @@ namespace MonteCarlo
             
         }
 
-        public override void SetRequiredTimes(MarketObservable index, List<Date> requiredDates)
+        public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
         {
             allRequiredDates.AddRange(requiredDates); 
         }

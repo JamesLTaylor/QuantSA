@@ -24,8 +24,8 @@ namespace MonteCarloTest
             double spotPrice = 100.0;
             Simulator sim = new SimpleBlackEquity(valueDate, shareCode, spotPrice, vol, riskfreeRate, divYield);
             NumeraireSimulator numeraire = new DeterministicNumeraire(Currency.ZAR, valueDate, riskfreeRate);
-            Coordinator coordinator = new Coordinator(numeraire, new List<Product> { p }, new List<Simulator> { sim }, 10000);
-            double value = coordinator.Value(valueDate);
+            Coordinator coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 10000);
+            double value = coordinator.Value(new List<Product> { p }, valueDate);
             double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice,
                                                     vol, riskfreeRate, divYield);
             Assert.AreEqual(refValue, value, refValue*0.01);

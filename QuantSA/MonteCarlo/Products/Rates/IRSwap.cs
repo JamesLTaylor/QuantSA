@@ -12,7 +12,7 @@ namespace QuantSA
         // Product specs
         double payFixed; // -1 for payFixed, 1 for receive fixed
         Date[] indexDates;
-        Date[] payDates;
+        Date[] paymentDates;
         MarketObservable index;
         double[] spreads;
         double[] accrualFractions;
@@ -25,8 +25,7 @@ namespace QuantSA
 
 
 
-        public IRSwap() {
-            indexValues = new double[indexDates.Length];
+        public IRSwap() {            
         }
 
         /// <summary>
@@ -46,12 +45,15 @@ namespace QuantSA
         {
             this.payFixed = payFixed;
             this.indexDates = indexDates;
-            this.payDates = payDates;
+            this.paymentDates = payDates;
             this.index = index;
             this.spreads = spreads;
             this.accrualFractions = accrualFractions;
             this.notionals = notionals;
             this.fixedRate = fixedRate;
+            this.ccy = ccy;
+
+            indexValues = new double[indexDates.Length];
 
         }
         
@@ -70,7 +72,7 @@ namespace QuantSA
             int quarters = tenor.years * 4;
             newSwap.payFixed = payFixed ? -1 : 1;
             newSwap.indexDates = new Date[quarters];
-            newSwap.payDates = new Date[quarters];
+            newSwap.paymentDates = new Date[quarters];
             newSwap.index = FloatingIndex.JIBAR3M;
             newSwap.spreads = new double[quarters]; ;
             newSwap.accrualFractions = new double[quarters]; ;
@@ -86,7 +88,7 @@ namespace QuantSA
             {
                 date2 = startDate.AddMonths(3 * (i+1));
                 newSwap.indexDates[i] = new Date(date1);
-                newSwap.payDates[i] = new Date(date2);
+                newSwap.paymentDates[i] = new Date(date2);
                 newSwap.spreads[i] = 0.0;
                 newSwap.accrualFractions[i] = (date2- date1)/365.0;
                 newSwap.notionals[i] = notional;
@@ -116,11 +118,11 @@ namespace QuantSA
         }
 
         /// <summary>
-        /// Not used by this product.
+        /// 
         /// </summary>
         public override void Reset()
         {
-            // All floating rates will just be overwritten.  No need to do anything here.
+            indexValues = new double[indexDates.Length];
         }
         
         /// <summary>
@@ -140,9 +142,9 @@ namespace QuantSA
         public override List<Date> GetRequiredIndexDates(MarketObservable index)
         {
             List<Date> requiredDates = new List<Date>();
-            for (int i = 0; i < payDates.Length; i++)
+            for (int i = 0; i < paymentDates.Length; i++)
             {
-                if (payDates[i] > valueDate)
+                if (paymentDates[i] > valueDate)
                 {
                     requiredDates.Add(indexDates[i]);
                 }
@@ -158,9 +160,9 @@ namespace QuantSA
         public override void SetIndexValues(MarketObservable index, double[] indexValues)
         {
             int indexCounter = 0;
-            for (int i = 0; i < payDates.Length; i++)
+            for (int i = 0; i < paymentDates.Length; i++)
             {
-                if (payDates[i] > valueDate)
+                if (paymentDates[i] > valueDate)
                 {
                     this.indexValues[i] = indexValues[indexCounter];
                     indexCounter++;
@@ -175,14 +177,14 @@ namespace QuantSA
         public override List<Cashflow> GetCFs()
         {
             List<Cashflow> cfs = new List<Cashflow>();
-            for (int i = 0; i < payDates.Length; i++)
+            for (int i = 0; i < paymentDates.Length; i++)
             {
-                if (payDates[i] > valueDate)
+                if (paymentDates[i] > valueDate)
                 {
                     double fixedAmount = payFixed * notionals[i] * accrualFractions[i] * fixedRate;
                     double floatingAmount = -payFixed * notionals[i] * accrualFractions[i] * (indexValues[i] + spreads[i]);
-                    cfs.Add(new Cashflow(payDates[i], fixedAmount, ccy));
-                    cfs.Add(new Cashflow(payDates[i], floatingAmount, ccy));
+                    cfs.Add(new Cashflow(paymentDates[i], fixedAmount, ccy));
+                    cfs.Add(new Cashflow(paymentDates[i], floatingAmount, ccy));
                 }
             }
             return cfs;
@@ -193,7 +195,7 @@ namespace QuantSA
             ResultStore swapDetails = new ResultStore();
             swapDetails.Add("payFixed", payFixed);
             swapDetails.Add("indexDates", indexDates);
-            swapDetails.Add("payDates", payDates);
+            swapDetails.Add("payDates", paymentDates);
             swapDetails.Add("index", index.ToString());
             swapDetails.Add("spreads", spreads);
             swapDetails.Add("accrualFractions", accrualFractions);
@@ -201,6 +203,21 @@ namespace QuantSA
             swapDetails.Add("fixedRate", fixedRate);
             
             return swapDetails;
+        }
+
+        public override List<Currency> GetCashflowCurrencies()
+        {
+            return new List<Currency> { ccy };
+        }
+
+        public override List<Date> GetCashflowDates(Currency ccy)
+        {
+            List<Date> dates = new List<Date>();
+            for (int i = 0; i < paymentDates.Length; i++)
+            {
+                if (paymentDates[i] > valueDate) dates.Add(paymentDates[i]);
+            }
+            return dates;
         }
     }
 }

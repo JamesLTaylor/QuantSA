@@ -7,7 +7,7 @@
     <ProjectGuid>{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MonteCarlo</RootNamespace>
+    <RootNamespace>QuantSA.MonteCarlo</RootNamespace>
     <AssemblyName>QuantSA.MonteCarlo</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -70,7 +70,9 @@
     <Compile Include="NumeraireSimulator.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Products\FX\CCIRS.cs" />
+    <Compile Include="Products\Rates\FloatLeg.cs" />
     <Compile Include="Products\Rates\FixedLeg.cs" />
+    <Compile Include="Products\Rates\GeneralSwap.cs" />
     <Compile Include="Products\Rates\IRSwap.cs" />
     <Compile Include="Products\Swap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

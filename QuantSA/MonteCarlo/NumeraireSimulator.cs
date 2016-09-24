@@ -1,5 +1,6 @@
 ﻿using QuantSA;
 using System;
+using System.Collections.Generic;
 
 namespace MonteCarlo
 {
@@ -21,5 +22,8 @@ namespace MonteCarlo
         /// <param name="valueDate"></param>
         /// <returns></returns>
         public abstract double Numeraire(Date valueDate);
+
+        public abstract void SetNumeraireDates(List<Date> requiredDates);
+
     }
 }

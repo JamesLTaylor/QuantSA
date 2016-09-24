@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="CoordinatorTest.cs" />
     <Compile Include="DynamicCompileTest.cs" />
+    <Compile Include="FXProductTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RateProductTest.cs" />
   </ItemGroup>

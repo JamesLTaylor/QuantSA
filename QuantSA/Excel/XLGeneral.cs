@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using QuantSA.General;
 using ExcelDna.Integration;
-using QuantSA;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
+using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
 {
@@ -116,15 +109,15 @@ namespace QuantSA.Excel
                 if (resultStore.GetResultStore().IsDate(resultName))
                 {
                     Date[,] dates = resultStore.GetResultStore().GetDates(resultName);
-                    return ExcelUtilities.GetObjects(dates);
+                    return ExcelUtilities.ConvertToObjects(dates);
                 }
                 else if (resultStore.GetResultStore().IsString(resultName))
                 {
-                    return ExcelUtilities.GetObjects(resultStore.GetResultStore().GetStrings(resultName));
+                    return ExcelUtilities.ConvertToObjects(resultStore.GetResultStore().GetStrings(resultName));
                 }
                 else
                 {
-                    return ExcelUtilities.GetObjects(resultStore.GetResultStore().Get(resultName));
+                    return ExcelUtilities.ConvertToObjects(resultStore.GetResultStore().Get(resultName));
                 }
             }
             catch (Exception e)
@@ -139,17 +132,18 @@ namespace QuantSA.Excel
         Category = "QSA.General",
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
-        public static string CreateDatesAndRatesCurve([ExcelArgument(Description = "The name of the curve.")]string name,
-            [ExcelArgument(Description = "The dates at which the rates apply.")]double[] dates,
-            [ExcelArgument(Description = "The rates.")]double[] rates)
+        public static object CreateDatesAndRatesCurve([ExcelArgument(Description = "The name of the curve.")]string name,            
+            [ExcelArgument(Description = "The dates at which the rates apply.")]object[,] dates,
+            [ExcelArgument(Description = "The rates.")]double[] rates,
+            [ExcelArgument(Description = "The currency that this curve cen be used for discounting.  Leave blank to use for any currency.")]object[,] currency)
         {
             try {
-                var dDates = ExcelUtilities.GetDates(dates);
-                DatesAndRates curve = new DatesAndRates(dDates[0], dDates, rates);
+                var dDates = XU.GetDates1D(dates, "dates");
+                DatesAndRates curve = new DatesAndRates(XU.GetCurrency0D(currency, "currency"), dDates[0], dDates, rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {
-                return e.Message;
+                return XU.Error0D(e);
             }
         }
 

@@ -20,15 +20,17 @@ namespace QuantSA
         private Date anchorDate;
         private double[] dates;
         private double[] rates;
+        private Currency currency;
         
         /// <summary>
         /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
         /// </summary>
+        /// <param name="currency"></param>
         /// <param name="anchorDate">Date from which the curve applies.  Interpolation before this date won't work.</param>
         /// <param name="dates">Must be sorted in increasing order.</param>
-        /// <param name="rates"></param>
+        /// <param name="rates">The rates.  If the curve is going to be used to supply discount factors then these rates must be continuously compounded.</param>
         /// <param name="maximumDate">The date beyond which interpolation will not be allowed.  If it is null or left out then the last date in dates will be used.</param>
-        public DatesAndRates(Date anchorDate, Date[] dates, double[] rates, Date maximumDate=null)
+        public DatesAndRates(Currency currency, Date anchorDate, Date[] dates, double[] rates, Date maximumDate=null)
         {
             this.anchorDate = anchorDate;
             for (int i = 1; i<dates.Length; i++)
@@ -50,6 +52,7 @@ namespace QuantSA
             this.anchorDateValue = anchorDate;
             this.dates = datesList.ToArray();
             this.rates = ratesList.ToArray();
+            this.currency = currency;
         }
 
         public Date getAnchorDate()
@@ -81,6 +84,11 @@ namespace QuantSA
             if (date.value > dates.Last()) throw new ArgumentException("Interpolation date (" + date.ToString() + ") is after the last date on the curve.(" + (new Date(dates.Last())).ToString() +")");
             LinearSpline spline = LinearSpline.InterpolateSorted(dates, rates);
             return spline.Interpolate(date);            
+        }
+
+        public Currency GetCurrency()
+        {
+            return currency;
         }
     }
 }

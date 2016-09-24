@@ -27,6 +27,12 @@ namespace MonteCarlo
         public abstract void Reset();
 
         /// <summary>
+        /// A list of all possible currencies that cashlows may occur in.  This is used to make sure that there are simulators available to convert these to the value currency.
+        /// </summary>
+        /// <returns></returns>
+        public abstract List<Currency> GetCashflowCurrencies();
+
+        /// <summary>
         /// A list of all possible indices that can be required to get the cashflows on the product.
         /// </summary>
         /// <returns></returns>
@@ -41,6 +47,13 @@ namespace MonteCarlo
         public abstract List<Date> GetRequiredIndexDates(MarketObservable index);
 
         /// <summary>
+        /// Dates at which the cashflows in a given currency are likely to take place.  Will be used to ensure that the numeraire and possible FX rates are available on these dates.
+        /// </summary>
+        /// <param name="ccy">Only return the dates for the cashflows in this provided currency.</param>
+        /// <returns></returns>
+        public abstract List<Date> GetCashflowDates(Currency ccy);
+
+        /// <summary>
         /// Precursor to calling <see cref="GetCFs"/>.  Done in a separate step in case the indices come from multiple sources.
         /// </summary>
         /// <param name="index"></param>
@@ -52,6 +65,8 @@ namespace MonteCarlo
         /// </summary>
         /// <returns>2 column matrix of dates and amounts</returns>
         public abstract List<Cashflow> GetCFs();
+
+
 
     }
 }

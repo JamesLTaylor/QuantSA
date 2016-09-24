@@ -59,5 +59,15 @@ namespace MonteCarlo
         {
             // Nothing to reset.
         }
+
+        public override List<Currency> GetCashflowCurrencies()
+        {
+            return new List<Currency> { share.currency };
+        }
+
+        public override List<Date> GetCashflowDates(Currency ccy)
+        {
+            return new List<Date> { exerciseDate };
+        }
     }
 }

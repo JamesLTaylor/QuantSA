@@ -71,9 +71,6 @@ public class Ribbon : ExcelRibbon
             "View the code at: https://github.com/JamesLTaylor/QuantSA \n\n" +
             "Visit the website at www.cogn.co.za/QuantSA");
         em.ShowDialog();
-        //MessageBox.Show("QuantSA is an open source Quant Library customized for the South African Market\n\n" +
-        //    "View the code at: https://github.com/JamesLTaylor/QuantSA \n\n" + 
-        //    "Visit the website at www.cogn.co.za/QuantSA", "QuantSA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         return 0;
     }
 }

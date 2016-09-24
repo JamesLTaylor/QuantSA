@@ -7,7 +7,7 @@
     <ProjectGuid>{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Excel</RootNamespace>
+    <RootNamespace>QuantSA.Excel</RootNamespace>
     <AssemblyName>QuantSA.Excel</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -84,6 +84,7 @@
     <Compile Include="XLFX.cs" />
     <Compile Include="XLGeneral.cs" />
     <Compile Include="XLRates.cs" />
+    <Compile Include="XLValuation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

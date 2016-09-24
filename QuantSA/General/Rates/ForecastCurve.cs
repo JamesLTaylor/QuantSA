@@ -28,7 +28,7 @@ namespace QuantSA
         public ForecastCurve(Date anchorDate, FloatingIndex index, Date[] dates, double[] rates, Date maximumDate = null)
         {
             this.index = index;
-            dateAndRates = new DatesAndRates(anchorDate, dates, rates, maximumDate);
+            dateAndRates = new DatesAndRates(Currency.ANY, anchorDate, dates, rates, maximumDate);
         }
 
         public FloatingIndex GetFloatingIndex()

@@ -48,7 +48,7 @@ namespace MonteCarlo
             return false; // Provides no MarketObservables.
         }
 
-        public override void SetRequiredTimes(MarketObservable index, List<Date> requiredDates)
+        public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
         {
             // Do nothing, it has no state
         }
@@ -64,6 +64,11 @@ namespace MonteCarlo
         }
 
         public override void Prepare()
+        {
+            // Do nothing, it has no state.
+        }
+
+        public override void SetNumeraireDates(List<Date> requiredDates)
         {
             // Do nothing, it has no state.
         }

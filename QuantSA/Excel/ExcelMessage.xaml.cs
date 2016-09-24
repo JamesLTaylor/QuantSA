@@ -21,7 +21,7 @@ namespace QuantSA.Excel
     public partial class ExcelMessage : Window
     {
         public ExcelMessage(string title, string message)
-        {            
+        {
             InitializeComponent();
             Title = title;
             lblMessage.Content = message;

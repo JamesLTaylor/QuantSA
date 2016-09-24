@@ -77,7 +77,7 @@ namespace QuantSA
                 }
 
                 currentRates = currentRates.Multiply(multiplier);
-                results[simCounter] = new DatesAndRates(simulationDates[simCounter], curveDates, currentRates, simulationDates[simCounter].AddMonths(360));
+                results[simCounter] = new DatesAndRates(Currency.ANY, simulationDates[simCounter], curveDates, currentRates, simulationDates[simCounter].AddMonths(360));
                 previousRates = currentRates.Clone() as double[];
                 previousDate = new Date(currentDate);
             }

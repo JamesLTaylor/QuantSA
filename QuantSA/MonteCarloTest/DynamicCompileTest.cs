@@ -31,9 +31,9 @@ namespace MonteCarloTest
 
             // Value the runtime product
             Coordinator coordinator;
-            coordinator = new Coordinator(numeraire, new List<Product> { runtimeProduct }, new List<Simulator> { sim }, 10000);
+            coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 10000);
             watch = Stopwatch.StartNew();
-            double valueRuntime = coordinator.Value(valueDate);
+            double valueRuntime = coordinator.Value(new List<Product> { runtimeProduct }, valueDate);
             watch.Stop();
             long timeRuntime = watch.ElapsedMilliseconds;
 
@@ -43,9 +43,9 @@ namespace MonteCarloTest
             Product staticProduct = new EuropeanOption(shareCode, strike, exerciseDate);
 
             // Value the static product
-            coordinator = new Coordinator(numeraire, new List<Product> { staticProduct }, new List<Simulator> { sim }, 10000);
+            coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 10000);
             watch = Stopwatch.StartNew();
-            double valueStatic = coordinator.Value(valueDate);
+            double valueStatic = coordinator.Value(new List<Product> { staticProduct }, valueDate);
             watch.Stop();
             long timeStatic = watch.ElapsedMilliseconds;
 

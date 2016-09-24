@@ -1,6 +1,7 @@
 ﻿using ExcelDna.Integration;
 using QuantSA;
 using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
 {
@@ -12,12 +13,12 @@ namespace QuantSA.Excel
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static string FitCurveNelsonSiegel([ExcelArgument(Description = "Name of object")]String name,
-                [ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can set to zero.")]double anchorDate,
-                [ExcelArgument(Description = "dates at which rates apply.")]double[] dates,
+                [ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can set to zero.")]object[,] anchorDate,
+                [ExcelArgument(Description = "dates at which rates apply.")]object[,] dates,
                 [ExcelArgument(Description = "Rates to be fitted")]Double[] rates)
         {
             try {
-                NelsonSiegel curve = NelsonSiegel.Fit(ExcelUtilities.GetDates(anchorDate), ExcelUtilities.GetDates(dates), rates);
+                NelsonSiegel curve = NelsonSiegel.Fit(XU.GetDates0D(anchorDate, "anchorDate"), XU.GetDates1D(dates, "dates"), rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {
@@ -31,11 +32,11 @@ namespace QuantSA.Excel
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate")]String name,
-        [ExcelArgument(Description = "The dates at which interpolated rates are required.")]double[,] dates)
+        [ExcelArgument(Description = "The dates at which interpolated rates are required.")]object[,] dates)
         {
             try {
                 ICurve curve = ObjectMap.Instance.GetObjectFromID<ICurve>(name);
-                Date[,] dtDates = ExcelUtilities.GetDates(dates);
+                Date[,] dtDates = XU.GetDates2D(dates,"dates");
                 object[,] result = new object[dtDates.GetLength(0), dtDates.GetLength(1)];
 
                 for (int row = 0; row < dtDates.GetLength(0); row += 1)
@@ -59,7 +60,7 @@ namespace QuantSA.Excel
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object CreatePCACurveSimulator([ExcelArgument(Description = "")]string simulatorName,
-            [ExcelArgument(Description = "")]double anchorDate,
+            [ExcelArgument(Description = "")]object[,] anchorDate,
             [ExcelArgument(Description = "")]double[] initialRates,
             [ExcelArgument(Description = "")]double[] tenorMonths,
             [ExcelArgument(Description = "")]double[,] components,
@@ -71,7 +72,7 @@ namespace QuantSA.Excel
             {
                 int[] tenorMonthsInt = new int[tenorMonths.Length];
                 for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
-                PCACurveSimulator curveSimulator = new PCACurveSimulator(ExcelUtilities.GetDates(anchorDate), 
+                PCACurveSimulator curveSimulator = new PCACurveSimulator(XU.GetDates0D(anchorDate, "anchorDate"), 
                     initialRates, tenorMonthsInt, components, vols, multiplier);
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
@@ -88,7 +89,7 @@ namespace QuantSA.Excel
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "")]string simulatorName,
-            [ExcelArgument(Description = "")]double[] simulationDates,
+            [ExcelArgument(Description = "")]object[,] simulationDates,
             [ExcelArgument(Description = "")]double[] requiredTenorMonths)
 
         {
@@ -99,8 +100,8 @@ namespace QuantSA.Excel
 
 
                 PCACurveSimulator curveSimulator = ObjectMap.Instance.GetObjectFromID< PCACurveSimulator>(simulatorName);
-                double[,] result = curveSimulator.GetSimulatedRates(ExcelUtilities.GetDates(simulationDates), tenorMonthsInt);
-                return ExcelUtilities.GetObjects(result);
+                double[,] result = curveSimulator.GetSimulatedRates(XU.GetDates1D(simulationDates, "simulationDates"), tenorMonthsInt);
+                return ExcelUtilities.ConvertToObjects(result);
             }
 
             catch (Exception e)

@@ -27,6 +27,11 @@ namespace QuantSA
             return anchorDate;
         }
 
+        public Currency GetCurrency()
+        {
+            return Currency.ANY;
+        }
+
         public double GetDF(Date date)
         {
             if (date.date < anchorDate.date) throw new IndexOutOfRangeException("Discount factors are only defined at dates on or after the anchor date");

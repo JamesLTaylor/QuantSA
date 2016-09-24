@@ -69,10 +69,13 @@
     <Compile Include="Curves\NelsonSiegel.cs" />
     <Compile Include="DataAnalysis\PCA.cs" />
     <Compile Include="Date.cs" />
+    <Compile Include="FX\CurrencyPair.cs" />
+    <Compile Include="FX\FXForecastCurve.cs" />
     <Compile Include="ICurve.cs" />
     <Compile Include="IDiscountingSource.cs" />
     <Compile Include="IFloatingRateSource.cs" />
     <Compile Include="Formulae.cs" />
+    <Compile Include="IFXSource.cs" />
     <Compile Include="IProvidesResultStore.cs" />
     <Compile Include="MarketObservable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
