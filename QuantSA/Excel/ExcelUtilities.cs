@@ -335,9 +335,13 @@ namespace QuantSA.Excel
         /// <param name="obj"></param>
         /// <param name="inputName"></param>
         /// <returns></returns>
-        private static Currency GetCurrency(object obj, string inputName)
+        private static Currency GetCurrency(object obj, string inputName, bool isOptional)
         {
-            if (obj is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is ExcelMissing)
+                if (isOptional)
+                    return Currency.ANY;
+                else
+                    throw new ArgumentException(inputName + " cannot be empty.");
             if (obj is string)
             {
                 string strValue = (string)obj;
@@ -364,11 +368,11 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Currency GetCurrencies0D(object[,] values, string inputName)
+        public static Currency GetCurrencies0D(object[,] values, string inputName, bool isOptional=false)
         {            
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
-                return GetCurrency(values[0, 0], inputName);
+                return GetCurrency(values[0, 0], inputName, isOptional);
             }
             throw new ArgumentException(inputName + " must be a single cell with a string representing a currency.");
         }
@@ -388,14 +392,14 @@ namespace QuantSA.Excel
             {
                 Currency[] result = new Currency[values.GetLength(1)];
                 for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = GetCurrency(values[0, i], inputName);
+                    result[i] = GetCurrency(values[0, i], inputName, false);
                 return result;
             }
             else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
             {
                 Currency[] result = new Currency[values.GetLength(0)];
                 for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = GetCurrency(values[i, 0], inputName);
+                    result[i] = GetCurrency(values[i, 0], inputName, false);
                 return result;
             }
             else

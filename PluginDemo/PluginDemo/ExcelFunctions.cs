@@ -28,12 +28,12 @@ namespace PluginDemo
             Category = "QSDEMO",
             IsHidden = false)]
         public static object CreateDiscount([ExcelArgument(Description = "Name of object")]String name,
-            [ExcelArgument(Description = "")]double anchorDate,
+            [ExcelArgument(Description = "")]object[,] anchorDate,
             [ExcelArgument(Description = "")]double rate)
         {
             try
             {
-                PluginDiscount discount = new PluginDiscount(ExcelUtilities.GetDates(anchorDate), rate);                
+                PluginDiscount discount = new PluginDiscount(ExcelUtilities.GetDates0D(anchorDate, "anchorDate"), rate);                
                 return PluginConnection.objectMap.AddObject(name, discount);                
             }
             catch (Exception e)
@@ -47,12 +47,12 @@ namespace PluginDemo
         Category = "QSDEMO",
         IsHidden = false)]
         public static object GetSpecialDF([ExcelArgument(Description = "Name of discounting curve.")]String name,
-        [ExcelArgument(Description = "date")]double date)
+        [ExcelArgument(Description = "date")]object[,] date)
         {
             try
             {
                 IDiscountingSource discountCurve = PluginConnection.objectMap.GetObjectFromID<IDiscountingSource>(name);
-                return discountCurve.GetDF(ExcelUtilities.GetDates(date));
+                return discountCurve.GetDF(ExcelUtilities.GetDates0D(date, "date"));
             }
             catch (Exception e)
             {

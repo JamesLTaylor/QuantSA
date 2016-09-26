@@ -172,7 +172,7 @@ namespace QuantSA.Excel
                 IDiscountingSource discountCurveObj = XU.GetObjects0D<IDiscountingSource>(discountCurve, "discountCurve");
 
                 if (!(fixingCurve[0,0] is ExcelMissing)){
-                    throw new ArgumentException("fixingCurve must be lefy blank for now.  Later versions of QuantSA will allow explicit fixings to be set");
+                    throw new ArgumentException("fixingCurve must be left blank for now.  Later versions of QuantSA will allow explicit fixings to be set");
                 }
 
                 // Calculate the first fixing off the curve to use at all past dates.

@@ -40,11 +40,11 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="QauntSA.General">
-      <HintPath>..\..\QuantSA\Excel\bin\Debug\QauntSA.General.dll</HintPath>
-    </Reference>
     <Reference Include="QuantSA.Excel">
       <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.General">
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.General.dll</HintPath>
     </Reference>
     <Reference Include="QuantSA.Interfaces">
       <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Interfaces.dll</HintPath>

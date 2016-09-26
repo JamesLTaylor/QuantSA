@@ -22,6 +22,11 @@ namespace PluginDemo
             return anchorDate;
         }
 
+        public Currency GetCurrency()
+        {
+            return Currency.ANY;
+        }
+
         public double GetDF(Date date)
         {
             return 1 / (1 + rate * (date - anchorDate) / 365.0);

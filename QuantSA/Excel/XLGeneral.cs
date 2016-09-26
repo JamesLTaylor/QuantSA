@@ -127,28 +127,6 @@ namespace QuantSA.Excel
         }
 
 
-        [QuantSAExcelFunction(Description = "Create a curve of dates and rates.",
-        Name = "QSA.CreateDatesAndRatesCurve",
-        Category = "QSA.General",
-        IsHidden = false,
-        HelpTopic = "https://www.google.co.za")]
-        public static object CreateDatesAndRatesCurve([ExcelArgument(Description = "The name of the curve.")]string name,            
-            [ExcelArgument(Description = "The dates at which the rates apply.")]object[,] dates,
-            [ExcelArgument(Description = "The rates.")]double[] rates,
-            [ExcelArgument(Description = "The currency that this curve cen be used for discounting.  Leave blank to use for any currency.")]object[,] currency)
-        {
-            try {
-                var dDates = XU.GetDates1D(dates, "dates");
-                DatesAndRates curve = new DatesAndRates(XU.GetCurrencies0D(currency, "currency"), dDates[0], dDates, rates);
-                return ObjectMap.Instance.AddObject(name, curve);
-            } catch (Exception e)
-            {
-                return XU.Error0D(e);
-            }
-        }
-
-
-
 
         [QuantSAExcelFunction(Description = "Get the covariance in log returns from a blob of curves.",
         Name = "QSA.CovarianceFromCurves",

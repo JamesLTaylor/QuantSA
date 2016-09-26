@@ -9,7 +9,7 @@ namespace QuantSA.Excel
     {
         [QuantSAExcelFunction(Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve.",
         Name = "QSA.FitCurveNelsonSiegel",
-        Category = "QSA.General",
+        Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static string FitCurveNelsonSiegel([ExcelArgument(Description = "Name of object")]String name,
@@ -28,7 +28,7 @@ namespace QuantSA.Excel
 
         [QuantSAExcelFunction(Description = "Find the interpolated value of any QuantSA created curve",
         Name = "QSA.CurveInterp",
-        Category = "QSA.General",
+        Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate")]String name,
@@ -56,7 +56,7 @@ namespace QuantSA.Excel
 
         [ExcelFunction(Description = "",
         Name = "QSA.CreatePCACurveSimulator",
-        Category = "QSA.General",
+        Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object CreatePCACurveSimulator([ExcelArgument(Description = "")]string simulatorName,
@@ -85,7 +85,7 @@ namespace QuantSA.Excel
 
         [ExcelFunction(Description = "",
         Name = "QSA.PCACurveSimulatorGetRates",
-        Category = "QSA.General",
+        Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
         public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "")]string simulatorName,
@@ -109,6 +109,30 @@ namespace QuantSA.Excel
                 return ExcelUtilities.Error2D(e);
             }
         }
+
+
+        [QuantSAExcelFunction(Description = "Create a curve of dates and rates.",
+        Name = "QSA.CreateDatesAndRatesCurve",
+        Category = "QSA.Curves",
+        IsHidden = false,
+        HelpTopic = "https://www.google.co.za")]
+        public static object CreateDatesAndRatesCurve([ExcelArgument(Description = "The name of the curve.")]string name,
+            [ExcelArgument(Description = "The dates at which the rates apply.")]object[,] dates,
+            [ExcelArgument(Description = "The rates.")]double[] rates,
+            [ExcelArgument(Description = "Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency. (Currency)")]object[,] currency)
+        {
+            try
+            {
+                var dDates = XU.GetDates1D(dates, "dates");
+                DatesAndRates curve = new DatesAndRates(XU.GetCurrencies0D(currency, "currency", true), dDates[0], dDates, rates);
+                return ObjectMap.Instance.AddObject(name, curve);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
 
 
     }
