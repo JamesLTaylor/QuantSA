@@ -237,6 +237,7 @@ public class MyAddIn : IExcelAddIn
     private void ExposePlugins()
     {
         string dllDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\Plugins";
+        if (!Directory.Exists(dllDirectory)) return; // No plugin folder, return without doing anything.
         string[] fileEntries = Directory.GetFiles(dllDirectory);
         foreach (string file in fileEntries)
         {
