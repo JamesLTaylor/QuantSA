@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPerformance", "TestPerformance\TestPerformance.csproj", "{46C8CF2A-F454-405E-9898-E73C8106A3F8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSAInterfaces", "QuantSAInterfaces\QuantSAInterfaces.csproj", "{AB407873-268C-4AE1-B1FB-62B9830DF979}"
 EndProject
 Global
@@ -95,18 +93,6 @@ Global
 		{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}.Release|x64.Build.0 = Release|Any CPU
 		{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}.Release|x86.ActiveCfg = Release|Any CPU
 		{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}.Release|x86.Build.0 = Release|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Debug|x64.Build.0 = Debug|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Debug|x86.Build.0 = Debug|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Release|x64.ActiveCfg = Release|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Release|x64.Build.0 = Release|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Release|x86.ActiveCfg = Release|Any CPU
-		{46C8CF2A-F454-405E-9898-E73C8106A3F8}.Release|x86.Build.0 = Release|Any CPU
 		{AB407873-268C-4AE1-B1FB-62B9830DF979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB407873-268C-4AE1-B1FB-62B9830DF979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB407873-268C-4AE1-B1FB-62B9830DF979}.Debug|x64.ActiveCfg = Debug|Any CPU

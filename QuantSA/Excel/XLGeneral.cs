@@ -139,7 +139,7 @@ namespace QuantSA.Excel
         {
             try {
                 var dDates = XU.GetDates1D(dates, "dates");
-                DatesAndRates curve = new DatesAndRates(XU.GetCurrency0D(currency, "currency"), dDates[0], dDates, rates);
+                DatesAndRates curve = new DatesAndRates(XU.GetCurrencies0D(currency, "currency"), dDates[0], dDates, rates);
                 return ObjectMap.Instance.AddObject(name, curve);
             } catch (Exception e)
             {

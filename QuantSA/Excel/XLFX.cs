@@ -26,8 +26,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                FXForecastCurve fxForecastCurve = new FXForecastCurve(XU.GetCurrency0D(baseCurrency, "baseCurrency"),
-                    XU.GetCurrency0D(counterCurrency, "counterCurrency"), XU.GetDoubles0D(fxRateAtAnchorDate, "fxRateAtAnchorDate"),
+                FXForecastCurve fxForecastCurve = new FXForecastCurve(XU.GetCurrencies0D(baseCurrency, "baseCurrency"),
+                    XU.GetCurrencies0D(counterCurrency, "counterCurrency"), XU.GetDoubles0D(fxRateAtAnchorDate, "fxRateAtAnchorDate"),
                     XU.GetObjects0D<IDiscountingSource>(baseCurrencyFXBasisCurve, "baseCurrencyFXBasisCurve"),
                     XU.GetObjects0D<IDiscountingSource>(counterCurrencyFXBasisCurve, "counterCurrencyFXBasisCurve"));
                 return XU.AddObject(name, fxForecastCurve);

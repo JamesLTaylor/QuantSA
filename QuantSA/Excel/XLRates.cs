@@ -26,9 +26,60 @@ namespace QuantSA.Excel
         {
             try
             {
-                FixedLeg fixedLeg = new FixedLeg(XU.GetCurrency0D(currency, "currency"), XU.GetDates1D(paymentDates, "paymentDates"), 
+                FixedLeg fixedLeg = new FixedLeg(XU.GetCurrencies0D(currency, "currency"), XU.GetDates1D(paymentDates, "paymentDates"), 
                     XU.GetDoubles1D(notionals, "notionals"), XU.GetDoubles1D(rates, "rates"), XU.GetDoubles1D(accrualFractions, "accrualFractions")); 
                 return ObjectMap.Instance.AddObject(name, fixedLeg);
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);
+            }
+        }
+
+        [QuantSAExcelFunction(Description = "Create a general floating leg of a swap.",
+        Name = "QSA.CreateFloatLeg",
+        Category = "QSA.Rates",
+        IsHidden = false,
+        HelpTopic = "http://cogn.co.za/QuantSA/CreateFloatLeg.html")]
+        public static object CreateFloatLeg([ExcelArgument(Description = "Name of object")]String name,
+        [ExcelArgument(Description = "The currency of the cashflows. (Currency)")]object[,] currency,
+        [ExcelArgument(Description = "A string describing the floating index. (FloatingIndex)")]object[,] floatingIndex,
+        [ExcelArgument(Description = "The dates on which the floating indices reset.")]object[,] resetDates,
+        [ExcelArgument(Description = "The dates on which the payments are made.")]object[,] paymentDates,
+        [ExcelArgument(Description = "The notionals on which the payments are based.")]object[,] notionals,
+        [ExcelArgument(Description = "The spreads that apply to the simple floating rates on each of the payment dates.")]object[,] spreads,
+        [ExcelArgument(Description = "The accrual fraction to be used in calulating the fixed flow.  Will depend on the daycount convention agreed in the contract.")]object[,] accrualFractions)
+        {
+            try
+            {
+                FloatingIndex index = XU.GetFloatingIndices0D(floatingIndex, "floatingIndex");
+                FloatingIndex[] floatingIndices = Enumerable.Range(1, resetDates.Length).Select(i => index).ToArray();
+                FloatLeg floatLeg = new FloatLeg(XU.GetCurrencies0D(currency, "currency"), XU.GetDates1D(paymentDates, "paymentDates"),
+                    XU.GetDoubles1D(notionals, "notionals"), XU.GetDates1D(resetDates, "resetDates"), 
+                    floatingIndices, XU.GetDoubles1D(spreads, "spreads"), XU.GetDoubles1D(accrualFractions, "accrualFractions"));
+                return ObjectMap.Instance.AddObject(name, floatLeg);
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);
+            }
+        }
+
+        [QuantSAExcelFunction(Description = "Create a general set of cashflows that can be valued like any other product.",
+        Name = "QSA.CreateCashLeg",
+        Category = "QSA.Rates",
+        IsHidden = false,
+        HelpTopic = "http://cogn.co.za/QuantSA/CreateCashLeg.html")]
+        public static object CreateCashLeg([ExcelArgument(Description = "Name of object")]String name,
+            [ExcelArgument(Description = "The dates on which the cashflows take place.")]object[,] paymentDates,
+            [ExcelArgument(Description = "The sizes of the cashflows.  Positive for cashflows that are received.")]object[,] amounts,
+            [ExcelArgument(Description = "The currencies of the cashflows. (Currency)")]object[,] currencies)
+        {
+            try
+            {
+                CashLeg cashLeg = new CashLeg(XU.GetDates1D(paymentDates, "paymentDates"), XU.GetDoubles1D(amounts, "amounts"),
+                    XU.GetCurrencies1D(currencies, "currencies"));
+                return XU.AddObject(name, cashLeg);
             }
             catch (Exception e)
             {
@@ -103,6 +154,45 @@ namespace QuantSA.Excel
                 return ExcelUtilities.Error0D(e);
             }
         }
+
+
+        [QuantSAExcelFunction(Description = "Create a curve to forecast floating interest rates based on a discount curve.",
+            Name = "QSA.CreateRateForecastCurveFromDiscount",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://cogn.co.za/QuantSA/CreateRateForecastCurveFromDiscount.html")]
+        public static object CreateRateForecastCurveFromDiscount([ExcelArgument(Description = "name")]string name,
+            [ExcelArgument(Description = "The floating rate that this curve will be used to forecast. (FloatingIndex)")]object[,] floatingRateIndex,
+            [ExcelArgument(Description = "The name of the discount curve that will be used to obtain the forward rates.")]object[,] discountCurve,
+            [ExcelArgument(Description = "Optional: The name of the fixing curve for providing floating rates at dates before the anchor date of the discount curve.  If it is left out then the first floating rate implied by the discount curve will be used for all historical fixes.")]object[,] fixingCurve)
+        {
+            try
+            {
+                FloatingIndex index = XU.GetFloatingIndices0D(floatingRateIndex, "floatingRateIndex");
+                IDiscountingSource discountCurveObj = XU.GetObjects0D<IDiscountingSource>(discountCurve, "discountCurve");
+
+                if (!(fixingCurve[0,0] is ExcelMissing)){
+                    throw new ArgumentException("fixingCurve must be lefy blank for now.  Later versions of QuantSA will allow explicit fixings to be set");
+                }
+
+                // Calculate the first fixing off the curve to use at all past dates.
+                double df1 = 1.0;
+                Date laterDate = discountCurveObj.getAnchorDate().AddTenor(index.tenor);
+                double df2 = discountCurveObj.GetDF(laterDate);
+                double dt = (laterDate - discountCurveObj.getAnchorDate()) / 365.0;
+                double rate = (df1 / df2 - 1) / dt;
+
+                ForecastCurveFromDiscount forecastCurve = new ForecastCurveFromDiscount(discountCurveObj, index,
+                    new FloatingRateFixingCurve1Rate(rate, index));
+
+                return XU.AddObject(name, forecastCurve);                
+            }
+            catch (Exception e)
+            {
+                return ExcelUtilities.Error0D(e);
+            }
+        }
+
 
         [QuantSAExcelFunction(Description = "Get the discount factor from a curve object.  The DF will be from the anchor date until the supplied date.",
         Name = "QSA.GetDF",

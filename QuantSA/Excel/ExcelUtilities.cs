@@ -330,6 +330,32 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
+        /// Used by the various GetCurrencies utility methods.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="inputName"></param>
+        /// <returns></returns>
+        private static Currency GetCurrency(object obj, string inputName)
+        {
+            if (obj is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is string)
+            {
+                string strValue = (string)obj;
+                switch (strValue.ToUpper())
+                {
+                    case "ZAR": return Currency.ZAR;
+                    case "USD": return Currency.USD;
+                    case "EUR": return Currency.EUR;
+                    default: throw new ArgumentException(strValue + " is not a known currency in input: " + inputName);
+                }
+            }
+            else
+                throw new ArgumentException(inputName + ": Currencies must be strings: ");
+
+
+        }
+
+        /// <summary>
         /// Get a <see cref="Currency"/> from a string.
         /// </summary>
         /// <remarks>
@@ -338,22 +364,70 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Currency GetCurrency0D(object[,] values, string inputName)
+        public static Currency GetCurrencies0D(object[,] values, string inputName)
+        {            
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                return GetCurrency(values[0, 0], inputName);
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a string representing a currency.");
+        }
+
+        /// <summary>
+        /// Get an array of <see cref="Currency"/> from an excel range of strings.
+        /// </summary>
+        /// <remarks>
+        /// This is implemented in the Excel layer rather than in <see cref="Currency"/> itself to make sure that users in the library don't use strings to construct things.
+        /// </remarks>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static Currency[] GetCurrencies1D(object[,] values, string inputName)
         {
-            if (values[0,0] is ExcelMissing) throw new ArgumentException(inputName + " must be a single cell with a string representing a currency.");
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            {
+                Currency[] result = new Currency[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                    result[i] = GetCurrency(values[0, i], inputName);
+                return result;
+            }
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                Currency[] result = new Currency[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                    result[i] = GetCurrency(values[i, 0], inputName);
+                return result;
+            }
+            else
+                throw new ArgumentException(inputName + " must be a single row or column of strings representing currencies.");
+        }
+
+        /// <summary>
+        /// Get a <see cref="FloatingIndex"/> from a string.
+        /// </summary>
+        /// <remarks>
+        /// This is implemented in the Excel layer rather than in <see cref="FloatingIndex"/> itself to make sure that users in the library don't use strings to construct things.
+        /// </remarks>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static FloatingIndex GetFloatingIndices0D(object[,] values, string inputName)
+        {
+            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
                 string strValue = (string)values[0, 0];
                 switch (strValue.ToUpper())
                 {
-                    case "ZAR": return Currency.ZAR;
-                    case "USD": return Currency.USD;
-                    case "EUR": return Currency.EUR;
-                    default: throw new ArgumentException(strValue + "is not a known currency in input: " + inputName);
+                    case "JIBAR3M": return FloatingIndex.JIBAR3M;
+                    case "JIBAR6M": return FloatingIndex.JIBAR6M;
+                    case "LIBOR3M": return FloatingIndex.LIBOR3M;
+                    default: throw new ArgumentException(strValue + "is not a known floating rate index in input: " + inputName);
                 }
             }
-            throw new ArgumentException(inputName + " must be a single cell with a string representing a currency.");
+            throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
         }
+
 
         /// <summary>
         /// Convert a string to a tenor object
@@ -405,37 +479,68 @@ namespace QuantSA.Excel
             }
             return new Tenor(days, weeks, months, years);
         }
-       
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="doubleValue"></param>
-        /// <param name="argName"></param>
-        /// <returns></returns>
-        public static int GetInts(double doubleValue, string argName="")
-        {
-            double intValue = Math.Round(doubleValue);
-            if (Math.Abs(doubleValue - intValue) > 1e-10) { throw new ArgumentException(argName + " value must be a whole number"); }
-            return (int)intValue;
-        }
 
-        /// <summary>
-        /// Rounds the values and puts them into an array of ints.  Needed in Excel since taking in ints can be problematic.
-        /// </summary>
-        /// <param name="doubleArray"></param>
-        /// <returns></returns>
-        public static int[] GetInts(double[] doubleArray, string argName = "")
+        private static int GetInt(object obj, string inputName)
         {
-            int[] result = new int[doubleArray.Length];
-            for (int i = 0; i < doubleArray.Length; i++)
+            if (obj is ExcelMissing)
+                throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is double)
             {
-                double intValue = Math.Round(doubleArray[i]);
-                if (Math.Abs(doubleArray[i] - intValue) > 1e-10) { throw new ArgumentException(argName + " values must be a whole numbers"); }
-                result[i] = (int)intValue;
+                double doubleValue = (double)obj;
+                double intValue = Math.Round(doubleValue);
+                if (Math.Abs(doubleValue - intValue) > 1e-10) { throw new ArgumentException(inputName + " cannot contain fractions."); }
+                return (int)intValue;
             }
-            return result;
+            throw new ArgumentException(inputName + " must have numbers.");
         }
 
+
+        /// <summary>
+        /// Get a single int value from an Excel number.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static int GetInts0D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                return GetInt(values[0, 0], inputName);
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a whole number");
+        }
+
+        /// <summary>
+        /// Gets an array of <see cref="int"/>s from whole number is Excel.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static int[] GetInts1D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            {
+                int[] result = new int[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                {
+                    result[i] = GetInt(values[0, i], inputName);
+                }
+                return result;
+            }
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                int[] result = new int[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                {                 
+                    result[i] = GetInt(values[i, 0], inputName);
+                }
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException(inputName + " must be a single row or column of whole numbers.");
+            }
+        }
 
         /// <summary>
         /// 

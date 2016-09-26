@@ -22,7 +22,7 @@ namespace QuantSA.MonteCarlo
         Date valueDate;
         double[] indexValues;
 
-        public FloatLeg(Currency ccy, Date[] paymentDates, double[] notionals, Date[] resetDates, MarketObservable[] floatingIndices, 
+        public FloatLeg(Currency ccy, Date[] paymentDates, double[] notionals, Date[] resetDates, FloatingIndex[] floatingIndices, 
             double[] spreads, double[] accrualFractions)
         {
             this.ccy = ccy;

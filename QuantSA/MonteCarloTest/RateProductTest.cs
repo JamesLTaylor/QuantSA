@@ -96,7 +96,7 @@ namespace QuantSA
 
             FloatLeg floatLeg = new FloatLeg(Currency.ZAR, paymentDates, new double[] { 1e6, 1e6, 1e6, 1e6 },
                 resetDates,
-                new MarketObservable[] { FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M },
+                new FloatingIndex[] { FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M },
                 new double[] { 0, 0, 0, 0 }, accrualFractions);
 
             // Set up the model
