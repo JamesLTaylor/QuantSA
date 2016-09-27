@@ -40,9 +40,11 @@ namespace QuantSA
 
 
         /// <summary>
-        /// Produce a vector of curves where the element at index i is a realization of a simulation at simulationDates i.  If you require the rates directly use <see cref="GetSimulatedRates(Date[])"/>
+        /// Produce a vector of curves where the element at index i is a realization of a simulation at 
+        /// simulationDates i.  If you require the rates directly use <see cref="GetSimulatedRates(Date[])"/>
         /// </summary>
-        /// <param name="simulationDates">Dates on which the simulation is run.  Must all be greater than the anchor date.</param>
+        /// <param name="simulationDates">Dates on which the simulation is run.  Must all be greater than the 
+        /// anchor date.</param>
         /// <returns></returns>
         public ICurve[] GetSimulatedCurves(Date[] simulationDates)
         {
@@ -69,8 +71,7 @@ namespace QuantSA
                 // Iterate thrrough the dates on the curve
                 for (int i = 0; i < initialRates.Length; i++)
                 {
-                    //TODO: Add months properly
-                    curveDates[i] = new Date(simulationDates[0] + 30 * tenorMonths[i]);
+                    curveDates[i] = simulationDates[simCounter].AddMonths(tenorMonths[i]);
                     //TODO: add mean correction.
                     double exponent = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
                     currentRates[i] = previousRates[i] * Math.Exp(exponent);
@@ -100,8 +101,7 @@ namespace QuantSA
             {
                 for (int i = 0; i < requiredTenorMonths.Length; i++)
                 {
-                    //TODO: Add months properly
-                    Date curveDate = new Date(simulationDates[0] + 30 * tenorMonths[i]);
+                    Date curveDate = simulationDates[simCounter].AddMonths(tenorMonths[i]);
                     rates[simCounter, i] = curves[simCounter].InterpAtDate(curveDate);
                 }
             }

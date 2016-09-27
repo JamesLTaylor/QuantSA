@@ -182,7 +182,7 @@ public class MyAddIn : IExcelAddIn
     public static Dictionary<string, MemberInfo> GetQuantSAFunctions()
     {
         Dictionary<string, MemberInfo> quantSAFunctions = new Dictionary<string, MemberInfo>();
-        Assembly excelAssemby = Assembly.GetAssembly(typeof(BasicFunctions));
+        Assembly excelAssemby = Assembly.GetAssembly(typeof(XLGeneral));
         Type[] types = null;
         try
         {

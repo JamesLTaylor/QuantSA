@@ -73,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddIn.cs" />
-    <Compile Include="BasicFunctions.cs" />
     <Compile Include="ExcelUtilities.cs" />
     <Compile Include="ExcelMessage.xaml.cs">
       <DependentUpon>ExcelMessage.xaml</DependentUpon>

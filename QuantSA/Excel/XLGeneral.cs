@@ -2,6 +2,7 @@
 using System.Text;
 using ExcelDna.Integration;
 using XU = QuantSA.Excel.ExcelUtilities;
+using MathNet.Numerics.Interpolation;
 
 namespace QuantSA.Excel
 {
@@ -36,10 +37,11 @@ namespace QuantSA.Excel
         
         [QuantSAExcelFunction(Description = "Create a C# representation of data in a spreadsheet.",
         Name = "QSA.GetCSArray",
-        Category = "QSA.Developer",
-        IsHidden = false)]
+        Category = "QSA.General",
+        IsHidden = false,
+            HelpTopic = "http://cogn.co.za/QuantSA/GetCSArray.html")]
         public static object[,] GetCSArray([ExcelArgument(Description = "The block of values you want to use in C#.")]object[,] data,
-            double decimalPlaces)
+            [ExcelArgument(Description = "The number of decimal places each value must have in the string.")]double decimalPlaces)
         {
             try
             {
@@ -74,7 +76,7 @@ namespace QuantSA.Excel
         Name = "QSA.GetAvailableResults",
         Category = "QSA.General",
         IsHidden = false,
-        HelpTopic = "https://www.google.co.za")]
+        HelpTopic = "http://cogn.co.za/QuantSA/GetAvailableResults.html")]
         public static object[,] GetAvailableResults([ExcelArgument(Description = "The name of the results object as returned by call to another QuantSA function")]string objectName)
         {
             try
@@ -98,7 +100,7 @@ namespace QuantSA.Excel
         Name = "QSA.GetResults",
         Category = "QSA.General",
         IsHidden = false,
-        HelpTopic = "https://www.google.co.za")]
+        HelpTopic = "http://cogn.co.za/QuantSA/GetResults.html")]
         public static object[,] GetResults([ExcelArgument(Description = "The name of the results object as returned by a call to another QuantSA function")]string objectName,
             [ExcelArgument(Description = "The name of the result required.  Use QSA.GetAvailableResults to get a list of all availabale results in this object.")]string resultName)
         {
@@ -127,27 +129,26 @@ namespace QuantSA.Excel
         }
 
 
-
-        [QuantSAExcelFunction(Description = "Get the covariance in log returns from a blob of curves.",
-        Name = "QSA.CovarianceFromCurves",
-        Category = "QSA.General",
+        [QuantSAExcelFunction(Description = "A linear interpolator.",
         IsHidden = false,
-        HelpTopic = "https://www.google.co.za")]
-        public static double[,] CovarianceFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves)
-        {
-            double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.CovarianceFromCurves(curves);
-            return covMatrix;
-        }
-
-        [QuantSAExcelFunction(Description = "Perform a PCA on the log returns of a blob of curves.",
-        Name = "QSA.PCAFromCurves",
+        Name = "QSA.InterpLinear",
         Category = "QSA.General",
-        IsHidden = false,
-        HelpTopic = "https://www.google.co.za")]
-        public static double[,] PCAFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves)
+        HelpTopic = "http://cogn.co.za/QuantSA/InterpLinear.html")]
+        public static object[,] InterpLinear([ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]double[] knownX,
+            [ExcelArgument(Description = "A vector of y values.  Must be the same length as knownX")]Double[] knownY,
+            [ExcelArgument(Description = "x values at which interpolation is required.")]Double[,] requiredX)
         {
-            double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.PCAFromCurves(curves);
-            return covMatrix;
+            LinearSpline spline = LinearSpline.InterpolateSorted(knownX, knownY);
+            object[,] result = new object[requiredX.GetLength(0), requiredX.GetLength(1)];
+
+            for (int x = 0; x < requiredX.GetLength(0); x += 1)
+            {
+                for (int y = 0; y < requiredX.GetLength(1); y += 1)
+                {
+                    result[x, y] = spline.Interpolate(requiredX[x, y]);
+                }
+            }
+            return result;
         }
     }
 }

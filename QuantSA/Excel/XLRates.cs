@@ -116,10 +116,10 @@ namespace QuantSA.Excel
 
         [QuantSAExcelFunction(Description = "Basic swap valuation.  Uses the same curve for forecasting and discounting and uses the 3 month rate off the curve as the Jibar Fix.",
         Name = "QSA.ValueZARSwap",
-        Category = "QSA.General",
+        Category = "QSA.Rates",
         IsHidden = false,
         HelpTopic = "http://cogn.co.za/QuantSA/ValueZARSwap.html")]
-        public static object ValueZARSwap1Curve([ExcelArgument(Description = "Swap")]String swap,
+        public static object ValueZARSwap1Curve([ExcelArgument(Description = "The name of the swap.")]String swap,
             [ExcelArgument(Description = "The date on which valuation is required.  Cannot be before the anchor date of the curve.")]object[,] valueDate,
             [ExcelArgument(Description = "The discounting curve.  Will also be used for forecasting Jibar and providing the most recent required Jibar fix.")]string curve)
         {
@@ -198,7 +198,7 @@ namespace QuantSA.Excel
         Name = "QSA.GetDF",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/ValueZARSwap.html")]
+        HelpTopic = "http://cogn.co.za/QuantSA/GetDF.html")]
         public static object GetDF([ExcelArgument(Description = "The curve from which the DF is required.")]String curve,
             [ExcelArgument(Description = "The date on which the discount factor is required.  Cannot be before the anchor date of the curve.")]object[,] date)
         {

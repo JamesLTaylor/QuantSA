@@ -56,7 +56,7 @@ namespace QuantSA.MonteCarlo
             List<Date> requiredDates = new List<Date>();
             for (int i = 0; i < paymentDates.Length; i++)
             {
-                if (paymentDates[i] > valueDate)
+                if (paymentDates[i] > valueDate && index.Equals(floatingIndices[i]))
                 {
                     requiredDates.Add(resetDates[i]);
                 }
@@ -69,7 +69,7 @@ namespace QuantSA.MonteCarlo
             int indexCounter = 0;
             for (int i = 0; i < paymentDates.Length; i++)
             {
-                if (paymentDates[i] > valueDate)
+                if (paymentDates[i] > valueDate && index.Equals(floatingIndices[i]))
                 {
                     this.indexValues[i] = indexValues[indexCounter];
                     indexCounter++;
