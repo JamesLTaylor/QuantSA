@@ -24,7 +24,7 @@ namespace QuantSA.General.DataAnalysis
             return result;
         }
 
-        public static double[,] PCAFromCurves(double[,] curves)
+        public static double[,] PCAFromCurves(double[,] curves, bool useReturns)
         {
             //TODO: Rather return a ResultStore with eigen vectors and eigen values separate
             // Find log returns
@@ -33,7 +33,10 @@ namespace QuantSA.General.DataAnalysis
             {
                 for (int col = 0; col < curves.GetLength(1); col++)
                 {
-                    data[row, col] = Math.Log(curves[row + 1, col] / curves[row, col]);
+                    if (useReturns)
+                        data[row, col] = Math.Log(curves[row + 1, col] / curves[row, col]);
+                    else
+                        data[row, col] = curves[row + 1, col] - curves[row, col];
                 }
             }
 

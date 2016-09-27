@@ -16,6 +16,7 @@ namespace QuantSA
         private double[] vols;        
         private double[] initialRates;
         private double multiplier;
+        private bool useRelative;
 
         public Date anchorDate { get; private set; }
 
@@ -26,7 +27,8 @@ namespace QuantSA
         /// <param name="tenorMonths"></param>
         /// <param name="components"></param>
         /// <param name="vols"></param>
-        public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, double[] vols, double multiplier)
+        public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, 
+            double[] vols, double multiplier, bool useRelative)
         {
             if (multiplier < 0.1 || multiplier > 10) throw new ArgumentException("multiplier should be close to 1.0 for the simulation to make sense");
             //TODO: Check that these are all the right size.            
@@ -35,7 +37,8 @@ namespace QuantSA
             this.tenorMonths = tenorMonths;
             this.components = components;
             this.vols = vols;
-            this.multiplier = multiplier;            
+            this.multiplier = multiplier;
+            this.useRelative = useRelative;            
         }
 
 
@@ -72,9 +75,17 @@ namespace QuantSA
                 for (int i = 0; i < initialRates.Length; i++)
                 {
                     curveDates[i] = simulationDates[simCounter].AddMonths(tenorMonths[i]);
-                    //TODO: add mean correction.
-                    double exponent = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
-                    currentRates[i] = previousRates[i] * Math.Exp(exponent);
+                    if (useRelative)
+                    {
+                        //TODO: add mean correction.
+                        double exponent = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
+                        currentRates[i] = previousRates[i] * Math.Exp(exponent);
+                    }
+                    else
+                    {
+                        double change = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
+                        currentRates[i] = Math.Max(0.0, previousRates[i] + change);
+                    }
                 }
 
                 currentRates = currentRates.Multiply(multiplier);

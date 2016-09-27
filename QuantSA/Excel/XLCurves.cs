@@ -7,31 +7,31 @@ namespace QuantSA.Excel
 {
     public static class XLCurves
     {
-        [QuantSAExcelFunction(Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve.",
+        [QuantSAExcelFunction(Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve. (Curve)",
         Name = "QSA.FitCurveNelsonSiegel",
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "http://cogn.co.za/QuantSA/FitCurveNelsonSiegel.html")]
-        public static string FitCurveNelsonSiegel([ExcelArgument(Description = "Name of object")]String name,
-                [ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can set to zero.")]object[,] anchorDate,
-                [ExcelArgument(Description = "dates at which rates apply.")]object[,] dates,
-                [ExcelArgument(Description = "Rates to be fitted")]Double[] rates)
+        public static object FitCurveNelsonSiegel([ExcelArgument(Description = "Name of fitted curve.")]String name,
+                [ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can be set to zero.")]object[,] anchorDate,
+                [ExcelArgument(Description = "The dates at which rates apply.")]object[,] dates,
+                [ExcelArgument(Description = "The rates to be fitted")]Double[] rates)
         {
             try {
                 NelsonSiegel curve = NelsonSiegel.Fit(XU.GetDates0D(anchorDate, "anchorDate"), XU.GetDates1D(dates, "dates"), rates);
-                return ObjectMap.Instance.AddObject(name, curve);
+                return XU.AddObject(name, curve);
             } catch (Exception e)
             {
-                return e.Message;
+                return XU.Error0D(e);
             }
         }
 
-        [QuantSAExcelFunction(Description = "Find the interpolated value of any QuantSA created curve",
+        [QuantSAExcelFunction(Description = "Find the interpolated value of any QuantSA created curve.",
         Name = "QSA.CurveInterp",
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "http://cogn.co.za/QuantSA/CurveInterp.html")]
-        public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate")]String name,
+        public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate. (Curve)")]String name,
         [ExcelArgument(Description = "The dates at which interpolated rates are required.")]object[,] dates)
         {
             try {
@@ -49,49 +49,48 @@ namespace QuantSA.Excel
                 return result;
             } catch (Exception e)
             {
-                return ExcelUtilities.Error2D(e);
+                return XU.Error2D(e);
             }
         }
 
 
-        [ExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "Create a curve simulator based on principle components.",
         Name = "QSA.CreatePCACurveSimulator",
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "http://cogn.co.za/QuantSA/CreateDatesAndRatesCurve.html")]
-        public static object CreatePCACurveSimulator([ExcelArgument(Description = "")]string simulatorName,
-            [ExcelArgument(Description = "")]object[,] anchorDate,
-            [ExcelArgument(Description = "")]double[] initialRates,
-            [ExcelArgument(Description = "")]double[] tenorMonths,
-            [ExcelArgument(Description = "")]double[,] components,
-            [ExcelArgument(Description = "")]double[] vols,
-            [ExcelArgument(Description = "All rates will be multiplied by this amount.  This should almost always be 1.0.")]double multiplier)
-
+        public static object CreatePCACurveSimulator([ExcelArgument(Description = "The name of the simulator")]string simulatorName,
+            [ExcelArgument(Description = "The date from which the curve dates will be calculated.")]object[,] anchorDate,
+            [ExcelArgument(Description = "The starting rates.  Must be the same length as the elements in the component vectors.")]double[] initialRates,
+            [ExcelArgument(Description = "The months at which each rate applies.")]double[] tenorMonths,
+            [ExcelArgument(Description = "The componenents.  Each component in a column.  Stack the columns side by side.")]double[,] components,
+            [ExcelArgument(Description = "The volatility for each component.  Must be the same length as the number of components.")]double[] vols,
+            [ExcelArgument(Description = "All rates will be multiplied by this amount.  This should almost always be 1.0.")]double multiplier,
+            [ExcelArgument(Description = "Indicates if the PCA was done on relative moves.  If not then it was done on absolute moves.")]bool useRelative)
         {
             try
             {
                 int[] tenorMonthsInt = new int[tenorMonths.Length];
                 for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
                 PCACurveSimulator curveSimulator = new PCACurveSimulator(XU.GetDates0D(anchorDate, "anchorDate"), 
-                    initialRates, tenorMonthsInt, components, vols, multiplier);
+                    initialRates, tenorMonthsInt, components, vols, multiplier, XU.GetBool(useRelative));
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
             catch (Exception e)
             {
-                return ExcelUtilities.Error2D(e);                
+                return XU.Error2D(e);                
             }
         }
 
 
-        [ExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "Gets a block of principle component simulated rates.  Each row is a curve at a simulation date.",
         Name = "QSA.PCACurveSimulatorGetRates",
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "https://www.google.co.za")]
-        public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "")]string simulatorName,
-            [ExcelArgument(Description = "")]object[,] simulationDates,
-            [ExcelArgument(Description = "")]double[] requiredTenorMonths)
-
+        public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "The name of the simulator. (PCACurveSimulator)")]string simulatorName,
+            [ExcelArgument(Description = "A list of increasing dates.")]object[,] simulationDates,
+            [ExcelArgument(Description = "The tenors at which the rates are required.  Does not need to be the same as used to do the PCA.")]double[] requiredTenorMonths)
         {
             try
             {
@@ -99,14 +98,14 @@ namespace QuantSA.Excel
                 for (int i = 0; i < requiredTenorMonths.Length; i++) { tenorMonthsInt[i] = (int)requiredTenorMonths[i]; }
 
 
-                PCACurveSimulator curveSimulator = ObjectMap.Instance.GetObjectFromID< PCACurveSimulator>(simulatorName);
+                PCACurveSimulator curveSimulator = ObjectMap.Instance.GetObjectFromID<PCACurveSimulator>(simulatorName);
                 double[,] result = curveSimulator.GetSimulatedRates(XU.GetDates1D(simulationDates, "simulationDates"), tenorMonthsInt);
-                return ExcelUtilities.ConvertToObjects(result);
+                return XU.ConvertToObjects(result);
             }
 
             catch (Exception e)
             {
-                return ExcelUtilities.Error2D(e);
+                return XU.Error2D(e);
             }
         }
 
@@ -142,7 +141,7 @@ namespace QuantSA.Excel
         HelpTopic = "http://cogn.co.za/QuantSA/CovarianceFromCurves.html")]
         public static double[,] CovarianceFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves)
         {
-            double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.CovarianceFromCurves(curves);
+            double[,] covMatrix = General.DataAnalysis.PCA.CovarianceFromCurves(curves);
             return covMatrix;
         }
 
@@ -151,13 +150,17 @@ namespace QuantSA.Excel
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "http://cogn.co.za/QuantSA/PCAFromCurves.html")]
-        public static double[,] PCAFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves)
+        public static object[,] PCAFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves,
+            [ExcelArgument(Description = "Indicates if the PCA is to be done on relative moves.  If not then it will be done on absolute moves.")]object useRelative)
         {
-            double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.PCAFromCurves(curves);
-            return covMatrix;
+            try {
+                double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.PCAFromCurves(curves, XU.GetBool(useRelative));
+                return XU.ConvertToObjects(covMatrix);
+            }
+            catch (Exception e)
+            {
+                return XU.Error2D(e);
+            }
         }
-
-
-
     }
 }
