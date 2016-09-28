@@ -426,6 +426,9 @@ namespace QuantSA.Excel
                     case "JIBAR3M": return FloatingIndex.JIBAR3M;
                     case "JIBAR6M": return FloatingIndex.JIBAR6M;
                     case "LIBOR3M": return FloatingIndex.LIBOR3M;
+                    case "LIBOR6M": return FloatingIndex.LIBOR6M;
+                    case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
+                    case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
                     default: throw new ArgumentException(strValue + "is not a known floating rate index in input: " + inputName);
                 }
             }
