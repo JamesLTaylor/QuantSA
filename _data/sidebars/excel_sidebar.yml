@@ -1,39 +1,97 @@
-# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
-
-entries:
+﻿entries:
 - title: Sidebar
   levels: one
   folders:
 
+  - title: Types
+    output: web, pdf
+    folderitems:
+    - title: Currency
+      url: /Currency.html
+      output: web, pdf
+
+    - title: FloatingRateIndex
+      url: /FloatingRateIndex.html
+      output: web, pdf
+  # AUTO GENERATED BEYOND THIS POINT
+  - title: Curves
+    output: web, pdf
+    folderitems:
+    - title: CovarianceFromCurves
+      url: /CovarianceFromCurves.html
+      output: web, pdf
+    - title: CreateDatesAndRatesCurve
+      url: /CreateDatesAndRatesCurve.html
+      output: web, pdf
+    - title: CreatePCACurveSimulator
+      url: /CreatePCACurveSimulator.html
+      output: web, pdf
+    - title: CurveInterp
+      url: /CurveInterp.html
+      output: web, pdf
+    - title: FitCurveNelsonSiegel
+      url: /FitCurveNelsonSiegel.html
+      output: web, pdf
+    - title: PCACurveSimulatorGetRates
+      url: /PCACurveSimulatorGetRates.html
+      output: web, pdf
+    - title: PCAFromCurves
+      url: /PCAFromCurves.html
+      output: web, pdf
+  - title: FX
+    output: web, pdf
+    folderitems:
+    - title: CreateFXForecastCurve
+      url: /CreateFXForecastCurve.html
+      output: web, pdf
+    - title: GetFXRate
+      url: /GetFXRate.html
+      output: web, pdf
   - title: General
     output: web, pdf
     folderitems:
     - title: GetAvailableResults
       url: /GetAvailableResults.html
       output: web, pdf
-
+    - title: GetCSArray
+      url: /GetCSArray.html
+      output: web, pdf
     - title: GetResults
       url: /GetResults.html
       output: web, pdf
-
+    - title: InterpLinear
+      url: /InterpLinear.html
+      output: web, pdf
   - title: Rates
     output: web, pdf
     folderitems:
+    - title: CreateCashLeg
+      url: /CreateCashLeg.html
+      output: web, pdf
+    - title: CreateFixedLeg
+      url: /CreateFixedLeg.html
+      output: web, pdf
+    - title: CreateFloatLeg
+      url: /CreateFloatLeg.html
+      output: web, pdf
+    - title: CreateRateForecastCurveFromDiscount
+      url: /CreateRateForecastCurveFromDiscount.html
+      output: web, pdf
     - title: CreateZARSwap
       url: /CreateZARSwap.html
       output: web, pdf
+    - title: GetDF
+      url: /GetDF.html
+      output: web, pdf
     - title: ValueZARSwap
       url: /ValueZARSwap.html
-      output: web, pdf      
-
-  - title: Curves
+      output: web, pdf
+  - title: Valuation
     output: web, pdf
     folderitems:
-    - title: FitCurveNelsonSiegel
-      url: /FitCurveNelsonSiegel.html
+    - title: CreateCurveModel
+      url: /CreateCurveModel.html
       output: web, pdf
-
-
-
-
-
+    - title: Value
+      url: /Value.html
+      output: web, pdf

@@ -55,7 +55,7 @@ Another key advantage that QuantSA offers over all other Quant libraries is its 
 * select the add-in from Excel
 * start using the functions that start with `QSA.`
 
-More details can be found in the [Installation page](/home_installation.html) in the menu.
+More details can be found in the [Installation page](home_installation.html) in the menu.
 
 
 # Getting started - developers
@@ -66,7 +66,7 @@ More details can be found in the [Installation page](/home_installation.html) in
 * Check the issue list
 * Start contributing
 
-More details can be found under the [Developers section](/home_setup.html) in the menu. 
+More details can be found under the [Developers section](home_setup.html) in the menu. 
 
 
 

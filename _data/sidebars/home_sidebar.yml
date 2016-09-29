@@ -50,6 +50,8 @@ entries:
       output: web
     - title: Editing documentation
       url: /home_edit_docs.html 
+    - title: Generating Markdown
+      url: /home_generate_markdown.html       
       output: web
     - title: Writing plugins
       url: /home_plugins.html 
