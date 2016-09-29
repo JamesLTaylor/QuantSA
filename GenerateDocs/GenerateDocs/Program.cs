@@ -54,6 +54,7 @@ namespace GenerateDocs
         public string name;
         public string category;
         public string summary;
+        public string exampleSheet;
         private string description;
         public List<string> argNames;
         public List<string> argDescriptions;
@@ -79,13 +80,15 @@ namespace GenerateDocs
             argDescriptions = new List<string>();
         }
     };
-
+        
     class Program
     {
+        private static List<string> documentedTypes;
         static void Main(string[] args)
         {
+            documentedTypes = new List<string>();
             string filename = @"C:\Dev\QuantSA\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll";
-            string outputPath = @"c:\dev\QuantSAHelp\";
+            string outputPath = @"C:\Dev\jamesltaylor.github.io\";            
             string helpPath = "http://cogn.co.za/QuantSA/";
             FolderStructure folderStructure = GetFolderStructure(filename, helpPath);
             UpdateHelpYML(outputPath, folderStructure);
@@ -106,6 +109,11 @@ namespace GenerateDocs
             while ((line = file.ReadLine()) != null)
             {
                 newFileLines.Add(line);
+                if (line.Contains("title:"))
+                {
+                    int idx = line.IndexOf("title:");
+                    documentedTypes.Add(line.Substring(idx + 6).Trim());
+                }
                 if (line.Contains("AUTO GENERATED BEYOND THIS POINT")) break;
             }
             file.Close();
@@ -235,17 +243,38 @@ namespace GenerateDocs
             newFileLines.Add(@"");
             newFileLines.Add(@"## Example Sheet");
             newFileLines.Add(@"");
-            //newFileLines.Add(@"    " + fc.exampleSheet);
-            newFileLines.Add(@"    NotSet.xlsx");
+            newFileLines.Add(@"    " + fc.exampleSheet);            
             newFileLines.Add(@"");
             newFileLines.Add(@"## Arguments");
             newFileLines.Add(@"");
             for (int i = 0; i < fc.argNames.Count; i++)
             {
-                newFileLines.Add(@"* **" + fc.argNames[i] + "** " + fc.argDescriptions[i]);
+                newFileLines.Add(@"* **" + fc.argNames[i] + "** " + AddLinks(fc.argDescriptions[i]));
             }
             newFileLines.Add(@"");
             return newFileLines;
+        }
+
+        /// <summary>
+        /// Converts text like (Currency) to ([Currency](Currency.html))
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static string AddLinks(string input)
+        {            
+            foreach (string typeName in documentedTypes)
+            {
+                if (input.Contains(typeName))
+                {
+                    int idx = input.IndexOf(typeName);
+                    if (input[idx - 1]=='(' && input[idx + typeName.Length]==')')
+                    {
+                        input = input.Substring(0, idx) + "[" + typeName + "](" + typeName + ".html)" + input.Substring(idx + typeName.Length);
+                    }
+
+                }
+            }
+            return input;
         }
 
 
@@ -277,8 +306,23 @@ namespace GenerateDocs
                         if (attribute.Description.Length < 5) errorList.Add(type.Name + "," + attribute.Name + ",,Does not have a description.");
                         if (!nameParts[0].Equals("QSA")) errorList.Add(type.Name + "," + attribute.Name + ",,Name does not start with 'QSA'.");
                         if (!("XL" + categoryParts[1]).Equals(type.Name)) errorList.Add(type.Name + "," + attribute.Name + ",,Category does not match file.");
-                        if (attribute.HelpTopic == null) errorList.Add(type.Name + "," + attribute.Name + ",,Does not have a help topic.");
-                        else if (!attribute.HelpTopic.Equals(helpPath + nameParts[1] + ".html")) errorList.Add(type.Name + "," + attribute.Name + ",,Help topic should be," + helpPath + nameParts[1] + ".html");
+                        if (attribute.HelpTopic == null)
+                        {
+                            errorList.Add(type.Name + "," + attribute.Name + ",,Does not have a help topic.");
+                        }
+                        else if (!attribute.HelpTopic.Equals(helpPath + nameParts[1] + ".html"))
+                        {
+                            errorList.Add(type.Name + "," + attribute.Name + ",,Help topic should be," + helpPath + nameParts[1] + ".html");
+                        }
+                        if (attribute.ExampleSheet== null)
+                        {
+                            errorList.Add(type.Name + "," + attribute.Name + ",,Example sheet has not been set.");
+                            contents.exampleSheet = "Not available";
+                        }
+                        else
+                        {
+                            contents.exampleSheet = attribute.ExampleSheet;
+                        }
 
                         // Add details
                         contents.name = attribute.Name.Split('.')[1];
