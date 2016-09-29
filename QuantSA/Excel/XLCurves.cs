@@ -148,6 +148,7 @@ namespace QuantSA.Excel
         [QuantSAExcelFunction(Description = "Perform a PCA on the log returns of a blob of curves.",
         Name = "QSA.PCAFromCurves",
         Category = "QSA.Curves",
+            ExampleSheet = "PCAExample.xlsx",
         IsHidden = false,
         HelpTopic = "http://cogn.co.za/QuantSA/PCAFromCurves.html")]
         public static object[,] PCAFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves,
