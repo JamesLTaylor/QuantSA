@@ -10,8 +10,8 @@
       url: /Currency.html
       output: web, pdf
 
-    - title: FloatingRateIndex
-      url: /FloatingRateIndex.html
+    - title: FloatingIndex
+      url: /FloatingIndex.html
       output: web, pdf
   # AUTO GENERATED BEYOND THIS POINT
   - title: Curves

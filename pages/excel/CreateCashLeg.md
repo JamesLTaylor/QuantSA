@@ -27,7 +27,7 @@ Create a general set of cashflows that can be valued like any other product.
 * **name** Name of object
 * **paymentDates** The dates on which the cashflows take place.
 * **amounts** The sizes of the cashflows.  Positive for cashflows that are received.
-* **currencies** The currencies of the cashflows. (Currency)
+* **currencies** The currencies of the cashflows. ([Currency](Currency.html))
 
 <!--HUMAN EDIT START-->
 

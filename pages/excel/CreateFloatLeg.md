@@ -25,8 +25,8 @@ Create a general floating leg of a swap.
 ## Arguments
 
 * **name** Name of object
-* **currency** The currency of the cashflows. (Currency)
-* **floatingIndex** A string describing the floating index. (FloatingIndex)
+* **currency** The currency of the cashflows. ([Currency](Currency.html))
+* **floatingIndex** A string describing the floating index. ([FloatingIndex](FloatingIndex.html))
 * **resetDates** The dates on which the floating indices reset.
 * **paymentDates** The dates on which the payments are made.
 * **notionals** The notionals on which the payments are based.

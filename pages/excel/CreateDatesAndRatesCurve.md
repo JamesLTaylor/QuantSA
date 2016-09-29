@@ -27,7 +27,7 @@ Create a curve of dates and rates.
 * **name** The name of the curve.
 * **dates** The dates at which the rates apply.
 * **rates** The rates.
-* **currency** Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency. (Currency)
+* **currency** Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency. ([Currency](Currency.html))
 
 <!--HUMAN EDIT START-->
 
