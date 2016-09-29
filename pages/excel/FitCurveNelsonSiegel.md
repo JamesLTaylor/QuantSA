@@ -20,7 +20,7 @@ Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve. (Curve)
 
 ## Example Sheet
 
-    NotSet.xlsx
+    Not available
 
 ## Arguments
 

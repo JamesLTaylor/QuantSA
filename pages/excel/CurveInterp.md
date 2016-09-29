@@ -1,16 +1,16 @@
 ---
-title: GetAvailableResults
+title: CurveInterp
 keywords:
 last_updated: September 29, 2016
 tags:
-summary: Get a list of available results in the results object.
+summary: Find the interpolated value of any QuantSA created curve.
 sidebar: excel_sidebar
-permalink: GetAvailableResults.html
+permalink: CurveInterp.html
 folder: excel
 ---
 
 ## Description
-Get a list of available results in the results object.
+Find the interpolated value of any QuantSA created curve.
 
 <!--HUMAN EDIT START-->
 
@@ -24,7 +24,8 @@ Get a list of available results in the results object.
 
 ## Arguments
 
-* **objectName** The name of the results object as returned by call to another QuantSA function
+* **name** The name of the curve to interpolate. (Curve)
+* **dates** The dates at which interpolated rates are required.
 
 <!--HUMAN EDIT START-->
 

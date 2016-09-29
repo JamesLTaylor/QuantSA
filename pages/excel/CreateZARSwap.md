@@ -20,7 +20,7 @@ Create a ZAR quarterly, fixed for float Jibar swap.
 
 ## Example Sheet
 
-    NotSet.xlsx
+    Not available
 
 ## Arguments
 

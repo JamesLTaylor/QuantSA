@@ -20,7 +20,7 @@ Basic swap valuation.  Uses the same curve for forecasting and discounting and u
 
 ## Example Sheet
 
-    NotSet.xlsx
+    Not available
 
 ## Arguments
 

@@ -1,16 +1,16 @@
 ---
-title: GetAvailableResults
+title: GetFXRate
 keywords:
 last_updated: September 29, 2016
 tags:
-summary: Get a list of available results in the results object.
+summary: Get the FX rate at a date.
 sidebar: excel_sidebar
-permalink: GetAvailableResults.html
+permalink: GetFXRate.html
 folder: excel
 ---
 
 ## Description
-Get a list of available results in the results object.
+Get the FX rate at a date.  There is no spot settlement adjustment.
 
 <!--HUMAN EDIT START-->
 
@@ -24,7 +24,8 @@ Get a list of available results in the results object.
 
 ## Arguments
 
-* **objectName** The name of the results object as returned by call to another QuantSA function
+* **FXCurveName** Name of FX curve
+* **date** Date on which FX rate is required.
 
 <!--HUMAN EDIT START-->
 
