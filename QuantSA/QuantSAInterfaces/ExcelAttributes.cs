@@ -14,6 +14,7 @@ namespace QuantSA.Excel
         public string Description = null;
         public string Category = null;
         public string HelpTopic = null;
+        public string ExampleSheet = null;
         public bool IsVolatile = false;
         /// <summary>
         /// Default behavior.  Can be overwritten by functions.csv file.
