@@ -51,7 +51,7 @@ namespace QuantSA.General.DataAnalysis
             var svd = new SingularValueDecomposition(data);
             double[] singularValues = svd.Diagonal;
             double[,] eigenvectors = svd.RightSingularVectors;
-            double[] eigenvalues = singularValues.Pow(2).Divide(curves.GetLength(0) - 1);
+            double[] eigenvalues = singularValues.Pow(2).Divide(curves.GetLength(0) - 2);
 
             eigenvectors = eigenvectors.Concatenate(eigenvalues);
             //TODO: Use the Accord built-in PCA method.
