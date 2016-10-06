@@ -3,6 +3,7 @@ using System.Text;
 using ExcelDna.Integration;
 using XU = QuantSA.Excel.ExcelUtilities;
 using MathNet.Numerics.Interpolation;
+using MonteCarlo;
 
 namespace QuantSA.Excel
 {
@@ -125,6 +126,52 @@ namespace QuantSA.Excel
             catch (Exception e)
             {
                 return ExcelUtilities.Error2D(e);                
+            }
+        }
+
+
+        [QuantSAExcelFunction(Description = "The black scholes formula for a call.",
+        IsHidden = false,
+        Name = "QSA.FormulaBlackScholes",
+        Category = "QSA.General",
+        HelpTopic = "http://cogn.co.za/QuantSA/FormulaBlackScholes.html")]
+        public static object FormulaBlackScholes([ExcelArgument(Description = "Strike")]object[,] strike,
+            [ExcelArgument(Description = "valueDate")]object[,] valueDate,
+            [ExcelArgument(Description = "exerciseDate")]object[,] exerciseDate,
+            [ExcelArgument(Description = "spotPrice")]object[,] spotPrice,
+            [ExcelArgument(Description = "vol")]object[,] vol,
+            [ExcelArgument(Description = "riskfreeRate")]object[,] riskfreeRate,
+            [ExcelArgument(Description = "divYield")]object[,] divYield)
+        {
+            try {
+                return Formulae.BlackScholes(PutOrCall.Call, XU.GetDoubles0D(strike, "strike"),
+                    (XU.GetDates0D(exerciseDate, "exerciseDate") - XU.GetDates0D(valueDate, "valueDate")) / 365.0,
+                    XU.GetDoubles0D(spotPrice, "spotPrice"), XU.GetDoubles0D(vol, "vol"),
+                    XU.GetDoubles0D(riskfreeRate, "riskfreeRate"), XU.GetDoubles0D(divYield, "divYield"));
+            } catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
+
+        [QuantSAExcelFunction(Description = "Create a product defined in a script file.",
+        IsHidden = false,
+        Name = "QSA.CreateProductFromFile",
+        Category = "QSA.General",
+            ExampleSheet = "ProductFromFile.xlsx",
+        HelpTopic = "http://cogn.co.za/QuantSA/CreateProductFromFile.html")]
+        public static object CreateProductFromFile([ExcelArgument(Description = "Name of product")]string name,
+    [ExcelArgument(Description = "Full path to the file.")]string filename)
+        {
+            try
+            {
+                Product runtimeProduct = RuntimeProduct.CreateFromScript(filename);
+                return XU.AddObject(name, runtimeProduct);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
             }
         }
 

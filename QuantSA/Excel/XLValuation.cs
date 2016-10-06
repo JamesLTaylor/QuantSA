@@ -43,12 +43,15 @@ namespace QuantSA.Excel
         public static object Value([ExcelArgument(Description = "Name of object")]String name,
         [ExcelArgument(Description = "A list of products.")]object[,] products,
         [ExcelArgument(Description = "The value date.")]object[,] valueDate,
-        [ExcelArgument(Description = "A model able to handle all the market observables required to calculate the cashflows in the portfolio.")]object[,] model)
+        [ExcelArgument(Description = "A model able to handle all the market observables required to calculate the cashflows in the portfolio.")]object[,] model,
+        [ExcelArgument(Description = "Optional.  The number of simulations required if the model requires simulation.  If left blank will use a default value depending on the model.")]object[,] nSims)
         {
             try
             {
+                int N = (nSims[0, 0] is ExcelMissing) ? 1 : XU.GetInts0D(nSims, "nSims");
+                
                 Coordinator coordinator = new Coordinator(XU.GetObjects0D<NumeraireSimulator>(model, "model"), 
-                     new List<Simulator>(), 1);
+                     new List<Simulator>(), N);
                 double value = coordinator.Value(XU.GetObjects1D<Product>(products, "products"), 
                     XU.GetDates0D(valueDate, "valueDate"));
                 ResultStore result = new ResultStore();

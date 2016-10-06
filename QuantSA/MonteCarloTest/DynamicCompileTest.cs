@@ -26,12 +26,12 @@ namespace MonteCarloTest
             double divYield = 0.02;
             double vol = 0.22;
             double spotPrice = 100.0;
-            Simulator sim = new SimpleBlackEquity(valueDate, shareCode, spotPrice, vol, riskfreeRate, divYield);
+            Simulator sim = new SimpleBlackEquity(valueDate, new Share(shareCode, Currency.ZAR), spotPrice, vol, riskfreeRate, divYield);
             NumeraireSimulator numeraire = new DeterministicNumeraire(Currency.ZAR, valueDate, riskfreeRate);
 
             // Value the runtime product
             Coordinator coordinator;
-            coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 10000);
+            coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 100000);
             watch = Stopwatch.StartNew();
             double valueRuntime = coordinator.Value(new List<Product> { runtimeProduct }, valueDate);
             watch.Stop();
@@ -40,10 +40,10 @@ namespace MonteCarloTest
             // Setup the same product statically
             Date exerciseDate = new Date(2017, 08, 28);            
             double strike = 100.0;
-            Product staticProduct = new EuropeanOption(shareCode, strike, exerciseDate);
+            Product staticProduct = new EuropeanOption(new Share(shareCode, Currency.ZAR), strike, exerciseDate);
 
             // Value the static product
-            coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 10000);
+            coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 100000);
             watch = Stopwatch.StartNew();
             double valueStatic = coordinator.Value(new List<Product> { staticProduct }, valueDate);
             watch.Stop();
@@ -52,8 +52,8 @@ namespace MonteCarloTest
             double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice,
                                                     vol, riskfreeRate, divYield);
 
-            Assert.AreEqual(refValue, valueRuntime, refValue * 0.01);
-            Assert.AreEqual(refValue, valueStatic, refValue * 0.01);
+            Assert.AreEqual(refValue, valueRuntime, refValue * 0.02);
+            Assert.AreEqual(refValue, valueStatic, refValue * 0.02);
 
         }
     }

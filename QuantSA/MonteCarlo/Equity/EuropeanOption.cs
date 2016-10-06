@@ -15,9 +15,9 @@ namespace MonteCarlo
         private double strike;
         private Date valueDate;
 
-        public EuropeanOption(string shareCode, double strike, Date exerciseDate)
+        public EuropeanOption(Share share, double strike, Date exerciseDate)
         {
-            share = new Share(shareCode, Currency.ZAR);
+            this.share = share; 
             this.strike = strike;
             this.exerciseDate = exerciseDate;
         }

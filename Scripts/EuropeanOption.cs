@@ -3,7 +3,7 @@ using MonteCarlo;
 using System;
 using System.Collections.Generic;
 
-public class EuropeanOption : Product
+public class EuropeanOptionScript : Product
 {
     private Date exerciseDate;
     private double fwdPrice;
@@ -11,7 +11,7 @@ public class EuropeanOption : Product
     private double strike;
     private Date valueDate;
 
-    public EuropeanOption()
+    public EuropeanOptionScript()
     {
         share = new Share("AAA", Currency.ZAR);
         strike = 100.0;
@@ -54,5 +54,15 @@ public class EuropeanOption : Product
     public override void Reset()
     {
         // Nothing to reset.
+    }
+
+    public override List<Currency> GetCashflowCurrencies()
+    {
+        return new List<Currency> { share.currency };
+    }
+
+    public override List<Date> GetCashflowDates(Currency ccy)
+    {
+        return new List<Date> { exerciseDate };
     }
 }

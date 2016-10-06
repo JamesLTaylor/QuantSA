@@ -20,10 +20,10 @@ namespace MonteCarlo
         private double spotPrice;
         private double vol;
 
-        public SimpleBlackEquity(Date anchorDate, string shareCode, double spotPrice, double vol, double riskfreeRate, double divYield)
+        public SimpleBlackEquity(Date anchorDate, Share share, double spotPrice, double vol, double riskfreeRate, double divYield)
         {
             this.anchorDate = anchorDate;
-            share = new Share(shareCode, Currency.ZAR);
+            this.share = share;
             this.spotPrice = spotPrice;
             this.vol = vol;
             this.riskfreeRate = riskfreeRate;

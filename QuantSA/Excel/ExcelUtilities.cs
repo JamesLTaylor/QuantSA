@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QuantSA.General;
+using MonteCarlo;
 
 namespace QuantSA.Excel
 {
@@ -43,7 +44,7 @@ namespace QuantSA.Excel
         public static object Error0D(Exception e)
         {
             ExcelUtilities.SetLatestException(e);
-            return "ERROR:" + e.Message;
+            return "ERROR: " + e.Message;
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace QuantSA.Excel
         public static object[] Error1D(Exception e)
         {
             ExcelUtilities.SetLatestException(e);
-            return new object[] { "ERROR:" + e.Message };
+            return new object[] { "ERROR: " + e.Message };
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace QuantSA.Excel
         public static object[,] Error2D(Exception e)
         {
             ExcelUtilities.SetLatestException(e);
-            return new object[,] { { "ERROR:" + e.Message } };
+            return new object[,] { { "ERROR: " + e.Message } };
         }
         #endregion
 
@@ -141,6 +142,7 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static Date GetDates0D(object[,] values, string inputName)
         {
+            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
                 if (values[0, 0] is double)
@@ -330,6 +332,42 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values">The excel values passed to the function.</param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static double[,] GetDoubles2D(object[,] values, string inputName)
+        {
+            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " + cannot be empty.");
+            double[,] result = new double[values.GetLength(0), values.GetLength(1)];
+            for (int i = 0; i < values.GetLength(0); i++)
+            {
+                for (int j = 0; j < values.GetLength(1); j++)
+                {
+                    if (values[i, j] is double)
+                        result[i, j] = (double)values[i, j];
+                    else
+                        throw new ArgumentException(inputName + " all cells must be numbers.");
+                }
+            }
+            return result;
+        }
+
+
+        private static Currency GetCurrencyFromString(string strValue, string inputName)
+        {
+            switch (strValue.ToUpper())
+            {
+                case "ZAR": return Currency.ZAR;
+                case "USD": return Currency.USD;
+                case "EUR": return Currency.EUR;
+                default: throw new ArgumentException(strValue + " is not a known currency in input: " + inputName);
+            }
+        }
+
+
+        /// <summary>
         /// Used by the various GetCurrencies utility methods.
         /// </summary>
         /// <param name="obj"></param>
@@ -344,19 +382,10 @@ namespace QuantSA.Excel
                     throw new ArgumentException(inputName + " cannot be empty.");
             if (obj is string)
             {
-                string strValue = (string)obj;
-                switch (strValue.ToUpper())
-                {
-                    case "ZAR": return Currency.ZAR;
-                    case "USD": return Currency.USD;
-                    case "EUR": return Currency.EUR;
-                    default: throw new ArgumentException(strValue + " is not a known currency in input: " + inputName);
-                }
+                return GetCurrencyFromString((string)obj, inputName);
             }
             else
                 throw new ArgumentException(inputName + ": Currencies must be strings: ");
-
-
         }
 
         /// <summary>
@@ -485,6 +514,75 @@ namespace QuantSA.Excel
                 }
             }
             return new Tenor(days, weeks, months, years);
+        }
+
+        /// <summary>
+        /// Return a share from a string of form 'ZAR:ALSI'
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="inputName"></param>
+        /// <returns></returns>
+        private static Share GetShare(object obj, string inputName)
+        {
+            if (obj is ExcelMissing)
+                throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is string)
+            {
+                string strValue = (string)obj;
+                string[] parts = strValue.Split(':');
+                if (parts.Length != 2) throw new ArgumentException(strValue + " in " + inputName + " does not correspond to a share.");
+                Currency ccy = GetCurrencyFromString(parts[0], inputName);
+                return new Share(parts[1].ToUpper(), ccy);
+            }
+            throw new ArgumentException(inputName + " shares must be created from strings of the form: 'CCY:CODE', eg 'ZAR:ALSI'");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static Share GetShares0D(object[,] values, string inputName)
+        {
+            if (values[0, 0] is ExcelMissing)
+                throw new ArgumentException(inputName + " cannot be empty.");
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                if (values[0, 0] is string)
+                {
+                    return GetShare((string)values[0, 0], inputName);
+                }
+                throw new ArgumentException(inputName + " must be a single cell with a value representing a share code.");
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a value representing a share code.");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static Share[] GetShares1D(object[,] values, string inputName)
+        {
+            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            {
+                Share[] result = new Share[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                    result[i] = GetShare(values[0, i], inputName);
+                return result;
+            }
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                Share[] result = new Share[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                    result[i] = GetShare(values[i, 0], inputName);
+                return result;
+            }
+            else
+                throw new ArgumentException(inputName + " must be a single row or column of strings representing shares.");
         }
 
         private static int GetInt(object obj, string inputName)

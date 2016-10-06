@@ -1,7 +1,9 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +16,9 @@ namespace MonteCarlo
             CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
             CompilerParameters parameters = new CompilerParameters();
             parameters.GenerateInMemory = true;
-            parameters.ReferencedAssemblies.Add("MonteCarlo.dll");
-            parameters.ReferencedAssemblies.Add("General.dll");
+            string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.MonteCarlo.dll"));
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.General.dll"));
 
             CompilerResults results = codeProvider.CompileAssemblyFromFile(parameters, new string[] { filename });
             if (results.Errors.Count > 0)
