@@ -21,8 +21,8 @@ Why not [QuantLib](http://quantlib.org/index.shtml) or simular?  QuantLib is ext
 Another key advantage that QuantSA offers over all other Quant libraries is its customizability, including:
 
 * **[plugins](home_plugins.html)** - Allow developers to create user specific functins using the full power of QuantSA but not clutter the function space of the main library
-* **scripts** - At run time new products can be created and valued.
-* **control of function visibility** - Developers can either enable or disable sets of functions for their users, making the user experience more efficient less overwhelming.
+* **[scripts](home_scripts.html)** - At run time new products can be created and valued.
+* **[control of function visibility](home_exposed_functions.html)** - Developers can either enable or disable sets of functions for their users, making the user experience more efficient less overwhelming.
 
 # Features
 

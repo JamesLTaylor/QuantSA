@@ -38,6 +38,15 @@
     - title: PCAFromCurves
       url: /PCAFromCurves.html
       output: web, pdf
+  - title: Equities
+    output: web, pdf
+    folderitems:
+    - title: CreateEquityCall
+      url: /CreateEquityCall.html
+      output: web, pdf
+    - title: CreateEquityModel
+      url: /CreateEquityModel.html
+      output: web, pdf
   - title: FX
     output: web, pdf
     folderitems:
@@ -50,6 +59,12 @@
   - title: General
     output: web, pdf
     folderitems:
+    - title: CreateProductFromFile
+      url: /CreateProductFromFile.html
+      output: web, pdf
+    - title: FormulaBlackScholes
+      url: /FormulaBlackScholes.html
+      output: web, pdf
     - title: GetAvailableResults
       url: /GetAvailableResults.html
       output: web, pdf

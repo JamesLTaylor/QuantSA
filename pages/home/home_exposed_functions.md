@@ -17,7 +17,7 @@ All functions will always be available for use but only the selected set will ap
 
 # Architecture
 
-When a new function is written its default visibility is controlled with the `IsHidden' attribute value.  Note that if it is not intended that many users will want access to a new function the developer should consider putting it in a [Plugin](home_plugins.html)
+When a new function is written its default visibility is controlled with the `IsHidden` attribute value.  Note that if it is not intended that many users will want access to a new function the developer should consider putting it in a [Plugin](home_plugins.html)
 
 
 

@@ -26,7 +26,7 @@ Gets a block of principle component simulated rates.  Each row is a curve at a s
 
 * **simulatorName** The name of the simulator. (PCACurveSimulator)
 * **simulationDates** A list of increasing dates.
-* **requiredTenorMonths** The tenors at which the rates are required.  Does not need to be the same as used to do the PCA.
+* **requiredTenorMonths** The tenors at which the rates are required.  Do not need to be the same as used to do the PCA.
 
 <!--HUMAN EDIT START-->
 
