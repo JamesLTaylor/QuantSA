@@ -66,14 +66,6 @@ namespace MonteCarloTest
         double threshAbs = 0.10; // AAA share must return at least 10% each year 
         double threshRel = 0.03; // AA share must outperform the ALSI by at least 3% in each year
 
-        /// <summary>
-        /// Uses <see cref="ProductWrapper.Init"/> to deduce the cashflow dates and required indices.
-        /// </summary>
-        public ProductWrapperEquitySample2() : base(Currency.ZAR)
-        {
-            Init();
-        }
-
         public override List<Cashflow> GetCFs()
         {
             double w1; double w2;
@@ -117,7 +109,7 @@ namespace MonteCarloTest
                 new Date[] { anchorDate, anchorDate.AddMonths(36) },
                 new double[] { 0.07, 0.07 });
             EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve);
-            Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 10000);
+            Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 40000);
 
             //Valuation
             double value1 = coordinator.Value(new List<Product> { product1 }, anchorDate);

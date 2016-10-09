@@ -28,7 +28,7 @@ namespace MonteCarloTest
             double value = coordinator.Value(new List<Product> { p }, valueDate);
             double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365.0, spotPrice,
                                                     vol, riskfreeRate, divYield);
-            Assert.AreEqual(refValue, value, refValue*0.01);
+            Assert.AreEqual(refValue, value, refValue*0.03);
         }
     }
 }

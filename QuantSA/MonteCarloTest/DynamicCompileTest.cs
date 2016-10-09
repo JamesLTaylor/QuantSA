@@ -17,7 +17,7 @@ namespace MonteCarloTest
         {
             Stopwatch watch;
             // Make a product at runtime
-            Product runtimeProduct = RuntimeProduct.CreateFromScript(@"C:\Dev\QuantSA\Scripts\EuropeanOption.txt");
+            Product runtimeProduct = RuntimeProduct.CreateFromScript(@"C:\Dev\QuantSA\Scripts\EuropeanOption.cs");
 
             // Setup an approriate simulation
             string shareCode = "AAA"; // One needs to know the index that will be required by the product to simulate it.
@@ -52,8 +52,8 @@ namespace MonteCarloTest
             double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice,
                                                     vol, riskfreeRate, divYield);
 
-            Assert.AreEqual(refValue, valueRuntime, refValue * 0.02);
-            Assert.AreEqual(refValue, valueStatic, refValue * 0.02);
+            Assert.AreEqual(refValue, valueRuntime, refValue * 0.03);
+            Assert.AreEqual(refValue, valueStatic, refValue * 0.03);
 
         }
     }
