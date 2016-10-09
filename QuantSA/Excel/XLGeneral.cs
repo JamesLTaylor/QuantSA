@@ -130,18 +130,18 @@ namespace QuantSA.Excel
         }
 
 
-        [QuantSAExcelFunction(Description = "The black scholes formula for a call.",
+        [QuantSAExcelFunction(Description = "The Black Scholes formula for a call.",
         IsHidden = false,
         Name = "QSA.FormulaBlackScholes",
         Category = "QSA.General",
         HelpTopic = "http://cogn.co.za/QuantSA/FormulaBlackScholes.html")]
         public static object FormulaBlackScholes([ExcelArgument(Description = "Strike")]object[,] strike,
-            [ExcelArgument(Description = "valueDate")]object[,] valueDate,
-            [ExcelArgument(Description = "exerciseDate")]object[,] exerciseDate,
-            [ExcelArgument(Description = "spotPrice")]object[,] spotPrice,
-            [ExcelArgument(Description = "vol")]object[,] vol,
-            [ExcelArgument(Description = "riskfreeRate")]object[,] riskfreeRate,
-            [ExcelArgument(Description = "divYield")]object[,] divYield)
+            [ExcelArgument(Description = "The value date as and Excel date.")]object[,] valueDate,
+            [ExcelArgument(Description = "The exercise date of the option.  Must be greater than the value date.")]object[,] exerciseDate,
+            [ExcelArgument(Description = "The spot proce of the underlying at the value date.")]object[,] spotPrice,
+            [ExcelArgument(Description = "Annualized volatility.")]object[,] vol,
+            [ExcelArgument(Description = "Continuously compounded risk free rate.")]object[,] riskfreeRate,
+            [ExcelArgument(Description = "Continuously compounded dividend yield.")]object[,] divYield)
         {
             try {
                 return Formulae.BlackScholes(PutOrCall.Call, XU.GetDoubles0D(strike, "strike"),

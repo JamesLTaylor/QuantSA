@@ -58,7 +58,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreatePCACurveSimulator",
         Category = "QSA.Curves",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateDatesAndRatesCurve.html")]
+        HelpTopic = "http://cogn.co.za/QuantSA/CreatePCACurveSimulator.html")]
         public static object CreatePCACurveSimulator([ExcelArgument(Description = "The name of the simulator")]string simulatorName,
             [ExcelArgument(Description = "The date from which the curve dates will be calculated.")]object[,] anchorDate,
             [ExcelArgument(Description = "The starting rates.  Must be the same length as the elements in the component vectors.")]double[] initialRates,
@@ -87,10 +87,10 @@ namespace QuantSA.Excel
         Name = "QSA.PCACurveSimulatorGetRates",
         Category = "QSA.Curves",
         IsHidden = false,
-        HelpTopic = "https://www.google.co.za")]
+        HelpTopic = "http://cogn.co.za/QuantSA/PCACurveSimulatorGetRates.html")]
         public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "The name of the simulator. (PCACurveSimulator)")]string simulatorName,
             [ExcelArgument(Description = "A list of increasing dates.")]object[,] simulationDates,
-            [ExcelArgument(Description = "The tenors at which the rates are required.  Does not need to be the same as used to do the PCA.")]double[] requiredTenorMonths)
+            [ExcelArgument(Description = "The tenors at which the rates are required.  Do not need to be the same as used to do the PCA.")]double[] requiredTenorMonths)
         {
             try
             {

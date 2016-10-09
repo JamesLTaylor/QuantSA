@@ -161,7 +161,7 @@ namespace QuantSA.Excel
             Category = "QSA.Rates",
             IsHidden = false,
             HelpTopic = "http://cogn.co.za/QuantSA/CreateRateForecastCurveFromDiscount.html")]
-        public static object CreateRateForecastCurveFromDiscount([ExcelArgument(Description = "name")]string name,
+        public static object CreateRateForecastCurveFromDiscount([ExcelArgument(Description = "The name of the new curve.")]string name,
             [ExcelArgument(Description = "The floating rate that this curve will be used to forecast. (FloatingIndex)")]object[,] floatingRateIndex,
             [ExcelArgument(Description = "The name of the discount curve that will be used to obtain the forward rates.")]object[,] discountCurve,
             [ExcelArgument(Description = "Optional: The name of the fixing curve for providing floating rates at dates before the anchor date of the discount curve.  If it is left out then the first floating rate implied by the discount curve will be used for all historical fixes.")]object[,] fixingCurve)

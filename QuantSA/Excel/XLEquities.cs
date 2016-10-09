@@ -47,7 +47,7 @@ namespace QuantSA.Excel
             ExampleSheet = "EquityValuation.xlsx",
             IsHidden = false,
             HelpTopic = "http://cogn.co.za/QuantSA/CreateEquityCall.html")]
-        public static object CreateEquityCall([ExcelArgument(Description = "Name of options")]string name,            
+        public static object CreateEquityCall([ExcelArgument(Description = "Name of option.")]string name,            
             [ExcelArgument(Description = "Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.")]object[,] shareCode,
             [ExcelArgument(Description = "Exercise date.")]object[,] exerciseDate,
             [ExcelArgument(Description = "Strike")]object[,] strike)
