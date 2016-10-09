@@ -13,14 +13,6 @@ public class ProductWrapperEquitySample2 : ProductWrapper
     double threshAbs = 0.10; // AAA share must return at least 10% each year 
     double threshRel = 0.03; // AA share must outperform the ALSI by at least 3% in each year
 
-    /// <summary>
-    /// Uses <see cref="ProductWrapper.Init"/> to deduce the cashflow dates and required indices.
-    /// </summary>
-    public ProductWrapperEquitySample2() : base(Currency.ZAR)
-    {
-        Init();
-    }
-
     public override List<Cashflow> GetCFs()
     {
         double w1; double w2;
