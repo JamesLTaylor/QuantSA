@@ -29,6 +29,10 @@
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2015Limited\InstallShield.targets"/>
 	<ItemGroup>
+		<ProjectReference Include="..\AddAddInToExcel\CustomActions.csproj">
+			<Name>CustomActions</Name>
+			<Project>{52D138C2-CE98-41EB-87F7-066B93698F49}</Project>
+		</ProjectReference>
 		<ProjectReference Include="..\..\QuantSA\Excel\Excel.csproj">
 			<Name>Excel</Name>
 			<Project>{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}</Project>

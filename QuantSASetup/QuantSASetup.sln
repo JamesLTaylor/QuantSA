@@ -5,6 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "QuantSASetup", "QuantSASetup\QuantSASetup.isproj", "{4418B19A-E80A-41AA-9D91-51E2622E6A6C}"
 	ProjectSection(ProjectDependencies) = postProject
+		{52D138C2-CE98-41EB-87F7-066B93698F49} = {52D138C2-CE98-41EB-87F7-066B93698F49}
 		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62} = {EA77E2CE-18A6-4532-8465-4FB45B3F9C62}
 	EndProjectSection
 EndProject
@@ -17,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSAInterfaces", "..\QuantSA\QuantSAInterfaces\QuantSAInterfaces.csproj", "{AB407873-268C-4AE1-B1FB-62B9830DF979}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateXLFunctions", "..\QuantSA\UpdateXLFunctions\UpdateXLFunctions.csproj", "{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomActions", "AddAddInToExcel\CustomActions.csproj", "{52D138C2-CE98-41EB-87F7-066B93698F49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +90,16 @@ Global
 		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{8CD90E9B-3C64-4DB9-9A53-4D4B494EB04B}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{52D138C2-CE98-41EB-87F7-066B93698F49}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

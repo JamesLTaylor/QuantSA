@@ -339,6 +339,7 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
+		<row><td>CustomActions.Primary_output</td><td>{0BBE5A9A-4768-4C25-8EBB-7A62EC176353}</td><td>INSTALLDIR</td><td>2</td><td/><td>customactions.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Excel.Primary_output</td><td>{963A07AA-28F1-423C-9367-93BD93290EB9}</td><td>INSTALLDIR</td><td>2</td><td/><td>excel.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{8BB8E8E1-16C2-47D8-AA89-118EE42425BA}</td><td>PLUGINS</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{801AF9E9-0156-487D-811C-4F05FFADB98D}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1052,6 +1053,7 @@
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
 		<row><td>EXCELEXAMPLES</td><td>ISX_DEFAULTCOMPONENT2</td></row>
+		<row><td>INSTALLDIR</td><td>CustomActions.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>Excel.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
@@ -1073,6 +1075,7 @@
 		<row><td>ISSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFiles</td><td/><td/></row>
 		<row><td>ISSelfRegisterFinalize</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFinalize</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISUnSelfRegisterFiles</td><td/><td/></row>
+		<row><td>NewCustomAction1</td><td>1042</td><td>customactions.primary_output</td><td/><td/><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td>51</td><td>ARPINSTALLLOCATION</td><td>[INSTALLDIR]</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%SystemRoot]\Profiles\All Users</td><td/><td/></row>
 		<row><td>ShowMsiLog</td><td>226</td><td>SystemFolder</td><td>[SystemFolder]notepad.exe "[MsiLogFileLocation]"</td><td/><td>Shows Property-driven MSI Log</td></row>
@@ -1156,6 +1159,7 @@
 		<row><td>LocalAppDataFolder</td><td>TARGETDIR</td><td>.:LocalA~1|LocalAppData</td><td/><td>0</td><td/></row>
 		<row><td>MY_PRODUCT_NAME</td><td>QUANTSA</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>MyPicturesFolder</td><td>TARGETDIR</td><td>.:MyPict~1|MyPictures</td><td/><td>0</td><td/></row>
+		<row><td>NEW_DIRECTORY1</td><td>TARGETDIR</td><td>NEW_DIRECTORY1</td><td/><td>0</td><td/></row>
 		<row><td>NetHoodFolder</td><td>TARGETDIR</td><td>.:NetHood</td><td/><td>0</td><td/></row>
 		<row><td>PLUGINS</td><td>INSTALLDIR</td><td>Plugins</td><td/><td>0</td><td/></row>
 		<row><td>PersonalFolder</td><td>TARGETDIR</td><td>.:Personal</td><td/><td>0</td><td/></row>
@@ -1870,6 +1874,7 @@
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>AlwaysInstall</td><td>CustomActions.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>Excel.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
@@ -1889,12 +1894,15 @@
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>createproductfromfile.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>CreateProductFromFile.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\CreateProductFromFile.xlsx</td><td>1</td><td/></row>
+		<row><td>customactions.primary_output</td><td>CustomActions.Primary_output</td><td>CustomActions.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;CustomActions&gt;|Built</td><td>3</td><td/></row>
 		<row><td>equityvaluation.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>EquityValuation.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\EquityValuation.xlsx</td><td>1</td><td/></row>
 		<row><td>excel.primary_output</td><td>Excel.Primary_output</td><td>Excel.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Excel&gt;|Built</td><td>3</td><td/></row>
 		<row><td>fitcurvenelsonsiegel.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>FitCurveNelsonSiegel.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\FitCurveNelsonSiegel.xlsx</td><td>1</td><td/></row>
 		<row><td>generalswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>GeneralSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\GeneralSwap.xlsx</td><td>1</td><td/></row>
 		<row><td>interplinearexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>InterpLinearExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\InterpLinearExample.xlsx</td><td>1</td><td/></row>
 		<row><td>pcaexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>PCAExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\PCAExample.xlsx</td><td>1</td><td/></row>
+		<row><td>quantsa.dna</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.dna</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\QuantSA\Excel\QuantSA.dna</td><td>1</td><td/></row>
+		<row><td>quantsa.xll</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.xll</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\QuantSA\Excel\QuantSA.xll</td><td>1</td><td/></row>
 		<row><td>zarswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>ZARSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\ZARSwap.xlsx</td><td>1</td><td/></row>
 	</table>
 
@@ -2037,6 +2045,7 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
+		<row><td>CustomActions.Primary_output</td><td/><td/><td>_2AADBF8E_6EE0_42DD_A3C7_D8C5711234B3_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Excel.Primary_output</td><td/><td/><td>_603EA62D_4CE8_4792_B422_BE2AD5CC2785_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_7235E917_7C85_4CFC_98F8_3D93B42E972F_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_37086F92_90CB_4B7C_8D6B_53944A860D25_FILTER</td><td/><td/><td/><td/></row>
@@ -2319,6 +2328,7 @@
 		<col def="S255">TestValue</col>
 		<col def="i4">Type</col>
 		<row><td>CommonFilesFolder</td><td/><td/><td>1</td></row>
+		<row><td>CustomActions</td><td>AddAddInToExcel\CustomActions.csproj</td><td/><td>2</td></row>
 		<row><td>Excel</td><td>..\QuantSA\Excel\Excel.csproj</td><td/><td>2</td></row>
 		<row><td>ISPROJECTDIR</td><td/><td/><td>1</td></row>
 		<row><td>ISProductFolder</td><td/><td/><td>1</td></row>
@@ -3906,6 +3916,7 @@
 		<row><td>MsiConfigureServices</td><td>VersionMsi &gt;= "5.00"</td><td>5850</td><td>MSI5 MsiConfigureServices</td><td/></row>
 		<row><td>MsiPublishAssemblies</td><td/><td>6250</td><td>MsiPublishAssemblies</td><td/></row>
 		<row><td>MsiUnpublishAssemblies</td><td/><td>1750</td><td>MsiUnpublishAssemblies</td><td/></row>
+		<row><td>NewCustomAction1</td><td>Not Installed</td><td>6405</td><td/><td/></row>
 		<row><td>PatchFiles</td><td/><td>4090</td><td>PatchFiles</td><td/></row>
 		<row><td>ProcessComponents</td><td/><td>1600</td><td>ProcessComponents</td><td/></row>
 		<row><td>PublishComponents</td><td/><td>6200</td><td>PublishComponents</td><td/></row>

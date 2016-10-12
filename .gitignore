@@ -5,3 +5,6 @@
 /QuantSASetup/.vs/QuantSASetup/v14/.suo
 /QuantSASetup/QuantSASetup/QuantSASetup/Express
 /QuantSASetup/packages
+/QuantSASetup/AddAddInToExcel/bin/Debug
+/QuantSASetup/AddAddInToExcel/obj
+/QuantSASetup/UpdateXLFunctions.exe
