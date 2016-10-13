@@ -341,7 +341,6 @@
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
 		<row><td>CustomActions.Primary_output</td><td>{E1C21E61-EBE2-4036-A44A-1B1FC80FF026}</td><td>INSTALLDIR</td><td>2</td><td/><td>customactions.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Excel.Primary_output</td><td>{963A07AA-28F1-423C-9367-93BD93290EB9}</td><td>INSTALLDIR</td><td>2</td><td/><td>excel.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>ISX_DEFAULTCOMPONENT</td><td>{8BB8E8E1-16C2-47D8-AA89-118EE42425BA}</td><td>PLUGINS</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{801AF9E9-0156-487D-811C-4F05FFADB98D}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{DAC86B1D-096C-49B4-AF3B-D88AA40E5E3B}</td><td>EXCELEXAMPLES</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>IS_ININSTALL_SHORTCUT</td><td>{8CC03514-1D39-47E3-824F-4F280BCDB6E4}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1056,11 +1055,9 @@
 		<row><td>EXCELEXAMPLES</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>INSTALLDIR</td><td>CustomActions.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>Excel.Primary_output</td></row>
-		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>INSTALLDIR</td><td>IS_ININSTALL_SHORTCUT</td></row>
-		<row><td>PLUGINS</td><td>ISX_DEFAULTCOMPONENT</td></row>
 	</table>
 
 	<table name="CustomAction">
@@ -1167,7 +1164,6 @@
 		<row><td>NEW_DIRECTORY2</td><td>TARGETDIR</td><td>NEW_DIRECTORY2</td><td/><td>0</td><td/></row>
 		<row><td>NEW_DIRECTORY3</td><td>TARGETDIR</td><td>NEW_DIRECTORY3</td><td/><td>0</td><td/></row>
 		<row><td>NetHoodFolder</td><td>TARGETDIR</td><td>.:NetHood</td><td/><td>0</td><td/></row>
-		<row><td>PLUGINS</td><td>INSTALLDIR</td><td>Plugins</td><td/><td>0</td><td/></row>
 		<row><td>PersonalFolder</td><td>TARGETDIR</td><td>.:Personal</td><td/><td>0</td><td/></row>
 		<row><td>PrimaryVolumePath</td><td>TARGETDIR</td><td>.:Primar~1|PrimaryVolumePath</td><td/><td>0</td><td/></row>
 		<row><td>PrintHoodFolder</td><td>TARGETDIR</td><td>.:PRINTH~1|PrintHood</td><td/><td>0</td><td/></row>
@@ -1885,7 +1881,6 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>AlwaysInstall</td><td>CustomActions.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>Excel.Primary_output</td></row>
-		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>AlwaysInstall</td><td>IS_ININSTALL_SHORTCUT</td></row>
@@ -2058,7 +2053,6 @@
 		<col def="S0">Miscellaneous</col>
 		<row><td>CustomActions.Primary_output</td><td/><td/><td>_52525AD2_8061_4370_A46A_535381E8F8EF_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Excel.Primary_output</td><td/><td/><td>_603EA62D_4CE8_4792_B422_BE2AD5CC2785_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_7235E917_7C85_4CFC_98F8_3D93B42E972F_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_37086F92_90CB_4B7C_8D6B_53944A860D25_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_DAC69E09_9109_4A3B_9F2C_DB98CB86DD66_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>IS_ININSTALL_SHORTCUT</td><td/><td/><td>_EBD9317F_97AA_4A6A_8420_0C3CFE724018_FILTER</td><td/><td/><td/><td/></row>
