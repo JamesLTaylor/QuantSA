@@ -339,11 +339,12 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
-		<row><td>CustomActions.Primary_output</td><td>{0BBE5A9A-4768-4C25-8EBB-7A62EC176353}</td><td>INSTALLDIR</td><td>2</td><td/><td>customactions.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>CustomActions.Primary_output</td><td>{E1C21E61-EBE2-4036-A44A-1B1FC80FF026}</td><td>INSTALLDIR</td><td>2</td><td/><td>customactions.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Excel.Primary_output</td><td>{963A07AA-28F1-423C-9367-93BD93290EB9}</td><td>INSTALLDIR</td><td>2</td><td/><td>excel.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{8BB8E8E1-16C2-47D8-AA89-118EE42425BA}</td><td>PLUGINS</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{801AF9E9-0156-487D-811C-4F05FFADB98D}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{DAC86B1D-096C-49B4-AF3B-D88AA40E5E3B}</td><td>EXCELEXAMPLES</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>IS_ININSTALL_SHORTCUT</td><td>{8CC03514-1D39-47E3-824F-4F280BCDB6E4}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1058,6 +1059,7 @@
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT2</td></row>
+		<row><td>INSTALLDIR</td><td>IS_ININSTALL_SHORTCUT</td></row>
 		<row><td>PLUGINS</td><td>ISX_DEFAULTCOMPONENT</td></row>
 	</table>
 
@@ -1068,6 +1070,7 @@
 		<col def="S0">Target</col>
 		<col def="I4">ExtendedType</col>
 		<col def="S255">ISComments</col>
+		<row><td>AddAddinToExcel</td><td>1042</td><td>customactions.primary_output</td><td>"Install"</td><td/><td/></row>
 		<row><td>ISPreventDowngrade</td><td>19</td><td/><td>[IS_PREVENT_DOWNGRADE_EXIT]</td><td/><td>Exits install when a newer version of this product is found</td></row>
 		<row><td>ISPrint</td><td>1</td><td>SetAllUsers.dll</td><td>PrintScrollableText</td><td/><td>Prints the contents of a ScrollableText control on a dialog.</td></row>
 		<row><td>ISRunSetupTypeAddLocalEvent</td><td>1</td><td>ISExpHlp.dll</td><td>RunSetupTypeAddLocalEvent</td><td/><td>Run the AddLocal events associated with the Next button on the Setup Type dialog.</td></row>
@@ -1075,7 +1078,6 @@
 		<row><td>ISSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFiles</td><td/><td/></row>
 		<row><td>ISSelfRegisterFinalize</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFinalize</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISUnSelfRegisterFiles</td><td/><td/></row>
-		<row><td>NewCustomAction1</td><td>1042</td><td>customactions.primary_output</td><td/><td/><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td>51</td><td>ARPINSTALLLOCATION</td><td>[INSTALLDIR]</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%SystemRoot]\Profiles\All Users</td><td/><td/></row>
 		<row><td>ShowMsiLog</td><td>226</td><td>SystemFolder</td><td>[SystemFolder]notepad.exe "[MsiLogFileLocation]"</td><td/><td>Shows Property-driven MSI Log</td></row>
@@ -1141,6 +1143,8 @@
 		<row><td>ALLUSERSPROFILE</td><td>TARGETDIR</td><td>.:ALLUSE~1|All Users</td><td/><td>0</td><td/></row>
 		<row><td>AdminToolsFolder</td><td>TARGETDIR</td><td>.:Admint~1|AdminTools</td><td/><td>0</td><td/></row>
 		<row><td>AppDataFolder</td><td>TARGETDIR</td><td>.:APPLIC~1|Application Data</td><td/><td>0</td><td/></row>
+		<row><td>CUSTOM</td><td>SUPPORTDIR</td><td>Custom</td><td/><td>0</td><td/></row>
+		<row><td>CUSTOMACTIONS.PRIMARY_OUTPUT</td><td>SUPPORTDIR</td><td>CUSTOM~1|CustomActions.Primary output</td><td/><td>0</td><td/></row>
 		<row><td>CommonAppDataFolder</td><td>TARGETDIR</td><td>.:Common~1|CommonAppData</td><td/><td>0</td><td/></row>
 		<row><td>CommonFiles64Folder</td><td>TARGETDIR</td><td>.:Common64</td><td/><td>0</td><td/></row>
 		<row><td>CommonFilesFolder</td><td>TARGETDIR</td><td>.:Common</td><td/><td>0</td><td/></row>
@@ -1160,6 +1164,8 @@
 		<row><td>MY_PRODUCT_NAME</td><td>QUANTSA</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>MyPicturesFolder</td><td>TARGETDIR</td><td>.:MyPict~1|MyPictures</td><td/><td>0</td><td/></row>
 		<row><td>NEW_DIRECTORY1</td><td>TARGETDIR</td><td>NEW_DIRECTORY1</td><td/><td>0</td><td/></row>
+		<row><td>NEW_DIRECTORY2</td><td>TARGETDIR</td><td>NEW_DIRECTORY2</td><td/><td>0</td><td/></row>
+		<row><td>NEW_DIRECTORY3</td><td>TARGETDIR</td><td>NEW_DIRECTORY3</td><td/><td>0</td><td/></row>
 		<row><td>NetHoodFolder</td><td>TARGETDIR</td><td>.:NetHood</td><td/><td>0</td><td/></row>
 		<row><td>PLUGINS</td><td>INSTALLDIR</td><td>Plugins</td><td/><td>0</td><td/></row>
 		<row><td>PersonalFolder</td><td>TARGETDIR</td><td>.:Personal</td><td/><td>0</td><td/></row>
@@ -1171,6 +1177,7 @@
 		<row><td>QUANTSA</td><td>ProgramFilesFolder</td><td>QuantSA</td><td/><td>0</td><td/></row>
 		<row><td>QUANTSA1</td><td>QUANTSA</td><td>QuantSA</td><td/><td>0</td><td/></row>
 		<row><td>RecentFolder</td><td>TARGETDIR</td><td>.:Recent</td><td/><td>0</td><td/></row>
+		<row><td>SUPPORTDIR</td><td>TARGETDIR</td><td>SUPPORTDIR</td><td/><td>0</td><td/></row>
 		<row><td>SendToFolder</td><td>TARGETDIR</td><td>.:SendTo</td><td/><td>3</td><td/></row>
 		<row><td>StartMenuFolder</td><td>TARGETDIR</td><td>.:STARTM~1|Start Menu</td><td/><td>3</td><td/></row>
 		<row><td>StartupFolder</td><td>TARGETDIR</td><td>.:StartUp</td><td/><td>3</td><td/></row>
@@ -1183,6 +1190,8 @@
 		<row><td>USERPROFILE</td><td>TARGETDIR</td><td>.:USERPR~1|UserProfile</td><td/><td>0</td><td/></row>
 		<row><td>WindowsFolder</td><td>TARGETDIR</td><td>.:Windows</td><td/><td>0</td><td/></row>
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
+		<row><td>quantsa</td><td>ProgramMenuFolder</td><td>QuantSA</td><td/><td>1</td><td/></row>
+		<row><td>quantsa1</td><td>quantsa</td><td>QuantSA</td><td/><td>1</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -1879,6 +1888,7 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
+		<row><td>AlwaysInstall</td><td>IS_ININSTALL_SHORTCUT</td></row>
 	</table>
 
 	<table name="File">
@@ -1894,7 +1904,7 @@
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>createproductfromfile.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>CreateProductFromFile.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\CreateProductFromFile.xlsx</td><td>1</td><td/></row>
-		<row><td>customactions.primary_output</td><td>CustomActions.Primary_output</td><td>CustomActions.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;CustomActions&gt;|Built</td><td>3</td><td/></row>
+		<row><td>customactions.primary_output</td><td>CustomActions.Primary_output</td><td>CustomActions.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;CustomActions1&gt;|Built</td><td>3</td><td/></row>
 		<row><td>equityvaluation.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>EquityValuation.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\EquityValuation.xlsx</td><td>1</td><td/></row>
 		<row><td>excel.primary_output</td><td>Excel.Primary_output</td><td>Excel.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Excel&gt;|Built</td><td>3</td><td/></row>
 		<row><td>fitcurvenelsonsiegel.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>FitCurveNelsonSiegel.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\FitCurveNelsonSiegel.xlsx</td><td>1</td><td/></row>
@@ -1919,6 +1929,7 @@
 	<table name="ISAssistantTag">
 		<col key="yes" def="s72">Tag</col>
 		<col def="S255">Data</col>
+		<row><td>PROJECT_ASSISTANT_DEFAULT_FEATURE</td><td>AlwaysInstall</td></row>
 	</table>
 
 	<table name="ISBillBoard">
@@ -2045,11 +2056,12 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
-		<row><td>CustomActions.Primary_output</td><td/><td/><td>_2AADBF8E_6EE0_42DD_A3C7_D8C5711234B3_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>CustomActions.Primary_output</td><td/><td/><td>_52525AD2_8061_4370_A46A_535381E8F8EF_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Excel.Primary_output</td><td/><td/><td>_603EA62D_4CE8_4792_B422_BE2AD5CC2785_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_7235E917_7C85_4CFC_98F8_3D93B42E972F_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_37086F92_90CB_4B7C_8D6B_53944A860D25_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_DAC69E09_9109_4A3B_9F2C_DB98CB86DD66_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>IS_ININSTALL_SHORTCUT</td><td/><td/><td>_EBD9317F_97AA_4A6A_8420_0C3CFE724018_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
@@ -2329,6 +2341,7 @@
 		<col def="i4">Type</col>
 		<row><td>CommonFilesFolder</td><td/><td/><td>1</td></row>
 		<row><td>CustomActions</td><td>AddAddInToExcel\CustomActions.csproj</td><td/><td>2</td></row>
+		<row><td>CustomActions1</td><td>CustomActions\CustomActions.csproj</td><td/><td>2</td></row>
 		<row><td>Excel</td><td>..\QuantSA\Excel\Excel.csproj</td><td/><td>2</td></row>
 		<row><td>ISPROJECTDIR</td><td/><td/><td>1</td></row>
 		<row><td>ISProductFolder</td><td/><td/><td>1</td></row>
@@ -2640,7 +2653,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>QuantSA</td><td>0</td><td/><td>1696918481</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>QuantSA</td><td>0</td><td/><td>1831113004</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_OS</td><td>1033</td><td>The operating system is not adequate for running [ProductName].</td><td>0</td><td/><td>1696881617</td></row>
@@ -3452,6 +3465,7 @@
 		<row><td>IDS_PROGMSG_XML_UPDATE_FILE</td><td>1033</td><td>Updating XML file %s...</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SETUPEXE_EXPIRE_MSG</td><td>1033</td><td>This setup works until %s. The setup will now exit.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SETUPEXE_LAUNCH_COND_E</td><td>1033</td><td>This setup was built with an evaluation version of InstallShield and can only be launched from setup.exe.</td><td>0</td><td/><td>1696881617</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>Launch CreateProductFromFile.xlsx</td><td>0</td><td/><td>1831109004</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>1033</td><td>From the list of servers below, select the database server you would like to target.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>1033</td><td>From the list of catalog names below, select the database catalog you would like to target.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>1033</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>1696881617</td></row>
@@ -3741,8 +3755,9 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>1696883665</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>https://github.com/JamesLTaylor/QuantSA</td><td>0</td><td/><td>1696873457</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>QuantSA</td><td>0</td><td/><td>1696918481</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.QuantSA.com</td><td>0</td><td/><td>1831113004</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>QuantSA</td><td>0</td><td/><td>1831113004</td></row>
+		<row><td>ID_STRING4</td><td>1033</td><td>Excel Examples</td><td>0</td><td/><td>1831111180</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>1696881617</td></row>
 	</table>
 
@@ -3857,6 +3872,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
+		<row><td>UNINST_Uninstall_Q_9F8EAB159C3B4322B3534D1DF40663FC.exe</td><td/><td>D:\Program Files (x86)\InstallShield\2015LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -3885,6 +3901,7 @@
 		<col def="I2">Sequence</col>
 		<col def="S255">ISComments</col>
 		<col def="I4">ISAttributes</col>
+		<row><td>AddAddinToExcel</td><td>Not Installed</td><td>6405</td><td/><td/></row>
 		<row><td>AllocateRegistrySpace</td><td>NOT Installed</td><td>1550</td><td>AllocateRegistrySpace</td><td/></row>
 		<row><td>AppSearch</td><td/><td>400</td><td>AppSearch</td><td/></row>
 		<row><td>BindImage</td><td/><td>4300</td><td>BindImage</td><td/></row>
@@ -3916,7 +3933,6 @@
 		<row><td>MsiConfigureServices</td><td>VersionMsi &gt;= "5.00"</td><td>5850</td><td>MSI5 MsiConfigureServices</td><td/></row>
 		<row><td>MsiPublishAssemblies</td><td/><td>6250</td><td>MsiPublishAssemblies</td><td/></row>
 		<row><td>MsiUnpublishAssemblies</td><td/><td>1750</td><td>MsiUnpublishAssemblies</td><td/></row>
-		<row><td>NewCustomAction1</td><td>Not Installed</td><td>6405</td><td/><td/></row>
 		<row><td>PatchFiles</td><td/><td>4090</td><td>PatchFiles</td><td/></row>
 		<row><td>ProcessComponents</td><td/><td>1600</td><td>ProcessComponents</td><td/></row>
 		<row><td>PublishComponents</td><td/><td>6200</td><td>PublishComponents</td><td/></row>
@@ -3990,7 +4006,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{AF76AD90-9CD3-473E-A4E3-6AC7A1A85AB4}</td></row>
 		<row><td>ISUSSignature</td><td>{ED6B369E-41CA-4EFB-AA95-ED2D12A8BF89}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewUpdateService,viewSystemSearch,viewAppFiles,viewObjects,viewISToday,viewLearnMore,viewProject,viewUpgradePaths,viewShortcuts,viewRegistry,viewIniFiles,viewFileExtensions,viewEnvironmentVariables,viewVRoots,viewServices,viewUI,viewTextMessages,viewCustomActions</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewUpdateService,viewSystemSearch,viewAppFiles,viewObjects,viewISToday,viewLearnMore,viewProject,viewUpgradePaths,viewShortcuts,viewRegistry,viewIniFiles,viewFileExtensions,viewEnvironmentVariables,viewVRoots,viewServices,viewUI,viewTextMessages,viewCustomActions,viewRelease</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4439,6 +4455,10 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="L255">FileName</col>
 		<col def="s72">DirProperty</col>
 		<col def="i2">InstallMode</col>
+		<row><td>FileKey1</td><td>ISX_DEFAULTCOMPONENT2</td><td/><td>quantsa</td><td>2</td></row>
+		<row><td>FileKey2</td><td>ISX_DEFAULTCOMPONENT2</td><td/><td>quantsa1</td><td>2</td></row>
+		<row><td>NewShortcut1</td><td>ISX_DEFAULTCOMPONENT1</td><td/><td>quantsa1</td><td>2</td></row>
+		<row><td>UNINST_Uninstall_QuantSA</td><td>IS_ININSTALL_SHORTCUT</td><td/><td>quantsa1</td><td>2</td></row>
 	</table>
 
 	<table name="RemoveIniFile">
@@ -4524,6 +4544,8 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
+		<row><td>NewShortcut1</td><td>quantsa1</td><td>##ID_STRING4##</td><td>ISX_DEFAULTCOMPONENT1</td><td>[WindowsFolder]Explorer.exe</td><td>[INSTALLDIR]ExcelExamples</td><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>UNINST_Uninstall_QuantSA</td><td>quantsa1</td><td>UNINST|Uninstall QuantSA</td><td>IS_ININSTALL_SHORTCUT</td><td>[SystemFolder]msiexec.exe</td><td>/x {33EA0BEB-B9C6-4383-923C-46547D3E0EE7}</td><td/><td/><td>UNINST_Uninstall_Q_9F8EAB159C3B4322B3534D1DF40663FC.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">
