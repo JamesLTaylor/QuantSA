@@ -1908,6 +1908,7 @@
 		<row><td>pcaexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>PCAExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\PCAExample.xlsx</td><td>1</td><td/></row>
 		<row><td>quantsa.dna</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.dna</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\QuantSA\Excel\QuantSA.dna</td><td>1</td><td/></row>
 		<row><td>quantsa.xll</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.xll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\QuantSA\Excel\QuantSA.xll</td><td>1</td><td/></row>
+		<row><td>quantsa_help.url</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA Help.url</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;\QuantSA Help.url</td><td>1</td><td/></row>
 		<row><td>zarswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>ZARSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\ZARSwap.xlsx</td><td>1</td><td/></row>
 	</table>
 
@@ -3460,6 +3461,7 @@
 		<row><td>IDS_SETUPEXE_EXPIRE_MSG</td><td>1033</td><td>This setup works until %s. The setup will now exit.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SETUPEXE_LAUNCH_COND_E</td><td>1033</td><td>This setup was built with an evaluation version of InstallShield and can only be launched from setup.exe.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>Launch CreateProductFromFile.xlsx</td><td>0</td><td/><td>1831109004</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME2</td><td>1033</td><td>QuantSA Help</td><td>0</td><td/><td>1831120460</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>1033</td><td>From the list of servers below, select the database server you would like to target.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>1033</td><td>From the list of catalog names below, select the database catalog you would like to target.</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>1033</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>1696881617</td></row>
@@ -3749,7 +3751,7 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1696881617</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>1696883665</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.QuantSA.com</td><td>0</td><td/><td>1831113004</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.cogn.co.za/QuantSA</td><td>0</td><td/><td>1831101932</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>QuantSA</td><td>0</td><td/><td>1831113004</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Excel Examples</td><td>0</td><td/><td>1831111180</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>1696881617</td></row>
@@ -3866,6 +3868,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
+		<row><td>QuantSA_Help.url_D49C73CA05EF44BF97A7BC4058FE2309.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\GenericExe.ico</td><td>0</td></row>
 		<row><td>UNINST_Uninstall_Q_9F8EAB159C3B4322B3534D1DF40663FC.exe</td><td/><td>D:\Program Files (x86)\InstallShield\2015LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
 	</table>
 
@@ -4452,6 +4455,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>FileKey1</td><td>ISX_DEFAULTCOMPONENT2</td><td/><td>quantsa</td><td>2</td></row>
 		<row><td>FileKey2</td><td>ISX_DEFAULTCOMPONENT2</td><td/><td>quantsa1</td><td>2</td></row>
 		<row><td>NewShortcut1</td><td>ISX_DEFAULTCOMPONENT1</td><td/><td>quantsa1</td><td>2</td></row>
+		<row><td>QuantSA_Help.url</td><td>ISX_DEFAULTCOMPONENT1</td><td/><td>quantsa1</td><td>2</td></row>
 		<row><td>UNINST_Uninstall_QuantSA</td><td>IS_ININSTALL_SHORTCUT</td><td/><td>quantsa1</td><td>2</td></row>
 	</table>
 
@@ -4539,6 +4543,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
 		<row><td>NewShortcut1</td><td>quantsa1</td><td>##ID_STRING4##</td><td>ISX_DEFAULTCOMPONENT1</td><td>[WindowsFolder]Explorer.exe</td><td>[INSTALLDIR]ExcelExamples</td><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>QuantSA_Help.url</td><td>quantsa1</td><td>##IDS_SHORTCUT_DISPLAY_NAME2##</td><td>ISX_DEFAULTCOMPONENT1</td><td>[INSTALLDIR]QuantSA Help.url</td><td/><td/><td/><td>QuantSA_Help.url_D49C73CA05EF44BF97A7BC4058FE2309.exe</td><td>0</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>UNINST_Uninstall_QuantSA</td><td>quantsa1</td><td>UNINST|Uninstall QuantSA</td><td>IS_ININSTALL_SHORTCUT</td><td>[SystemFolder]msiexec.exe</td><td>/x {33EA0BEB-B9C6-4383-923C-46547D3E0EE7}</td><td/><td/><td>UNINST_Uninstall_Q_9F8EAB159C3B4322B3534D1DF40663FC.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
