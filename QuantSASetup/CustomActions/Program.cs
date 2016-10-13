@@ -17,8 +17,6 @@ namespace QuantSA.Setup.CustomActions
     {
         static int Main(string[] args)
         {
-            Debugger.Launch();
-
             try
             {
                 if (args.Length == 0 || args[0] == "Install")
