@@ -1898,17 +1898,17 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>createproductfromfile.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>CreateProductFromFile.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\CreateProductFromFile.xlsx</td><td>1</td><td/></row>
+		<row><td>createproductfromfile.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>CreateProductFromFile.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\CreateProductFromFile.xlsx</td><td>1</td><td/></row>
 		<row><td>customactions.primary_output</td><td>CustomActions.Primary_output</td><td>CustomActions.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;CustomActions1&gt;|Built</td><td>3</td><td/></row>
-		<row><td>equityvaluation.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>EquityValuation.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\EquityValuation.xlsx</td><td>1</td><td/></row>
+		<row><td>equityvaluation.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>EquityValuation.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\EquityValuation.xlsx</td><td>1</td><td/></row>
 		<row><td>excel.primary_output</td><td>Excel.Primary_output</td><td>Excel.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Excel&gt;|Built</td><td>3</td><td/></row>
-		<row><td>fitcurvenelsonsiegel.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>FitCurveNelsonSiegel.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\FitCurveNelsonSiegel.xlsx</td><td>1</td><td/></row>
-		<row><td>generalswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>GeneralSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\GeneralSwap.xlsx</td><td>1</td><td/></row>
-		<row><td>interplinearexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>InterpLinearExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\InterpLinearExample.xlsx</td><td>1</td><td/></row>
-		<row><td>pcaexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>PCAExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\PCAExample.xlsx</td><td>1</td><td/></row>
-		<row><td>quantsa.dna</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.dna</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\QuantSA\Excel\QuantSA.dna</td><td>1</td><td/></row>
-		<row><td>quantsa.xll</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.xll</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\QuantSA\Excel\QuantSA.xll</td><td>1</td><td/></row>
-		<row><td>zarswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>ZARSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>D:\Users\Robert\Source\Repos\QuantSA\ExcelExamples\ZARSwap.xlsx</td><td>1</td><td/></row>
+		<row><td>fitcurvenelsonsiegel.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>FitCurveNelsonSiegel.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\FitCurveNelsonSiegel.xlsx</td><td>1</td><td/></row>
+		<row><td>generalswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>GeneralSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\GeneralSwap.xlsx</td><td>1</td><td/></row>
+		<row><td>interplinearexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>InterpLinearExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\InterpLinearExample.xlsx</td><td>1</td><td/></row>
+		<row><td>pcaexample.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>PCAExample.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\PCAExample.xlsx</td><td>1</td><td/></row>
+		<row><td>quantsa.dna</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.dna</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\QuantSA\Excel\QuantSA.dna</td><td>1</td><td/></row>
+		<row><td>quantsa.xll</td><td>ISX_DEFAULTCOMPONENT1</td><td>QuantSA.xll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\QuantSA\Excel\QuantSA.xll</td><td>1</td><td/></row>
+		<row><td>zarswap.xlsx</td><td>ISX_DEFAULTCOMPONENT2</td><td>ZARSwap.xlsx</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;ISPROJECTFOLDER&gt;..\..\ExcelExamples\ZARSwap.xlsx</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
