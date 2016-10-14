@@ -12,11 +12,15 @@ namespace QuantSA
     public class PCACurveSimulator
     {
         private int[] tenorMonths;
+        /// <summary>
+        /// The principle components in rows.
+        /// </summary>
         private double[,] components;
         private double[] vols;        
         private double[] initialRates;
         private double multiplier;
         private bool useRelative;
+        private bool floorAtZero;
 
         public Date anchorDate { get; private set; }
 
@@ -24,21 +28,46 @@ namespace QuantSA
         /// <summary>
         /// Constructs a PCA curve simulator
         /// </summary>
+        /// <param name="anchorDate"></param>
+        /// <param name="initialRates"></param>
         /// <param name="tenorMonths"></param>
-        /// <param name="components"></param>
+        /// <param name="components">Can be passed in rows or columns.  The orientation will be 
+        /// checked by comparing with the length of <paramref name="tenorMonths"/> </param>
         /// <param name="vols"></param>
+        /// <param name="multiplier"></param>
+        /// <param name="useRelative"></param>
+        /// <param name="floorAtZero"></param>
         public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, 
-            double[] vols, double multiplier, bool useRelative)
+            double[] vols, double multiplier, bool useRelative, bool floorAtZero)
         {
             if (multiplier < 0.1 || multiplier > 10) throw new ArgumentException("multiplier should be close to 1.0 for the simulation to make sense");
-            //TODO: Check that these are all the right size.            
+            if (components.GetLength(0) == initialRates.Length && components.GetLength(1) == initialRates.Length)
+                throw new ArgumentException("Simulator must not use all the components."); //Also makes the orientation ambiguous.
+            else if (components.GetLength(0) == initialRates.Length && components.GetLength(1) < initialRates.Length)
+            {
+                // In columns, transpose
+                this.components = components.Transpose();
+            }
+            else if (components.GetLength(0) < initialRates.Length && components.GetLength(1) == initialRates.Length)
+            {
+                // In rows, do nothing
+                this.components = components;
+            }
+            else
+                throw new ArgumentException("The components data must either have the same number of columns as the length of the provided tenors if the components are provided in rows, or the same rows if they are provided in columns.");
+
+            if (tenorMonths.Length != initialRates.Length)
+                throw new ArgumentException("The provided dates tenros and initial rates must be the same length.");
+            if (vols.Length!=this.components.GetLength(0))
+                throw new ArgumentException("The number of vols must be the same as the number of components.");
+
             this.anchorDate = anchorDate;
             this.initialRates = initialRates;
-            this.tenorMonths = tenorMonths;
-            this.components = components;
+            this.tenorMonths = tenorMonths;            
             this.vols = vols;
             this.multiplier = multiplier;
-            this.useRelative = useRelative;            
+            this.useRelative = useRelative;
+            this.floorAtZero = floorAtZero;
         }
 
 
@@ -84,7 +113,8 @@ namespace QuantSA
                     else
                     {
                         double change = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 + components[2, i] * vols[2] * sdt * eps3;
-                        currentRates[i] = Math.Max(0.0, previousRates[i] + change);
+                        currentRates[i] = previousRates[i] + change;
+                        if (floorAtZero) currentRates[i] = Math.Max(0.0, currentRates[i]);
                     }
                 }
 
