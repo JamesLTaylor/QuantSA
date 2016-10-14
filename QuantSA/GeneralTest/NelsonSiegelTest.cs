@@ -11,7 +11,7 @@ namespace CurvesTest
     public class NelsonSiegelTest
     {
         [TestMethod]
-        public void TestFitYears()
+        public void TestNelsonSiegelFitYears()
         {
             Date[] t = (new double[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20 }).Select(date => new Date(date)).ToArray<Date>();
             Double[] r = {0.0745,
@@ -37,7 +37,7 @@ namespace CurvesTest
         }
 
         [TestMethod]
-        public void TestFitDays()
+        public void TestNelsonSiegelFitDays()
         {
             Date[] t = (new double[]{365,
                             730,

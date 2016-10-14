@@ -11,7 +11,7 @@ namespace MonteCarloTest
     public class EquitySimulatorTest
     {
         [TestMethod]
-        public void TestCall()
+        public void TestEquitySimulatorCall()
         {
             // The model
             Date anchorDate = new Date(2016, 09, 30);

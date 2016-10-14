@@ -10,7 +10,7 @@ namespace MonteCarloTest
     public class CoordinatorTest
     {
         [TestMethod]
-        public void TestCoordinator1()
+        public void TestValuationCoordinator()
         {            
             Date exerciseDate = new Date(2017, 08, 28);
             String shareCode = "AAA";
