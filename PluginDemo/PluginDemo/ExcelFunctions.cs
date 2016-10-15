@@ -1,5 +1,5 @@
 ﻿using ExcelDna.Integration;
-using QuantSA;
+using QuantSA.General;
 using QuantSA.Excel;
 using System;
 using System.Collections.Generic;
