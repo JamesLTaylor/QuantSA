@@ -1,5 +1,5 @@
 ﻿using ExcelDna.Integration;
-using QuantSA;
+using QuantSA.General;
 using System;
 using XU = QuantSA.Excel.ExcelUtilities;
 
@@ -142,7 +142,7 @@ namespace QuantSA.Excel
         HelpTopic = "http://cogn.co.za/QuantSA/CovarianceFromCurves.html")]
         public static double[,] CovarianceFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves)
         {
-            double[,] covMatrix = General.DataAnalysis.PCA.CovarianceFromCurves(curves);
+            double[,] covMatrix = PCA.CovarianceFromCurves(curves);
             return covMatrix;
         }
 
@@ -156,7 +156,7 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "Indicates if the PCA is to be done on relative moves.  If not then it will be done on absolute moves.")]object useRelative)
         {
             try {
-                double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.PCAFromCurves(curves, XU.GetBool(useRelative));
+                double[,] covMatrix = PCA.PCAFromCurves(curves, XU.GetBool(useRelative));
                 return XU.ConvertToObjects(covMatrix);
             }
             catch (Exception e)

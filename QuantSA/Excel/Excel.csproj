@@ -100,13 +100,13 @@
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>General</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonteCarlo\MonteCarlo.csproj">
-      <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
-      <Name>MonteCarlo</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QuantSAInterfaces\QuantSAInterfaces.csproj">
       <Project>{ab407873-268c-4ae1-b1fb-62b9830df979}</Project>
       <Name>QuantSAInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Valuation\Valuation.csproj">
+      <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
+      <Name>Valuation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

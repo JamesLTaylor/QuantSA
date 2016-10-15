@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     public class Cashflow
     {

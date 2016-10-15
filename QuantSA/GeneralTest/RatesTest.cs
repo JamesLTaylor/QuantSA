@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA;
+using QuantSA.General;
 
 namespace GeneralTest
 {
