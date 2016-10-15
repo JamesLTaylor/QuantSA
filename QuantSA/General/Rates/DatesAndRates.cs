@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     /// <summary>
     /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 

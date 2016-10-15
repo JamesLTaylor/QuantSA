@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel", "Excel\Excel.csproj", "{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonteCarlo", "MonteCarlo\MonteCarlo.csproj", "{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuation", "MonteCarlo\Valuation.csproj", "{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonteCarloTest", "MonteCarloTest\MonteCarloTest.csproj", "{EC7E0D08-677B-41F0-82B6-20215FD6E395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValuationTest", "MonteCarloTest\ValuationTest.csproj", "{EC7E0D08-677B-41F0-82B6-20215FD6E395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General", "General\General.csproj", "{EE53E241-C329-4D56-965A-F6E2BB1FCE50}"
 EndProject

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA;
-
-namespace QuantSA
+﻿namespace QuantSA.General
 {
     /// <summary>
     /// An object to describe a floating rate index such as 3 Month Jibar.

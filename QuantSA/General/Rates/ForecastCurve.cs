@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     /// <summary>
     /// Linearly interpolates forward rates.  Must only be used for a single floating index.  This is generally enforced 

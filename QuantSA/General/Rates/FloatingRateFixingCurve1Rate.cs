@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     /// <summary>
     /// Provides fixes for the past at a single rate.  This should only be used an an expediency, rather use  
