@@ -22,7 +22,10 @@ namespace QuantSA
 
         public void AddRateForecast(IFloatingRateSource forecastCurve)
         {
-            forecastCurves.Add(forecastCurve.GetFloatingIndex(), forecastCurve);
+            if (!forecastCurves.ContainsKey(forecastCurve.GetFloatingIndex()))
+                forecastCurves.Add(forecastCurve.GetFloatingIndex(), forecastCurve);
+            else
+                throw new ArgumentException(forecastCurve.GetFloatingIndex().ToString() + " has already been added to the model.");            
         }
 
         public void AddRateForecast(List<IFloatingRateSource> forecastCurves)
@@ -33,7 +36,12 @@ namespace QuantSA
 
         public void AddFXForecast(IFXSource fxForecastCurve)
         {
-            fxCurves.Add(fxForecastCurve.GetCurrencyPair(), fxForecastCurve);
+            if (numeraireCurrency.GetHashCode() == Currency.ANY.GetHashCode())
+                throw new ArgumentException("If the model provides multiple currencies then the discounting currency cannot be 'ANY'.");
+            if (!fxCurves.ContainsKey(fxForecastCurve.GetCurrencyPair()))
+                fxCurves.Add(fxForecastCurve.GetCurrencyPair(), fxForecastCurve);
+            else
+                throw new ArgumentException(fxForecastCurve.GetCurrencyPair().ToString() + " has already been added to the model.");
         }
 
         public void AddFXForecast(List<IFXSource> fxForecastCurves)

@@ -50,11 +50,9 @@ namespace MonteCarlo
         public double Value(List<Product> portfolio, Date valueDate)
         {
             this.portfolio = portfolio;
-            // Check that more than one simulator is not provided for any index
-            //TODO: Check that more than one simulator is not provided for any index
-
             // Find which simulator will provide each of the potentially required MarketObservables.
             Dictionary<MarketObservable, Simulator> indexSources = new Dictionary<MarketObservable, Simulator>();
+            HashSet<Currency> requiredCurrencySet = new HashSet<Currency>();
             foreach (Product product in portfolio)
             {
                 // Associate the index simulators
@@ -65,18 +63,23 @@ namespace MonteCarlo
                         {
                             if (simulator.ProvidesIndex(index))
                             {
-                                indexSources[index] = simulator;
-                                found = true;
-                                break;
+                                if (!found)
+                                {
+                                    indexSources[index] = simulator;
+                                    found = true;
+                                }
+                                else throw new ArgumentException(index.ToString() + " is provided by more than one simulator.");                                
                             }
                         }
-                        if (!found) throw new IndexOutOfRangeException("Required index: " + index.ToString() + " is not provided by any of the simulators");
+                        if (!found) throw new IndexOutOfRangeException("Required index: " + index.ToString() + " is not provided by any of the simulators.");
                         
                     }
                 }
+
                 // Associate the currency simulators
                 foreach (Currency ccy in product.GetCashflowCurrencies())
                 {
+                    requiredCurrencySet.Add(ccy);
                     MarketObservable index = new CurrencyPair(ccy, numeraire.GetNumeraireCurrency());
                     if (ccy != numeraire.GetNumeraireCurrency() && !indexSources.ContainsKey(index))
                     {
@@ -95,6 +98,12 @@ namespace MonteCarlo
                     }
                 }
             }
+
+            // Check how many currencies are required by this portfolio, and ensure that ANY is not used as the 
+            // valuation currency if there are more than one.  Comparison needs to be done on HashCode because
+            // ANY is equal to any Currency in the comparison overloads.
+            if (requiredCurrencySet.Count > 1 && numeraire.GetNumeraireCurrency().GetHashCode() == Currency.ANY.GetHashCode())
+                throw new ArgumentException("Cannot use 'ANY' as the valuation currency when the portfolio includes cashflows in multiple currencies.");
 
             // Reset all the simulators
             foreach (Simulator simulator in simulators)
