@@ -44,7 +44,10 @@ entries:
     folderitems:
     - title: Setup environment
       url: /home_setup.html 
-      output: web      
+      output: web  
+    - title: Introduction to the code
+      url: /home_code_intro.html 
+      output: web
     - title: Writing tests
       url: /home_tests.html 
       output: web
@@ -67,6 +70,6 @@ entries:
     output: web
     folderitems:
     - title: Principles
-      url: /home_valuatiion_principles.html 
+      url: /home_valuation_principles.html 
       output: web            
          

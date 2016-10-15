@@ -4,7 +4,7 @@ keywords:
 last_updated: September 18, 2016
 tags: 
 sidebar: home_sidebar
-permalink: home_valuatiion_principles.html
+permalink: home_valuation_principles.html
 folder: home
 ---
 
@@ -12,11 +12,21 @@ folder: home
 
 A product is an encapsulation of a financial contract.  It only knows:
 
-   * Which market observables determine its cashflows. 
+   * Which [market obserables](home_valuation_principles.html#market-observables) determine its cashflows. 
    * How the observables are used to calculate the cashflows.
    * On what dates the cashflows will take place.
 
 A product does not in general have any implementation of a valuation or knowledge of the models that could be used to value it.
+
+## Market Observables
+These are quantities that can be observed unambigiously in the market and are referenced in contracts betweem parties to determine (either directly or indirectly) what the amount of money one party needs to the other.
+
+Examples include:
+
+* A share price
+* A floating rate index
+* A value for the consumer price index
+* The value of one currency in terms of units of another currency, i.e. an exchange rate 
 
 ## Valuation Usage
 
