@@ -1,11 +1,10 @@
-﻿using MonteCarlo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA.MonteCarlo
+namespace QuantSA.General
 {
     /// <summary>
     /// A set of cashflows that can be valued like any other product.

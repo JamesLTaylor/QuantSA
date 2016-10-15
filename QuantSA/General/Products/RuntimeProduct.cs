@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonteCarlo
+namespace QuantSA.General
 {
     public class RuntimeProduct
     {
@@ -17,8 +17,8 @@ namespace MonteCarlo
             CompilerParameters parameters = new CompilerParameters();
             parameters.GenerateInMemory = true;
             string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.MonteCarlo.dll"));
             parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.General.dll"));
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Valuation.dll"));
 
             CompilerResults results = codeProvider.CompileAssemblyFromFile(parameters, new string[] { filename });
             if (results.Errors.Count > 0)
@@ -35,13 +35,13 @@ namespace MonteCarlo
             }
             if (results.CompiledAssembly.DefinedTypes.Count()>1)
             {
-                throw new Exception("Assembly must only define one type : A Class that extends MonteCarlo.Product.");
+                throw new Exception("Assembly must only define one type : A Class that extends QuantSA.General.Product.");
             }
             string typeName = results.CompiledAssembly.DefinedTypes.First().Name;
             Type productType = results.CompiledAssembly.GetType(typeName);
             if (!typeof(Product).IsAssignableFrom(productType))
             {
-                throw new Exception("The defined type must derive from MonteCarlo.Product");
+                throw new Exception("The defined type must derive from QuantSA.General.Product");
             }
             
             return (Product)Activator.CreateInstance(productType);

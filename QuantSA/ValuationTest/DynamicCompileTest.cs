@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA;
-using MonteCarlo;
 using System.Diagnostics;
+using QuantSA.General;
+using QuantSA.Valuation;
 
-namespace MonteCarloTest
+namespace ValuationTest
 {
     /// <summary>
     /// Tests the compiling of a product at runtime.

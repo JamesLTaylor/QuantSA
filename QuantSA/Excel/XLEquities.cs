@@ -1,7 +1,7 @@
 ﻿using ExcelDna.Integration;
-using MonteCarlo;
-using QuantSA.MonteCarlo;
 using System;
+using QuantSA.General;
+using QuantSA.Valuation;
 using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel

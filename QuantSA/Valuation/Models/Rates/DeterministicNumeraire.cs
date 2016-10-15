@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA;
+using QuantSA.General;
 
-namespace MonteCarlo
+namespace QuantSA.Valuation
 {
     //TODO: This class must be extended to also handle curves.
     public class DeterministicNumeraire : NumeraireSimulator

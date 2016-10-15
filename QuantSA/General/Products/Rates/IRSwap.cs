@@ -1,11 +1,10 @@
-﻿using MonteCarlo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     public class IRSwap : Product, IProvidesResultStore
     {

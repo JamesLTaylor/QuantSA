@@ -1,12 +1,10 @@
-﻿using MonteCarlo;
-using QuantSA;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA.MonteCarlo
+namespace QuantSA.General
 {
     public class FloatLeg : Product
     {

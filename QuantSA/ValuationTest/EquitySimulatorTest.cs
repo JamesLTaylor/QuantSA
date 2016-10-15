@@ -1,11 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.MonteCarlo;
-using MonteCarlo;
-using QuantSA;
 using System.Collections.Generic;
+using QuantSA.General;
+using QuantSA.Valuation;
 
-namespace MonteCarloTest
+namespace ValuationTest
 {
     [TestClass]
     public class EquitySimulatorTest

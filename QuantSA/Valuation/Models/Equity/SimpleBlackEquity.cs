@@ -1,13 +1,13 @@
-﻿using QuantSA;
-using MathNet.Numerics.Distributions;
+﻿using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QuantSA.General;
 
-namespace MonteCarlo
+namespace QuantSA.Valuation
 {
     public class SimpleBlackEquity : Simulator
     {

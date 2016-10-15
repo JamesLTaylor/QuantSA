@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using QuantSA;
-using MonteCarlo;
 
-namespace QuantSA.MonteCarlo
+namespace QuantSA.General
 {
     public class FixedLeg : Product
     {

@@ -1,16 +1,15 @@
-﻿using MonteCarlo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuantSA.MonteCarlo
+namespace QuantSA.General
 {
     /// <summary>
     /// Wraps the general <see cref="Product" /> class in a simple case where there are cashflows
     /// in only one currency and all cashflows are always calculated.
     /// Requires fewer methods to be implemented.
     /// </summary>
-    /// <seealso cref="MonteCarlo.Product" />
+    /// <seealso cref="Product" />
     public abstract class ProductWrapper : Product
     {
         delegate double GetIndexValueDelegate(MarketObservable index, Date date);

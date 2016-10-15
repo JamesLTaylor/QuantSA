@@ -1,9 +1,8 @@
-﻿using MonteCarlo;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using QuantSA.General;
 
-namespace QuantSA
+namespace QuantSA.Valuation
 {
     public class DeterminsiticCurves : NumeraireSimulator
     {

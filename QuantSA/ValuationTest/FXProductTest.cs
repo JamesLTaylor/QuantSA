@@ -1,13 +1,9 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.MonteCarlo;
-using QuantSA;
-using MonteCarlo;
 using QuantSA.General;
+using QuantSA.Valuation;
 
-namespace MonteCarloTest
+namespace ValuationTest
 {
     /// <summary>
     /// Tests some FX products.

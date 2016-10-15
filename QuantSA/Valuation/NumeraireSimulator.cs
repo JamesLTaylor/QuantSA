@@ -1,8 +1,7 @@
-﻿using QuantSA;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using QuantSA.General;
 
-namespace MonteCarlo
+namespace QuantSA.Valuation
 {
     /// <summary>
     /// Base class for bank account numeraire simulators 

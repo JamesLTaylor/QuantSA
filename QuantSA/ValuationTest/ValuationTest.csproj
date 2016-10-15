@@ -6,8 +6,8 @@
     <ProjectGuid>{EC7E0D08-677B-41F0-82B6-20215FD6E395}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MonteCarloTest</RootNamespace>
-    <AssemblyName>MonteCarloTest</AssemblyName>
+    <RootNamespace>ValuationTest</RootNamespace>
+    <AssemblyName>ValuationTest</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -87,7 +87,7 @@
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>General</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonteCarlo\Valuation.csproj">
+    <ProjectReference Include="..\Valuation\Valuation.csproj">
       <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
       <Name>Valuation</Name>
     </ProjectReference>

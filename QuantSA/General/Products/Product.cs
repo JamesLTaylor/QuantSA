@@ -1,8 +1,7 @@
-﻿using QuantSA;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace MonteCarlo
+namespace QuantSA.General
 {
     /// <summary>
     /// The call sequence for getting the cahsflows of any product must be:

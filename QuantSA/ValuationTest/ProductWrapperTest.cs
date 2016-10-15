@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.MonteCarlo;
-using QuantSA;
-using MonteCarlo;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using QuantSA.General;
+using QuantSA.Valuation;
 
-namespace MonteCarloTest
+namespace ValuationTest
 {
     public class ProductWrapperEquitySample1 : ProductWrapper
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonteCarlo;
 using System.Collections.Generic;
-using QuantSA;
+using QuantSA.General;
+using QuantSA.Valuation;
 
-namespace MonteCarloTest
+namespace ValuationTest
 {
     [TestClass]
     public class CoordinatorTest

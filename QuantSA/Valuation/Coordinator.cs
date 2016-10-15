@@ -1,12 +1,11 @@
-﻿using QuantSA;
-using QuantSA.General;
+﻿using QuantSA.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonteCarlo
+namespace QuantSA.Valuation
 {
     /// <summary>
     /// A generalized way to perform valuations.  Coordinates between products and models.

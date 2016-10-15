@@ -1,13 +1,13 @@
 ﻿using Accord.Statistics.Distributions.Multivariate;
-using MonteCarlo;
 using System;
 using System.Collections.Generic;
 using Accord.Math;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QuantSA.General;
 
-namespace QuantSA.MonteCarlo
+namespace QuantSA.Valuation
 {
     /// <summary>
     /// A <see cref="Simulator"/> that can provide realizations of several share prices in a single currency.
@@ -123,5 +123,6 @@ namespace QuantSA.MonteCarlo
         {
             // Nothing needs to be done since we are using a deterministic curve.
         }
+
     }
 }

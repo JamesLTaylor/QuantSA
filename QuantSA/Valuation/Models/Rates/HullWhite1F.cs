@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA;
 using Accord.Math;
 using Accord.Statistics.Distributions.Univariate;
+using QuantSA.General;
 
-namespace MonteCarlo
+namespace QuantSA.Valuation
 {
     public class HullWhite1F : NumeraireSimulator
     {

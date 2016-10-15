@@ -1,8 +1,7 @@
-﻿using QuantSA;
-using System;
+﻿using QuantSA.General;
 using System.Collections.Generic;
 
-namespace MonteCarlo
+namespace QuantSA.Valuation
 {
     public abstract class Simulator
     {
