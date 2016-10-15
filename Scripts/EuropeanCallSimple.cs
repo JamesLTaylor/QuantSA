@@ -1,6 +1,5 @@
-using QuantSA;
-using QuantSA.MonteCarlo;
-using MonteCarlo;
+using QuantSA.General;
+using QuantSA.Valuation;
 using System;
 using System.Collections.Generic;
 

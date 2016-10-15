@@ -65,34 +65,47 @@
   <ItemGroup>
     <Compile Include="Cashflow.cs" />
     <Compile Include="Currency.cs" />
-    <Compile Include="Curves\PCACurveSimulator.cs" />
+    <Compile Include="Curves\DatesAndRates.cs" />
+    <Compile Include="Curves\FloatingRateFixingCurve.cs" />
+    <Compile Include="Curves\FloatingRateFixingCurve1Rate.cs" />
+    <Compile Include="Curves\ForecastCurve.cs" />
+    <Compile Include="Curves\ForecastCurveFromDiscount.cs" />
+    <Compile Include="Curves\FXForecastCurve.cs" />
     <Compile Include="Curves\NelsonSiegel.cs" />
+    <Compile Include="Curves\SingleRate.cs" />
+    <Compile Include="CurveTools\PCACurveSimulator.cs" />
+    <Compile Include="CurveTools\ZARSwapCurveStripper.cs" />
     <Compile Include="DataAnalysis\PCA.cs" />
     <Compile Include="Date.cs" />
-    <Compile Include="FX\CurrencyPair.cs" />
-    <Compile Include="FX\FXForecastCurve.cs" />
+    <Compile Include="Formulae\Formulae.cs" />
     <Compile Include="ICurve.cs" />
     <Compile Include="IDiscountingSource.cs" />
     <Compile Include="IFloatingRateSource.cs" />
-    <Compile Include="Formulae.cs" />
     <Compile Include="IFXSource.cs" />
     <Compile Include="IProvidesResultStore.cs" />
     <Compile Include="MarketObservable.cs" />
+    <Compile Include="MarketObservables\CurrencyPair.cs" />
+    <Compile Include="MarketObservables\FloatingIndex.cs" />
+    <Compile Include="MarketObservables\Share.cs" />
+    <Compile Include="Products\Equity\EuropeanOption.cs" />
+    <Compile Include="Products\FX\CCIRS.cs" />
+    <Compile Include="Products\Product.cs" />
+    <Compile Include="Products\ProductWrapper.cs" />
+    <Compile Include="Products\Rates\CashLeg.cs" />
+    <Compile Include="Products\Rates\FixedLeg.cs" />
+    <Compile Include="Products\Rates\FloatLeg.cs" />
+    <Compile Include="Products\Rates\GeneralSwap.cs" />
+    <Compile Include="Products\Rates\IRSwap.cs" />
+    <Compile Include="Products\RuntimeProduct.cs" />
+    <Compile Include="Products\Swap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rates\DatesAndRates.cs" />
-    <Compile Include="Rates\FloatingIndex.cs" />
-    <Compile Include="Rates\FloatingRateFixingCurve.cs" />
-    <Compile Include="Rates\FloatingRateFixingCurve1Rate.cs" />
-    <Compile Include="Rates\ForecastCurve.cs" />
-    <Compile Include="Rates\ForecastCurveFromDiscount.cs" />
-    <Compile Include="Rates\SingleRate.cs" />
-    <Compile Include="Rates\ZARSwapCurveStripper.cs" />
     <Compile Include="ResultStore.cs" />
     <Compile Include="Tenor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.2.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.2.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

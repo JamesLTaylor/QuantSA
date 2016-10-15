@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     /// <summary>
     /// A general storage container to keep both final results and debug data in QuantSA objects.
