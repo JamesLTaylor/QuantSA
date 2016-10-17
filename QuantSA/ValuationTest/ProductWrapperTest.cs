@@ -106,7 +106,7 @@ namespace ValuationTest
             IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, anchorDate,
                 new Date[] { anchorDate, anchorDate.AddMonths(36) },
                 new double[] { 0.07, 0.07 });
-            EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve);
+            EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, new List<IFloatingRateSource>());
             Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 40000);
 
             //Valuation

@@ -4,14 +4,18 @@ using System.Collections.Generic;
 namespace QuantSA.General
 {
     /// <summary>
-    /// The call sequence for getting the cahsflows of any product must be:
+    /// The call sequence for getting the cashflows of any product must be:
     /// 
-    /// Product.SetValueDateAndReset(...)
+    /// Product.Reset(...)
+    /// Product.SetValueDate(...)
     /// Product.GetRequiredIndices(...)
     /// Then for each index:
     ///     Product.GetRequiredIndexDates(...)
     ///     Product.SetIndexValues(...) 
     /// GetCFs()
+    /// 
+    /// The calls to GetCashflowCurrencies and GetCashflowDates will only be used when there is a 
+    /// multi currency valuation and exchange rates will need to be used in the valuation.
     /// </summary>
     public abstract class Product
     {
@@ -40,8 +44,7 @@ namespace QuantSA.General
         /// <summary>
         /// Dates at which the provided index is required to calculate cashflows.
         /// </summary>
-        /// <param name="valueDate"></param>
-        /// <param name="key"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
         public abstract List<Date> GetRequiredIndexDates(MarketObservable index);
 

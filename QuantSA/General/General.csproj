@@ -85,6 +85,7 @@
     <Compile Include="IProvidesResultStore.cs" />
     <Compile Include="MarketObservable.cs" />
     <Compile Include="MarketObservables\CurrencyPair.cs" />
+    <Compile Include="MarketObservables\Dividend.cs" />
     <Compile Include="MarketObservables\FloatingIndex.cs" />
     <Compile Include="MarketObservables\Share.cs" />
     <Compile Include="Products\Equity\EuropeanOption.cs" />

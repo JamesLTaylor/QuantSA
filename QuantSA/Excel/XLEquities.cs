@@ -20,14 +20,16 @@ namespace QuantSA.Excel
         [ExcelArgument(Description = "The values of all the shares on the anchor date of the discounting curve. ")]object[,] spotPrices,
         [ExcelArgument(Description = "A single volatility for each share.")]object[,] volatilities,
         [ExcelArgument(Description = "A single continuous dividend yield rate for each equity.")]object[,] divYields,
-        [ExcelArgument(Description = "A square matrix of correlations between shares, the rows and columns must be in the same order as the shares were listed in shareCodes.")]object[,] correlations)
+        [ExcelArgument(Description = "A square matrix of correlations between shares, the rows and columns must be in the same order as the shares were listed in shareCodes.")]object[,] correlations,
+        [ExcelArgument(Description = "The floating rate forecast curves for all the rates that the products in the portfolio will need.")]object[,] rateForecastCurves)
         {
             try
             {
                 EquitySimulator simulator = new EquitySimulator(XU.GetShares1D(shareCodes, "shareCodes"),
                     XU.GetDoubles1D(spotPrices, "spotPrices"), XU.GetDoubles1D(volatilities, "volatilities"),
                     XU.GetDoubles1D(divYields, "divYields"), XU.GetDoubles2D(correlations, "correlations"),
-                    XU.GetObjects0D<IDiscountingSource>(discountCurve, "discountCurve"));                
+                    XU.GetObjects0D<IDiscountingSource>(discountCurve, "discountCurve"),
+                    XU.GetObjects1D<IFloatingRateSource>(rateForecastCurves, "rateForecastCurves"));                
                 return XU.AddObject(name, simulator);
             }
             catch (Exception e)

@@ -7,6 +7,7 @@
     {
         private Currency currency;
         private string name;
+        private string toString;
         public Tenor tenor { get; private set; }        
 
         private FloatingIndex(Currency currency, string name, Tenor tenor)
@@ -14,11 +15,12 @@
             this.currency = currency;
             this.name = name;
             this.tenor = tenor;
+            toString = currency.ToString() + ":" + name.ToUpper() + ":" + tenor.ToString();
         }
 
         public override string ToString()
         {
-            return currency.ToString() + ":" + name.ToUpper() + ":" + tenor.ToString();           
+            return toString;
         }
 
         #region Stored Indices
