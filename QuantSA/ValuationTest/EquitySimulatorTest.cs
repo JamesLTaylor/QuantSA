@@ -8,10 +8,13 @@ using Accord.Statistics;
 
 namespace ValuationTest
 {
+    /// <summary>
+    /// Sample product for test simulated indices.
+    /// </summary>
     public class ProductWithDiviAndFwd : ProductWrapper
     {
         Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
-        Date dealEndDate = new Date(2026, 9, 30);        
+        Date dealEndDate = new Date(2019, 9, 30);        
         double nShares = 1;
         Share share = new Share("AAA", Currency.ZAR);
         Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
@@ -19,7 +22,7 @@ namespace ValuationTest
 
         public override List<Cashflow> GetCFs()
         {
-            double loanBalance = 2; // Opening balance on startDate
+            double loanBalance = 40; // Opening balance on startDate
             double spread = 0.035 + 0.02; // 350bp prime Jibar spread + 200bp deal spread
 
             Date periodStartDate = dealStartDate;
@@ -56,6 +59,9 @@ namespace ValuationTest
         }
     }
 
+    /// <summary>
+    /// Test class for <see cref="EquitySimulator"/>
+    /// </summary>
     [TestClass]
     public class EquitySimulatorTest
     {
@@ -64,12 +70,12 @@ namespace ValuationTest
         double[] prices = { 200, 50, 100 };
         double[] vols = { 0.22, 0.52, 0.4};
         double[] divYields = { 0.03, 0.0, 0.0 };
-        double[,] correlations = { { 1.0, 0.5, 0.5},
-                                    {0.5, 1.0, 0.5 },
-                                    {0.5, 0.5, 1.0 }};
+        double[,] correlations = { { 1.0, 0.4, 0.5},
+                                    {0.4, 1.0, 0.6 },
+                                    {0.5, 0.6, 1.0 }};
         IDiscountingSource discountCurve; List<IFloatingRateSource> rateForecastCurves;
 
-         [TestInitialize]
+        [TestInitialize]
         public void Init()
         {
             discountCurve = new DatesAndRates(Currency.ZAR, anchorDate,
@@ -106,6 +112,7 @@ namespace ValuationTest
             EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, rateForecastCurves);
             sim.Reset();
             List<Date> simDate = new List<Date> { anchorDate.AddMonths(120) };
+            double dt = (simDate[0] - anchorDate) / 365;
             sim.SetRequiredDates(shares[0], simDate);
             sim.Prepare();
             for (int i = 0; i < N; i++)
@@ -116,21 +123,21 @@ namespace ValuationTest
                 sharePrices[i,2] = sim.GetIndices(shares[2], simDate)[0];
             }
             double mean = sharePrices.GetColumn(0).Mean();
-            double refValue = prices[0] * Math.Exp(-divYields[0]) / discountCurve.GetDF(simDate[0]);
-            Assert.AreEqual(mean, refValue, 0.2);
+            double refValue = prices[0] * Math.Exp(-divYields[0]* dt) / discountCurve.GetDF(simDate[0]);
+            Assert.AreEqual(refValue, mean, 2.0);
 
-            double[,] corr = sharePrices.Correlation();
+            double[,] corr = sharePrices.Log().Correlation();
 
-            Assert.AreEqual(corr[1, 0], 0.5, 0.05);
+            Assert.AreEqual(corr[1, 0], 0.4, 0.05);
             Assert.AreEqual(corr[2, 0], 0.5, 0.05);
-            Assert.AreEqual(corr[2, 1], 0.5, 0.05);
+            Assert.AreEqual(corr[2, 1], 0.6, 0.05);
         }
 
 
 
 
         [TestMethod]
-        public void TestEquitySimulatorWithRateForecast()
+        public void TestEquitySimulatorProductWithRateForecast()
         {
             Product product = new ProductWithDiviAndFwd();
             // The model
@@ -138,11 +145,11 @@ namespace ValuationTest
             
             Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 10000);
             double value = coordinator.Value(new List<Product> { product }, anchorDate);
-            double refValue = 100;
+            Assert.AreEqual(31.6, value, 1.0);            
         }
 
         [TestMethod]
-        public void TestEquitySimulatorCall()
+        public void TestEquitySimulatorMultiAssetCall()
         {
             // The model            
             EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, new List<IFloatingRateSource>());
