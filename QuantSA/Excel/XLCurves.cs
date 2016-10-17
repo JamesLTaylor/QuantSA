@@ -1,5 +1,5 @@
 ﻿using ExcelDna.Integration;
-using QuantSA;
+using QuantSA.General;
 using System;
 using XU = QuantSA.Excel.ExcelUtilities;
 
@@ -63,17 +63,18 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "The date from which the curve dates will be calculated.")]object[,] anchorDate,
             [ExcelArgument(Description = "The starting rates.  Must be the same length as the elements in the component vectors.")]double[] initialRates,
             [ExcelArgument(Description = "The months at which each rate applies.")]double[] tenorMonths,
-            [ExcelArgument(Description = "The componenents.  Each component in a column.  Stack the columns side by side.")]double[,] components,
+            [ExcelArgument(Description = "The componenents.  Stack the components in columns side by side or rows one underneath each other.")]double[,] components,
             [ExcelArgument(Description = "The volatility for each component.  Must be the same length as the number of components.")]double[] vols,
             [ExcelArgument(Description = "All rates will be multiplied by this amount.  This should almost always be 1.0.")]double multiplier,
-            [ExcelArgument(Description = "Indicates if the PCA was done on relative moves.  If not then it was done on absolute moves.")]bool useRelative)
+            [ExcelArgument(Description = "Indicates if the PCA was done on relative moves.  If not then it was done on absolute moves.")]object useRelative,
+            [ExcelArgument(Description = "Should simulated rates be floored at zero?  This only applies to absolute moves, the default is 'True'.")]object floorAtZero)
         {
             try
             {
                 int[] tenorMonthsInt = new int[tenorMonths.Length];
                 for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
                 PCACurveSimulator curveSimulator = new PCACurveSimulator(XU.GetDates0D(anchorDate, "anchorDate"), 
-                    initialRates, tenorMonthsInt, components, vols, multiplier, XU.GetBool(useRelative));
+                    initialRates, tenorMonthsInt, components, vols, multiplier, XU.GetBool(useRelative), XU.GetBool(floorAtZero));
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
             catch (Exception e)
@@ -141,7 +142,7 @@ namespace QuantSA.Excel
         HelpTopic = "http://cogn.co.za/QuantSA/CovarianceFromCurves.html")]
         public static double[,] CovarianceFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves)
         {
-            double[,] covMatrix = General.DataAnalysis.PCA.CovarianceFromCurves(curves);
+            double[,] covMatrix = PCA.CovarianceFromCurves(curves);
             return covMatrix;
         }
 
@@ -155,7 +156,7 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "Indicates if the PCA is to be done on relative moves.  If not then it will be done on absolute moves.")]object useRelative)
         {
             try {
-                double[,] covMatrix = QuantSA.General.DataAnalysis.PCA.PCAFromCurves(curves, XU.GetBool(useRelative));
+                double[,] covMatrix = PCA.PCAFromCurves(curves, XU.GetBool(useRelative));
                 return XU.ConvertToObjects(covMatrix);
             }
             catch (Exception e)

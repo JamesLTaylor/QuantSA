@@ -1,4 +1,4 @@
-﻿namespace QuantSA
+﻿namespace QuantSA.General
 {
     public abstract class MarketObservable
     {

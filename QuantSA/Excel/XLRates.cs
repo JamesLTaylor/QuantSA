@@ -1,12 +1,10 @@
 ﻿using ExcelDna.Integration;
-using MonteCarlo;
-using QuantSA.MonteCarlo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.General;
+using QuantSA.Valuation;
 
 namespace QuantSA.Excel
 {

@@ -4,7 +4,7 @@ using Accord.Math.Decompositions;
 using Accord.Statistics;
 using Accord.Statistics.Analysis;
 
-namespace QuantSA.General.DataAnalysis
+namespace QuantSA.General
 {
     public class PCA
     {

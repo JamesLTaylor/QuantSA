@@ -3,7 +3,7 @@ using System.Text;
 using ExcelDna.Integration;
 using XU = QuantSA.Excel.ExcelUtilities;
 using MathNet.Numerics.Interpolation;
-using MonteCarlo;
+using QuantSA.General;
 
 namespace QuantSA.Excel
 {

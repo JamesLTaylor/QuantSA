@@ -1,12 +1,7 @@
 ﻿using ExcelDna.Integration;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QuantSA.General;
-using MonteCarlo;
 
 namespace QuantSA.Excel
 {
@@ -458,7 +453,7 @@ namespace QuantSA.Excel
                     case "LIBOR6M": return FloatingIndex.LIBOR6M;
                     case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
                     case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
-                    default: throw new ArgumentException(strValue + "is not a known floating rate index in input: " + inputName);
+                    default: throw new ArgumentException(strValue + " is not a known floating rate index in input: " + inputName);
                 }
             }
             throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");

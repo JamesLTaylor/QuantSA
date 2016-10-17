@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA
+namespace QuantSA.General
 {
     /// <summary>
     /// A curve is simply a function between dates and values.  
     /// </summary>
     /// <remarks>
-    /// If you want something more abstract that this rather just 
+    /// If you want something more abstract than this rather just 
     /// interpolate across doubles.
     ///</remarks>
     public interface ICurve

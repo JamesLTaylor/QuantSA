@@ -34,10 +34,6 @@
       <HintPath>..\packages\ExcelDna.Integration.0.33.9\lib\ExcelDna.Integration.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MonteCarlo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Excel\bin\Debug\MonteCarlo.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="QuantSA.Excel">
@@ -48,6 +44,10 @@
     </Reference>
     <Reference Include="QuantSA.Interfaces">
       <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.Valuation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Valuation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
