@@ -1,9 +1,9 @@
-﻿using QuantSA;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValuationTest;
 
 namespace TestPerformance
 {
@@ -11,8 +11,9 @@ namespace TestPerformance
     {
         static void Main(string[] args)
         {
-            RateProductTest test = new RateProductTest();
-            test.TestSwapHW();
+            EquitySimulatorTest test = new EquitySimulatorTest();
+            test.Init();
+            test.TestEquitySimulatorWithRateForecast();
         }
     }
 }
