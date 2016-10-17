@@ -10,3 +10,5 @@
 /QuantSASetup/UpdateXLFunctions.exe
 /QuantSASetup/CustomActions/bin/Debug
 /QuantSASetup/CustomActions/obj/Debug
+/QuantSASetup/CustomActions/bin/Release
+/QuantSASetup/CustomActions/obj/Release
