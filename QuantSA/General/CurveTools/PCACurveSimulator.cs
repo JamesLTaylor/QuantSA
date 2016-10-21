@@ -11,7 +11,7 @@ namespace QuantSA.General
     [Serializable]
     public class PCACurveSimulator
     {
-        private int[] tenorMonths;
+        private Tenor[] tenors;
         /// <summary>
         /// The principle components in rows.
         /// </summary>
@@ -37,7 +37,7 @@ namespace QuantSA.General
         /// <param name="multiplier"></param>
         /// <param name="useRelative"></param>
         /// <param name="floorAtZero"></param>
-        public PCACurveSimulator(Date anchorDate, double[] initialRates, int[] tenorMonths, double[,] components, 
+        public PCACurveSimulator(Date anchorDate, double[] initialRates, Tenor[] tenors, double[,] components, 
             double[] vols, double multiplier, bool useRelative, bool floorAtZero)
         {
             if (multiplier < 0.1 || multiplier > 10) throw new ArgumentException("multiplier should be close to 1.0 for the simulation to make sense");
@@ -56,14 +56,14 @@ namespace QuantSA.General
             else
                 throw new ArgumentException("The components data must either have the same number of columns as the length of the provided tenors if the components are provided in rows, or the same rows if they are provided in columns.");
 
-            if (tenorMonths.Length != initialRates.Length)
+            if (tenors.Length != initialRates.Length)
                 throw new ArgumentException("The provided dates tenros and initial rates must be the same length.");
             if (vols.Length!=this.components.GetLength(0))
                 throw new ArgumentException("The number of vols must be the same as the number of components.");
 
             this.anchorDate = anchorDate;
             this.initialRates = initialRates;
-            this.tenorMonths = tenorMonths;            
+            this.tenors = tenors;            
             this.vols = vols;
             this.multiplier = multiplier;
             this.useRelative = useRelative;
@@ -103,7 +103,7 @@ namespace QuantSA.General
                 // Iterate thrrough the dates on the curve
                 for (int i = 0; i < initialRates.Length; i++)
                 {
-                    curveDates[i] = simulationDates[simCounter].AddMonths(tenorMonths[i]);
+                    curveDates[i] = simulationDates[simCounter].AddTenor(tenors[i]);
                     if (useRelative)
                     {
                         //TODO: add mean correction.
@@ -132,17 +132,17 @@ namespace QuantSA.General
         /// </summary>
         /// <param name="simulationDates">Dates on whihc the simulation is run.  Must all be greater than the anchor date.</param>
         /// <returns></returns>
-        public double[,] GetSimulatedRates(Date[] simulationDates, int[] requiredTenorMonths)
+        public double[,] GetSimulatedRates(Date[] simulationDates, Tenor[] requiredTenors)
         {
-            double[,] rates = new double[simulationDates.Length, requiredTenorMonths.Length];
+            double[,] rates = new double[simulationDates.Length, requiredTenors.Length];
             ICurve[] curves = GetSimulatedCurves(simulationDates);
             // Iterate through the simulation dates
 
             for (int simCounter = 0; simCounter < simulationDates.Length; simCounter++)
             {
-                for (int i = 0; i < requiredTenorMonths.Length; i++)
+                for (int i = 0; i < requiredTenors.Length; i++)
                 {
-                    Date curveDate = simulationDates[simCounter].AddMonths(tenorMonths[i]);
+                    Date curveDate = simulationDates[simCounter].AddTenor(requiredTenors[i]);
                     rates[simCounter, i] = curves[simCounter].InterpAtDate(curveDate);
                 }
             }

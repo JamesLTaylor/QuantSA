@@ -62,7 +62,7 @@ namespace QuantSA.Excel
         public static object CreatePCACurveSimulator([ExcelArgument(Description = "The name of the simulator")]string simulatorName,
             [ExcelArgument(Description = "The date from which the curve dates will be calculated.")]object[,] anchorDate,
             [ExcelArgument(Description = "The starting rates.  Must be the same length as the elements in the component vectors.")]double[] initialRates,
-            [ExcelArgument(Description = "The months at which each rate applies.")]double[] tenorMonths,
+            [ExcelArgument(Description = "An array of times at which each rate applies.  Each value must be valid tenor description.  The length must be the same as each component and 'initialRates'")]object[,] tenors,
             [ExcelArgument(Description = "The componenents.  Stack the components in columns side by side or rows one underneath each other.")]double[,] components,
             [ExcelArgument(Description = "The volatility for each component.  Must be the same length as the number of components.")]double[] vols,
             [ExcelArgument(Description = "All rates will be multiplied by this amount.  This should almost always be 1.0.")]double multiplier,
@@ -71,10 +71,10 @@ namespace QuantSA.Excel
         {
             try
             {
-                int[] tenorMonthsInt = new int[tenorMonths.Length];
-                for (int i = 0; i < tenorMonths.Length; i++) { tenorMonthsInt[i] = (int)tenorMonths[i]; }
+
+                Tenor[] tTenors = XU.GetTenors1D(tenors, "tenors");
                 PCACurveSimulator curveSimulator = new PCACurveSimulator(XU.GetDates0D(anchorDate, "anchorDate"), 
-                    initialRates, tenorMonthsInt, components, vols, multiplier, XU.GetBool(useRelative), XU.GetBool(floorAtZero));
+                    initialRates, tTenors, components, vols, multiplier, XU.GetBool(useRelative), XU.GetBool(floorAtZero));
                 return ObjectMap.Instance.AddObject(simulatorName, curveSimulator);                
             }
             catch (Exception e)
@@ -91,16 +91,14 @@ namespace QuantSA.Excel
         HelpTopic = "http://cogn.co.za/QuantSA/PCACurveSimulatorGetRates.html")]
         public static object[,] PCACurveSimulatorGetRates([ExcelArgument(Description = "The name of the simulator. (PCACurveSimulator)")]string simulatorName,
             [ExcelArgument(Description = "A list of increasing dates.")]object[,] simulationDates,
-            [ExcelArgument(Description = "The tenors at which the rates are required.  Do not need to be the same as used to do the PCA.")]double[] requiredTenorMonths)
+            [ExcelArgument(Description = "The tenors at which the rates are required.  These do not need to be the same as used to do the PCA.")]object[,] requiredTenors)
         {
             try
             {
-                int[] tenorMonthsInt = new int[requiredTenorMonths.Length];
-                for (int i = 0; i < requiredTenorMonths.Length; i++) { tenorMonthsInt[i] = (int)requiredTenorMonths[i]; }
-
-
+                Tenor[] tenors = XU.GetTenors1D(requiredTenors, "requiredTenors");
+                
                 PCACurveSimulator curveSimulator = ObjectMap.Instance.GetObjectFromID<PCACurveSimulator>(simulatorName);
-                double[,] result = curveSimulator.GetSimulatedRates(XU.GetDates1D(simulationDates, "simulationDates"), tenorMonthsInt);
+                double[,] result = curveSimulator.GetSimulatedRates(XU.GetDates1D(simulationDates, "simulationDates"), tenors);
                 return XU.ConvertToObjects(result);
             }
 

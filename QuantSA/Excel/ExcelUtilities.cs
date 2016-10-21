@@ -350,7 +350,7 @@ namespace QuantSA.Excel
         }
 
 
-        private static Currency GetCurrencyFromString(string strValue, string inputName)
+        public static Currency GetCurrencyFromString(string strValue, string inputName)
         {
             switch (strValue.ToUpper())
             {
@@ -460,30 +460,20 @@ namespace QuantSA.Excel
         }
 
 
-        /// <summary>
-        /// Convert a string to a tenor object
-        /// </summary>
-        /// <remarks>Implemented here to make sure that users in the libary don't construct with strings.</remarks>
-        /// <param name="values">String describing a tenor object.  Example '3M' or '5Y'.</param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>/// 
-        /// <returns></returns>
-        public static Tenor GetTenors0D(object[,] values, string inputName)
+        private static Tenor GetTenorFromString(string strValue, string inputName)
         {
-            if (values.GetLength(0) > 1 || values.GetLength(1) > 1) throw new ArgumentException(inputName + " must be a single string describing a tenor.  Eg '3M' or '5Y'");
-            string tenorStr = values[0,0] as string;
-            if (tenorStr == null) throw new ArgumentException(inputName + " must be provided as a string like: '3M' or '5Y'");
             string numberStr = "";
             int years = 0;
             int months = 0;
             int weeks = 0;
             int days = 0;
-            foreach (char c in tenorStr.ToUpper())
+            foreach (char c in strValue.ToUpper())
             {
-                if (c>=48 && c<=57)
+                if (c >= 48 && c <= 57)
                 {
                     numberStr += c;
                 }
-                else if (c=='Y')
+                else if (c == 'Y')
                 {
                     years = Int32.Parse(numberStr);
                     numberStr = "";
@@ -505,10 +495,77 @@ namespace QuantSA.Excel
                 }
                 else
                 {
-                    throw new ArgumentException(tenorStr + " is not a valid tenor String.");
+                    throw new ArgumentException(strValue + " is not a valid tenor String.");
                 }
             }
             return new Tenor(days, weeks, months, years);
+        }
+
+
+
+        /// <summary>
+        /// Used by the various GetTenor utility methods.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="inputName"></param>
+        /// <returns></returns>
+        private static Tenor GetTenor(object obj, string inputName)
+        {
+            if (obj is ExcelMissing)
+                    throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is string)
+            {
+                return GetTenorFromString((string)obj, inputName);
+            }
+            else
+                throw new ArgumentException(inputName + ": Tenors must be provided as strings with a number and a period identifier. e.g. '3M' or '5Y' ");
+        }
+
+
+        /// <summary>
+        /// Convert a string to a tenor object
+        /// </summary>
+        /// <remarks>Implemented here to make sure that users in the libary don't construct with strings.</remarks>
+        /// <param name="values">String describing a tenor object.  Example '3M' or '5Y'.</param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>/// 
+        /// <returns></returns>
+        public static Tenor GetTenors0D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                return GetTenor(values[0, 0], inputName);
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a string representing a tenor. e.g. '3M' or '5Y'");
+
+        }
+
+        /// <summary>
+        /// Get an array of <see cref="Tenor"/> from an excel range of strings.
+        /// </summary>
+        /// <remarks>
+        /// This is implemented in the Excel layer rather than in <see cref="Tenor"/> itself to make sure that users in the library don't use strings to construct things.
+        /// </remarks>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static Tenor[] GetTenors1D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            {
+                Tenor[] result = new Tenor[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                    result[i] = GetTenor(values[0, i], inputName);
+                return result;
+            }
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                Tenor[] result = new Tenor[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                    result[i] = GetTenor(values[i, 0], inputName);
+                return result;
+            }
+            else
+                throw new ArgumentException(inputName + " must be a single row or column of strings representing tenors.");
         }
 
         /// <summary>

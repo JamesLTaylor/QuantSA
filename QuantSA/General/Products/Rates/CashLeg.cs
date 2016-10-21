@@ -11,8 +11,10 @@ namespace QuantSA.General
     /// </summary>
     public class CashLeg : Product
     {
-        List<Cashflow> cfs;
-        Date valueDate;
+        protected List<Cashflow> cfs;
+        protected Date valueDate;
+
+        protected CashLeg() { }
 
         public CashLeg(Date[] dates, double[] amounts, Currency[] currencies)
         {

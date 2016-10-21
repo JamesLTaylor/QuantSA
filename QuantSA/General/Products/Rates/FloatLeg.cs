@@ -9,16 +9,18 @@ namespace QuantSA.General
     public class FloatLeg : Product
     {
 
-        Date[] paymentDates;
-        Date[] resetDates;
-        MarketObservable[] floatingIndices;
-        double[] spreads;
-        double[] notionals;
-        double[] accrualFractions;
-        Currency ccy;
-        
-        Date valueDate;
-        double[] indexValues;
+        protected Date[] paymentDates;
+        protected Date[] resetDates;
+        protected MarketObservable[] floatingIndices;
+        protected double[] spreads;
+        protected double[] notionals;
+        protected double[] accrualFractions;
+        protected Currency ccy;
+
+        protected Date valueDate;
+        protected double[] indexValues;
+
+        protected FloatLeg() { }
 
         public FloatLeg(Currency ccy, Date[] paymentDates, double[] notionals, Date[] resetDates, FloatingIndex[] floatingIndices, 
             double[] spreads, double[] accrualFractions)

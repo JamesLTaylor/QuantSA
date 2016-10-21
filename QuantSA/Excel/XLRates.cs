@@ -207,8 +207,61 @@ namespace QuantSA.Excel
             }
             catch (Exception e)
             {
-                return ExcelUtilities.Error0D(e);
+                return XU.Error0D(e);
             }
         }
+
+        [QuantSAExcelFunction(Description = "Create fixed rate loan.",
+        Name = "QSA.CreateLoanFixedRate",
+        Category = "QSA.Rates",
+        IsHidden = false,
+        HelpTopic = "http://cogn.co.za/QuantSA/CreateLoanFixedRate.html",
+            ExampleSheet ="Loans.xlsx")]
+        public static object CreateLoanFixedRate([ExcelArgument(Description = "Name of object")]string name,
+        [ExcelArgument(Description = "The currency of the cashflows.")]object[,] currency,
+        [ExcelArgument(Description = "The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.")]object[,] balanceDates,
+        [ExcelArgument(Description = "The notionals on which the payments are based.")]object[,] balanceAmounts,
+        [ExcelArgument(Description = "The simple rates that are paid at each payment date.")]object[,] fixedRate)
+        {
+            try
+            {
+                LoanFixedRate loan = LoanFixedRate.CreateSimple(XU.GetDates1D(balanceDates, "balanceDates"),
+                    XU.GetDoubles1D(balanceAmounts, "balanceAmounts"), XU.GetDoubles0D(fixedRate, "fixedRate"),
+                    XU.GetCurrencies0D(currency, "currency"));
+                return XU.AddObject(name, loan);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
+
+        [QuantSAExcelFunction(Description = "Create floationg rate loan.",
+        Name = "QSA.CreateLoanFloatingRate",
+        Category = "QSA.Rates",
+        IsHidden = false,
+        HelpTopic = "http://cogn.co.za/QuantSA/CreateLoanFloatingRate.html",
+            ExampleSheet = "Loans.xlsx")]
+        public static object CreateLoanFloatingRate([ExcelArgument(Description = "Name of object")]string name,
+        [ExcelArgument(Description = "The currency of the cashflows.")]object[,] currency,
+        [ExcelArgument(Description = "The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.")]object[,] balanceDates,
+        [ExcelArgument(Description = "The notionals on which the payments are based.")]object[,] balanceAmounts,
+        [ExcelArgument(Description = "The reference index on which the floating flows are based.")]object[,] floatingIndex,
+        [ExcelArgument(Description = "The spread that will be added to the floating index.")]object[,] floatingSpread)
+        {
+            try
+            {
+                LoanFloatingRate loan = LoanFloatingRate.CreateSimple(XU.GetDates1D(balanceDates, "balanceDates"),
+                    XU.GetDoubles1D(balanceAmounts, "balanceAmounts"), XU.GetFloatingIndices0D(floatingIndex, "floatingIndex"),
+                    XU.GetDoubles0D(floatingSpread, "floatingSpread"), XU.GetCurrencies0D(currency, "currency"));
+                return XU.AddObject(name, loan);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
     }
 }

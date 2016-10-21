@@ -20,6 +20,12 @@ namespace QuantSA.General
     public abstract class Product
     {
         /// <summary>
+        /// The identifier of the product instance.  
+        /// </summary>
+        public string id { get; protected set; } = "Not Set";
+        public string type { get; protected set; } = "Not Set";
+
+        /// <summary>
         /// Sets the value date of the contract.
         /// </summary>
         public abstract void SetValueDate(Date valueDate);
