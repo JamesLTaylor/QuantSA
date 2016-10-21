@@ -447,8 +447,11 @@ namespace QuantSA.Excel
                 string strValue = (string)values[0, 0];
                 switch (strValue.ToUpper())
                 {
+                    case "JIBAR1M": return FloatingIndex.JIBAR1M;
                     case "JIBAR3M": return FloatingIndex.JIBAR3M;
                     case "JIBAR6M": return FloatingIndex.JIBAR6M;
+                    case "PRIME1M_AVG": return FloatingIndex.PRIME1M_AVG;
+                    case "LIBOR1M": return FloatingIndex.LIBOR1M;
                     case "LIBOR3M": return FloatingIndex.LIBOR3M;
                     case "LIBOR6M": return FloatingIndex.LIBOR6M;
                     case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
