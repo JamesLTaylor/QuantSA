@@ -12,8 +12,8 @@ using System.Drawing;
 
 public class MyAddIn : IExcelAddIn
 {
-    string FunctionsFilenameAll = AppDomain.CurrentDomain.BaseDirectory + "\\functions_all.csv"; // updated in build to include all functions and default visibility
-    string FunctionsFilenameUser = AppDomain.CurrentDomain.BaseDirectory + "\\functions_user.csv"; // user editable to control which function appear
+    string FunctionsFilenameAll = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_all.csv"; // updated in build to include all functions and default visibility
+    string FunctionsFilenameUser = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_user.csv"; // user editable to control which function appear
 
     public static List<IQuantSAPlugin> plugins;
     public static Dictionary<string, Bitmap> assemblyImageResources;
@@ -21,24 +21,35 @@ public class MyAddIn : IExcelAddIn
     // Called when addin opens
     public void AutoOpen()
     {
-        //TODO: Check if newer version of addin exists.
+        try {
+            string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
+            if (!Directory.Exists(pathString))                
+                Directory.CreateDirectory(pathString);
+            //TODO: Check if newer version of addin exists.
 
-        //Check if functions_all.csv is newer than functions_user.csv.  If it is then
-        //merge the new functions in and use that to hide or show inividual functions.
-        UpdateUserFunctionFile();
+            //Check if functions_all.csv is newer than functions_user.csv.  If it is then
+            //merge the new functions in and use that to hide or show inividual functions.
+            UpdateUserFunctionFile();
 
-        //Expose only those functions that appear in FunctionsFilenameUser with a true.  The
-        //rest will still be there but as hidden.  So that users can share sheets.
-        ExposeUserSelectedFunctions();
+            //Expose only those functions that appear in FunctionsFilenameUser with a true.  The
+            //rest will still be there but as hidden.  So that users can share sheets.
+            ExposeUserSelectedFunctions();
 
-        //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
-        plugins = new List<IQuantSAPlugin>();
-        assemblyImageResources = new Dictionary<string, Bitmap>();
-        ExposePlugins();
-        foreach (IQuantSAPlugin plugin in plugins)
+            //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
+            plugins = new List<IQuantSAPlugin>();
+            assemblyImageResources = new Dictionary<string, Bitmap>();
+            ExposePlugins();
+            foreach (IQuantSAPlugin plugin in plugins)
+            {
+                plugin.SetObjectMap(ObjectMap.Instance);
+                plugin.SetInstance(plugin);
+            }
+        } catch (Exception e)
         {
-            plugin.SetObjectMap(ObjectMap.Instance);
-            plugin.SetInstance(plugin);
+            string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
+            string fileName = Path.Combine(pathString, "QuantSAError.txt");
+            File.WriteAllText(fileName, e.ToString());
+            throw new Exception("An error occured while opening the QuantSA addin.  Check the error log file for details.");
         }
     }
 
