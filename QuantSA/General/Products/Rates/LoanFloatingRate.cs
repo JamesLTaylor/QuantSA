@@ -75,7 +75,13 @@ namespace QuantSA.General
         public override List<Cashflow> GetCFs()
         {
             List<Cashflow> cfs = base.GetCFs();
-            cfs.AddRange(notionalFlows);            
+            foreach (Cashflow flow in notionalFlows)
+            {
+                if (flow.date > valueDate)
+                {
+                    cfs.Add(flow);
+                }
+            }      
             return cfs;
         }
 
