@@ -13,6 +13,7 @@ namespace QuantSA.General
     /// </remarks>
     /// <seealso cref="QuantSA.General.CashLeg" />
     /// <seealso cref="QuantSA.General.IProvidesResultStore" />
+    [Serializable]
     public class LoanFixedRate : CashLeg, IProvidesResultStore
     {
         private Currency ccy;

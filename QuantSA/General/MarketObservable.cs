@@ -1,5 +1,8 @@
-﻿namespace QuantSA.General
+﻿using System;
+
+namespace QuantSA.General
 {
+    [Serializable]
     public abstract class MarketObservable
     {
         /// <summary>

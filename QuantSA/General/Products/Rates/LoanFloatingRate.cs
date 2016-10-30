@@ -11,6 +11,7 @@ namespace QuantSA.General
     /// </summary>    
     /// <seealso cref="QuantSA.General.FloatLeg" />
     /// <seealso cref="QuantSA.General.IProvidesResultStore" />
+    [Serializable]
     public class LoanFloatingRate : FloatLeg, IProvidesResultStore
     {
         //TODO: Move float leg to a component rather than a base class.  See https://en.wikipedia.org/wiki/Composition_over_inheritance

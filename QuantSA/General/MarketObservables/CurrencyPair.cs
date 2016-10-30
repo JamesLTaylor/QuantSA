@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
+    [Serializable]
     public class CurrencyPair : MarketObservable
     {
         Currency baseCurrency;

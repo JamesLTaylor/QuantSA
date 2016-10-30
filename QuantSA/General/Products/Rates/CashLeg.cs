@@ -9,6 +9,7 @@ namespace QuantSA.General
     /// <summary>
     /// A set of cashflows that can be valued like any other product.
     /// </summary>
+    [Serializable]
     public class CashLeg : Product
     {
         protected List<Cashflow> cfs;

@@ -27,7 +27,7 @@ namespace ValuationTest
             double flatCurveRate = 0.07;
             HullWhite1F hullWiteSim = new HullWhite1F(a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 10000);
+            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
             Date date = valueDate;
             Date endDate = valueDate.AddTenor(tenor);

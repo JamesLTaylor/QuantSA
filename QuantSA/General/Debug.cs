@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 namespace QuantSA.General
 {
     /// <summary>
-    /// A collection of Debuging tools, such as writing data to file.  
+    /// A collection of Debuging tools, such as for writing data to file, writing to output and timing.  
     /// </summary>
     public class Debug
     {
+        //TODO: All of these methods should be disabled in a release build. In fact this class could be removed during a release build to ensure that it is not called. 
+        private static DateTime startTime;
+
         /// <summary>
         /// Can be used in debugging to write matrices to a file.
         /// </summary>
@@ -50,6 +53,33 @@ namespace QuantSA.General
                     sr.Write(values[row].ToString());
                 }
             }
+        }
+
+        /// <summary>
+        /// Starts a timer, there is only one static timer so this can't be used on threads.
+        /// </summary>
+        public static void StartTimer()
+        {
+            startTime = DateTime.Now;
+        }
+
+        /// <summary>
+        /// returns the elapsed time in miliseconds since <see cref="StartTimer"/> was called.
+        /// </summary>
+        /// <returns></returns>
+        public static double ElapsedTime()
+        {
+            return (DateTime.Now - startTime).TotalMilliseconds;
+        }
+
+        /// <summary>
+        /// Writes a line to <see cref="System.Diagnostics.Trace"/>.  This can be seen in the output window in 
+        /// visual studio
+        /// </summary>
+        /// <param name="value">The string to be displayed.</param>
+        public static void WriteLine(string value)
+        {
+            System.Diagnostics.Trace.WriteLine(value);            
         }
     }
 }

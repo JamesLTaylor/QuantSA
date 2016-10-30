@@ -1,5 +1,8 @@
-﻿namespace QuantSA.General
+﻿using System;
+
+namespace QuantSA.General
 {
+    [Serializable]
     public class Dividend : MarketObservable
     {
         public Share underlying { get; private set; }

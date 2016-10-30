@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace QuantSA.General
 {
@@ -20,6 +23,7 @@ namespace QuantSA.General
     /// The calls to GetCashflowCurrencies and GetCashflowDates will only be used when there is a 
     /// multi currency valuation and exchange rates will need to be used in the valuation.
     /// </summary>
+    [Serializable]
     public abstract class Product
     {
         /// <summary>
@@ -27,6 +31,19 @@ namespace QuantSA.General
         /// </summary>
         public string id { get; protected set; } = "Not Set";
         public string type { get; protected set; } = "Not Set";
+
+        /// <summary>
+        /// Return a deep copy of the Product, without any market data.
+        /// </summary>
+        public virtual Product Clone()
+        {
+            MemoryStream stream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
+            stream.Seek(0, SeekOrigin.Begin);
+            object o = formatter.Deserialize(stream);
+            return (Product)o;            
+        }
 
         /// <summary>
         /// Sets the value date of the contract.
@@ -80,7 +97,23 @@ namespace QuantSA.General
         /// <returns>A List of cashflows.  Under some circumstances it may be faster if these are ordered by increasing time.</returns>
         public abstract List<Cashflow> GetCFs();
 
-
-
     }
+
+    public static class ProductExtensions {
+        /// <summary>
+        /// Makes a deep copy of the List of <see cref="Product"/>s
+        /// </summary>
+        /// <param name="originalPortfolio">The original portfolio.</param>
+        /// <returns></returns>
+        public static List<Product> Clone(this List<Product> originalPortfolio)
+        {
+            List<Product> newPortfolio = new List<Product>();
+            foreach (Product p in originalPortfolio)
+            {
+                newPortfolio.Add(p.Clone());
+            }
+            return newPortfolio;
+        }
+    }
+
 }
