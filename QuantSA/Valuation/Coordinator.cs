@@ -1,6 +1,9 @@
-﻿using QuantSA.General;
+﻿using Accord.Math;
+using Accord.Statistics.Models.Regression.Linear;
+using QuantSA.General;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +35,8 @@ namespace QuantSA.Valuation
         private NumeraireSimulator numeraire;
         private List<Product> portfolio;
         private List<Simulator> simulators;
+        Dictionary<MarketObservable, Simulator> indexSources;
+        Date valueDate;
 
         /// <summary>
         /// 
@@ -46,17 +51,282 @@ namespace QuantSA.Valuation
             this.N = N;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// The simulation phase should produce some set of name,value pairs like: 
+        ///     productID:simNumber:date,cfValueInNumeraireCcy        
+        /// So that a fully flexible distributed calculation might be possible.
+        /// </remarks>
+        /// <param name="portfolio">The portfolio.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <param name="fwdValueDates">The forward value dates.</param>
+        /// <returns></returns>
+        public double[] EPE(List<Product> portfolio, Date valueDate, List<Date> fwdValueDates)
+        {
+            double[] epe = Vector.Zeros(fwdValueDates.Count);
+            double[,] regressedValues = GetRegressedFwdValues(portfolio, valueDate, fwdValueDates);
+            //Debug.WriteToFile(@"c:\dev\temp\regressedValues.csv", regressedValues);
+            for (int row=0; row< regressedValues.GetLength(0); row++)
+            {
+                for (int col = 0; col< regressedValues.GetLength(1); col++)
+                {
+                    epe[col] += Math.Max(0, regressedValues[row, col]);
+                }
+            }
+            for (int col = 0; col < regressedValues.GetLength(1); col++)
+            {
+                epe[col] /= N;
+            }            
+            return epe;
+        }
+
+
+        /// <summary>
+        /// Use regression on the underlying simulated factors to estimate the forward values of the portfolio
+        /// discounted to the value date.
+        /// </summary>
+        /// <param name="portfolio">The portfolio.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <param name="fwdValueDates">The forward value dates.</param>
+        /// <returns></returns>
+        private double[,] GetRegressedFwdValues(List<Product> portfolio, Date valueDate, List<Date> fwdValueDates)
+        {
+            this.portfolio = portfolio;
+            this.valueDate = valueDate;
+            AssociateFactorsWithSimulators();
+            InitializeSimulators(fwdValueDates);
+            Currency valueCurrency = numeraire.GetNumeraireCurrency();
+
+            // run one simulation to see how many indepedent variables each simulator provides
+            int independentCount = 0;
+            foreach (Simulator simulator in simulators)
+            {
+                simulator.RunSimulation(0);
+                independentCount += simulator.GetUnderlyingFactors(fwdValueDates[0]).Length;
+            }
+
+            double[,] pathwiseCfValues = new double[N, fwdValueDates.Count];
+            double[,] regressedValues = new double[N, fwdValueDates.Count];
+            double[,,] pathwiseIndependent = new double[N, fwdValueDates.Count, independentCount];
+
+            // Run the simulation
+            for (int pathCounter = 0; pathCounter < N; pathCounter++)
+            {
+                double numeraireAtValue = numeraire.Numeraire(valueDate);
+                // Run the simulation 
+                foreach (Simulator simulator in simulators)
+                {
+                    simulator.RunSimulation(pathCounter);
+                }
+                // get the underlying factors
+                for (int fwdDateCounter = 0; fwdDateCounter < fwdValueDates.Count; fwdDateCounter++)
+                {
+                    int independentCounter = 0;
+                    foreach (Simulator simulator in simulators)
+                    {
+                        double[] underlyingFactors = simulator.GetUnderlyingFactors(fwdValueDates[fwdDateCounter]);
+                        for (int thisIndependentCounter = 0; thisIndependentCounter < underlyingFactors.Length; thisIndependentCounter++)
+                        {
+                            pathwiseIndependent[pathCounter, fwdDateCounter, independentCounter] = underlyingFactors[thisIndependentCounter];
+                            independentCounter++;
+                        }
+                    }
+                }
+                // use the simulators that now contain a simulation to provide market observables to the 
+                // products.
+                foreach (Product product in portfolio)
+                {
+                    product.Reset();
+                    foreach (MarketObservable index in product.GetRequiredIndices())
+                    {
+                        Simulator simulator = indexSources[index];
+                        List<Date> requiredDates = product.GetRequiredIndexDates(index);
+                        double[] indices = simulator.GetIndices(index, requiredDates);
+                        product.SetIndexValues(index, indices);
+                    }
+                    List<Cashflow> timesAndCFS = product.GetCFs();
+                    foreach (Cashflow cf in timesAndCFS)
+                    {
+                        double cfValue;
+                        if (cf.currency.Equals(valueCurrency))
+                        {
+                            cfValue = cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                        }
+                        else
+                        {
+                            MarketObservable currencyPair = new CurrencyPair(cf.currency, numeraire.GetNumeraireCurrency());
+                            double fxRate = indexSources[currencyPair].GetIndices(currencyPair, new List<Date> { cf.date })[0];
+                            cfValue = fxRate * cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                        }
+                        for (int fwdDateCounter = 0; fwdDateCounter < fwdValueDates.Count; fwdDateCounter++)
+                        {
+                            if (cf.date > fwdValueDates[fwdDateCounter])
+                            {
+                                pathwiseCfValues[pathCounter, fwdDateCounter] += cfValue;
+                            }
+                        }
+                    }
+                }
+            }
+            //DebugWriteToFile(@"c:\dev\temp\pathwiseCfValues.csv", pathwiseValues);
+
+            // All future cashflows have been found.  Do the regression.
+            for (int col = 0; col < fwdValueDates.Count; col++)
+                PerformRegression(pathwiseCfValues, pathwiseIndependent, regressedValues, col);
+
+            return regressedValues;
+        }
+
+
+        /// <summary>
+        /// Performs the regression at a single time.
+        /// </summary>
+        /// <param name="pathwiseCfValues">The pathwise cashflow values.</param>
+        /// <param name="pathwiseIndependent">The pathwise independent variables.</param>
+        /// <param name="regressedValues">The regressed values.</param>
+        /// <param name="col">The column on which regression should be performed.</param>
+        private void PerformRegression(double[,] pathwiseCfValues, double[,,] pathwiseIndependent, 
+            double[,] regressedValues, int col)
+        {
+            // We will use Ordinary Least Squares to create a
+            // linear regression model with an intercept term
+            var ols = new OrdinaryLeastSquares()
+            { UseIntercept = true, IsRobust = true };
+
+            // Create the inputs and outputs
+            double[][] inputs = new double[pathwiseIndependent.GetLength(0)][];
+            for (int row = 0; row < pathwiseIndependent.GetLength(0); row++)
+            {
+                double[] rowValues = new double[1 + 3 * pathwiseIndependent.GetLength(2)];
+                rowValues[0] = 1;
+                for (int i = 0; i < pathwiseIndependent.GetLength(2); i++)
+                {
+                    double x = pathwiseIndependent[row, col, i];
+                    rowValues[1 + i * 3] = x;
+                    rowValues[1 + i * 3 + 1] = x * x;
+                    rowValues[1 + i * 3 + 2] = x * x * x;
+                }
+                inputs[row] = rowValues;
+            }
+            double[] outputs = pathwiseCfValues.GetColumn(col);
+
+            // Use Ordinary Least Squares to estimate a regression model
+            MultipleLinearRegression regression = ols.Learn(inputs, outputs);
+            double[] fitted = regression.Transform(inputs);
+            regressedValues.SetColumn(col, fitted);
+        }
+
+
+
         public double Value(List<Product> portfolio, Date valueDate)
         {
             this.portfolio = portfolio;
+            this.valueDate = valueDate;
+            AssociateFactorsWithSimulators();
+            InitializeSimulators(new List<Date>());
+            Currency valueCurrency = numeraire.GetNumeraireCurrency();
+
+
+            // Run the simulation
+            // TODO: Rather store value for each product separately
+            double[] pathwiseValues = new double[N];
+            double totalValue = 0;            
+
+
+            for (int i = 0; i < N; i++) // This N loop can be made parallel, need to check the size and cost 
+                                        // of copying all the simualators and products 
+            {
+                pathwiseValues[i] = 0;
+                double numeraireAtValue = numeraire.Numeraire(valueDate);
+                foreach (Simulator simulator in simulators)
+                {
+                    simulator.RunSimulation(i);
+                }
+                foreach (Product product in portfolio)
+                {
+                    product.Reset();
+                    foreach (MarketObservable index in product.GetRequiredIndices())
+                    {
+                        Simulator simulator = indexSources[index];
+                        List<Date> requiredDates = product.GetRequiredIndexDates(index);
+                        double[] indices = simulator.GetIndices(index, requiredDates);
+                        product.SetIndexValues(index, indices);
+                    }
+                    List<Cashflow> timesAndCFS = product.GetCFs();
+                    foreach (Cashflow cf in timesAndCFS)
+                    {
+                        if (cf.currency.Equals(valueCurrency))
+                        {
+                            pathwiseValues[i] += cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                        }
+                        else
+                        {
+                            MarketObservable currencyPair = new CurrencyPair(cf.currency, numeraire.GetNumeraireCurrency());
+                            double fxRate = indexSources[currencyPair].GetIndices(currencyPair, new List<Date> { cf.date })[0];
+                            pathwiseValues[i] += fxRate * cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                        }
+                    }
+                }
+                totalValue += pathwiseValues[i];
+            }
+            return totalValue / N;
+
+        }
+
+        /// <summary>
+        /// Initializes the simulators by telling them at which dates they will need to provide which market indices.
+        /// </summary>
+        /// <param name="extraDates">simualators .</param>
+        private void InitializeSimulators(List<Date> extraDates)
+        {
+            // Reset all the simulators
+            foreach (Simulator simulator in simulators)
+            { simulator.Reset(); }
+
+            // Set up the simulators for the times at which they will be queried
+            foreach (Product product in portfolio)
+            {
+                product.SetValueDate(valueDate);
+                // Tell the simulators at what times indices will be required.
+                foreach (MarketObservable index in product.GetRequiredIndices())
+                {
+                    List<Date> requiredTimes = product.GetRequiredIndexDates(index);
+                    indexSources[index].SetRequiredDates(index, requiredTimes);
+                }
+                // Tell the nummeraire simulator at what times it will be required.
+                // Tell the FX simulators at what times they will be required.
+                foreach (Currency ccy in product.GetCashflowCurrencies())
+                {
+                    List<Date> requiredDates = product.GetCashflowDates(ccy);
+                    numeraire.SetNumeraireDates(requiredDates);
+                    if (ccy != numeraire.GetNumeraireCurrency())
+                    {
+                        MarketObservable index = new CurrencyPair(ccy, numeraire.GetNumeraireCurrency());
+                        indexSources[index].SetRequiredDates(index, requiredDates);
+                    }
+                }
+            }
+
+            // Prepare all the simulators
+            foreach (Simulator simulator in simulators)
+            { simulator.Prepare(); }
+        }
+
+
+        private void AssociateFactorsWithSimulators()
+        {
             // Find which simulator will provide each of the potentially required MarketObservables.
-            Dictionary<MarketObservable, Simulator> indexSources = new Dictionary<MarketObservable, Simulator>();
+            indexSources = new Dictionary<MarketObservable, Simulator>();
             HashSet<Currency> requiredCurrencySet = new HashSet<Currency>();
             foreach (Product product in portfolio)
             {
                 // Associate the index simulators
-                foreach (MarketObservable index in product.GetRequiredIndices()){
-                    if (!indexSources.ContainsKey(index)){
+                foreach (MarketObservable index in product.GetRequiredIndices())
+                {
+                    if (!indexSources.ContainsKey(index))
+                    {
                         bool found = false;
                         foreach (Simulator simulator in simulators)
                         {
@@ -67,11 +337,11 @@ namespace QuantSA.Valuation
                                     indexSources[index] = simulator;
                                     found = true;
                                 }
-                                else throw new ArgumentException(index.ToString() + " is provided by more than one simulator.");                                
+                                else throw new ArgumentException(index.ToString() + " is provided by more than one simulator.");
                             }
                         }
                         if (!found) throw new IndexOutOfRangeException("Required index: " + index.ToString() + " is not provided by any of the simulators.");
-                        
+
                     }
                 }
 
@@ -103,81 +373,6 @@ namespace QuantSA.Valuation
             // ANY is equal to any Currency in the comparison overloads.
             if (requiredCurrencySet.Count > 1 && numeraire.GetNumeraireCurrency().GetHashCode() == Currency.ANY.GetHashCode())
                 throw new ArgumentException("Cannot use 'ANY' as the valuation currency when the portfolio includes cashflows in multiple currencies.");
-
-            // Reset all the simulators
-            foreach (Simulator simulator in simulators)
-            { simulator.Reset(); }
-
-            // Set up the simulators for the times at which they will be queried
-            foreach (Product product in portfolio)
-            {
-                product.SetValueDate(valueDate);
-                // Tell the simulators at what times indices will be required.
-                foreach (MarketObservable index in product.GetRequiredIndices())
-                {                    
-                    List<Date> requiredTimes = product.GetRequiredIndexDates(index);
-                    indexSources[index].SetRequiredDates(index, requiredTimes);
-                }
-                // Tell the nummeraire simulator at what times it will be required.
-                // Tell the FX simulators at what times they will be required.
-                foreach (Currency ccy in product.GetCashflowCurrencies())
-                {
-                    List<Date> requiredDates = product.GetCashflowDates(ccy);
-                    numeraire.SetNumeraireDates(requiredDates);
-                    if (ccy!=numeraire.GetNumeraireCurrency())
-                    {
-                        MarketObservable index = new CurrencyPair(ccy, numeraire.GetNumeraireCurrency());
-                        indexSources[index].SetRequiredDates(index, requiredDates);
-                    }
-                }
-            }
-
-            // Prepare all the simulators
-            foreach (Simulator simulator in simulators)
-            { simulator.Prepare(); }
-
-            // Run the simulation
-            Currency valueCurrency = numeraire.GetNumeraireCurrency();            
-            // TODO: Rather store value for each product separately
-            double[] pathwiseValues = new double[N];
-            double totalValue = 0;
-            for (int i=0; i< N; i++)
-            {
-                pathwiseValues[i] = 0;
-                double numeraireAtValue = numeraire.Numeraire(valueDate);
-                foreach (Simulator simulator in simulators)
-                {
-                    simulator.RunSimulation(i);
-                }
-                foreach (Product product in portfolio)
-                {
-                    product.Reset();
-                    foreach (MarketObservable index in product.GetRequiredIndices())
-                    {
-                        Simulator simulator = indexSources[index];
-                        List<Date> requiredDates = product.GetRequiredIndexDates(index);
-                        double[] indices = simulator.GetIndices(index, requiredDates);
-                        product.SetIndexValues(index, indices);                        
-                    }
-                    List<Cashflow> timesAndCFS = product.GetCFs();
-                    foreach (Cashflow cf in timesAndCFS)
-                    {
-                        if (cf.currency.Equals(valueCurrency))
-                        {
-                            pathwiseValues[i] += cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
-                        }
-                        else
-                        {
-                            MarketObservable currencyPair = new CurrencyPair(cf.currency, numeraire.GetNumeraireCurrency());
-                            double fxRate = indexSources[currencyPair].GetIndices(currencyPair, new List<Date> { cf.date })[0];
-                            pathwiseValues[i] += fxRate * cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date) ;
-                        }
-                    }
-                }
-                totalValue += pathwiseValues[i];
-            }
-            return totalValue/N;
-
         }
     }
 }

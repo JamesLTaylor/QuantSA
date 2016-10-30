@@ -23,13 +23,15 @@ namespace QuantSA.Valuation
         /// times.
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="requiredDates"></param>
+        /// <param name="requiredDates">The date at which <paramref name="index"/> will be required.  This method can be called multiple times for the same index but you 
+        /// are guaranteed that <see cref="Prepare"/> will be called before a simulation is requested.</param>        
         public abstract void SetRequiredDates(MarketObservable index, List<Date> requiredDates);
 
 
         /// <summary>
-        /// Final call before the simulation takes place.  Opportunity for the simulator to add 
-        /// extra simulation dates internally.
+        /// Final call before the simulation takes place.  Opportunity for the simulator do such things as:
+        ///  * sort and removed duplicate required dates
+        ///  * add extra simulation dates internally
         /// </summary>
         public abstract void Prepare();
 
@@ -47,6 +49,24 @@ namespace QuantSA.Valuation
         /// <param name="requiredTimes"></param>
         /// <returns></returns>
         public abstract double[] GetIndices(MarketObservable index, List<Date> requiredDates);
+
+        /// <summary>
+        /// Gets the underlying factors in the simulation.  This will be used to perform regressions
+        /// of product discounted cashflows against theses values.
+        /// 
+        /// The method must always return the same number of factors in the same order.
+        /// 
+        /// Regression only makes sense for simulators with a low number of factors.  A Lognormal Forward
+        /// Model with 120 brownian motions would not be practical and some dimension reduction would be 
+        /// required. 
+        /// </summary>
+        /// <param name="date">The date at which the factors are required.</param>
+        /// <returns></returns>
+        public virtual double[] GetUnderlyingFactors(Date date)
+        {
+            //TODO: URGENT: Remove this implementation and make abstract.
+            return new double[] { 1 };
+        }
 
     }
 }

@@ -8,7 +8,10 @@ namespace QuantSA.General
     /// 
     /// Product.Reset(...)
     /// Product.SetValueDate(...)
+    /// Product.GetCashflowCurrencies(...)
     /// Product.GetRequiredIndices(...)
+    /// 
+    /// Then inside the simulation loop
     /// Then for each index:
     ///     Product.GetRequiredIndexDates(...)
     ///     Product.SetIndexValues(...) 
@@ -48,14 +51,17 @@ namespace QuantSA.General
         public abstract List<MarketObservable> GetRequiredIndices();
 
         /// <summary>
-        /// Dates at which the provided index is required to calculate cashflows.
+        /// The dates at which the provided index is required to calculate cashflows.  This will be called repeatedly so if possible precalculate in <see cref="SetValueDate(Date)"/>.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         public abstract List<Date> GetRequiredIndexDates(MarketObservable index);
 
         /// <summary>
-        /// Dates at which the cashflows in a given currency are likely to take place.  Will be used to ensure that the numeraire and possible FX rates are available on these dates.
+        /// The dates at which the cashflows in a given currency are likely to take place.  It will be used to ensure that the numeraire and possible FX rates are available on these dates.
+        /// It will be called once before the contract has any MarketObservables set so if the timing of a cashflow depends on the realized value of market data a best guess needs to be made
+        /// here.  Some models may be able to provide FX and numeraire values at dates that were not originally specified, via bridging or interpolation, but this is not enforced by the 
+        /// interfaces.
         /// </summary>
         /// <param name="ccy">Only return the dates for the cashflows in this provided currency.</param>
         /// <returns></returns>
@@ -71,7 +77,7 @@ namespace QuantSA.General
         /// <summary>
         /// Call this after <see cref="SetIndexValues(MarketObservable, double[])"/> to get all the cashflows on or AFTER the value date.
         /// </summary>
-        /// <returns>2 column matrix of dates and amounts</returns>
+        /// <returns>A List of cashflows.  Under some circumstances it may be faster if these are ordered by increasing time.</returns>
         public abstract List<Cashflow> GetCFs();
 
 

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Accord.Math;
+﻿using Accord.Math;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QuantSA.Valuation
 {
@@ -137,6 +137,12 @@ namespace QuantSA.Valuation
                 result[i] = rate;
             }
             return result;
+        }
+
+        public override double[] GetUnderlyingFactors(Date date)
+        {
+            double rt = Tools.Interpolate1D(date.value, allDatesDouble, r, r[0], r[r.Length - 1]);
+            return new double[] { rt };
         }
 
         public override Currency GetNumeraireCurrency()
