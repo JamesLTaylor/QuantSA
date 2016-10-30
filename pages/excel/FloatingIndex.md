@@ -16,8 +16,11 @@ A FloatingRateIndex is  entered into QuantSA functions string.  See below for th
 
 ## Available values
 
+* **JIBAR1M**
 * **JIBAR3M**
-* **JIBAR6M** 
+* **JIBAR6M**
+* **PRIME1M_AVG** The average SA prime rate for 1 month.
+* **LIBOR1M** 
 * **LIBOR3M** 
 * **LIBOR6M** 
 * **EURIBOR3M** 
