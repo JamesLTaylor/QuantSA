@@ -27,7 +27,7 @@ namespace ValuationTest
             double flatCurveRate = 0.07;
             HullWhite1F hullWiteSim = new HullWhite1F(a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
+            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 50000);
 
             Date date = valueDate;
             Date endDate = valueDate.AddTenor(tenor);
@@ -40,9 +40,9 @@ namespace ValuationTest
             double[] epe = coordinator.EPE(new List<Product> { swap }, valueDate, fwdValueDates);
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
-            Assert.AreEqual(2734.2, epe[0], 1.0);
-            Assert.AreEqual(6852.0, epe[90], 1.0);
-            Assert.AreEqual(1068.4, epe[182], 1.0);
+            Assert.AreEqual(2512.0, epe[0], 1.0);
+            Assert.AreEqual(6797.2, epe[90], 1.0);
+            Assert.AreEqual(1076.0, epe[182], 1.0);
 
             // Run the valuation
             //double value = coordinator.Value(new List<Product> { swap }, valueDate);

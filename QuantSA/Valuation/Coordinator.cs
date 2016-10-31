@@ -108,13 +108,23 @@ namespace QuantSA.Valuation
                 independentCount += simulator.GetUnderlyingFactors(fwdValueDates[0]).Length;
             }
 
+            int nTasks = 16;
             double[,] pathwiseCfValues = new double[N, fwdValueDates.Count];
             double[,] regressedValues = new double[N, fwdValueDates.Count];
             double[,,] pathwiseIndependent = new double[N, fwdValueDates.Count, independentCount];
 
             Debug.StartTimer();
             // Run the simulation
-            PerformSimulationChunk(fwdValueDates, pathwiseCfValues, regressedValues, pathwiseIndependent, 0, N);
+            //PerformSimulationChunk(fwdValueDates, pathwiseCfValues, regressedValues, pathwiseIndependent, 0, N);
+            Task[] simTasks = new Task[nTasks];
+            int simChunkSize = (int)Math.Ceiling(N / (double)nTasks);
+            for (int i = 0; i < nTasks; i++)
+            {
+                int start = i * simChunkSize;
+                int end = Math.Min(start + simChunkSize, N);
+                simTasks[i] = Task.Factory.StartNew(() => PerformSimulationChunk(fwdValueDates, pathwiseCfValues, regressedValues, pathwiseIndependent, start, end));
+            }
+            Task.WaitAll(simTasks);
             double elapsedTime1 = Debug.ElapsedTime();
             Debug.StartTimer();
             //DebugWriteToFile(@"c:\dev\temp\pathwiseCfValues.csv", pathwiseValues);
@@ -127,16 +137,16 @@ namespace QuantSA.Valuation
             //Parallel.For(0, fwdValueDates.Count,
             //    i => PerformRegression(pathwiseCfValues, pathwiseIndependent, regressedValues, i));
             // Task factory
-            int nThreads = 8;
-            Task[] tasks = new Task[8];
-            int chunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)nThreads);
-            for (int i = 0; i < nThreads; i++)
+            
+            Task[] regressTasks = new Task[nTasks];
+            int regressChunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)nTasks);
+            for (int i = 0; i < nTasks; i++)
             {
-                int start = i * chunkSize;
-                int end = Math.Min(start + chunkSize, fwdValueDates.Count());
-                tasks[i] = Task.Factory.StartNew(() => PerformRegressionChunk(pathwiseCfValues, pathwiseIndependent, regressedValues, start, end));
+                int start = i * simChunkSize;
+                int end = Math.Min(start + simChunkSize, fwdValueDates.Count());
+                simTasks[i] = Task.Factory.StartNew(() => PerformRegressionChunk(pathwiseCfValues, pathwiseIndependent, regressedValues, start, end));
             }
-            Task.WaitAll(tasks);
+            Task.WaitAll(simTasks);
             
             double elapsedTime2 = Debug.ElapsedTime();
             return regressedValues;
@@ -209,13 +219,13 @@ namespace QuantSA.Valuation
             List<Product> localPortfolio = portfolio.Clone();
             NumeraireSimulator localNumeraire = null;
             List<Simulator> localSimulators = null;
-            CopySimulators(localNumeraire, localSimulators);
+            CopySimulators(out localNumeraire, out localSimulators);
                         
             for (int pathCounter = pathStart; pathCounter < pathEnd; pathCounter++)
             {
-                double numeraireAtValue = numeraire.Numeraire(valueDate);
+                double numeraireAtValue = localNumeraire.Numeraire(valueDate);
                 // Run the simulation 
-                foreach (Simulator simulator in simulators)
+                foreach (Simulator simulator in localSimulators)
                 {
                     simulator.RunSimulation(pathCounter);
                 }
@@ -223,7 +233,7 @@ namespace QuantSA.Valuation
                 for (int fwdDateCounter = 0; fwdDateCounter < fwdValueDates.Count; fwdDateCounter++)
                 {
                     int independentCounter = 0;
-                    foreach (Simulator simulator in simulators)
+                    foreach (Simulator simulator in localSimulators)
                     {
                         double[] underlyingFactors = simulator.GetUnderlyingFactors(fwdValueDates[fwdDateCounter]);
                         for (int thisIndependentCounter = 0; thisIndependentCounter < underlyingFactors.Length; thisIndependentCounter++)
@@ -240,7 +250,7 @@ namespace QuantSA.Valuation
                     product.Reset();
                     foreach (MarketObservable index in product.GetRequiredIndices())
                     {
-                        Simulator simulator = simulators[indexSources[index]];
+                        Simulator simulator = localSimulators[indexSources[index]];
                         List<Date> requiredDates = product.GetRequiredIndexDates(index);
                         double[] indices = simulator.GetIndices(index, requiredDates);
                         product.SetIndexValues(index, indices);
@@ -251,14 +261,14 @@ namespace QuantSA.Valuation
                         double cfValue;
                         if (cf.currency.Equals(valueCurrency))
                         {
-                            cfValue = cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                            cfValue = cf.amount * numeraireAtValue / localNumeraire.Numeraire(cf.date);
                         }
                         else
                         {
-                            MarketObservable currencyPair = new CurrencyPair(cf.currency, numeraire.GetNumeraireCurrency());                            
-                            Simulator simulator = simulators[indexSources[currencyPair]];
+                            MarketObservable currencyPair = new CurrencyPair(cf.currency, localNumeraire.GetNumeraireCurrency());                            
+                            Simulator simulator = localSimulators[indexSources[currencyPair]];
                             double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.date })[0];
-                            cfValue = fxRate * cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
+                            cfValue = fxRate * cf.amount * numeraireAtValue / localNumeraire.Numeraire(cf.date);
                         }
                         for (int fwdDateCounter = 0; fwdDateCounter < fwdValueDates.Count; fwdDateCounter++)
                         {
@@ -275,12 +285,12 @@ namespace QuantSA.Valuation
 
         /// <summary>
         /// Copies the simulators into local variables so that they can be safely used on a thread 
-        /// without changing the oringals.
+        /// without changing the originals.
         /// </summary>
-        /// <param name="localNumeraire">The local numeraire.</param>
+        /// <param name="localNumeraire">The local numeraire.  The reference to this object is changed in the call.</param>
         /// <param name="localSimulators">The local simulators.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        private void CopySimulators(NumeraireSimulator localNumeraire, List<Simulator> localSimulators)
+        private void CopySimulators(out NumeraireSimulator localNumeraire, out List<Simulator> localSimulators)
         {
             localSimulators = new List<Simulator>();
             foreach (Simulator simulator in simulators)
@@ -390,7 +400,17 @@ namespace QuantSA.Valuation
             { simulator.Prepare(); }
         }
 
-
+        /// <summary>
+        /// Creates a lookup so that the coordinator knows which simulator provides each required index.
+        /// </summary>
+        /// <exception cref="System.ArgumentException">
+        /// Cannot use 'ANY' as the valuation currency when the portfolio includes cashflows in multiple currencies.
+        /// </exception>
+        /// <exception cref="System.IndexOutOfRangeException">
+        /// Required index: " + index.ToString() + " is not provided by any of the simulators.
+        /// or
+        /// Required currency pair: " + index.ToString() + " is not provided by any of the simulators
+        /// </exception>
         private void AssociateFactorsWithSimulators()
         {
             // Find which simulator will provide each of the potentially required MarketObservables.

@@ -31,11 +31,18 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Clones this instance.  Overridden from <see cref="Simulator"/> because the lambda functions 
         /// don't want to serialize.
-        /// </summary>
+        /// </summary>        
         /// <returns></returns>
         public override Simulator Clone()
         {
-            return new HullWhite1F(a, vol, r0, rate, time0);
+            //TODO: Take deep copies of everything.  The current implemenation is safe for use in the Coordinator though.
+            HullWhite1F newSimulator = new HullWhite1F(a, vol, r0, rate, time0);
+            newSimulator.forecastTenors = forecastTenors; 
+            newSimulator.allDates = allDates.Clone();
+            newSimulator.allDatesDouble = (double[])allDatesDouble.Clone();
+            //newSimulator.r;
+            //newSimulator.bankAccount;
+            return newSimulator;
         }
 
         public HullWhite1F(double a, double vol, double r0, double rate, Date time0)
@@ -122,7 +129,7 @@ namespace QuantSA.Valuation
         public override void RunSimulation(int simNumber)
         {
             NormalDistribution dist = new NormalDistribution();
-            Generator.Seed = GetHashCode() * simNumber;
+            Generator.Seed = -1585814591 * simNumber; // This magic number is: "HW1FSimulator".GetHashCode();
             double[] W = dist.Generate(allDates.Count-1);
             r = new double[allDates.Count];
             bankAccount = new double[allDates.Count];
