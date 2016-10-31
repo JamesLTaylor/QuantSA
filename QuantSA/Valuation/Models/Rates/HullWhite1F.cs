@@ -1,4 +1,5 @@
 ﻿using Accord.Math;
+using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
 using System;
@@ -9,7 +10,7 @@ namespace QuantSA.Valuation
 {
     public class HullWhite1F : NumeraireSimulator
     {
-        public delegate double MarketForwards(Date date);
+        public delegate double MarketForwards(Date date);        
         public delegate double MarketBonds(Date date);
 
         private double a; // mean reversion
@@ -26,6 +27,16 @@ namespace QuantSA.Valuation
         private double[] allDatesDouble;
         private double[] r;
         private double[] bankAccount;
+
+        /// <summary>
+        /// Clones this instance.  Overridden from <see cref="Simulator"/> because the lambda functions 
+        /// don't want to serialize.
+        /// </summary>
+        /// <returns></returns>
+        public override Simulator Clone()
+        {
+            return new HullWhite1F(a, vol, r0, rate, time0);
+        }
 
         public HullWhite1F(double a, double vol, double r0, double rate, Date time0)
         {
@@ -111,6 +122,7 @@ namespace QuantSA.Valuation
         public override void RunSimulation(int simNumber)
         {
             NormalDistribution dist = new NormalDistribution();
+            Generator.Seed = GetHashCode() * simNumber;
             double[] W = dist.Generate(allDates.Count-1);
             r = new double[allDates.Count];
             bankAccount = new double[allDates.Count];

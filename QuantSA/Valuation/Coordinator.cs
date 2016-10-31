@@ -205,10 +205,12 @@ namespace QuantSA.Valuation
         private void PerformSimulationChunk(List<Date> fwdValueDates, double[,] pathwiseCfValues,
             double[,] regressedValues, double[,,] pathwiseIndependent, int pathStart, int pathEnd)
         {
-            List<Product> localPortfolio = portfolio.Clone();
-            portfolio = null;
-            //List<Simulator> localSimulators = simulators.Clone();
             // clone the simulators and portfolio
+            List<Product> localPortfolio = portfolio.Clone();
+            NumeraireSimulator localNumeraire = null;
+            List<Simulator> localSimulators = null;
+            CopySimulators(localNumeraire, localSimulators);
+                        
             for (int pathCounter = pathStart; pathCounter < pathEnd; pathCounter++)
             {
                 double numeraireAtValue = numeraire.Numeraire(valueDate);
@@ -268,11 +270,33 @@ namespace QuantSA.Valuation
                     }
                 }
             }
-
         }
 
 
+        /// <summary>
+        /// Copies the simulators into local variables so that they can be safely used on a thread 
+        /// without changing the oringals.
+        /// </summary>
+        /// <param name="localNumeraire">The local numeraire.</param>
+        /// <param name="localSimulators">The local simulators.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private void CopySimulators(NumeraireSimulator localNumeraire, List<Simulator> localSimulators)
+        {
+            localSimulators = new List<Simulator>();
+            foreach (Simulator simulator in simulators)
+            {
+                localSimulators.Add(simulator.Clone());
+            }
+            localNumeraire = (NumeraireSimulator)localSimulators[0];
+        }
 
+
+        /// <summary>
+        /// Find the value of a portfolio of products
+        /// </summary>
+        /// <param name="portfolio">The portfolio.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <returns></returns>
         public double Value(List<Product> portfolio, Date valueDate)
         {
             this.portfolio = portfolio;

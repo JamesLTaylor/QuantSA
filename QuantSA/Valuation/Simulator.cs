@@ -1,12 +1,33 @@
 ﻿using QuantSA.General;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace QuantSA.Valuation
 {
+    [Serializable]
     public abstract class Simulator
     {
+
         /// <summary>
-        /// Identify if the the simulator is able to simulate the provided index
+        /// Clones this instance by serializing and deserializin the object.  If there is any issue with serializing
+        /// an implementation a Simulator then this method should be overridden.
+        /// </summary>
+        /// <returns></returns>
+        public virtual Simulator Clone()
+        {
+            MemoryStream stream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
+            stream.Seek(0, SeekOrigin.Begin);
+            object o = formatter.Deserialize(stream);
+            return (Simulator)o;
+        }
+
+        /// <summary>
+        /// Identify if the the simulator is able to simulate the provided index.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>

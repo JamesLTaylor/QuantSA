@@ -38,7 +38,11 @@ namespace ValuationTest
                 date = date.AddTenor(Tenor.Days(10));
             }
             double[] epe = coordinator.EPE(new List<Product> { swap }, valueDate, fwdValueDates);
-            Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
+            //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
+
+            Assert.AreEqual(2734.2, epe[0], 1.0);
+            Assert.AreEqual(6852.0, epe[90], 1.0);
+            Assert.AreEqual(1068.4, epe[182], 1.0);
 
             // Run the valuation
             //double value = coordinator.Value(new List<Product> { swap }, valueDate);
