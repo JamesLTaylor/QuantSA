@@ -24,5 +24,5 @@ A FloatingRateIndex is  entered into QuantSA functions string.  See below for th
 * **LIBOR3M** 
 * **LIBOR6M** 
 * **EURIBOR3M** 
-* **EUROBOR6M** 
+* **EURIBOR6M** 
 
