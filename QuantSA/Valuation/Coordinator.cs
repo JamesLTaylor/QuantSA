@@ -3,10 +3,8 @@ using Accord.Statistics.Models.Regression.Linear;
 using QuantSA.General;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace QuantSA.Valuation
 {
@@ -89,6 +87,8 @@ namespace QuantSA.Valuation
         /// Use regression on the underlying simulated factors to estimate the forward values of the portfolio
         /// discounted to the value date.
         /// </summary>
+        /// <remarks>This was first written using tasks rather than threads but the tasks were not getting their
+        /// own thread, even when marked as <see cref="TaskCreationOptions.LongRunning"/></remarks>
         /// <param name="portfolio">The portfolio.</param>
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
@@ -108,47 +108,40 @@ namespace QuantSA.Valuation
                 independentCount += simulator.GetUnderlyingFactors(fwdValueDates[0]).Length;
             }
 
-            int nTasks = 16;
+            int nTasks = 4;
             double[,] pathwiseCfValues = new double[N, fwdValueDates.Count];
             double[,] regressedValues = new double[N, fwdValueDates.Count];
             double[,,] pathwiseIndependent = new double[N, fwdValueDates.Count, independentCount];
 
-            Debug.StartTimer();
-            // Run the simulation
-            //PerformSimulationChunk(fwdValueDates, pathwiseCfValues, regressedValues, pathwiseIndependent, 0, N);
-            Task[] simTasks = new Task[nTasks];
+            // Run the simulation in chunks on several threads.
+            Thread[] simThreads = new Thread[nTasks];
             int simChunkSize = (int)Math.Ceiling(N / (double)nTasks);
             for (int i = 0; i < nTasks; i++)
             {
                 int start = i * simChunkSize;
                 int end = Math.Min(start + simChunkSize, N);
-                simTasks[i] = Task.Factory.StartNew(() => PerformSimulationChunk(fwdValueDates, pathwiseCfValues, regressedValues, pathwiseIndependent, start, end));
+                simThreads[i] = new Thread(
+                    new ThreadStart(
+                        () => PerformSimulationChunk(fwdValueDates, pathwiseCfValues, regressedValues, pathwiseIndependent, start, end))
+                    );
+                simThreads[i].Start();
             }
-            Task.WaitAll(simTasks);
-            double elapsedTime1 = Debug.ElapsedTime();
-            Debug.StartTimer();
-            //DebugWriteToFile(@"c:\dev\temp\pathwiseCfValues.csv", pathwiseValues);
+            foreach (Thread thread in simThreads) thread.Join();
 
-            // All future cashflows have been found.  Do the regression.
-            // normal loop
-            //for (int col = 0; col < fwdValueDates.Count; col++)
-            //    PerformRegression(pathwiseCfValues, pathwiseIndependent, regressedValues, col);
-            // Parrallel loop
-            //Parallel.For(0, fwdValueDates.Count,
-            //    i => PerformRegression(pathwiseCfValues, pathwiseIndependent, regressedValues, i));
-            // Task factory
-            
-            Task[] regressTasks = new Task[nTasks];
+            Thread[] regressThreads = new Thread[nTasks];
             int regressChunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)nTasks);
             for (int i = 0; i < nTasks; i++)
             {
-                int start = i * simChunkSize;
-                int end = Math.Min(start + simChunkSize, fwdValueDates.Count());
-                simTasks[i] = Task.Factory.StartNew(() => PerformRegressionChunk(pathwiseCfValues, pathwiseIndependent, regressedValues, start, end));
+                int start = i * regressChunkSize;
+                int end = Math.Min(start + regressChunkSize, fwdValueDates.Count());
+                regressThreads[i] = new Thread(
+                    new ThreadStart(
+                        () => PerformRegressionChunk(pathwiseCfValues, pathwiseIndependent, regressedValues, start, end))
+                        );
+                regressThreads[i].Start();
+
             }
-            Task.WaitAll(simTasks);
-            
-            double elapsedTime2 = Debug.ElapsedTime();
+            foreach (Thread thread in regressThreads) thread.Join();
             return regressedValues;
         }
 
