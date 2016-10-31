@@ -89,6 +89,12 @@
     - title: CreateFloatLeg
       url: /CreateFloatLeg.html
       output: web, pdf
+    - title: CreateLoanFixedRate
+      url: /CreateLoanFixedRate.html
+      output: web, pdf
+    - title: CreateLoanFloatingRate
+      url: /CreateLoanFloatingRate.html
+      output: web, pdf
     - title: CreateRateForecastCurveFromDiscount
       url: /CreateRateForecastCurveFromDiscount.html
       output: web, pdf

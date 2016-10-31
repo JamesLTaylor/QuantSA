@@ -1,0 +1,39 @@
+---
+title: CreateLoanFloatingRate
+keywords:
+last_updated: October 31, 2016
+tags:
+summary: Create floationg rate loan.
+sidebar: excel_sidebar
+permalink: CreateLoanFloatingRate.html
+folder: excel
+---
+
+## Description
+Create floationg rate loan.
+
+<!--HUMAN EDIT START-->
+
+<!--## Details-->
+
+<!--HUMAN EDIT END-->
+
+## Example Sheet
+
+    Loans.xlsx
+
+## Arguments
+
+* **name** Name of object
+* **currency** The currency of the cashflows.
+* **balanceDates** The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.
+* **balanceAmounts** The notionals on which the payments are based.
+* **floatingIndex** The reference index on which the floating flows are based.
+* **floatingSpread** The spread that will be added to the floating index.
+
+<!--HUMAN EDIT START-->
+
+<!--## Validation-->
+
+<!--HUMAN EDIT END-->
+

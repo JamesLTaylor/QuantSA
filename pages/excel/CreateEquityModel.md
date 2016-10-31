@@ -31,6 +31,7 @@ Create a model that simulates multiple equites in one currency.  Assumes lognorm
 * **volatilities** A single volatility for each share.
 * **divYields** A single continuous dividend yield rate for each equity.
 * **correlations** A square matrix of correlations between shares, the rows and columns must be in the same order as the shares were listed in shareCodes.
+* **rateForecastCurves** The floating rate forecast curves for all the rates that the products in the portfolio will need.
 
 <!--HUMAN EDIT START-->
 
