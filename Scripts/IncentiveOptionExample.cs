@@ -1,6 +1,5 @@
-using QuantSA.MonteCarlo;
-using QuantSA;
-using MonteCarlo;
+using QuantSA.Valuation;
+using QuantSA.General;
 using System.Collections.Generic;
 
 public class ProductWrapperEquitySample2 : ProductWrapper

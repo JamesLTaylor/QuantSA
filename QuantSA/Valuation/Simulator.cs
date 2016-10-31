@@ -12,8 +12,8 @@ namespace QuantSA.Valuation
     {
 
         /// <summary>
-        /// Clones this instance by serializing and deserializin the object.  If there is any issue with serializing
-        /// an implementation a Simulator then this method should be overridden.
+        /// Clones this instance by serializing and deserializing the object.  If there is any issue with serializing
+        /// an implementation of a Simulator then this method should be overridden.
         /// </summary>
         /// <returns></returns>
         public virtual Simulator Clone()
@@ -51,43 +51,40 @@ namespace QuantSA.Valuation
 
         /// <summary>
         /// Final call before the simulation takes place.  Opportunity for the simulator do such things as:
-        ///  * sort and removed duplicate required dates
+        ///  * sort and remove duplicate required dates
         ///  * add extra simulation dates internally
         /// </summary>
         public abstract void Prepare();
 
         /// <summary>
-        /// Run the simulation and internally store the indices that will be required.  Should only be called 
+        /// Run the simulation and internally store the indices that will be required.  Will only be called 
         /// after <see cref="SetRequiredDates(MarketObservable, List{Date})"/>
         /// </summary>
-        /// <param name="simNumber">The simulation number.  May be required for example if any variance reductions technigues are used.</param>
+        /// <param name="simNumber">The simulation number.  May be required for example if any variance 
+        /// reduction techniques are used.</param>
         public abstract void RunSimulation(int simNumber);
 
         /// <summary>
-        /// Return the simulated values at the required times.  Should only be called after <see cref="RunSimulation(int, int)"/>
+        /// Return the simulated values at the required times.  Will only be called after 
+        /// <see cref="RunSimulation"/>
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="requiredTimes"></param>
+        /// <param name="requiredDates"></param>
         /// <returns></returns>
         public abstract double[] GetIndices(MarketObservable index, List<Date> requiredDates);
 
         /// <summary>
-        /// Gets the underlying factors in the simulation.  This will be used to perform regressions
+        /// Gets the underlying factors in the simulation.  Will be used to perform regressions
         /// of product discounted cashflows against theses values.
         /// 
         /// The method must always return the same number of factors in the same order.
         /// 
-        /// Regression only makes sense for simulators with a low number of factors.  A Lognormal Forward
-        /// Model with 120 brownian motions would not be practical and some dimension reduction would be 
+        /// Regression only makes sense for simulators with a low number of factors.  For example a Lognormal forward
+        /// model with 120 brownian motions would not be practical and some dimension reduction would be 
         /// required. 
         /// </summary>
         /// <param name="date">The date at which the factors are required.</param>
         /// <returns></returns>
-        public virtual double[] GetUnderlyingFactors(Date date)
-        {
-            //TODO: URGENT: Remove this implementation and make abstract.
-            return new double[] { 1 };
-        }
-
+        public abstract double[] GetUnderlyingFactors(Date date);
     }
 }

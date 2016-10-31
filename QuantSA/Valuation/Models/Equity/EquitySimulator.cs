@@ -186,5 +186,14 @@ namespace QuantSA.Valuation
             // Nothing needs to be done since we are using a deterministic curve.
         }
 
+        public override double[] GetUnderlyingFactors(Date date)
+        {
+            double[] sharePrices = new double[shares.Length];
+            for (int i = 0; i< shares.Length; i++)
+            {
+                sharePrices[i] = GetIndices(shares[i], new List<Date> { date })[0];
+            }
+            return sharePrices;
+        }
     }
 }

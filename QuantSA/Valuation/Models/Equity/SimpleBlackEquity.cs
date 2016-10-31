@@ -78,5 +78,10 @@ namespace QuantSA.Valuation
         {
             allRequiredDates.AddRange(requiredDates); 
         }
+
+        public override double[] GetUnderlyingFactors(Date date)
+        {
+            return new double[] { simulation[date.value] };
+        }
     }
 }

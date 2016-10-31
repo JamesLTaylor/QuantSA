@@ -112,5 +112,10 @@ namespace QuantSA.Valuation
         {
             // Do nothing
         }
+
+        public override double[] GetUnderlyingFactors(Date date)
+        {
+            return new double[] { 1 };
+        }
     }
 }

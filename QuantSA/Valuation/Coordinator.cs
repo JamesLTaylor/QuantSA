@@ -55,9 +55,9 @@ namespace QuantSA.Valuation
         /// 
         /// </summary>
         /// <remarks>
-        /// The simulation phase should produce some set of name,value pairs like: 
+        /// The simulation phase should possibly produce some set of name,value pairs like: 
         ///     productID:simNumber:date,cfValueInNumeraireCcy        
-        /// So that a fully flexible distributed calculation might be possible.
+        /// So that fully flexible distributed downstream calculations might be possible.
         /// </remarks>
         /// <param name="portfolio">The portfolio.</param>
         /// <param name="valueDate">The value date.</param>
