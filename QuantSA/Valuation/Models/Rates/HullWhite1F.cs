@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Accord.Math;
+﻿using Accord.Math;
+using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QuantSA.Valuation
 {
     public class HullWhite1F : NumeraireSimulator
     {
-        public delegate double MarketForwards(Date date);
+        public delegate double MarketForwards(Date date);        
         public delegate double MarketBonds(Date date);
 
         private double a; // mean reversion
@@ -26,6 +27,23 @@ namespace QuantSA.Valuation
         private double[] allDatesDouble;
         private double[] r;
         private double[] bankAccount;
+
+        /// <summary>
+        /// Clones this instance.  Overridden from <see cref="Simulator"/> because the lambda functions 
+        /// don't want to serialize.
+        /// </summary>        
+        /// <returns></returns>
+        public override Simulator Clone()
+        {
+            //TODO: Take deep copies of everything.  The current implemenation is safe for use in the Coordinator though.
+            HullWhite1F newSimulator = new HullWhite1F(a, vol, r0, rate, time0);
+            newSimulator.forecastTenors = forecastTenors; 
+            newSimulator.allDates = allDates.Clone();
+            newSimulator.allDatesDouble = (double[])allDatesDouble.Clone();
+            //newSimulator.r;
+            //newSimulator.bankAccount;
+            return newSimulator;
+        }
 
         public HullWhite1F(double a, double vol, double r0, double rate, Date time0)
         {
@@ -111,6 +129,7 @@ namespace QuantSA.Valuation
         public override void RunSimulation(int simNumber)
         {
             NormalDistribution dist = new NormalDistribution();
+            Generator.Seed = -1585814591 * simNumber; // This magic number is: "HW1FSimulator".GetHashCode();
             double[] W = dist.Generate(allDates.Count-1);
             r = new double[allDates.Count];
             bankAccount = new double[allDates.Count];
@@ -137,6 +156,12 @@ namespace QuantSA.Valuation
                 result[i] = rate;
             }
             return result;
+        }
+
+        public override double[] GetUnderlyingFactors(Date date)
+        {
+            double rt = Tools.Interpolate1D(date.value, allDatesDouble, r, r[0], r[r.Length - 1]);
+            return new double[] { rt };
         }
 
         public override Currency GetNumeraireCurrency()

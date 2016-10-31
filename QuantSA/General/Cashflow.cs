@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace QuantSA.General
 {
+    [Serializable]
     public class Cashflow
     {
         public double amount { get; private set; }

@@ -1,8 +1,11 @@
-﻿namespace QuantSA.General
+﻿using System;
+
+namespace QuantSA.General
 {
     /// <summary>
     /// An object to describe a floating rate index such as 3 Month Jibar.
     /// </summary>
+    [Serializable]
     public class FloatingIndex : MarketObservable
     {
         private Currency currency;

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace QuantSA.General
 {
@@ -8,7 +11,10 @@ namespace QuantSA.General
     /// 
     /// Product.Reset(...)
     /// Product.SetValueDate(...)
+    /// Product.GetCashflowCurrencies(...)
     /// Product.GetRequiredIndices(...)
+    /// 
+    /// Then inside the simulation loop
     /// Then for each index:
     ///     Product.GetRequiredIndexDates(...)
     ///     Product.SetIndexValues(...) 
@@ -17,6 +23,7 @@ namespace QuantSA.General
     /// The calls to GetCashflowCurrencies and GetCashflowDates will only be used when there is a 
     /// multi currency valuation and exchange rates will need to be used in the valuation.
     /// </summary>
+    [Serializable]
     public abstract class Product
     {
         /// <summary>
@@ -24,6 +31,19 @@ namespace QuantSA.General
         /// </summary>
         public string id { get; protected set; } = "Not Set";
         public string type { get; protected set; } = "Not Set";
+
+        /// <summary>
+        /// Return a deep copy of the Product, without any market data.
+        /// </summary>
+        public virtual Product Clone()
+        {
+            MemoryStream stream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
+            stream.Seek(0, SeekOrigin.Begin);
+            object o = formatter.Deserialize(stream);
+            return (Product)o;            
+        }
 
         /// <summary>
         /// Sets the value date of the contract.
@@ -48,14 +68,17 @@ namespace QuantSA.General
         public abstract List<MarketObservable> GetRequiredIndices();
 
         /// <summary>
-        /// Dates at which the provided index is required to calculate cashflows.
+        /// The dates at which the provided index is required to calculate cashflows.  This will be called repeatedly so if possible precalculate in <see cref="SetValueDate(Date)"/>.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         public abstract List<Date> GetRequiredIndexDates(MarketObservable index);
 
         /// <summary>
-        /// Dates at which the cashflows in a given currency are likely to take place.  Will be used to ensure that the numeraire and possible FX rates are available on these dates.
+        /// The dates at which the cashflows in a given currency are likely to take place.  It will be used to ensure that the numeraire and possible FX rates are available on these dates.
+        /// It will be called once before the contract has any MarketObservables set so if the timing of a cashflow depends on the realized value of market data a best guess needs to be made
+        /// here.  Some models may be able to provide FX and numeraire values at dates that were not originally specified, via bridging or interpolation, but this is not enforced by the 
+        /// interfaces.
         /// </summary>
         /// <param name="ccy">Only return the dates for the cashflows in this provided currency.</param>
         /// <returns></returns>
@@ -71,10 +94,26 @@ namespace QuantSA.General
         /// <summary>
         /// Call this after <see cref="SetIndexValues(MarketObservable, double[])"/> to get all the cashflows on or AFTER the value date.
         /// </summary>
-        /// <returns>2 column matrix of dates and amounts</returns>
+        /// <returns>A List of cashflows.  Under some circumstances it may be faster if these are ordered by increasing time.</returns>
         public abstract List<Cashflow> GetCFs();
 
-
-
     }
+
+    public static class ProductExtensions {
+        /// <summary>
+        /// Makes a deep copy of the List of <see cref="Product"/>s
+        /// </summary>
+        /// <param name="originalPortfolio">The original portfolio.</param>
+        /// <returns></returns>
+        public static List<Product> Clone(this List<Product> originalPortfolio)
+        {
+            List<Product> newPortfolio = new List<Product>();
+            foreach (Product p in originalPortfolio)
+            {
+                newPortfolio.Add(p.Clone());
+            }
+            return newPortfolio;
+        }
+    }
+
 }

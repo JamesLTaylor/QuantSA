@@ -1,6 +1,9 @@
 ﻿
+using System;
+
 namespace QuantSA.General
 {
+    [Serializable]
     public class Share : MarketObservable
     {
         internal string shareCode;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace QuantSA.General
 {
+    [Serializable]
     public class EuropeanOption : Product
     {
         private Date exerciseDate;

@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
+    [Serializable]
     public class RuntimeProduct
-    {
+    {        
         public static Product CreateFromScript(String filename)
         {
             CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");

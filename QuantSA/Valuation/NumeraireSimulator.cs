@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using QuantSA.General;
+using System;
 
 namespace QuantSA.Valuation
 {
     /// <summary>
     /// Base class for bank account numeraire simulators 
     /// </summary>
+    [Serializable]
     public abstract class NumeraireSimulator : Simulator
     {
         /// <summary>
