@@ -139,7 +139,7 @@ namespace GenerateDocs
             string markdownFilePath = outputPath + @"\pages\excel\" + fileContents.name + ".md";
             if (File.Exists(markdownFilePath))
             {
-                UpdateEixstingMD(markdownFilePath, fileContents);
+                UpdateExistingMD(markdownFilePath, fileContents);
             }
             else
             {
@@ -152,7 +152,7 @@ namespace GenerateDocs
         /// </summary>
         /// <param name="markdownFilePath"></param>
         /// <param name="fileContents"></param>
-        private static void UpdateEixstingMD(string markdownFilePath, FileContents fc)
+        private static void UpdateExistingMD(string markdownFilePath, FileContents fc)
         {
             string line;
             StreamReader file = new StreamReader(markdownFilePath);
@@ -349,6 +349,7 @@ namespace GenerateDocs
                     }
                 }
             }
+            foreach (string error in errorList) System.Diagnostics.Trace.WriteLine(error);
             return folderStructure;
         }//GetFolderStructure
 
