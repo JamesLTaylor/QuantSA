@@ -43,7 +43,7 @@ Can be set to true.
 
 When this is set to true the input and output types are not limited to ones handled by ExcelDNA, type conversions using `QuantSA.Excel.ExcelUtilities` will be generated.  Adding and getting objects off the object map is generated and the input and output descriptions are extended to include a link to the type of the argument in the generated help.
 
-To effectively use the automatic linking to typs in the help, the return type must be selected as the most general version, for example a swap should be returned as a `Product` so that the help can automatically link the `Product` page and it is more likely that subseqent functions that the user will call will require the more general type.
+To effectively use the automatic linking to types in the help, the return type must be selected as the most general version, for example a swap should be returned as a `Product` so that the help can automatically link the `Product` page and it is more likely that subseqent functions that the user will call will require the more general type.
 
 ## Generating the ExcelWrapper Code
 
