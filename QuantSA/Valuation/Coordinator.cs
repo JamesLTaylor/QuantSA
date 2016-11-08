@@ -63,11 +63,11 @@ namespace QuantSA.Valuation
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
         /// <returns></returns>
-        public double[] EPE(List<Product> portfolio, Date valueDate, Date[] fwdValueDates)
+        public double[] EPE(Product[] portfolio, Date valueDate, Date[] fwdValueDates)
         {
             double[] epe = Vector.Zeros(fwdValueDates.Length);
             List<Date> fwdValueDatesList = fwdValueDates.ToList();
-            double[,] regressedValues = GetRegressedFwdValues(portfolio, valueDate, fwdValueDatesList);
+            double[,] regressedValues = GetRegressedFwdValues(portfolio.ToList(), valueDate, fwdValueDatesList);
             //Debug.WriteToFile(@"c:\dev\temp\regressedValues.csv", regressedValues);            
             for (int row=0; row< regressedValues.GetLength(0); row++)
             {
@@ -301,9 +301,9 @@ namespace QuantSA.Valuation
         /// <param name="portfolio">The portfolio.</param>
         /// <param name="valueDate">The value date.</param>
         /// <returns></returns>
-        public double Value(List<Product> portfolio, Date valueDate)
+        public double Value(Product[] portfolio, Date valueDate)
         {
-            this.portfolio = portfolio;
+            this.portfolio = portfolio.ToList();
             this.valueDate = valueDate;
             AssociateFactorsWithSimulators();
             InitializeSimulators(new List<Date>());

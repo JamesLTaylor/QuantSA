@@ -65,7 +65,12 @@ namespace QuantSA.Excel
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = false)]
     public class QuantSAExcelArgumentAttribute : ExcelArgumentAttribute
     {
-        public bool Optional = false;
+        /// <summary>
+        /// The default value of this parameter.  It will be passed verbatim to the Excelutilities 
+        /// conversion method and so its form must depend on what the conversions method for this
+        /// type of parameter expects.
+        /// </summary>
+        public string Default = null;
     }
 
 }

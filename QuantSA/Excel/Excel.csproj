@@ -78,9 +78,9 @@
       <DependentUpon>ExcelMessage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Generated\XLCurvesGenerated.cs" />
+    <Compile Include="Generated\XLEquitiesGenerated.cs" />
     <Compile Include="Generated\XLRatesGenerated.cs" />
-    <Compile Include="Generated\XLTestGenerated.cs" />
-    <Compile Include="Generated\XLTestGenerated2.cs" />
+    <Compile Include="Generated\XLValuationGenerated.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ribbon.cs" />
     <Compile Include="XLCurves.cs" />
@@ -88,7 +88,6 @@
     <Compile Include="XLFX.cs" />
     <Compile Include="XLGeneral.cs" />
     <Compile Include="XLRates.cs" />
-    <Compile Include="XLTest.cs" />
     <Compile Include="XLValuation.cs" />
   </ItemGroup>
   <ItemGroup>

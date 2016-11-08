@@ -73,7 +73,8 @@ namespace ValuationTest
         double[,] correlations = { { 1.0, 0.4, 0.5},
                                     {0.4, 1.0, 0.6 },
                                     {0.5, 0.6, 1.0 }};
-        IDiscountingSource discountCurve; List<IFloatingRateSource> rateForecastCurves;
+        IDiscountingSource discountCurve;
+        IFloatingRateSource[] rateForecastCurves;
 
         [TestInitialize]
         public void Init()
@@ -82,7 +83,7 @@ namespace ValuationTest
                 new Date[] { anchorDate, anchorDate.AddMonths(120) },
                 new double[] { 0.07, 0.09 });
             rateForecastCurves = new List<IFloatingRateSource>
-                { new ForecastCurveFromDiscount(discountCurve, FloatingIndex.JIBAR3M, new FloatingRateFixingCurve1Rate(0.07, FloatingIndex.JIBAR3M)) };
+                { new ForecastCurveFromDiscount(discountCurve, FloatingIndex.JIBAR3M, new FloatingRateFixingCurve1Rate(0.07, FloatingIndex.JIBAR3M)) }.ToArray();
         }
 
         [TestMethod]
@@ -144,7 +145,7 @@ namespace ValuationTest
             EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, rateForecastCurves);
             
             Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 10000);
-            double value = coordinator.Value(new List<Product> { product }, anchorDate);
+            double value = coordinator.Value(new Product[] { product }, anchorDate);
             Assert.AreEqual(31.6, value, 1.0);            
         }
 
@@ -152,7 +153,7 @@ namespace ValuationTest
         public void TestEquitySimulatorMultiAssetCall()
         {
             // The model            
-            EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, new List<IFloatingRateSource>());
+            EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, new IFloatingRateSource[0]);
             Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 10000);
 
             // Products
@@ -164,7 +165,7 @@ namespace ValuationTest
             p = 0;
             strike = prices[p] * 1.05;
             Product call0 = new EuropeanOption(shares[p], strike, exerciseDate);
-            double value0 = coordinator.Value(new List<Product> { call0 }, anchorDate);
+            double value0 = coordinator.Value(new Product[] { call0 }, anchorDate);
             double refValue0 = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
                                                     vols[p], 0.07, divYields[p]);
             Assert.AreEqual(refValue0, value0, refValue0 * 0.05);
@@ -173,7 +174,7 @@ namespace ValuationTest
             p = 1;
             strike = prices[p] * 1.05;
             Product call1 = new EuropeanOption(shares[p], strike, exerciseDate);
-            double value1 = coordinator.Value(new List<Product> { call1 }, anchorDate);
+            double value1 = coordinator.Value(new Product[] { call1 }, anchorDate);
             double refValue1 = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
                                                     vols[p], 0.07, divYields[p]);
             Assert.AreEqual(refValue1, value1, refValue1 * 0.05);
@@ -182,13 +183,13 @@ namespace ValuationTest
             p = 2;
             strike = prices[p] * 1.05;
             Product call2 = new EuropeanOption(shares[p], strike, exerciseDate);
-            double value2 = coordinator.Value(new List<Product> { call2 }, anchorDate);
+            double value2 = coordinator.Value(new Product[] { call2 }, anchorDate);
             double refValue2 = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
                                                     vols[p], 0.07, divYields[p]);
             Assert.AreEqual(refValue1, value1, refValue1 * 0.05);
 
             // All at once
-            double valueAll = coordinator.Value(new List<Product> { call0, call1, call2 }, anchorDate);
+            double valueAll = coordinator.Value(new Product[] { call0, call1, call2 }, anchorDate);
             double refTotal = refValue0 + refValue1 + refValue2;
             Assert.AreEqual(refTotal, valueAll, refTotal * 0.05);
         }

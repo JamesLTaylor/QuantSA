@@ -106,12 +106,12 @@ namespace ValuationTest
             IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, anchorDate,
                 new Date[] { anchorDate, anchorDate.AddMonths(36) },
                 new double[] { 0.07, 0.07 });
-            EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, new List<IFloatingRateSource>());
+            EquitySimulator sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve, new IFloatingRateSource[0]);
             Coordinator coordinator = new Coordinator(sim, new List<Simulator> { }, 40000);
 
             //Valuation
-            double value1 = coordinator.Value(new List<Product> { product1 }, anchorDate);
-            double value2 = coordinator.Value(new List<Product> { product2 }, anchorDate);
+            double value1 = coordinator.Value(new Product[] { product1 }, anchorDate);
+            double value2 = coordinator.Value(new Product[] { product2 }, anchorDate);
 
             Assert.AreEqual(value1, value2, value1 * 0.05);
 

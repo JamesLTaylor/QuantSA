@@ -33,7 +33,7 @@ namespace ValuationTest
             Coordinator coordinator;
             coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 100000);
             watch = Stopwatch.StartNew();
-            double valueRuntime = coordinator.Value(new List<Product> { runtimeProduct }, valueDate);
+            double valueRuntime = coordinator.Value(new Product[] { runtimeProduct }, valueDate);
             watch.Stop();
             long timeRuntime = watch.ElapsedMilliseconds;
 
@@ -45,7 +45,7 @@ namespace ValuationTest
             // Value the static product
             coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 100000);
             watch = Stopwatch.StartNew();
-            double valueStatic = coordinator.Value(new List<Product> { staticProduct }, valueDate);
+            double valueStatic = coordinator.Value(new Product[] { staticProduct }, valueDate);
             watch.Stop();
             long timeStatic = watch.ElapsedMilliseconds;
 

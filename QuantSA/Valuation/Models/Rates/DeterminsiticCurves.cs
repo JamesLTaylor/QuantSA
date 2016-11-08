@@ -27,7 +27,7 @@ namespace QuantSA.Valuation
                 throw new ArgumentException(forecastCurve.GetFloatingIndex().ToString() + " has already been added to the model.");            
         }
 
-        public void AddRateForecast(List<IFloatingRateSource> forecastCurves)
+        public void AddRateForecast(IFloatingRateSource[] forecastCurves)
         {
             foreach (IFloatingRateSource forecastCurve in forecastCurves)
                 AddRateForecast(forecastCurve);                
@@ -43,7 +43,7 @@ namespace QuantSA.Valuation
                 throw new ArgumentException(fxForecastCurve.GetCurrencyPair().ToString() + " has already been added to the model.");
         }
 
-        public void AddFXForecast(List<IFXSource> fxForecastCurves)
+        public void AddFXForecast(IFXSource[] fxForecastCurves)
         {
             foreach (IFXSource fxForecastCurve in fxForecastCurves)
                 AddFXForecast(fxForecastCurve);

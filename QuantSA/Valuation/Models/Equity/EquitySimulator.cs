@@ -38,7 +38,7 @@ namespace QuantSA.Valuation
         /// <param name="rateForecastCurves">Deterministic rate forecast curves, used for example when a 
         /// structure includes a loan whose interest needs to be calculated during the simulation.</param>
         public EquitySimulator(Share[] shares, double[] prices, double[] vols, double[] divYields,
-            double[,] correlations, IDiscountingSource discountCurve, List<IFloatingRateSource> rateForecastCurves)
+            double[,] correlations, IDiscountingSource discountCurve, IFloatingRateSource[] rateForecastCurves)
         {
             this.shares = shares;
             this.prices = prices;

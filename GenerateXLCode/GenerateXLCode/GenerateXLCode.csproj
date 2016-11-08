@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelDna.Integration">
+      <HintPath>..\..\QuantSA\Excel\bin\Debug\ExcelDna.Integration.dll</HintPath>
+    </Reference>
     <Reference Include="QuantSA.Excel">
       <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll</HintPath>
     </Reference>

@@ -170,6 +170,25 @@ namespace QuantSA.Excel
         /// </remarks>
         /// <param name="result"></param>
         /// <returns></returns>
+        public static object[] ConvertToObjects(double[] result)
+        {
+            object[] resultObj = new object[result.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                resultObj[i] = result[i];
+            }
+            return resultObj;
+        }
+
+
+        /// <summary>
+        /// Convert a 2d array of doubles into objects for returning to excel. 
+        /// </summary>
+        /// <remarks>
+        /// Note that we use objects in Excel return types so that we can send values or strings to the cell. 
+        /// </remarks>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public static object[,] ConvertToObjects(double[,] result)
         {
             object[,] resultObj = new object[result.GetLength(0), result.GetLength(1)];
@@ -327,16 +346,16 @@ namespace QuantSA.Excel
         /// <param name="values">The excel values passed to the function</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static List<T> GetObject1D<T>(object[,] values, string inputName)
+        public static T[] GetObject1D<T>(object[,] values, string inputName)
         {            
-            List<T> result = new List<T>();
-            if (values[0, 0] is ExcelMissing) return result; // Empty input
+            if (values[0, 0] is ExcelMissing) return new T[0]; // Empty input
             if (values.GetLength(0) > 1 && values.GetLength(1) > 1) // matrix input
             {
                 throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
             }
             if (values.GetLength(0) == 1) // row input
             {
+                T[] result = new T[values.GetLength(1)];
                 for (int i = 0; i < values.GetLength(1); i++)
                 {
                     String name = values[0, i] as String;
@@ -344,11 +363,13 @@ namespace QuantSA.Excel
                     {
                         throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
                     }
-                    result.Add(ObjectMap.Instance.GetObjectFromID<T>(name));
+                    result[i] = ObjectMap.Instance.GetObjectFromID<T>(name);
                 }
+                return result;
             }
             else if (values.GetLength(1) == 1) // column input
             {
+                T[] result = new T[values.GetLength(0)];
                 for (int i = 0; i < values.GetLength(0); i++)
                 {
                     String name = values[i, 0] as String;
@@ -356,10 +377,14 @@ namespace QuantSA.Excel
                     {
                         throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
                     }
-                    result.Add(ObjectMap.Instance.GetObjectFromID<T>(name));
+                    result[i] = ObjectMap.Instance.GetObjectFromID<T>(name);
                 }
+                return result;
             }
-            return result;
+            else
+            {
+                throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
+            }            
         }
 
         /// <summary>
@@ -463,11 +488,11 @@ namespace QuantSA.Excel
         /// <param name="obj"></param>
         /// <param name="inputName"></param>
         /// <returns></returns>
-        private static Currency GetCurrency(object obj, string inputName, bool isOptional)
+        private static Currency GetCurrency(object obj, string inputName, Currency defaultValue = null)
         {
             if (obj is ExcelMissing)
-                if (isOptional)
-                    return Currency.ANY;
+                if (defaultValue!=null)
+                    return defaultValue;
                 else
                     throw new ArgumentException(inputName + " cannot be empty.");
             if (obj is string)
@@ -487,11 +512,11 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Currency GetCurrency0D(object[,] values, string inputName, bool isOptional=false)
+        public static Currency GetCurrency0D(object[,] values, string inputName, Currency defaultValue = null)
         {            
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
-                return GetCurrency(values[0, 0], inputName, isOptional);
+                return GetCurrency(values[0, 0], inputName, defaultValue);
             }
             throw new ArgumentException(inputName + " must be a single cell with a string representing a currency.");
         }
@@ -511,14 +536,14 @@ namespace QuantSA.Excel
             {
                 Currency[] result = new Currency[values.GetLength(1)];
                 for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = GetCurrency(values[0, i], inputName, false);
+                    result[i] = GetCurrency(values[0, i], inputName, null);
                 return result;
             }
             else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
             {
                 Currency[] result = new Currency[values.GetLength(0)];
                 for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = GetCurrency(values[i, 0], inputName, false);
+                    result[i] = GetCurrency(values[i, 0], inputName, null);
                 return result;
             }
             else
@@ -756,8 +781,14 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static int GetInt0D(object[,] values, string inputName)
+        public static int GetInt320D(object[,] values, string inputName, int? defaultValue=null)
         {
+            if (values[0, 0] is ExcelMissing){
+                if (defaultValue == null)
+                    throw new ArgumentException("input: '" + inputName + "' is left out and is not optional");
+                else
+                    return (int)defaultValue;
+            }
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
                 return GetInt(values[0, 0], inputName);
@@ -771,7 +802,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static int[] GetInt1D(object[,] values, string inputName)
+        public static int[] GetInt321D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
@@ -802,16 +833,22 @@ namespace QuantSA.Excel
         /// </summary>
         /// <param name="boolObject"></param>
         /// <returns></returns>
-        public static bool GetBool(object boolObject)
+        public static bool GetBoolean0D(object[,] values, string inputName)
         {
-            if (boolObject.ToString().ToUpper().Equals("TRUE"))
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
-                return true;
+                if (values[0,0].ToString().ToUpper().Equals("TRUE"))
+                {
+                    return true;
+                }
+                if (values[0,0].ToString().ToUpper().Equals("FALSE"))
+                {
+                    return false;
+                }
+                throw new ArgumentException("Boolean arguments must be passed as 'TRUE' and 'FALSE'.");
             }
-            if (boolObject.ToString().ToUpper().Equals("FALSE")) { 
-                return false;
-            }
-            throw new ArgumentException("Boolean arguments must be passed as 'TRUE' and 'FALSE'.");
+            throw new ArgumentException(inputName + " must be a single cell with a whole number");
+            
         }
     }
 

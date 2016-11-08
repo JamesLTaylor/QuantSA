@@ -37,7 +37,7 @@ namespace ValuationTest
             Coordinator coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
 
             // Run the valuation
-            double value = coordinator.Value(new List<Product> { legZAR, legUSD }, valueDate);
+            double value = coordinator.Value(new Product[] { legZAR, legUSD }, valueDate);
             double refValue = -477027.31; // See GeneralSwapTest.xlsx
             Assert.AreEqual(refValue, value, 0.01);
 

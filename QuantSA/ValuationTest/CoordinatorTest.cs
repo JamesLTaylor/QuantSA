@@ -26,7 +26,7 @@ namespace ValuationTest
             Simulator sim = new SimpleBlackEquity(valueDate, new Share(shareCode, Currency.ZAR), spotPrice, vol, riskfreeRate, divYield);
             NumeraireSimulator numeraire = new DeterministicNumeraire(Currency.ZAR, valueDate, riskfreeRate);
             Coordinator coordinator = new Coordinator(numeraire, new List<Simulator> { sim, sim }, 10000);
-            double value = coordinator.Value(new List<Product> {p}, valueDate);
+            double value = coordinator.Value(new Product[] {p}, valueDate);
         }
 
 
@@ -46,7 +46,7 @@ namespace ValuationTest
             Simulator sim = new SimpleBlackEquity(valueDate, new Share(shareCode, Currency.ZAR), spotPrice, vol, riskfreeRate, divYield);
             NumeraireSimulator numeraire = new DeterministicNumeraire(Currency.ZAR, valueDate, riskfreeRate);
             Coordinator coordinator = new Coordinator(numeraire, new List<Simulator> { sim }, 10000);
-            double value = coordinator.Value(new List<Product> { p }, valueDate);
+            double value = coordinator.Value(new Product[] { p }, valueDate);
             double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365.0, spotPrice,
                                                     vol, riskfreeRate, divYield);
             Assert.AreEqual(refValue, value, refValue*0.05);

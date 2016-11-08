@@ -88,28 +88,18 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Description = "Create a ZAR quarterly, fixed for float Jibar swap.",
-        Name = "QSA.CreateZARSwap",
-        Category = "QSA.Rates",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateZARSwap.html")]
-        public static object CreateZARSwap([ExcelArgument(Description = "Name of object")]String name,
-        [ExcelArgument(Description = "First reset date of the swap")]object[,] startDate,
-        [ExcelArgument(Description = "Tenor of swap, must be a whole number of years.  Example '5Y'.")]object[,] tenor,
+            Name = "QSA.CreateZARSwap",
+            HasGeneratedVersion = true, 
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateZARSwap.html")]
+        public static object CreateZARSwap([ExcelArgument(Description = "First reset date of the swap")]Date startDate,
+        [ExcelArgument(Description = "Tenor of swap, must be a whole number of years.  Example '5Y'.")]Tenor tenor,
         [ExcelArgument(Description = "The fixed rate paid or received")]double rate,
-        [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]object payFixed,
+        [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]bool payFixed,
         [ExcelArgument(Description = "Flat notional for all dates.")]double notional)
         {
-            try
-            {
-
-                IRSwap swap = IRSwap.CreateZARSwap(rate, XU.GetBool(payFixed), notional,
-                    XU.GetDate0D(startDate, "startDate"), XU.GetTenor0D(tenor, "tenor"));
-                return XU.AddObject(name, swap);
-            }
-            catch (Exception e)
-            {
-                return XU.Error0D(e);
-            }
+            return IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
         }
 
         [QuantSAExcelFunction(Description = "Basic swap valuation.  Uses the same curve for forecasting and discounting and uses the 3 month rate off the curve as the Jibar Fix.",
@@ -144,7 +134,7 @@ namespace QuantSA.Excel
                 Coordinator coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
 
                 // Run the valuation
-                double value = coordinator.Value(new List<Product> { swapObj }, dValueDate);
+                double value = coordinator.Value(new Product[] { swapObj }, dValueDate);
                 return value;
             }
             catch (Exception e)

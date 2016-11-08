@@ -80,7 +80,10 @@ namespace GenerateDocs
             argDescriptions = new List<string>();
         }
     };
-        
+
+    /// <summary>
+    /// Generate markdown files from the Excel argument attributes.
+    /// </summary>
     class Program
     {
         private static List<string> documentedTypes;

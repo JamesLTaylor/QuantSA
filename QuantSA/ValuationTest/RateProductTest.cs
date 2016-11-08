@@ -36,7 +36,7 @@ namespace ValuationTest
             Coordinator coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
 
             // Run the valuation
-            double value = coordinator.Value(new List<Product> { swap }, valueDate);
+            double value = coordinator.Value(new Product[] { swap }, valueDate);
             double refValue = -41838.32; // See RateProductTest.xlsx
             Assert.AreEqual(refValue, value, 0.01);
         }
@@ -62,7 +62,7 @@ namespace ValuationTest
             Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 10000);
 
             // Run the valuation
-            double value = coordinator.Value(new List<Product> { swap }, valueDate);
+            double value = coordinator.Value(new Product[] { swap }, valueDate);
             double refValue = -41838.32; // See RateProductTest.xlsx
             Assert.AreEqual(refValue, value, 4000);
         }
@@ -106,8 +106,8 @@ namespace ValuationTest
 
             // Run the valuation
             Coordinator coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
-            double swapValue = coordinator.Value(new List<Product> { swap }, valueDate);            
-            double floatLegValue = coordinator.Value(new List<Product> { floatLeg}, valueDate);
+            double swapValue = coordinator.Value(new Product[] { swap }, valueDate);            
+            double floatLegValue = coordinator.Value(new Product[] { floatLeg}, valueDate);
             
             Assert.AreEqual(swapValue, floatLegValue, 0.01);
         }

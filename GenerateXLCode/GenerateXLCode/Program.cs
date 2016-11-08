@@ -67,13 +67,19 @@ namespace GenerateXLCode
                 Type returnType = entry.Value.ReturnType;
                 List<Type> argTypes = new List<Type>();
                 List<string> argNames = new List<string>();
+                List<string> defaultValues = new List<string>();
                 foreach (ParameterInfo paramInfo in entry.Value.GetParameters())
                 {
                     argTypes.Add(paramInfo.ParameterType);
                     argNames.Add(paramInfo.Name);
+                    QuantSAExcelArgumentAttribute argAttrib = paramInfo.GetCustomAttribute<QuantSAExcelArgumentAttribute>();
+                    if (argAttrib==null)
+                        defaultValues.Add(null);
+                    else
+                        defaultValues.Add(argAttrib.Default);
                 }
-                string generatedMethod = GetMethodWithObjectReturn(categoryName, xlName, fName,
-                    argNames, argTypes, returnType);
+                string generatedMethod = GetGeneratedMethodCode(categoryName, xlName, fName,
+                    argNames, argTypes, defaultValues, returnType);
 
                 if (!categoriesAndGeneratedMethods.ContainsKey(categoryName)){
                     categoriesAndGeneratedMethods[categoryName] = new List<string>();
@@ -83,7 +89,7 @@ namespace GenerateXLCode
         }
 
         /// <summary>
-        /// Gets the generated method string for a function call that returns an object.
+        /// Gets the generated method string for a function call.
         /// </summary>
         /// <param name="categoryName">Name of the category in which the original function is found.</param>
         /// <param name="xlName">The exposed Excel name.</param>
@@ -92,8 +98,8 @@ namespace GenerateXLCode
         /// <param name="argTypes">The argument types.</param>
         /// <param name="returnType">The return type of the method.</param>
         /// <returns></returns>
-        private static string GetMethodWithObjectReturn(string categoryName, string xlName, string fName, 
-            List<string> argNames, List<Type> argTypes, Type returnType)
+        private static string GetGeneratedMethodCode(string categoryName, string xlName, string fName, 
+            List<string> argNames, List<Type> argTypes, List<string> defaultValues, Type returnType)
         {
             string returnTypeString;
             int dim = getTypeDimension(returnType);
@@ -107,10 +113,13 @@ namespace GenerateXLCode
             sb.AppendLine(Spaces(8) + "[QuantSAExcelFunction(Name = \"" + xlName + "\", IsGeneratedVersion = true)]");
             sb.Append(Spaces(8) + "public static " + returnTypeString + " _" + fName + "(");
             if (!ExcelUtilities.IsPrimitiveOutput(returnType))
-                sb.AppendLine("string objectName,");
-            
+                sb.AppendLine("string objectName,");            
+                
             for (int i = 0; i < argNames.Count; i++) {
-                sb.Append(Spaces(28)+"object[,] " + argNames[i]);
+                if (ExcelUtilities.IsPrimitiveOutput(returnType) && i==0)
+                    sb.Append("object[,] " + argNames[i]);
+                else
+                    sb.Append(Spaces(28) + "object[,] " + argNames[i]);
                 if (i == (argNames.Count - 1))
                     sb.AppendLine(")");
                 else
@@ -123,8 +132,8 @@ namespace GenerateXLCode
             for (int i = 0; i < argNames.Count; i++)
             {
                 sb.Append(Spaces(16) + argTypes[i].Name + " _" + argNames[i] + " = ");
-                sb.AppendLine(GetConverterString(argTypes[i], argNames[i]));
-                if (i > 0) argCallList.Append(",");
+                sb.AppendLine(GetConverterString(argTypes[i], argNames[i], defaultValues[i]));
+                if (i > 0) argCallList.Append(", ");
                 argCallList.Append("_" + argNames[i]);
             }
             sb.AppendLine(Spaces(16) + returnType.Name + " _result = " + categoryName + "." + fName + "(" + argCallList.ToString() + ");");
@@ -142,6 +151,11 @@ namespace GenerateXLCode
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Create a string with n spaces.
+        /// </summary>
+        /// <param name="n">The n.</param>
+        /// <returns></returns>
         private static string Spaces(int n)
         {
             return new string(' ', n);
@@ -149,12 +163,12 @@ namespace GenerateXLCode
 
 
         /// <summary>
-        /// Gets the converter string.
+        /// Gets the code that converts object[,] to the required type.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="argName">Name of the argument.</param>
         /// <returns></returns>
-        private static string GetConverterString(Type type, string argName)
+        private static string GetConverterString(Type type, string argName, string defaultValue)
         {
             string nD = "0D";
             if (type.Name.Contains(','))
@@ -163,7 +177,12 @@ namespace GenerateXLCode
                 nD = "1D";
             string name = type.IsArray ? type.GetElementType().Name : type.Name;
             if (ExcelUtilities.InputTypeHasConversion(type))
-                return "XU.Get" + name + nD + "(" +argName + ", \"" + argName + "\");";
+            {
+                if (defaultValue== null)
+                    return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\");";
+                else
+                    return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\", " + defaultValue + ");";
+            }
             else
                 return "XU.GetObject" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\");";
         }
