@@ -24,8 +24,8 @@ Find the interpolated value of any QuantSA created curve.
 
 ## Arguments
 
-* **name** The name of the curve to interpolate. (Curve)
-* **dates** The dates at which interpolated rates are required.
+* **curve** The curve to interpolate.
+* **dates** The dates at which interpolated rates are required.([Date](Date.html))
 
 <!--HUMAN EDIT START-->
 

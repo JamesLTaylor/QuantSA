@@ -15,7 +15,9 @@ topnav_dropdowns:
         - title: Github Repo
           external_url: https://github.com/JamesLTaylor/QuantSA
         - title: Github Wiki
-          external_url: https://github.com/JamesLTaylor/QuantSA/wiki         
+          external_url: https://github.com/JamesLTaylor/QuantSA/wiki
+        - title: Source Documentation
+          external_url: http://www.quantsa.org/source_docs/index.html                    
         
     - title: Help Category
       folderitems:

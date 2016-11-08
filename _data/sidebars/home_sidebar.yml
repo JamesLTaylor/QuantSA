@@ -48,6 +48,9 @@ entries:
     - title: Introduction to the code
       url: /home_code_intro.html 
       output: web
+    - title: Exposing function to Excel
+      url: /home_expose_to_excel.html 
+      output: web      
     - title: Clone and Serialize
       url: /home_clone_and_serialize.html 
       output: web

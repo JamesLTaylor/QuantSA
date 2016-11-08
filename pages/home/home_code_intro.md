@@ -27,7 +27,9 @@ These are the interfaces that are used by plugins.
 ### `Excel`
 The actual functions that get exposed to Excel and some utilities and features for the main add-in.  This project heavily uses ExcelDNA.
 
-Whenever possible the functions in here should be wrapper that only convert data before sending it through to functions in `General` and `Valuation`
+Whenever possible the functions in here should be wrappers that only convert data before sending it through to functions in `General` and `Valuation`
+
+See [here](home_expose_to_excel.html) for more details about expsosing functions to Excel.
 
 ## Project details - General
 

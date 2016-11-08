@@ -6,13 +6,25 @@
   - title: Types
     output: web, pdf
     folderitems:
+    - title: Boolean
+      url: /Boolean.html
+      output: web, pdf
+    - title: Date
+      url: /Date.html
+      output: web, pdf
     - title: Currency
       url: /Currency.html
       output: web, pdf
-
     - title: FloatingIndex
       url: /FloatingIndex.html
       output: web, pdf
+    - title: Tenor
+      url: /Tenor.html
+      output: web, pdf            
+    - title: Share
+      url: /Share.html
+      output: web, pdf   
+            
   # AUTO GENERATED BEYOND THIS POINT
   - title: Curves
     output: web, pdf
@@ -22,6 +34,9 @@
       output: web, pdf
     - title: CreateDatesAndRatesCurve
       url: /CreateDatesAndRatesCurve.html
+      output: web, pdf
+    - title: CreateDatesAndRatesCurveTest
+      url: /CreateDatesAndRatesCurveTest.html
       output: web, pdf
     - title: CreatePCACurveSimulator
       url: /CreatePCACurveSimulator.html
@@ -89,6 +104,9 @@
     - title: CreateFloatLeg
       url: /CreateFloatLeg.html
       output: web, pdf
+    - title: CreateHWModelDemo
+      url: /CreateHWModelDemo.html
+      output: web, pdf
     - title: CreateLoanFixedRate
       url: /CreateLoanFixedRate.html
       output: web, pdf
@@ -112,6 +130,9 @@
     folderitems:
     - title: CreateCurveModel
       url: /CreateCurveModel.html
+      output: web, pdf
+    - title: EPE
+      url: /EPE.html
       output: web, pdf
     - title: Value
       url: /Value.html
