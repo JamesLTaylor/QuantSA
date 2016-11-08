@@ -86,10 +86,12 @@ namespace GenerateDocs
         private static List<string> documentedTypes;
         static void Main(string[] args)
         {
-            documentedTypes = new List<string>();
+            //TODO: These values should have the option of being passed as command line arguments.
             string filename = @"C:\Dev\QuantSA\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll";
             string outputPath = @"C:\Dev\jamesltaylor.github.io\";            
-            string helpPath = "http://www.QuantsSA.org/";
+            string helpPath = "http://www.quantsa.org/";
+
+            documentedTypes = new List<string>();
             FolderStructure folderStructure = GetFolderStructure(filename, helpPath);
             UpdateHelpYMLAndWriteMD(outputPath, folderStructure);
         }

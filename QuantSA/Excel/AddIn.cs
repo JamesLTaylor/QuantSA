@@ -169,7 +169,8 @@ public class MyAddIn : IExcelAddIn
             }
             if (ExcelUtilities.InputTypeShouldHaveHelpLink(param.ParameterType))
             {
-                argAttrib.Description += "(" + param.ParameterType.Name + ")";
+                string typeName = param.ParameterType.IsArray ? param.ParameterType.GetElementType().Name : param.ParameterType.Name;
+                argAttrib.Description += "(" + typeName + ")";
             }
             thisArgumentAttributes.Add(argAttrib);
         }

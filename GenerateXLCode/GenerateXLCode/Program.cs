@@ -29,7 +29,7 @@ namespace GenerateXLCode
         {
             foreach (KeyValuePair<string, List<string>> entry in categoriesAndGeneratedMethods)
             {
-                string classname = entry.Key + "Generated2";
+                string classname = entry.Key + "Generated";
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("using System;");
                 sb.AppendLine("using XU = QuantSA.Excel.ExcelUtilities;");
@@ -95,10 +95,20 @@ namespace GenerateXLCode
         private static string GetMethodWithObjectReturn(string categoryName, string xlName, string fName, 
             List<string> argNames, List<Type> argTypes, Type returnType)
         {
+            string returnTypeString;
+            int dim = getTypeDimension(returnType);
+            switch (dim) {
+                case 0: returnTypeString = "object"; break;
+                case 1: returnTypeString = "object[]"; break;
+                case 2: returnTypeString = "object[,]"; break;
+                default: throw new ArgumentException("Dimension of return type must be scalar, array or 2d array.");                   
+            }
             StringBuilder sb = new StringBuilder();
-
             sb.AppendLine(Spaces(8) + "[QuantSAExcelFunction(Name = \"" + xlName + "\", IsGeneratedVersion = true)]");
-            sb.AppendLine(Spaces(8) + "public static object _" + fName + "(string objectName,");
+            sb.Append(Spaces(8) + "public static " + returnTypeString + " _" + fName + "(");
+            if (!ExcelUtilities.IsPrimitiveOutput(returnType))
+                sb.AppendLine("string objectName,");
+            
             for (int i = 0; i < argNames.Count; i++) {
                 sb.Append(Spaces(28)+"object[,] " + argNames[i]);
                 if (i == (argNames.Count - 1))
@@ -113,19 +123,20 @@ namespace GenerateXLCode
             for (int i = 0; i < argNames.Count; i++)
             {
                 sb.Append(Spaces(16) + argTypes[i].Name + " _" + argNames[i] + " = ");
-                if (ExcelUtilities.InputTypeHasConversion(argTypes[i]))
-                {
-                    sb.AppendLine(GetConverterString(argTypes[i], argNames[i]));
-                    if (i > 0) argCallList.Append(",");
-                    argCallList.Append("_" + argNames[i]);
-                }
+                sb.AppendLine(GetConverterString(argTypes[i], argNames[i]));
+                if (i > 0) argCallList.Append(",");
+                argCallList.Append("_" + argNames[i]);
             }
-            sb.AppendLine(Spaces(16) + returnType.Name + " result = " + categoryName + "." + fName + "(" + argCallList.ToString() + ");");
-            sb.AppendLine(Spaces(16) + "return XU.AddObject(objectName, result);");
+            sb.AppendLine(Spaces(16) + returnType.Name + " _result = " + categoryName + "." + fName + "(" + argCallList.ToString() + ");");
+
+            if (ExcelUtilities.IsPrimitiveOutput(returnType))
+                sb.AppendLine(Spaces(16) + "return XU.ConvertToObjects(_result);");
+            else
+                sb.AppendLine(Spaces(16) + "return XU.AddObject(objectName, _result);");
             sb.AppendLine(Spaces(12) + "}");
             sb.AppendLine(Spaces(12) + "catch (Exception e)");
             sb.AppendLine(Spaces(12) + "{");
-            sb.AppendLine(Spaces(16) + "return XU.Error0D(e);");
+            sb.AppendLine(Spaces(16) + "return XU.Error" + dim.ToString() + "D(e);");
             sb.AppendLine(Spaces(12) + "}");
             sb.AppendLine(Spaces(8) + "}");
             return sb.ToString();
@@ -151,7 +162,25 @@ namespace GenerateXLCode
             else if (type.Name.Contains('['))
                 nD = "1D";
             string name = type.IsArray ? type.GetElementType().Name : type.Name;
-            return "XU.Get" + name + nD + "(" +argName + ", \"" + argName + "\");";
+            if (ExcelUtilities.InputTypeHasConversion(type))
+                return "XU.Get" + name + nD + "(" +argName + ", \"" + argName + "\");";
+            else
+                return "XU.GetObject" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\");";
+        }
+
+        /// <summary>
+        /// Gets the dimension of the type, based on "Type" = 0, "Type[]" = 1 or "Type[,]" = 2
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        private static int getTypeDimension(Type type)
+        {
+            int dim = 0;
+            if (type.Name.Contains(','))
+                dim = 2;
+            else if (type.Name.Contains('['))
+                dim = 1;
+            return dim;
         }
 
 

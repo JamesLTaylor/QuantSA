@@ -9,48 +9,37 @@ namespace QuantSA.Excel
     {
         [QuantSAExcelFunction(Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve. (Curve)",
         Name = "QSA.FitCurveNelsonSiegel",
+            HasGeneratedVersion=true,
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "http://www.quantsa.org/FitCurveNelsonSiegel.html")]
-        public static object FitCurveNelsonSiegel([ExcelArgument(Description = "Name of fitted curve.")]String name,
-                [ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can be set to zero.")]object[,] anchorDate,
-                [ExcelArgument(Description = "The dates at which rates apply.")]object[,] dates,
-                [ExcelArgument(Description = "The rates to be fitted")]Double[] rates)
+        public static ICurve FitCurveNelsonSiegel([ExcelArgument(Description = "The date at which the resultant curve will be anchored.  Can be set to zero.")]Date anchorDate,
+                [ExcelArgument(Description = "The dates at which rates apply.")]Date[] dates,
+                [ExcelArgument(Description = "The rates to be fitted")]double[] rates)
         {
-            try {
-                NelsonSiegel curve = NelsonSiegel.Fit(XU.GetDate0D(anchorDate, "anchorDate"), XU.GetDate1D(dates, "dates"), rates);
-                return XU.AddObject(name, curve);
-            } catch (Exception e)
-            {
-                return XU.Error0D(e);
-            }
+            return NelsonSiegel.Fit(anchorDate, dates, rates);
         }
+
 
         [QuantSAExcelFunction(Description = "Find the interpolated value of any QuantSA created curve.",
         Name = "QSA.CurveInterp",
+            HasGeneratedVersion = true,
         Category = "QSA.Curves",
         IsHidden = false,
         HelpTopic = "http://www.quantsa.org/CurveInterp.html")]
-        public static object[,] CurveInterp([ExcelArgument(Description = "The name of the curve to interpolate. (Curve)")]String name,
-        [ExcelArgument(Description = "The dates at which interpolated rates are required.")]object[,] dates)
+        public static double[,] CurveInterp([ExcelArgument(Description = "The curve to interpolate.")]ICurve curve,
+        [ExcelArgument(Description = "The dates at which interpolated rates are required.")]Date[,] dates)
         {
-            try {
-                ICurve curve = ObjectMap.Instance.GetObjectFromID<ICurve>(name);
-                Date[,] dtDates = XU.GetDate2D(dates,"dates");
-                object[,] result = new object[dtDates.GetLength(0), dtDates.GetLength(1)];
+            double[,] result = new double[dates.GetLength(0), dates.GetLength(1)];
 
-                for (int row = 0; row < dtDates.GetLength(0); row += 1)
-                {
-                    for (int col = 0; col < dtDates.GetLength(1); col += 1)
-                    {
-                        result[row, col] = curve.InterpAtDate(dtDates[row, col]);
-                    }
-                }
-                return result;
-            } catch (Exception e)
+            for (int row = 0; row < dates.GetLength(0); row += 1)
             {
-                return XU.Error2D(e);
+                for (int col = 0; col < dates.GetLength(1); col += 1)
+                {
+                    result[row, col] = curve.InterpAtDate(dates[row, col]);
+                }
             }
+            return result;
         }
 
 
