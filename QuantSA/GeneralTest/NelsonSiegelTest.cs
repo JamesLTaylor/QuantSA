@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
 using System.Linq;
 
-namespace CurvesTest
+namespace GeneralTest
 {
     [TestClass]
     public class NelsonSiegelTest

@@ -63,10 +63,11 @@ namespace QuantSA.Valuation
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
         /// <returns></returns>
-        public double[] EPE(List<Product> portfolio, Date valueDate, List<Date> fwdValueDates)
+        public double[] EPE(List<Product> portfolio, Date valueDate, Date[] fwdValueDates)
         {
-            double[] epe = Vector.Zeros(fwdValueDates.Count);
-            double[,] regressedValues = GetRegressedFwdValues(portfolio, valueDate, fwdValueDates);
+            double[] epe = Vector.Zeros(fwdValueDates.Length);
+            List<Date> fwdValueDatesList = fwdValueDates.ToList();
+            double[,] regressedValues = GetRegressedFwdValues(portfolio, valueDate, fwdValueDatesList);
             //Debug.WriteToFile(@"c:\dev\temp\regressedValues.csv", regressedValues);            
             for (int row=0; row< regressedValues.GetLength(0); row++)
             {

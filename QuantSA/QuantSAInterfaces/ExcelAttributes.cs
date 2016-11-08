@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace QuantSA.Excel
 {
+    /// <summary>
+    /// This Attribute is a replica of <see cref="ExcelFunctionAttribute"/> but the functions in 
+    /// QuantSA have this attribute so that the ExcelDNA does not automatically expose them.  The
+    /// data here is used to create an <see cref="ExcelFunctionAttribute"/> but with the <see cref="IsHidden"/>
+    /// field controlled at runtime.
+    /// </summary>
+    /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public class QuantSAExcelFunctionAttribute : Attribute
     {
@@ -26,6 +33,15 @@ namespace QuantSA.Excel
         public bool IsClusterSafe = false;
         public bool ExplicitRegistration = false;
         public bool SuppressOverwriteError = false;
+        /// <summary>
+        /// Does this excel function have a generated version?  If so construct the delegate that is registered in Excel from the 
+        /// generated version but get all the help descriptions from this version.
+        /// </summary>
+        public bool HasGeneratedVersion = false;
+        /// <summary>
+        /// Is this excel function the generated version of another one?
+        /// </summary>
+        public bool IsGeneratedVersion = false;
 
         public ExcelFunctionAttribute CreateExcelFunctionAttribute()
         {
@@ -45,4 +61,11 @@ namespace QuantSA.Excel
             };
         }
     }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = false)]
+    public class QuantSAExcelArgumentAttribute : ExcelArgumentAttribute
+    {
+        public bool Optional = false;
+    }
+
 }

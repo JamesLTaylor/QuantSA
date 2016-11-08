@@ -13,7 +13,7 @@ namespace QuantSA.Excel
         Category = "QSA.Equities",
             ExampleSheet = "EquityValuation.xlsx",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateEquityModel.html")]
+        HelpTopic = "http://www.quantsa.org/CreateEquityModel.html")]
         public static object CreateEquityModel([ExcelArgument(Description = "Name of object")]string name,
         [ExcelArgument(Description = "The discounting curve.  Will be used for discounting and as the drift rate for the equities.")]object[,] discountCurve,
         [ExcelArgument(Description = "Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.")]object[,] shareCodes,
@@ -25,11 +25,11 @@ namespace QuantSA.Excel
         {
             try
             {
-                EquitySimulator simulator = new EquitySimulator(XU.GetShares1D(shareCodes, "shareCodes"),
-                    XU.GetDoubles1D(spotPrices, "spotPrices"), XU.GetDoubles1D(volatilities, "volatilities"),
-                    XU.GetDoubles1D(divYields, "divYields"), XU.GetDoubles2D(correlations, "correlations"),
-                    XU.GetObjects0D<IDiscountingSource>(discountCurve, "discountCurve"),
-                    XU.GetObjects1D<IFloatingRateSource>(rateForecastCurves, "rateForecastCurves"));                
+                EquitySimulator simulator = new EquitySimulator(XU.GetShare1D(shareCodes, "shareCodes"),
+                    XU.GetDouble1D(spotPrices, "spotPrices"), XU.GetDouble1D(volatilities, "volatilities"),
+                    XU.GetDouble1D(divYields, "divYields"), XU.GetDouble2D(correlations, "correlations"),
+                    XU.GetObject0D<IDiscountingSource>(discountCurve, "discountCurve"),
+                    XU.GetObject1D<IFloatingRateSource>(rateForecastCurves, "rateForecastCurves"));                
                 return XU.AddObject(name, simulator);
             }
             catch (Exception e)
@@ -43,7 +43,7 @@ namespace QuantSA.Excel
             Category = "QSA.Equities",
             ExampleSheet = "EquityValuation.xlsx",
             IsHidden = false,
-            HelpTopic = "http://cogn.co.za/QuantSA/CreateEquityCall.html")]
+            HelpTopic = "http://www.quantsa.org/CreateEquityCall.html")]
         public static object CreateEquityCall([ExcelArgument(Description = "Name of option.")]string name,            
             [ExcelArgument(Description = "Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.")]object[,] shareCode,
             [ExcelArgument(Description = "Exercise date.")]object[,] exerciseDate,
@@ -51,8 +51,8 @@ namespace QuantSA.Excel
                     {
             try
             {
-                Product call = new EuropeanOption(XU.GetShares0D(shareCode, "shareCode"), XU.GetDoubles0D(strike, "strike"), 
-                    XU.GetDates0D(exerciseDate, "exerciseDate"));
+                Product call = new EuropeanOption(XU.GetShare0D(shareCode, "shareCode"), XU.GetDouble0D(strike, "strike"), 
+                    XU.GetDate0D(exerciseDate, "exerciseDate"));
                 return XU.AddObject(name, call);
             }
             catch (Exception e)

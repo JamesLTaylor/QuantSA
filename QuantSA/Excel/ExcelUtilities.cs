@@ -11,6 +11,70 @@ namespace QuantSA.Excel
     /// </summary>
     public class ExcelUtilities
     {
+
+        /// <summary>
+        /// Determines whether the output type of a function is primitive and will be written deirectly 
+        /// to the cells or is not primitive and will be placed on the object map and a reference returned 
+        /// to the cells.
+        /// </summary>
+        /// <param name="outputType">Type of the output.</param>
+        /// <returns>
+        ///   <c>true</c> if the output type is QuantSA primitive; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsPrimitiveOutput(Type outputType)
+        {
+            Type type = outputType.IsArray ? outputType.GetElementType() : outputType;
+            if (type == typeof(double)) return true;
+            if (type == typeof(string)) return true;
+            if (type == typeof(int)) return true;
+            if (type == typeof(Date)) return true;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Does the input type have an automatic conversion from Excel cell values.  If it does not
+        /// then an object will need to be retrieved from the object map.
+        /// </summary>
+        /// <param name="inputType">Type of the input.</param>
+        /// <returns></returns>
+        public static bool InputTypeHasConversion(Type inputType)
+        {
+            Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
+            if (type == typeof(double)) return true;
+            if (type == typeof(string)) return true;
+            if (type == typeof(int)) return true;
+            if (type == typeof(bool)) return true;
+            if (type == typeof(Date)) return true;
+            if (type == typeof(Currency)) return true;
+            if (type == typeof(FloatingIndex)) return true;
+            if (type == typeof(Tenor)) return true;
+            if (type == typeof(Share)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Should the input of this type include a link to the help about that type?  For example
+        /// if the input type is <see cref="FloatingIndex"/> then it is useful to link to the
+        /// page on FloatingIndex so that the user can see the permissable strings.
+        /// </summary>
+        /// <param name="inputType">Type of the input.</param>
+        /// <returns></returns>
+        public static bool InputTypeShouldHaveHelpLink(Type inputType)
+        {
+            Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
+            if (type == typeof(bool)) return true;
+            if (type == typeof(Date)) return true;
+            if (type == typeof(Currency)) return true;
+            if (type == typeof(FloatingIndex)) return true;
+            if (type == typeof(Tenor)) return true;
+            if (type == typeof(Share)) return true;
+            return false;
+        }
+
+
+
         /// <summary>
         /// Add an object to the object map.
         /// </summary>
@@ -66,6 +130,37 @@ namespace QuantSA.Excel
         #endregion
 
         #region converting return data
+
+        /// <summary>
+        /// Convert an array of doubles into objects for returning to excel. 
+        /// </summary>
+        /// <remarks>
+        /// Note that we use objects in Excel return types so that we can send values or strings to the cell. 
+        /// </remarks>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public static object[,] ConvertToObjects(double[] result, bool asColumn)
+        {
+            if (asColumn)
+            {
+                object[,] resultObj = new object[result.Length, 1];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    resultObj[i, 0] = result[i];
+                }
+                return resultObj;
+            }
+            else
+            {
+                object[,] resultObj = new object[1, result.Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    resultObj[0, i] = result[i];
+                }
+                return resultObj;
+            }
+            
+        }
 
         /// <summary>
         /// Convert a double array of doubles into objects for returning to excel. 
@@ -135,7 +230,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Date GetDates0D(object[,] values, string inputName)
+        public static Date GetDate0D(object[,] values, string inputName)
         {
             if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
@@ -155,7 +250,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Date[] GetDates1D(object[,] values, string inputName)
+        public static Date[] GetDate1D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
@@ -194,7 +289,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Date[,] GetDates2D(object[,] values, string inputName)
+        public static Date[,] GetDate2D(object[,] values, string inputName)
         {
             Date[,] result = new Date[values.GetLength(0), values.GetLength(1)];
             for (int i = 0; i<values.GetLength(0); i++)
@@ -217,7 +312,7 @@ namespace QuantSA.Excel
         /// <param name="values">The excel values passed to the function.</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static T GetObjects0D<T>(object[,] values, string inputName)
+        public static T GetObject0D<T>(object[,] values, string inputName)
         {
             if (values.GetLength(0) != 1 || values.GetLength(1) != 1) throw new ArgumentException(inputName + " must be a single string refering to an existing object.");
             String name = values[0, 0] as String;
@@ -232,7 +327,7 @@ namespace QuantSA.Excel
         /// <param name="values">The excel values passed to the function</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static List<T> GetObjects1D<T>(object[,] values, string inputName)
+        public static List<T> GetObject1D<T>(object[,] values, string inputName)
         {            
             List<T> result = new List<T>();
             if (values[0, 0] is ExcelMissing) return result; // Empty input
@@ -273,7 +368,7 @@ namespace QuantSA.Excel
         /// <param name="values">The excel values passed to the function.</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static double GetDoubles0D(object[,] values, string inputName)
+        public static double GetDouble0D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
@@ -293,7 +388,7 @@ namespace QuantSA.Excel
         /// <param name="values">The excel values passed to the function.</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static double[] GetDoubles1D(object[,] values, string inputName)
+        public static double[] GetDouble1D(object[,] values, string inputName)
         {
 
             if (values.GetLength(0)==1 && values.GetLength(1)>=1) // row of inputs
@@ -332,7 +427,7 @@ namespace QuantSA.Excel
         /// <param name="values">The excel values passed to the function.</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static double[,] GetDoubles2D(object[,] values, string inputName)
+        public static double[,] GetDouble2D(object[,] values, string inputName)
         {
             if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " + cannot be empty.");
             double[,] result = new double[values.GetLength(0), values.GetLength(1)];
@@ -392,7 +487,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Currency GetCurrencies0D(object[,] values, string inputName, bool isOptional=false)
+        public static Currency GetCurrency0D(object[,] values, string inputName, bool isOptional=false)
         {            
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
@@ -410,7 +505,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Currency[] GetCurrencies1D(object[,] values, string inputName)
+        public static Currency[] GetCurrency1D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
@@ -439,7 +534,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static FloatingIndex GetFloatingIndices0D(object[,] values, string inputName)
+        public static FloatingIndex GetFloatingIndex0D(object[,] values, string inputName)
         {
             if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
@@ -532,7 +627,7 @@ namespace QuantSA.Excel
         /// <param name="values">String describing a tenor object.  Example '3M' or '5Y'.</param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>/// 
         /// <returns></returns>
-        public static Tenor GetTenors0D(object[,] values, string inputName)
+        public static Tenor GetTenor0D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
@@ -551,7 +646,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Tenor[] GetTenors1D(object[,] values, string inputName)
+        public static Tenor[] GetTenor1D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
@@ -598,7 +693,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Share GetShares0D(object[,] values, string inputName)
+        public static Share GetShare0D(object[,] values, string inputName)
         {
             if (values[0, 0] is ExcelMissing)
                 throw new ArgumentException(inputName + " cannot be empty.");
@@ -619,7 +714,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static Share[] GetShares1D(object[,] values, string inputName)
+        public static Share[] GetShare1D(object[,] values, string inputName)
         {
             if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
@@ -661,7 +756,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static int GetInts0D(object[,] values, string inputName)
+        public static int GetInt0D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
@@ -676,7 +771,7 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static int[] GetInts1D(object[,] values, string inputName)
+        public static int[] GetInt1D(object[,] values, string inputName)
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {

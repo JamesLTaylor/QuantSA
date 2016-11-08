@@ -69,7 +69,7 @@ public class Ribbon : ExcelRibbon
     {
         ExcelMessage em = new ExcelMessage("QuantSA", "QuantSA is an open source Quant Library customized for the South African Market\n\n" +
             "View the code at: https://github.com/JamesLTaylor/QuantSA \n\n" +
-            "Visit the website at www.cogn.co.za/QuantSA");
+            "Visit the website at www.quantsa.org");
         em.ShowDialog();
         return 0;
     }

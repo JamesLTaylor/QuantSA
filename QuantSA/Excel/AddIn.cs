@@ -10,6 +10,10 @@ using System.Text;
 using System.Resources;
 using System.Drawing;
 
+/// <summary>
+/// 
+/// </summary>
+/// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
 public class MyAddIn : IExcelAddIn
 {
     string FunctionsFilenameAll = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_all.csv"; // updated in build to include all functions and default visibility
@@ -17,13 +21,17 @@ public class MyAddIn : IExcelAddIn
 
     public static List<IQuantSAPlugin> plugins;
     public static Dictionary<string, Bitmap> assemblyImageResources;
+    List<Delegate> delegates;
+    List<object> functionAttributes;
+    List<List<object>> functionArgumentAttributes;
 
     // Called when addin opens
     public void AutoOpen()
     {
-        try {
+        try
+        {
             string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
-            if (!Directory.Exists(pathString))                
+            if (!Directory.Exists(pathString))
                 Directory.CreateDirectory(pathString);
             //TODO: Check if newer version of addin exists.
 
@@ -44,7 +52,8 @@ public class MyAddIn : IExcelAddIn
                 plugin.SetObjectMap(ObjectMap.Instance);
                 plugin.SetInstance(plugin);
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
             string fileName = Path.Combine(pathString, "QuantSAError.txt");
@@ -56,55 +65,118 @@ public class MyAddIn : IExcelAddIn
     public void AutoClose()
     {
     }
-    
+
     /// <summary>
     /// Hides or shows Excel function based on the contents of functions_user.csv
     /// </summary>
     public void ExposeUserSelectedFunctions()
     {
-        //TODO: Add a default option so that visibility is controlled by release sometimes.
         Dictionary<string, bool> funcsAndVisibility = GetFunctionVisibility(FunctionsFilenameUser);
         Dictionary<string, MemberInfo> functions = GetQuantSAFunctions();
+        delegates = new List<Delegate>();
+        functionAttributes = new List<object>();
+        functionArgumentAttributes = new List<List<object>>();
 
-        List<Delegate> delegates = new List<Delegate>();
-        List<object> functionAttributes = new List<object>();
-        List<List<object>> functionArgumentAttributes = new List<List<object>>();
-        
         foreach (KeyValuePair<string, MemberInfo> entry in functions)
         {
             MethodInfo method = ((MethodInfo)entry.Value);
-            //Create the delgate, Taken from: http://stackoverflow.com/a/16364220
-            Delegate thisDelegate  = method.CreateDelegate(Expression.GetDelegateType(
-                    (from parameter in method.GetParameters() select parameter.ParameterType)
-                    .Concat(new[] { method.ReturnType })
-                    .ToArray()));
-            delegates.Add(thisDelegate);
-
-            //Create the function attribute
-            QuantSAExcelFunctionAttribute quantsaAttribute = entry.Value.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+            QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
             // If the function appears in the user function list use the isHidden value from there.  Otherwise use the default behaviour.
+            bool? isHidden = null;
             if (funcsAndVisibility.ContainsKey(quantsaAttribute.Name))
             {
-                quantsaAttribute.IsHidden = !funcsAndVisibility[quantsaAttribute.Name];
+                isHidden = !funcsAndVisibility[quantsaAttribute.Name];
             }
-            functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());            
 
-            // Create the function argument attributes
-            List<object> thisArgumentAttributes = new List<object>();
-            foreach (ParameterInfo param in method.GetParameters())
+            if (!quantsaAttribute.HasGeneratedVersion) // Make delegates for all but the methods that have generated versions of themselves
             {
-                var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
-                if (argAttrib != null)
-                { 
-                    argAttrib.Name = param.Name;
-                }
-                thisArgumentAttributes.Add(argAttrib);
-            }
-            functionArgumentAttributes.Add(thisArgumentAttributes);
+                //Create the delgate, Taken from: http://stackoverflow.com/a/16364220
+                Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
+                        (from parameter in method.GetParameters() select parameter.ParameterType)
+                        .Concat(new[] { method.ReturnType })
+                        .ToArray()));
+                delegates.Add(thisDelegate);
 
+                if (quantsaAttribute.IsGeneratedVersion)
+                {
+                    MethodInfo manualMethod = (MethodInfo)functions["_" + entry.Key];
+                    RegisterSingleAutoFunction(method, manualMethod, isHidden);
+                }
+                else
+                {
+                    RegisterSingleManualFunction(method, isHidden);
+                }
+            }
         }
         ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
     }
+
+
+    /// <summary>
+    /// Registers the single manual function.
+    /// </summary>
+    private void RegisterSingleManualFunction(MethodInfo method, bool? isHidden)
+    {
+        //Create the function attribute
+        QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+        if (isHidden != null) quantsaAttribute.IsHidden = isHidden.Value;
+        functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
+
+        // Create the function argument attributes
+        List<object> thisArgumentAttributes = new List<object>();
+        foreach (ParameterInfo param in method.GetParameters())
+        {
+            var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
+            if (argAttrib != null)
+            {
+                argAttrib.Name = param.Name;
+            }
+            thisArgumentAttributes.Add(argAttrib);
+        }
+        functionArgumentAttributes.Add(thisArgumentAttributes);
+    }
+
+    /// <summary>
+    /// Registers a single function that is exposed by a manually and automatically written method.  
+    /// see http://www.quantsa.org/home_expose_to_excel.html
+    /// </summary>
+    /// <param name="method">The generated method.</param>
+    /// <param name="manualMethod">The manual method.</param>
+    /// <param name="isHidden">Is this function hidden.</param>
+    private void RegisterSingleAutoFunction(MethodInfo method, MethodInfo manualMethod, bool? isHidden)
+    {
+        //Create the function attribute
+        QuantSAExcelFunctionAttribute quantsaAttribute = manualMethod.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+        if (isHidden != null) quantsaAttribute.IsHidden = isHidden.Value;
+        functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
+
+        // Create the function argument attributes
+        List<object> thisArgumentAttributes = new List<object>();
+        if (manualMethod.GetParameters().Length<method.GetParameters().Length)
+        {
+            ExcelArgumentAttribute argAttrib = new ExcelArgumentAttribute();
+            argAttrib.Name = "objectName";
+            argAttrib.Description = "The name of the object to be created.";
+            //Note that the above 2 strings are the same as those added in GenerateDocs, if they are changed here they should be changed there too.
+            thisArgumentAttributes.Add(argAttrib);
+        }
+        foreach (ParameterInfo param in manualMethod.GetParameters())
+        {
+            var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
+            if (argAttrib != null)
+            {
+                argAttrib.Name = param.Name;
+            }
+            if (ExcelUtilities.InputTypeShouldHaveHelpLink(param.ParameterType))
+            {
+                argAttrib.Description += "(" + param.ParameterType.Name + ")";
+            }
+            thisArgumentAttributes.Add(argAttrib);
+        }
+        functionArgumentAttributes.Add(thisArgumentAttributes);
+    }
+
+
 
 
     /// <summary>
@@ -114,7 +186,7 @@ public class MyAddIn : IExcelAddIn
     {
         Dictionary<string, bool> funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);
         Dictionary<string, bool> funcsInAllFile = GetFunctionVisibility(FunctionsFilenameAll);
-        
+
         foreach (KeyValuePair<string, bool> entry in funcsInAllFile)
         {
             if (!funcsInUserFile.ContainsKey(entry.Key))
@@ -234,7 +306,10 @@ public class MyAddIn : IExcelAddIn
                 QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
                 if (attribute != null)
                 {
-                    quantSAFunctions[attribute.Name] = member;
+                    if (attribute.HasGeneratedVersion) // if there is generated version then that will be used to constuct the delgate and this one will be used to get the help.
+                        quantSAFunctions["_" + attribute.Name] = member;
+                    else
+                        quantSAFunctions[attribute.Name] = member;
                 }
             }
         }
@@ -254,7 +329,8 @@ public class MyAddIn : IExcelAddIn
         {
             if (Path.GetExtension(file).ToLower().Equals(".dll"))
             {
-                try {
+                try
+                {
                     ExposePlugin(file);
                 }
                 catch (Exception e)
@@ -302,7 +378,7 @@ public class MyAddIn : IExcelAddIn
                 {
                     if (!attribute.Category.Equals(shortName)) throw new Exception(attribute.Name + " in plugin " + shortName + " is not in the excel category " + shortName);
                     string[] parts = attribute.Name.Split('.');
-                    if (!(parts.Length == 2 && parts[0].Equals(shortName))) throw new Exception(attribute.Name + " in plugin " + shortName + "does not following the naming convention: " + shortName + ".FunctionName");  
+                    if (!(parts.Length == 2 && parts[0].Equals(shortName))) throw new Exception(attribute.Name + " in plugin " + shortName + "does not following the naming convention: " + shortName + ".FunctionName");
 
                     // TODO: Check that the category and naming are all acceptable
                     UpdateDelgatesAndAtribs((MethodInfo)member, delegates, functionAttributes, functionArgumentAttributes);
@@ -311,15 +387,16 @@ public class MyAddIn : IExcelAddIn
                     if (((MethodInfo)member).ReturnType.Equals(typeof(System.Drawing.Bitmap)))
                     {
                         Bitmap image = ((MethodInfo)member).Invoke(null, null) as Bitmap;
-                        assemblyImageResources.Add(member.Name.Substring(4), image);                        
+                        assemblyImageResources.Add(member.Name.Substring(4), image);
                     }
             }
-            
+
         }
-        ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
     }
-       
-  
+
+
+
+
 
     /// <summary>
     /// 

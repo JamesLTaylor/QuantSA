@@ -40,7 +40,7 @@ namespace QuantSA.Excel
         Name = "QSA.GetCSArray",
         Category = "QSA.General",
         IsHidden = false,
-            HelpTopic = "http://cogn.co.za/QuantSA/GetCSArray.html")]
+            HelpTopic = "http://www.quantsa.org/GetCSArray.html")]
         public static object[,] GetCSArray([ExcelArgument(Description = "The block of values you want to use in C#.")]object[,] data,
             [ExcelArgument(Description = "The number of decimal places each value must have in the string.")]double decimalPlaces)
         {
@@ -77,7 +77,7 @@ namespace QuantSA.Excel
         Name = "QSA.GetAvailableResults",
         Category = "QSA.General",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/GetAvailableResults.html")]
+        HelpTopic = "http://www.quantsa.org/GetAvailableResults.html")]
         public static object[,] GetAvailableResults([ExcelArgument(Description = "The name of the results object as returned by call to another QuantSA function")]string objectName)
         {
             try
@@ -101,7 +101,7 @@ namespace QuantSA.Excel
         Name = "QSA.GetResults",
         Category = "QSA.General",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/GetResults.html")]
+        HelpTopic = "http://www.quantsa.org/GetResults.html")]
         public static object[,] GetResults([ExcelArgument(Description = "The name of the results object as returned by a call to another QuantSA function")]string objectName,
             [ExcelArgument(Description = "The name of the result required.  Use QSA.GetAvailableResults to get a list of all availabale results in this object.")]string resultName)
         {
@@ -134,7 +134,7 @@ namespace QuantSA.Excel
         IsHidden = false,
         Name = "QSA.FormulaBlackScholes",
         Category = "QSA.General",
-        HelpTopic = "http://cogn.co.za/QuantSA/FormulaBlackScholes.html")]
+        HelpTopic = "http://www.quantsa.org/FormulaBlackScholes.html")]
         public static object FormulaBlackScholes([ExcelArgument(Description = "Strike")]object[,] strike,
             [ExcelArgument(Description = "The value date as and Excel date.")]object[,] valueDate,
             [ExcelArgument(Description = "The exercise date of the option.  Must be greater than the value date.")]object[,] exerciseDate,
@@ -144,10 +144,10 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "Continuously compounded dividend yield.")]object[,] divYield)
         {
             try {
-                return Formulae.BlackScholes(PutOrCall.Call, XU.GetDoubles0D(strike, "strike"),
-                    (XU.GetDates0D(exerciseDate, "exerciseDate") - XU.GetDates0D(valueDate, "valueDate")) / 365.0,
-                    XU.GetDoubles0D(spotPrice, "spotPrice"), XU.GetDoubles0D(vol, "vol"),
-                    XU.GetDoubles0D(riskfreeRate, "riskfreeRate"), XU.GetDoubles0D(divYield, "divYield"));
+                return Formulae.BlackScholes(PutOrCall.Call, XU.GetDouble0D(strike, "strike"),
+                    (XU.GetDate0D(exerciseDate, "exerciseDate") - XU.GetDate0D(valueDate, "valueDate")) / 365.0,
+                    XU.GetDouble0D(spotPrice, "spotPrice"), XU.GetDouble0D(vol, "vol"),
+                    XU.GetDouble0D(riskfreeRate, "riskfreeRate"), XU.GetDouble0D(divYield, "divYield"));
             } catch (Exception e)
             {
                 return XU.Error0D(e);
@@ -160,7 +160,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateProductFromFile",
         Category = "QSA.General",
             ExampleSheet = "ProductFromFile.xlsx",
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateProductFromFile.html")]
+        HelpTopic = "http://www.quantsa.org/CreateProductFromFile.html")]
         public static object CreateProductFromFile([ExcelArgument(Description = "Name of product")]string name,
     [ExcelArgument(Description = "Full path to the file.")]string filename)
         {
@@ -180,7 +180,7 @@ namespace QuantSA.Excel
         IsHidden = false,
         Name = "QSA.InterpLinear",
         Category = "QSA.General",
-        HelpTopic = "http://cogn.co.za/QuantSA/InterpLinear.html")]
+        HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
         public static object[,] InterpLinear([ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]double[] knownX,
             [ExcelArgument(Description = "A vector of y values.  Must be the same length as knownX")]Double[] knownY,
             [ExcelArgument(Description = "x values at which interpolation is required.")]Double[,] requiredX)

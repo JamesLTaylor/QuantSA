@@ -89,9 +89,9 @@ namespace GenerateDocs
             documentedTypes = new List<string>();
             string filename = @"C:\Dev\QuantSA\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll";
             string outputPath = @"C:\Dev\jamesltaylor.github.io\";            
-            string helpPath = "http://cogn.co.za/QuantSA/";
+            string helpPath = "http://www.QuantsSA.org/";
             FolderStructure folderStructure = GetFolderStructure(filename, helpPath);
-            UpdateHelpYML(outputPath, folderStructure);
+            UpdateHelpYMLAndWriteMD(outputPath, folderStructure);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace GenerateDocs
         /// </summary>
         /// <param name="outputPath"></param>
         /// <param name="folderStructure"></param>
-        private static void UpdateHelpYML(string outputPath, FolderStructure folderStructure)
+        private static void UpdateHelpYMLAndWriteMD(string outputPath, FolderStructure folderStructure)
         {
             string sidebarFile = outputPath + @"_data\sidebars\excel_sidebar.yml";
 
@@ -267,11 +267,10 @@ namespace GenerateDocs
                 if (input.Contains(typeName))
                 {
                     int idx = input.IndexOf(typeName);
-                    if (input[idx - 1]=='(' && input[idx + typeName.Length]==')')
+                    if (idx>1 && input[idx - 1]=='(' && input[idx + typeName.Length]==')')
                     {
                         input = input.Substring(0, idx) + "[" + typeName + "](" + typeName + ".html)" + input.Substring(idx + typeName.Length);
                     }
-
                 }
             }
             return input;
@@ -279,10 +278,10 @@ namespace GenerateDocs
 
 
         /// <summary>
-        /// Turns the attrubutes on all function exposed as excel function in <paramref name="filename"/> into 
+        /// Turns the attrubutes on all functions exposed as excel functions in <paramref name="filename"/> into 
         /// contents for help files.
         /// 
-        /// Check the local variable errorList for a list consistency issues that should be fixed.
+        /// Check the local variable errorList for a list of consistency issues that should be fixed.
         /// </summary>
         /// <param name="filename">The name of the dll that exposes Excel functions.</param>
         /// <param name="helpPath">Used to check that all help references are correct.</param>
@@ -297,7 +296,7 @@ namespace GenerateDocs
                 foreach (MemberInfo member in type.GetMembers())
                 {
                     QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-                    if (attribute != null) // We have found an excel exposed function.
+                    if (attribute != null && !attribute.IsGeneratedVersion) // We have found an excel exposed function and it is not the generated version.
                     {
                         FileContents contents = new FileContents();
                         // Check consistency of contents
@@ -330,13 +329,25 @@ namespace GenerateDocs
                         contents.Description = attribute.Description;
 
                         MethodInfo method = (MethodInfo)member;
+                        if (attribute.HasGeneratedVersion && !ExcelUtilities.IsPrimitiveOutput(method.ReturnType))
+                        {
+                            contents.argNames.Add("objectName");
+                            contents.argDescriptions.Add("The name of the object to be created.");
+                            //Note that the above 2 strings are the same as those added in the QuantSA custom AddIn, if they are changed here they should be changed there too.
+                        }
                         foreach (ParameterInfo param in method.GetParameters())
                         {
                             var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
                             if (argAttrib != null)
                             {
                                 contents.argNames.Add(param.Name);
+                                if (ExcelUtilities.InputTypeShouldHaveHelpLink(param.ParameterType))
+                                {
+                                    string name = param.ParameterType.IsArray ? param.ParameterType.GetElementType().Name : param.ParameterType.Name;
+                                    argAttrib.Description += "(" + name + ")";
+                                }
                                 contents.argDescriptions.Add(argAttrib.Description);
+
                                 if (argAttrib.Description.Length < 5)
                                     errorList.Add(type.Name + "," + attribute.Name + "," + param.Name + ",No argument description");
                             }

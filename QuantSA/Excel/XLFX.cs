@@ -16,7 +16,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateFXForecastCurve",
         Category = "QSA.FX",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateFXForecastCurve.html")]
+        HelpTopic = "http://www.quantsa.org/CreateFXForecastCurve.html")]
         public static object CreateFXForecastCurve([ExcelArgument(Description = "Name of object")]String name,
             [ExcelArgument(Description = "The base currency.  Values are measured in units of counter currency per one base currency.(Currency)")]object[,] baseCurrency,
             [ExcelArgument(Description = "The counter currency.  Values are measured in units of counter currency per one base currency.(Currency)")]object[,] counterCurrency,
@@ -26,10 +26,10 @@ namespace QuantSA.Excel
         {
             try
             {
-                FXForecastCurve fxForecastCurve = new FXForecastCurve(XU.GetCurrencies0D(baseCurrency, "baseCurrency"),
-                    XU.GetCurrencies0D(counterCurrency, "counterCurrency"), XU.GetDoubles0D(fxRateAtAnchorDate, "fxRateAtAnchorDate"),
-                    XU.GetObjects0D<IDiscountingSource>(baseCurrencyFXBasisCurve, "baseCurrencyFXBasisCurve"),
-                    XU.GetObjects0D<IDiscountingSource>(counterCurrencyFXBasisCurve, "counterCurrencyFXBasisCurve"));
+                FXForecastCurve fxForecastCurve = new FXForecastCurve(XU.GetCurrency0D(baseCurrency, "baseCurrency"),
+                    XU.GetCurrency0D(counterCurrency, "counterCurrency"), XU.GetDouble0D(fxRateAtAnchorDate, "fxRateAtAnchorDate"),
+                    XU.GetObject0D<IDiscountingSource>(baseCurrencyFXBasisCurve, "baseCurrencyFXBasisCurve"),
+                    XU.GetObject0D<IDiscountingSource>(counterCurrencyFXBasisCurve, "counterCurrencyFXBasisCurve"));
                 return XU.AddObject(name, fxForecastCurve);
             }
             catch (Exception e)
@@ -42,14 +42,14 @@ namespace QuantSA.Excel
         Name = "QSA.GetFXRate",
         Category = "QSA.FX",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/GetFXRate.html")]
+        HelpTopic = "http://www.quantsa.org/GetFXRate.html")]
         public static object GetFXRate([ExcelArgument(Description = "Name of FX curve")]object[,] FXCurveName,
             [ExcelArgument(Description = "Date on which FX rate is required.")]object[,] date)
         {
             try
             {
-                IFXSource fxCurve = XU.GetObjects0D<IFXSource>(FXCurveName, "FXCurveName");
-                return fxCurve.GetRate(XU.GetDates0D(date, "date"));
+                IFXSource fxCurve = XU.GetObject0D<IFXSource>(FXCurveName, "FXCurveName");
+                return fxCurve.GetRate(XU.GetDate0D(date, "date"));
             }
             catch (Exception e)
             {

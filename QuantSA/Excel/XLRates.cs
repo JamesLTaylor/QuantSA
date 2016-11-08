@@ -14,7 +14,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateFixedLeg",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateFixedLeg.html")]
+        HelpTopic = "http://www.quantsa.org/CreateFixedLeg.html")]
         public static object CreateFixedLeg([ExcelArgument(Description = "Name of object")]String name,
         [ExcelArgument(Description = "The currency of the cashflows.")]object[,] currency,
         [ExcelArgument(Description = "The dates on which the payments are made.")]object[,] paymentDates,
@@ -24,8 +24,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                FixedLeg fixedLeg = new FixedLeg(XU.GetCurrencies0D(currency, "currency"), XU.GetDates1D(paymentDates, "paymentDates"), 
-                    XU.GetDoubles1D(notionals, "notionals"), XU.GetDoubles1D(rates, "rates"), XU.GetDoubles1D(accrualFractions, "accrualFractions")); 
+                FixedLeg fixedLeg = new FixedLeg(XU.GetCurrency0D(currency, "currency"), XU.GetDate1D(paymentDates, "paymentDates"), 
+                    XU.GetDouble1D(notionals, "notionals"), XU.GetDouble1D(rates, "rates"), XU.GetDouble1D(accrualFractions, "accrualFractions")); 
                 return ObjectMap.Instance.AddObject(name, fixedLeg);
             }
             catch (Exception e)
@@ -38,7 +38,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateFloatLeg",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateFloatLeg.html")]
+        HelpTopic = "http://www.quantsa.org/CreateFloatLeg.html")]
         public static object CreateFloatLeg([ExcelArgument(Description = "Name of object")]String name,
         [ExcelArgument(Description = "The currency of the cashflows. (Currency)")]object[,] currency,
         [ExcelArgument(Description = "A string describing the floating index. (FloatingIndex)")]object[,] floatingIndex,
@@ -50,11 +50,11 @@ namespace QuantSA.Excel
         {
             try
             {
-                FloatingIndex index = XU.GetFloatingIndices0D(floatingIndex, "floatingIndex");
+                FloatingIndex index = XU.GetFloatingIndex0D(floatingIndex, "floatingIndex");
                 FloatingIndex[] floatingIndices = Enumerable.Range(1, resetDates.Length).Select(i => index).ToArray();
-                FloatLeg floatLeg = new FloatLeg(XU.GetCurrencies0D(currency, "currency"), XU.GetDates1D(paymentDates, "paymentDates"),
-                    XU.GetDoubles1D(notionals, "notionals"), XU.GetDates1D(resetDates, "resetDates"), 
-                    floatingIndices, XU.GetDoubles1D(spreads, "spreads"), XU.GetDoubles1D(accrualFractions, "accrualFractions"));
+                FloatLeg floatLeg = new FloatLeg(XU.GetCurrency0D(currency, "currency"), XU.GetDate1D(paymentDates, "paymentDates"),
+                    XU.GetDouble1D(notionals, "notionals"), XU.GetDate1D(resetDates, "resetDates"), 
+                    floatingIndices, XU.GetDouble1D(spreads, "spreads"), XU.GetDouble1D(accrualFractions, "accrualFractions"));
                 return ObjectMap.Instance.AddObject(name, floatLeg);
             }
             catch (Exception e)
@@ -67,7 +67,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateCashLeg",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateCashLeg.html")]
+        HelpTopic = "http://www.quantsa.org/CreateCashLeg.html")]
         public static object CreateCashLeg([ExcelArgument(Description = "Name of object")]String name,
             [ExcelArgument(Description = "The dates on which the cashflows take place.")]object[,] paymentDates,
             [ExcelArgument(Description = "The sizes of the cashflows.  Positive for cashflows that are received.")]object[,] amounts,
@@ -75,8 +75,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                CashLeg cashLeg = new CashLeg(XU.GetDates1D(paymentDates, "paymentDates"), XU.GetDoubles1D(amounts, "amounts"),
-                    XU.GetCurrencies1D(currencies, "currencies"));
+                CashLeg cashLeg = new CashLeg(XU.GetDate1D(paymentDates, "paymentDates"), XU.GetDouble1D(amounts, "amounts"),
+                    XU.GetCurrency1D(currencies, "currencies"));
                 return XU.AddObject(name, cashLeg);
             }
             catch (Exception e)
@@ -91,7 +91,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateZARSwap",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateZARSwap.html")]
+        HelpTopic = "http://www.quantsa.org/CreateZARSwap.html")]
         public static object CreateZARSwap([ExcelArgument(Description = "Name of object")]String name,
         [ExcelArgument(Description = "First reset date of the swap")]object[,] startDate,
         [ExcelArgument(Description = "Tenor of swap, must be a whole number of years.  Example '5Y'.")]object[,] tenor,
@@ -103,7 +103,7 @@ namespace QuantSA.Excel
             {
 
                 IRSwap swap = IRSwap.CreateZARSwap(rate, XU.GetBool(payFixed), notional,
-                    XU.GetDates0D(startDate, "startDate"), XU.GetTenors0D(tenor, "tenor"));
+                    XU.GetDate0D(startDate, "startDate"), XU.GetTenor0D(tenor, "tenor"));
                 return XU.AddObject(name, swap);
             }
             catch (Exception e)
@@ -116,7 +116,7 @@ namespace QuantSA.Excel
         Name = "QSA.ValueZARSwap",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/ValueZARSwap.html")]
+        HelpTopic = "http://www.quantsa.org/ValueZARSwap.html")]
         public static object ValueZARSwap1Curve([ExcelArgument(Description = "The name of the swap.")]String swap,
             [ExcelArgument(Description = "The date on which valuation is required.  Cannot be before the anchor date of the curve.")]object[,] valueDate,
             [ExcelArgument(Description = "The discounting curve.  Will also be used for forecasting Jibar and providing the most recent required Jibar fix.")]string curve)
@@ -124,7 +124,7 @@ namespace QuantSA.Excel
             try
             {
                 // Get the required objects off the map                
-                Date dValueDate = XU.GetDates0D(valueDate, "valueDate");
+                Date dValueDate = XU.GetDate0D(valueDate, "valueDate");
                 IRSwap swapObj = ObjectMap.Instance.GetObjectFromID<IRSwap>(swap);
                 IDiscountingSource discountCurve = ObjectMap.Instance.GetObjectFromID<IDiscountingSource>(curve);
                 FloatingIndex index = swapObj.GetFloatingIndex();
@@ -158,7 +158,7 @@ namespace QuantSA.Excel
             Name = "QSA.CreateRateForecastCurveFromDiscount",
             Category = "QSA.Rates",
             IsHidden = false,
-            HelpTopic = "http://cogn.co.za/QuantSA/CreateRateForecastCurveFromDiscount.html")]
+            HelpTopic = "http://www.quantsa.org/CreateRateForecastCurveFromDiscount.html")]
         public static object CreateRateForecastCurveFromDiscount([ExcelArgument(Description = "The name of the new curve.")]string name,
             [ExcelArgument(Description = "The floating rate that this curve will be used to forecast. (FloatingIndex)")]object[,] floatingRateIndex,
             [ExcelArgument(Description = "The name of the discount curve that will be used to obtain the forward rates.")]object[,] discountCurve,
@@ -166,8 +166,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                FloatingIndex index = XU.GetFloatingIndices0D(floatingRateIndex, "floatingRateIndex");
-                IDiscountingSource discountCurveObj = XU.GetObjects0D<IDiscountingSource>(discountCurve, "discountCurve");
+                FloatingIndex index = XU.GetFloatingIndex0D(floatingRateIndex, "floatingRateIndex");
+                IDiscountingSource discountCurveObj = XU.GetObject0D<IDiscountingSource>(discountCurve, "discountCurve");
 
                 if (!(fixingCurve[0,0] is ExcelMissing)){
                     throw new ArgumentException("fixingCurve must be left blank for now.  Later versions of QuantSA will allow explicit fixings to be set");
@@ -196,14 +196,14 @@ namespace QuantSA.Excel
         Name = "QSA.GetDF",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/GetDF.html")]
+        HelpTopic = "http://www.quantsa.org/GetDF.html")]
         public static object GetDF([ExcelArgument(Description = "The curve from which the DF is required.")]String curve,
             [ExcelArgument(Description = "The date on which the discount factor is required.  Cannot be before the anchor date of the curve.")]object[,] date)
         {
             try
             {
                 IDiscountingSource discountCurve = ObjectMap.Instance.GetObjectFromID<IDiscountingSource>(curve);
-                return discountCurve.GetDF(XU.GetDates0D(date, "date"));
+                return discountCurve.GetDF(XU.GetDate0D(date, "date"));
             }
             catch (Exception e)
             {
@@ -215,7 +215,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateLoanFixedRate",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateLoanFixedRate.html",
+        HelpTopic = "http://www.quantsa.org/CreateLoanFixedRate.html",
             ExampleSheet ="Loans.xlsx")]
         public static object CreateLoanFixedRate([ExcelArgument(Description = "Name of object")]string name,
         [ExcelArgument(Description = "The currency of the cashflows.")]object[,] currency,
@@ -225,9 +225,9 @@ namespace QuantSA.Excel
         {
             try
             {
-                LoanFixedRate loan = LoanFixedRate.CreateSimple(XU.GetDates1D(balanceDates, "balanceDates"),
-                    XU.GetDoubles1D(balanceAmounts, "balanceAmounts"), XU.GetDoubles0D(fixedRate, "fixedRate"),
-                    XU.GetCurrencies0D(currency, "currency"));
+                LoanFixedRate loan = LoanFixedRate.CreateSimple(XU.GetDate1D(balanceDates, "balanceDates"),
+                    XU.GetDouble1D(balanceAmounts, "balanceAmounts"), XU.GetDouble0D(fixedRate, "fixedRate"),
+                    XU.GetCurrency0D(currency, "currency"));
                 return XU.AddObject(name, loan);
             }
             catch (Exception e)
@@ -241,7 +241,7 @@ namespace QuantSA.Excel
         Name = "QSA.CreateLoanFloatingRate",
         Category = "QSA.Rates",
         IsHidden = false,
-        HelpTopic = "http://cogn.co.za/QuantSA/CreateLoanFloatingRate.html",
+        HelpTopic = "http://www.quantsa.org/CreateLoanFloatingRate.html",
             ExampleSheet = "Loans.xlsx")]
         public static object CreateLoanFloatingRate([ExcelArgument(Description = "Name of object")]string name,
         [ExcelArgument(Description = "The currency of the cashflows.")]object[,] currency,
@@ -252,10 +252,40 @@ namespace QuantSA.Excel
         {
             try
             {
-                LoanFloatingRate loan = LoanFloatingRate.CreateSimple(XU.GetDates1D(balanceDates, "balanceDates"),
-                    XU.GetDoubles1D(balanceAmounts, "balanceAmounts"), XU.GetFloatingIndices0D(floatingIndex, "floatingIndex"),
-                    XU.GetDoubles0D(floatingSpread, "floatingSpread"), XU.GetCurrencies0D(currency, "currency"));
+                LoanFloatingRate loan = LoanFloatingRate.CreateSimple(XU.GetDate1D(balanceDates, "balanceDates"),
+                    XU.GetDouble1D(balanceAmounts, "balanceAmounts"), XU.GetFloatingIndex0D(floatingIndex, "floatingIndex"),
+                    XU.GetDouble0D(floatingSpread, "floatingSpread"), XU.GetCurrency0D(currency, "currency"));
                 return XU.AddObject(name, loan);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
+        [QuantSAExcelFunction(Description = "Create demo Hull White model.  Will be used for discounting and forecasting any indices specified.",
+        Name = "QSA.CreateHWModelDemo",
+        Category = "QSA.Rates",
+        IsHidden = false,
+        HelpTopic = "http://www.quantsa.org/CreateHWModelDemo.html",
+            ExampleSheet = "")]
+        public static object CreateHWModelDemo([ExcelArgument(Description = "Name of object")]string name,            
+            [ExcelArgument(Description = "")]object[,] meanReversion,
+            [ExcelArgument(Description = "")]object[,] flatVol,
+            [ExcelArgument(Description = "")]object[,] baseCurve,
+            [ExcelArgument(Description = "")]object[,] forecastIndices)
+        {
+            try
+            {
+                double a = XU.GetDouble0D(meanReversion, "meanReversion");
+                double vol = XU.GetDouble0D(flatVol, "flatVol");
+                IDiscountingSource curve = XU.GetObject0D<IDiscountingSource>(baseCurve, "baseCurve");
+                Date anchorDate = curve.getAnchorDate();
+                double flatCurveRate = -Math.Log(curve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));
+
+                HullWhite1F hullWiteSim = new HullWhite1F(a, vol, flatCurveRate, flatCurveRate, anchorDate);                
+                hullWiteSim.AddForecast(XU.GetFloatingIndex0D(forecastIndices, "forecastIndices"));                
+                return XU.AddObject(name, hullWiteSim);
             }
             catch (Exception e)
             {
