@@ -105,7 +105,7 @@ namespace GenerateXLCode
             int dim = getTypeDimension(returnType);
             switch (dim) {
                 case 0: returnTypeString = "object"; break;
-                case 1: returnTypeString = "object[]"; break;
+                case 1: returnTypeString = "object[,]"; break;
                 case 2: returnTypeString = "object[,]"; break;
                 default: throw new ArgumentException("Dimension of return type must be scalar, array or 2d array.");                   
             }
@@ -145,7 +145,10 @@ namespace GenerateXLCode
             sb.AppendLine(Spaces(12) + "}");
             sb.AppendLine(Spaces(12) + "catch (Exception e)");
             sb.AppendLine(Spaces(12) + "{");
-            sb.AppendLine(Spaces(16) + "return XU.Error" + dim.ToString() + "D(e);");
+            if (dim==0)
+                sb.AppendLine(Spaces(16) + "return XU.Error0D(e);");
+            else
+                sb.AppendLine(Spaces(16) + "return XU.Error2D(e);");
             sb.AppendLine(Spaces(12) + "}");
             sb.AppendLine(Spaces(8) + "}");
             return sb.ToString();

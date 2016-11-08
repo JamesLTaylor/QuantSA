@@ -53,7 +53,7 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Name = "QSA.EPE", IsGeneratedVersion = true)]
-        public static object[] _EPE(object[,] products,
+        public static object[,] _EPE(object[,] products,
                             object[,] valueDate,
                             object[,] forwardValueDates,
                             object[,] model,
@@ -71,7 +71,7 @@ namespace QuantSA.Excel
             }
             catch (Exception e)
             {
-                return XU.Error1D(e);
+                return XU.Error2D(e);
             }
         }
 

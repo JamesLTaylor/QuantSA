@@ -170,14 +170,9 @@ namespace QuantSA.Excel
         /// </remarks>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static object[] ConvertToObjects(double[] result)
+        public static object[,] ConvertToObjects(double[] result)
         {
-            object[] resultObj = new object[result.Length];
-            for (int i = 0; i < result.Length; i++)
-            {
-                resultObj[i] = result[i];
-            }
-            return resultObj;
+            return ConvertToObjects(result, true);
         }
 
 
