@@ -320,6 +320,22 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
+        /// Returns an object of type <typeparamref name="T"/> but allows for a default value should values not be set.
+        /// </summary>
+        /// <typeparam name="T">The type of the object required off the map.</typeparam>
+        /// <param name="values">The excel values passed to the function.</param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <param name="defaultValue">The default value to return if the excel input is missing.  Can be null.</param>
+        /// <returns></returns>
+        public static T GetObject0D<T>(object[,] values, string inputName, object defaultValue)
+        {
+            if (values[0, 0] is ExcelMissing)
+                return (T)defaultValue;
+            else
+                return GetObject0D<T>(values, inputName);
+        }
+
+        /// <summary>
         /// Returns an object of type <typeparamref name="T"/>
         /// </summary>
         /// <typeparam name="T">The type of the object required off the map.</typeparam>
