@@ -52,6 +52,7 @@ public class MyAddIn : IExcelAddIn
                 plugin.SetObjectMap(ObjectMap.Instance);
                 plugin.SetInstance(plugin);
             }
+            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
         catch (Exception e)
         {
@@ -100,22 +101,21 @@ public class MyAddIn : IExcelAddIn
                 if (quantsaAttribute.IsGeneratedVersion)
                 {
                     MethodInfo manualMethod = (MethodInfo)functions["_" + entry.Key];
-                    RegisterSingleAutoFunction(method, manualMethod, isHidden);
+                    AddSingleAutoFunction(method, manualMethod, isHidden);
                 }
                 else
                 {
-                    RegisterSingleManualFunction(method, isHidden);
+                    AddSingleManualFunction(method, isHidden);
                 }
             }
-        }
-        ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
+        }        
     }
 
 
     /// <summary>
     /// Registers the single manual function.
     /// </summary>
-    private void RegisterSingleManualFunction(MethodInfo method, bool? isHidden)
+    private void AddSingleManualFunction(MethodInfo method, bool? isHidden)
     {
         //Create the function attribute
         QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
@@ -143,7 +143,7 @@ public class MyAddIn : IExcelAddIn
     /// <param name="method">The generated method.</param>
     /// <param name="manualMethod">The manual method.</param>
     /// <param name="isHidden">Is this function hidden.</param>
-    private void RegisterSingleAutoFunction(MethodInfo method, MethodInfo manualMethod, bool? isHidden)
+    private void AddSingleAutoFunction(MethodInfo method, MethodInfo manualMethod, bool? isHidden)
     {
         //Create the function attribute
         QuantSAExcelFunctionAttribute quantsaAttribute = manualMethod.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
@@ -367,9 +367,6 @@ public class MyAddIn : IExcelAddIn
             throw new Exception(Path.GetFileName(filename) + " is in the Plugins directory but is not a valid plugin.");
         }
 
-        List<Delegate> delegates = new List<Delegate>();
-        List<object> functionAttributes = new List<object>();
-        List<List<object>> functionArgumentAttributes = new List<List<object>>();
         foreach (Type type in DLL.GetExportedTypes())
         {
             foreach (MemberInfo member in type.GetMembers())
@@ -382,7 +379,7 @@ public class MyAddIn : IExcelAddIn
                     if (!(parts.Length == 2 && parts[0].Equals(shortName))) throw new Exception(attribute.Name + " in plugin " + shortName + "does not following the naming convention: " + shortName + ".FunctionName");
 
                     // TODO: Check that the category and naming are all acceptable
-                    UpdateDelgatesAndAtribs((MethodInfo)member, delegates, functionAttributes, functionArgumentAttributes);
+                    UpdateDelgatesAndAtribs((MethodInfo)member);
                 }
                 if (member.MemberType.Equals(MemberTypes.Method))
                     if (((MethodInfo)member).ReturnType.Equals(typeof(System.Drawing.Bitmap)))
@@ -402,7 +399,7 @@ public class MyAddIn : IExcelAddIn
     /// <summary>
     /// 
     /// </summary>
-    private void UpdateDelgatesAndAtribs(MethodInfo method, List<Delegate> delegates, List<object> functionAttributes, List<List<object>> functionArgumentAttributes)
+    private void UpdateDelgatesAndAtribs(MethodInfo method)
     {
         //Create the delgate, Taken from: http://stackoverflow.com/a/16364220
         Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
