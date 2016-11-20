@@ -37,7 +37,7 @@ namespace ValuationTest
                 fwdValueDates.Add(date);
                 date = date.AddTenor(Tenor.Days(10));
             }
-            double[] epe = coordinator.EPE2(new Product[] { swap }, valueDate, fwdValueDates.ToArray());
+            double[] epe = coordinator.EPE(new Product[] { swap }, valueDate, fwdValueDates.ToArray());
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
             Assert.AreEqual(2512.0, epe[0], 1.0);
