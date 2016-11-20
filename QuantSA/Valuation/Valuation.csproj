@@ -70,6 +70,7 @@
     <Compile Include="Models\Rates\DeterminsiticCurves.cs" />
     <Compile Include="Models\Rates\HullWhite1F.cs" />
     <Compile Include="NumeraireSimulator.cs" />
+    <Compile Include="ProductWithID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulatedCashflows.cs" />
     <Compile Include="SimulatedRegressors.cs" />

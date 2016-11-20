@@ -92,6 +92,7 @@
     <Compile Include="Products\Equity\EuropeanOption.cs" />
     <Compile Include="Products\FX\CCIRS.cs" />
     <Compile Include="Products\Product.cs" />
+    <Compile Include="Products\ProductWithEarlyExercise.cs" />
     <Compile Include="Products\ProductWrapper.cs" />
     <Compile Include="Products\Rates\BermudanSwaption.cs" />
     <Compile Include="Products\Rates\CashLeg.cs" />

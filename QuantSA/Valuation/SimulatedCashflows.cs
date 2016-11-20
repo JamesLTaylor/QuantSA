@@ -13,16 +13,14 @@ namespace QuantSA.Valuation
     /// </summary>
     public class SimulatedCashflows
     {        
-        List<Product> products;
         List<Cashflow>[][] allCFs;
         private int nSims;
 
-        public SimulatedCashflows(List<Product> products, int nSims)
-        {
-            this.products = products;
+        public SimulatedCashflows(int productCount, int nSims)
+        {            
             this.nSims = nSims;
-            allCFs = new List<Cashflow>[products.Count][];
-            for (int i = 0; i < products.Count; i++)
+            allCFs = new List<Cashflow>[productCount][];
+            for (int i = 0; i < productCount; i++)
             {
                 allCFs[i] = new List<Cashflow>[nSims];
                 for (int j = 0; j< nSims; j++)
@@ -30,7 +28,6 @@ namespace QuantSA.Valuation
                     allCFs[i][j] = new List<Cashflow>();
                 }
             }
-
         }
 
         /// <summary>
@@ -50,28 +47,31 @@ namespace QuantSA.Valuation
         /// <param name="date">The date.</param>
         /// <param name="subPortfolio">The sub portfolio.</param>
         /// <returns></returns>
-        internal double[] GetPathwisePV(Date date, List<Product> subPortfolio)
+        internal double[] GetPathwisePV(Date date, List<int> subPortfolio)
         {
             double[] result = Vector.Zeros(nSims);
-            for (int productCounter = 0; productCounter< products.Count; productCounter++)
+            foreach (int productCounter in subPortfolio)
             {
-                if (subPortfolio.Contains(products[productCounter]))
+                for (int pathCounter = 0; pathCounter < nSims; pathCounter++)
                 {
-                    for (int pathCounter = 0; pathCounter < nSims; pathCounter++)
+                    foreach (Cashflow cf in allCFs[productCounter][pathCounter])
                     {
-                        foreach (Cashflow cf in allCFs[productCounter][pathCounter])
-                        {
-                            if (cf.date > date) result[pathCounter] += cf.amount;
-                        }
+                        if (cf.date > date) result[pathCounter] += cf.amount;
                     }
-                }                
+                }
             }
             return result;
         }
+      
 
         internal List<Cashflow> GetCFs(int productNumber, int pathNumber)
         {
             return allCFs[productNumber][pathNumber];
+        }
+
+        internal void Update(int productNumber, List<Cashflow>[] newCFs)
+        {
+            allCFs[productNumber] = newCFs;
         }
     }
 }

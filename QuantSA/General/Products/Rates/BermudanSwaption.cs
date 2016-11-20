@@ -17,22 +17,27 @@ namespace QuantSA.General
     /// </summary>
     /// <remarks>
     /// </remarks>
-    /// <seealso cref="QuantSA.General.Product" />
+    /// <seealso cref="QuantSA.General.ProductWithEarlyExercise" />
     [Serializable]
-    public class BermudanSwaption : Product
+    public class BermudanSwaption : ProductWithEarlyExercise
     {
         List<Date> exDates;
         Product postExerciseSwap;
         Date valueDate;
         Currency ccy = Currency.ZAR;
+        bool longOptionality;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BermudanSwaption"/> class.
+        /// Initializes a new instance of the <see cref="BermudanSwaption" /> class.
         /// </summary>
-        public BermudanSwaption(Product postExerciseSwap, List<Date> exDates)
+        /// <param name="postExerciseSwap">The post exercise swap.</param>
+        /// <param name="exDates">The ex dates.</param>
+        /// <param name="longOptionality">if set to <c>true</c> then the holder of this owns the optionality.</param>
+        public BermudanSwaption(Product postExerciseSwap, List<Date> exDates, bool longOptionality)
         {
             this.postExerciseSwap = postExerciseSwap;
-            this.exDates = exDates;            
+            this.exDates = exDates;
+            this.longOptionality = longOptionality;
         }
 
         /// <summary>
@@ -42,19 +47,25 @@ namespace QuantSA.General
         /// It is a list in case the underlying product is different at each exercise date
         /// </remarks>
         /// <returns></returns>
-        public List<Product> GetPostExProducts()
+        public override List<Product> GetPostExProducts()
         {
             return new List<Product> { postExerciseSwap };
         }
 
-        public List<Date> GetExerciseDates()
+        public override List<Date> GetExerciseDates()
         {
             return exDates;
         }
 
-        public int GetPostExProductAtDate(Date exDate)
+        public override int GetPostExProductAtDate(Date exDate)
         {
             return 0;
+        }
+
+
+        public override bool IsLongOptionality(Date exDate)
+        {
+            return longOptionality;
         }
 
 
@@ -97,5 +108,6 @@ namespace QuantSA.General
         {
             return new List<Cashflow>();
         }
+
     }
 }

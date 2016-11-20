@@ -8,18 +8,27 @@ namespace QuantSA.General
 {
     /// <summary>
     /// The call sequence for getting the cashflows of any product must be:
-    /// 
+    /// <para/>
     /// Product.Reset(...)
+    /// <para/>
     /// Product.SetValueDate(...)
+    /// <para/>
     /// Product.GetCashflowCurrencies(...)
+    /// <para/>
     /// Product.GetRequiredIndices(...)
-    /// 
+    /// <para/>
     /// Then inside the simulation loop
+    /// <para/>
     /// Then for each index:
-    ///     Product.Reset(...)
-    ///     Product.GetRequiredIndexDates(...)
-    ///     Product.SetIndexValues(...) 
+    /// <para/>
+    /// -  Product.Reset(...)
+    /// <para/>
+    /// -  Product.GetRequiredIndexDates(...)
+    /// <para/>
+    /// -  Product.SetIndexValues(...) 
+    /// <para/>
     /// GetCFs()
+    /// <para/>
     /// 
     /// The calls to GetCashflowCurrencies and GetCashflowDates will only be used when there is a 
     /// multi currency valuation and exchange rates will need to be used in the valuation.

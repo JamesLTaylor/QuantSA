@@ -44,10 +44,6 @@ namespace ValuationTest
             Assert.AreEqual(6797.2, epe[90], 1.0);
             Assert.AreEqual(1076.0, epe[182], 1.0);
 
-            // Run the valuation
-            //double value = coordinator.Value(new List<Product> { swap }, valueDate);
-            //double refValue = -41838.32; // See RateProductTest.xlsx
-            //Assert.AreEqual(refValue, value, 4000);
         }
     }
 }
