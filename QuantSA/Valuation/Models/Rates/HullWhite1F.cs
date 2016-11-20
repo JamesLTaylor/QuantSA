@@ -90,7 +90,7 @@ namespace QuantSA.Valuation
         {
             allDates = new List<Date>();
         }
-        
+
         public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
         {
             allDates.AddRange(requiredDates);            
@@ -103,6 +103,8 @@ namespace QuantSA.Valuation
 
         /// <summary>
         /// Add extra dates to make sure that the minimum spacing is not too large to make the Monte Carlo errors bad.
+        /// <para/>
+        /// At this point the dates are all copied.
         /// </summary>
         public override void Prepare()
         {
@@ -111,7 +113,7 @@ namespace QuantSA.Valuation
             allDates = allDates.Distinct().ToList<Date>();
             allDates.Sort();
             List<Date> newDates = new List<Date>();
-            newDates.Add(allDates[0]);
+            newDates.Add(new Date(allDates[0]));
             for (int i = 1; i < allDates.Count; i++)
             {
                 int nSteps = (int)Math.Floor((allDates[i] - allDates[i - 1]) / minStepSize);
@@ -120,7 +122,7 @@ namespace QuantSA.Valuation
                 {
                     newDates.Add(new Date(allDates[i-1].AddTenor(Tenor.Days((j+1)*days))));
                 }
-                newDates.Add(allDates[i]);
+                newDates.Add(new Date(allDates[i]));
             }
             allDates = newDates;            
             allDatesDouble = allDates.Select(date => (double)date).ToArray();            
