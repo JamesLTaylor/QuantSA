@@ -61,75 +61,6 @@ namespace QuantSA.Valuation
         }
 
 
-        public double ValueWithEarlyEx(Product[] portfolio, Date valueDate)
-        {
-            this.valueDate = valueDate;
-            BermudanSwaption earlyExProduct = (BermudanSwaption)portfolio[0];
-            List<Product> postExProducts = earlyExProduct.GetPostExProducts();
-            List<Product> extendedPortolfio = portfolio.ToList();
-            extendedPortolfio.AddRange(postExProducts);
-            AssociateFactorsWithSimulators(extendedPortolfio);
-            List<Date> exDates = earlyExProduct.GetExerciseDates();
-            exDates.Sort();
-            InitializeSimulators(extendedPortolfio, exDates);
-
-            // Produce data: product -> list effective cfs.  amount is converted to value currency and deflated to value date.
-            SimulatedCashflows simulatedCFs = new SimulatedCashflows(extendedPortolfio.Count, N);
-            SimulatedRegressors simulatedRegs = new SimulatedRegressors(exDates, N, simulators);
-            PerformSimulationChunk2(extendedPortolfio, exDates, simulatedCFs, simulatedRegs, 0, N);
-
-            // Get pathwise regressed values of post exercise products.
-            double[,] postExRegressedValues = new double[N, exDates.Count];
-            for (int i = 0; i < exDates.Count; i++)
-            {
-                // perform regression on each exercise date
-                int exerciseProductIndex = earlyExProduct.GetPostExProductAtDate(exDates[i]);
-                List<int> exerciseProductSubPortfolio = new List<int> { 1 + exerciseProductIndex };
-                double[] fitted = PerformRegression2(exDates[i], simulatedCFs, simulatedRegs, exerciseProductSubPortfolio);
-                postExRegressedValues.SetColumn(i, fitted);
-            }
-
-            // Iterate backwards
-            // initially the stoppping time on all paths is infinity
-            Date[] optimalStop = new Date[N];
-            for (int i = 0; i < N; i++) optimalStop[i] = new Date(3000, 1, 1);
-
-            for (int exDateCount = exDates.Count - 1; exDateCount >= 0; exDateCount--)
-            {
-                Date exDate = exDates[exDateCount];
-                int exProductInd = 1 + earlyExProduct.GetPostExProductAtDate(exDate);
-                // Optimal flows are underlying product up to the stopping time, then the post exercise product flows afterwards
-                double[] pvOptimalCFs = Vector.Zeros(N);
-                for (int pathCount = 0; pathCount < N; pathCount++)
-                {
-                    foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
-                    {
-                        if (cf.date > optimalStop[pathCount])
-                            pvOptimalCFs[pathCount] += cf.amount;
-                    }
-                    foreach (Cashflow cf in simulatedCFs.GetCFs(0, pathCount))
-                    {
-                        if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
-                            pvOptimalCFs[pathCount] += cf.amount;
-                    }
-                }
-
-                // update optimal stopping times
-                var ols = new OrdinaryLeastSquares()
-                { UseIntercept = true, IsRobust = true };
-                double[][] inputs = simulatedRegs.GetPolynomialValsRegular(exDate);
-                MultipleLinearRegression regression = ols.Learn(inputs, pvOptimalCFs);
-                double[] optimalCV = regression.Transform(inputs);
-
-                for (int pathCount = 0; pathCount < N; pathCount++)
-                {
-                    if (optimalCV[pathCount] < postExRegressedValues[pathCount, exDateCount])
-                        optimalStop[pathCount] = exDate;
-                }
-            }
-            return 0.0;
-        }
-
         private double[] PerformRegression2(Date date, SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs,
             List<int> subPortfolio)
         {
@@ -147,20 +78,6 @@ namespace QuantSA.Valuation
             double[] fitted = regression.Transform(inputs);
             return fitted;
         }
-
-
-        /// <summary>
-        /// Gets the regressed values.
-        /// </summary>
-        /// <param name="pvCFs">The sum of the present value of all cashflows on each path in a single currency.</param>
-        /// <param name="independentValues">The independent values to be used in the regression.</param>
-        /// <returns></returns>
-        private double[] GetRegressedValues(double[] pvCFs, double[,] independentValues)
-        {
-            return new double[pvCFs.Length];
-        }
-
-
 
         /// <summary>
         /// Epes the specified portfolio.
@@ -483,8 +400,9 @@ namespace QuantSA.Valuation
 
 
         private void PreparePortfolios(Product[] portfolioIn, Date[] fwdValueDates)
-        {
+        {            
             allDates = fwdValueDates.Select(date => new Date(date)).ToList();
+            allDates.Add(valueDate);
             allTrades = new List<Product>();
             originalTrades = new List<int>();
             postExerciseTrades = new Dictionary<int, List<int>>();
@@ -553,7 +471,7 @@ namespace QuantSA.Valuation
                         if (cf.date > optimalStop[pathCount])
                             pvOptimalCFs[pathCount] += cf.amount;
                     }
-                    foreach (Cashflow cf in simulatedCFs.GetCFs(0, pathCount))
+                    foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                     {
                         if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
                             pvOptimalCFs[pathCount] += cf.amount;
@@ -569,7 +487,9 @@ namespace QuantSA.Valuation
 
                 for (int pathCount = 0; pathCount < N; pathCount++)
                 {
-                    if (optimalCV[pathCount] < postExRegressedValues[pathCount, exDateCount])
+                    if (option.IsLongOptionality(exDate) && optimalCV[pathCount] < postExRegressedValues[pathCount, exDateCount])
+                        optimalStop[pathCount] = exDate;
+                    else if (!option.IsLongOptionality(exDate) && optimalCV[pathCount] > postExRegressedValues[pathCount, exDateCount])
                         optimalStop[pathCount] = exDate;
                 }
             }
@@ -605,19 +525,35 @@ namespace QuantSA.Valuation
             }
         }
 
-        public double Value2(Product[] portfolioIn, Date valueDate)
+        private void PerformSimulation()
+        {
+            // Run the simulation in chunks on several threads.
+            int nTasks = 4;
+            if (N < 1000) nTasks = 1;
+            Thread[] simThreads = new Thread[nTasks];
+            int simChunkSize = (int)Math.Ceiling(N / (double)nTasks);
+            for (int i = 0; i < nTasks; i++)
+            {
+                int start = i * simChunkSize;
+                int end = Math.Min(start + simChunkSize, N);
+                simThreads[i] = new Thread(
+                    new ThreadStart(
+                        () => PerformSimulationChunk2(allTrades, allDates, simulatedCFs, simulatedRegs, start, end))
+                    );
+                simThreads[i].Start();
+            }
+            foreach (Thread thread in simThreads) thread.Join();
+        }
+
+        public double Value(Product[] portfolioIn, Date valueDate)
         {
             this.valueDate = valueDate;
-
-            PreparePortfolios(portfolioIn, new Date[0]);
-                                    
+            PreparePortfolios(portfolioIn, new Date[0]);                                    
             AssociateFactorsWithSimulators(allTrades);
             InitializeSimulators(allTrades, new List<Date>());
-
             simulatedCFs = new SimulatedCashflows(allTrades.Count, N); // initialized outside to allow multiple threads.
             simulatedRegs = new SimulatedRegressors(allDates, N, simulators);
-            PerformSimulationChunk2(allTrades, allDates, simulatedCFs, simulatedRegs, 0, N);
-
+            PerformSimulation();
             ApplyEarlyExercise();
 
             double[] pathwisePVs = simulatedCFs.GetPathwisePV(valueDate, originalTrades);
@@ -626,69 +562,10 @@ namespace QuantSA.Valuation
 
 
         /// <summary>
-        /// Find the value of a portfolio of products
-        /// </summary>
-        /// <param name="portfolio">The portfolio.</param>
-        /// <param name="valueDate">The value date.</param>
-        /// <returns></returns>
-        public double Value(Product[] portfolioIn, Date valueDate)
-        {
-            List<Product> portfolio = portfolioIn.ToList();            
-            this.valueDate = valueDate;
-            AssociateFactorsWithSimulators(portfolio);
-            InitializeSimulators(portfolio, new List<Date>());
-            
-            // Run the simulation
-            // TODO: Rather store value for each product separately
-            double[] pathwiseValues = new double[N];
-            double totalValue = 0;            
-
-
-            for (int i = 0; i < N; i++) // This N loop can be made parallel, need to check the size and cost 
-                                        // of copying all the simualators and products 
-            {
-                pathwiseValues[i] = 0;
-                double numeraireAtValue = numeraire.Numeraire(valueDate);
-                foreach (Simulator simulator in simulators)
-                {
-                    simulator.RunSimulation(i);
-                }
-                foreach (Product product in portfolio)
-                {
-                    product.Reset();
-                    foreach (MarketObservable index in product.GetRequiredIndices())
-                    {
-                        Simulator simulator = simulators[indexSources[index]];
-                        List<Date> requiredDates = product.GetRequiredIndexDates(index);
-                        double[] indices = simulator.GetIndices(index, requiredDates);
-                        product.SetIndexValues(index, indices);
-                    }
-                    List<Cashflow> timesAndCFS = product.GetCFs();
-                    foreach (Cashflow cf in timesAndCFS)
-                    {
-                        if (cf.currency.Equals(valueCurrency))
-                        {
-                            pathwiseValues[i] += cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
-                        }
-                        else
-                        {
-                            MarketObservable currencyPair = new CurrencyPair(cf.currency, numeraire.GetNumeraireCurrency());
-                            Simulator simulator = simulators[indexSources[currencyPair]];
-                            double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.date })[0];
-                            pathwiseValues[i] += fxRate * cf.amount * numeraireAtValue / numeraire.Numeraire(cf.date);
-                        }
-                    }
-                }
-                totalValue += pathwiseValues[i];
-            }
-            return totalValue / N;
-
-        }
-
-        /// <summary>
         /// Initializes the simulators by telling them at which dates they will need to provide which market indices.
         /// </summary>
-        /// <param name="extraDates">simualators .</param>
+        /// <param name="extraDates">Extra dates over and above the contract dates where the simulators will need to 
+        /// provide their indices.</param>
         private void InitializeSimulators(List<Product> portfolio, List<Date> extraDates)
         {
             // Reset all the simulators

@@ -9,6 +9,7 @@ namespace QuantSA.General
     /// <summary>
     /// Wraps a discount curve as a forward rate forecasting curve.
     /// </summary>
+    [Serializable]
     public class ForecastCurveFromDiscount : IFloatingRateSource
     {
         IDiscountingSource discountCurve;

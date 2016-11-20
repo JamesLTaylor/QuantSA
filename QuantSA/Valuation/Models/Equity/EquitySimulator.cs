@@ -12,6 +12,7 @@ namespace QuantSA.Valuation
     /// <summary>
     /// A <see cref="Simulator"/> that can provide realizations of several share prices in a single currency.
     /// </summary>
+    [Serializable]
     public class EquitySimulator : NumeraireSimulator
     {
         MultivariateNormalDistribution normal;
@@ -89,7 +90,10 @@ namespace QuantSA.Valuation
                 double[] result = new double[requiredTimes.Count];
                 for (int i = 0; i < requiredTimes.Count; i++)
                 {
-                    result[i] = simulation[requiredTimes[i]][shareIndex];
+                    if (requiredTimes[i] == anchorDate)
+                        result[i] = prices[shareIndex];
+                    else
+                        result[i] = simulation[requiredTimes[i]][shareIndex];
                 }
                 return result;
             }

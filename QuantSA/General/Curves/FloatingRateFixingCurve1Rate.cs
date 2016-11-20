@@ -9,6 +9,7 @@ namespace QuantSA.General
     /// <summary>
     /// Provides fixes for the past at a single rate.  This should only be used an an expediency, rather use  
     /// </summary>
+    [Serializable]
     public class FloatingRateFixingCurve1Rate : IFloatingRateSource
     {
         double rate;

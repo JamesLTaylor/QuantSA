@@ -18,6 +18,14 @@ public class EuropeanOptionScript : Product
         strike = 100.0;
         exerciseDate = new Date(2017, 08, 28);
     }
+    
+    public override Product Clone()
+    {
+        EuropeanOptionScript product = new EuropeanOptionScript();
+        if (valueDate!=null)
+            product.valueDate = new Date(valueDate);
+        return product;
+    }
 
     public override List<Cashflow> GetCFs()
     {

@@ -9,6 +9,7 @@ using QuantSA.General;
 
 namespace QuantSA.Valuation
 {
+    [Serializable]
     public class SimpleBlackEquity : Simulator
     {
         private Date anchorDate;
@@ -81,7 +82,10 @@ namespace QuantSA.Valuation
 
         public override double[] GetUnderlyingFactors(Date date)
         {
-            return new double[] { simulation[date.value] };
+            if (date == anchorDate)
+                return new double[] { spotPrice };
+            else 
+                return new double[] { simulation[date.value] };
         }
     }
 }

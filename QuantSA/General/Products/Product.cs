@@ -52,8 +52,9 @@ namespace QuantSA.General
             formatter.Serialize(stream, this);
             stream.Seek(0, SeekOrigin.Begin);
             object o = formatter.Deserialize(stream);
-            return (Product)o;            
+            return (Product)o;
         }
+
 
         /// <summary>
         /// Set the value date of the contract.

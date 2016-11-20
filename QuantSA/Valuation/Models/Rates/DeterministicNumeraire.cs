@@ -5,6 +5,7 @@ using QuantSA.General;
 namespace QuantSA.Valuation
 {
     //TODO: This class must be extended to also handle curves.
+    [Serializable]
     public class DeterministicNumeraire : NumeraireSimulator
     {
         private Currency currency;

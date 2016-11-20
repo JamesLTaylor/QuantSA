@@ -11,6 +11,7 @@ namespace ValuationTest
     /// <summary>
     /// Sample product for test simulated indices.
     /// </summary>
+    [Serializable]
     public class ProductWithDiviAndFwd : ProductWrapper
     {
         Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme

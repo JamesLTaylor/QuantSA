@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Valuation;
+using System;
 
 namespace ValuationTest
 {
+    [Serializable]
     public class ProductWrapperEquitySample1 : ProductWrapper
     {
         Date date1 = new Date(2016, 9, 30); // The issue date of the scheme
@@ -54,6 +56,7 @@ namespace ValuationTest
         }
     }
 
+    [Serializable]
     public class ProductWrapperEquitySample2 : ProductWrapper
     {
         Date date1 = new Date(2016, 9, 30); // The issue date of the scheme

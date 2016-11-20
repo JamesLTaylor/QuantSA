@@ -13,7 +13,7 @@ namespace QuantSA.Valuation
     /// </summary>
     public class SimulatedCashflows
     {        
-        List<Cashflow>[][] allCFs;
+        public List<Cashflow>[][] allCFs;
         private int nSims;
 
         public SimulatedCashflows(int productCount, int nSims)

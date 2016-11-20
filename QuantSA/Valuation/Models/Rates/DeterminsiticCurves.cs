@@ -4,6 +4,7 @@ using QuantSA.General;
 
 namespace QuantSA.Valuation
 {
+    [Serializable]
     public class DeterminsiticCurves : NumeraireSimulator
     {
         private Currency numeraireCurrency;

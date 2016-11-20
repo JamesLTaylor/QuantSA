@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
+    [Serializable]
     public class SingleRate : IDiscountingSource
     {
         private Date anchorDate;

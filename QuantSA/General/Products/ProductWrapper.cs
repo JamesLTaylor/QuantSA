@@ -10,6 +10,7 @@ namespace QuantSA.General
     /// Requires fewer methods to be implemented.
     /// </summary>
     /// <seealso cref="Product" />
+    [Serializable]
     public abstract class ProductWrapper : Product
     {
         delegate double GetIndexValueDelegate(MarketObservable index, Date date);
