@@ -80,16 +80,13 @@ namespace QuantSA.Valuation
         }
 
         /// <summary>
-        /// Epes the specified portfolio.
+        /// Expected positice exposures the specified portfolio.
         /// </summary>
         /// <param name="portfolio">The portfolio.</param>
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The simulation phase should possibly produce some set of name,value pairs like:
-        /// productID:simNumber:date,cfValueInNumeraireCcy
-        /// So that fully flexible distributed downstream calculations might be possible.
         /// </remarks>
         public double[] EPE(Product[] portfolio, Date valueDate, Date[] fwdValueDates)
         {
@@ -398,7 +395,13 @@ namespace QuantSA.Valuation
             localNumeraire = (NumeraireSimulator)localSimulators[0];
         }
 
-
+        /// <summary>
+        /// Prepares the portfolios by splitting produicts with early exercise into 
+        /// the products they become after exercise and the product that produces their
+        /// cashflows until exercise.
+        /// </summary>
+        /// <param name="portfolioIn">The user supplied portfolio.</param>
+        /// <param name="fwdValueDates">The extra forward value dates.</param>
         private void PreparePortfolios(Product[] portfolioIn, Date[] fwdValueDates)
         {            
             allDates = fwdValueDates.Select(date => new Date(date)).ToList();
@@ -435,7 +438,7 @@ namespace QuantSA.Valuation
         }
 
         /// <summary>
-        /// Replaces the no exercise cashflows for product at position key with the cashflows based on 
+        /// Replaces the no exercise cashflows for the product at position <paramref name="key"/> with the cashflows based on 
         /// an estimated optimal exercise policy.
         /// </summary>
         /// <param name="key">The postion in <see cref="allTrades"/> of the product to be updated.</param>
@@ -516,15 +519,30 @@ namespace QuantSA.Valuation
         }
 
 
-
+        /// <summary>
+        /// Applies the early exercise conditions to all the products that require it.  Calls 
+        /// <see cref="ApplyEarlyExercise(int)"/> on a separate thread for each early exercise 
+        /// product.
+        /// </summary>
         private void ApplyEarlyExercise()
-        { 
+        {
+            Thread[] earlyExThreads = new Thread[postExerciseTrades.Keys.Count];
+            int i = 0;
             foreach (int key in postExerciseTrades.Keys)
-            {
-                ApplyEarlyExercise(key);
+            {                
+                earlyExThreads[i] = new Thread(
+                    new ThreadStart(
+                        () => ApplyEarlyExercise(key))
+                    );
+                earlyExThreads[i].Start();
+                i++;
             }
+            foreach (Thread thread in earlyExThreads) thread.Join();
         }
 
+        /// <summary>
+        /// Performs the simulation of all cashflows.  These may need to be adjusted for early exercise.
+        /// </summary>
         private void PerformSimulation()
         {
             // Run the simulation in chunks on several threads.
@@ -545,6 +563,58 @@ namespace QuantSA.Valuation
             foreach (Thread thread in simThreads) thread.Join();
         }
 
+        private double[,] ApplyForwardValueRegressions(List<Date> fwdValueDates)
+        {
+            double[,] regressedValues = new double[N, fwdValueDates.Count()];
+            for (int i = 0; i < fwdValueDates.Count; i++)
+            {
+                // perform regression on each exercise date                
+                double[] fitted = PerformRegression2(fwdValueDates[i], simulatedCFs, simulatedRegs, originalTrades);
+                regressedValues.SetColumn(i, fitted);
+            }
+            return regressedValues;
+        }
+
+
+        public double[] EPE2(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+        {
+            this.valueDate = valueDate;
+            PreparePortfolios(portfolioIn, fwdValueDates);
+            AssociateFactorsWithSimulators(allTrades);
+            InitializeSimulators(allTrades, new List<Date>());
+            simulatedCFs = new SimulatedCashflows(allTrades.Count, N); // initialized outside to allow multiple threads.
+            simulatedRegs = new SimulatedRegressors(allDates, N, simulators);
+            PerformSimulation();
+            ApplyEarlyExercise();
+
+            double[,] regressedValues = ApplyForwardValueRegressions(fwdValueDates.ToList());
+
+            double[] epe = Vector.Zeros(fwdValueDates.Length);
+            List<Date> fwdValueDatesList = fwdValueDates.ToList();
+
+            //Debug.WriteToFile(@"c:\dev\temp\regressedValues.csv", regressedValues);            
+            for (int row = 0; row < regressedValues.GetLength(0); row++)
+            {
+                for (int col = 0; col < regressedValues.GetLength(1); col++)
+                {
+                    epe[col] += Math.Max(0, regressedValues[row, col]);
+                }
+            }
+            for (int col = 0; col < regressedValues.GetLength(1); col++)
+            {
+                epe[col] /= N;
+            }
+            return epe;
+        }
+       
+
+
+        /// <summary>
+        /// Values the specified portfolio.
+        /// </summary>
+        /// <param name="portfolioIn">The portfolio in.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <returns></returns>
         public double Value(Product[] portfolioIn, Date valueDate)
         {
             this.valueDate = valueDate;
