@@ -13,15 +13,17 @@ namespace ValuationTest
         HullWhite1F hullWiteSim;
         IRSwap swapPay;
         IRSwap swapRec;
-
+        List<Date> exDates;
 
         [TestInitialize]
         public void Init()
         {
+
+
             // Set up the model
             valueDate = new Date(2016, 9, 17);
             double a = 0.05;
-            double vol = 0.005;
+            double vol = 0.01;
             double flatCurveRate = 0.07;
             hullWiteSim = new HullWhite1F(a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
@@ -34,14 +36,15 @@ namespace ValuationTest
             Tenor tenor = Tenor.Years(5);
             swapPay = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
             swapRec = IRSwap.CreateZARSwap(rate, !payFixed, notional, startDate, tenor);
+
+            // Full set of exercise dates
+            exDates = new List<Date> { new Date(2017, 9, 17), new Date(2018, 9, 17),
+                new Date(2019, 9, 17), new Date(2020, 9, 17) };
         }
 
         [TestMethod]
         public void TestBermudanSwaptionPV()
         {
-            List<Date> exDates = new List<Date> { new Date(2017, 9, 17), new Date(2018, 9, 17),
-                new Date(2019, 9, 17), new Date(2020, 9, 17) };
-
             Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
             BermudanSwaption bermudan;
@@ -69,11 +72,7 @@ namespace ValuationTest
         [TestMethod]
         public void TestBermudanSwaptionPVLongAndShort()
         {
-            List<Date> exDates = new List<Date> { new Date(2017, 9, 17), new Date(2018, 9, 17),
-                new Date(2019, 9, 17), new Date(2020, 9, 17) };
-
             Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
-
             
             BermudanSwaption bermudan1 = new BermudanSwaption(swapPay, exDates.GetRange(0, 1), true);
             double value1 = coordinator.Value(new Product[] { bermudan1 }, valueDate);
@@ -83,6 +82,26 @@ namespace ValuationTest
 
             //Assert.IsTrue(value1 < value2, "Bermudan with 1 exercise date must be worth less than one with 2.");
             //            Assert.IsTrue(value2 < value3, "Bermudan with 2 exercise dates must be worth less than one with 3.");
+        }
+
+        [TestMethod]
+        public void TestPhysicalSwaptionEPE()
+        {
+            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 25000);
+            List<Date> exDate = new List<Date> { new Date(2019, 9, 17) };
+            // Couterparty has option to enter into a receive fixed swap
+            BermudanSwaption physicalSwaption = new BermudanSwaption(swapPay, exDate, false);
+
+            Date date = valueDate;
+            Date endDate = valueDate.AddTenor(Tenor.Years(5));
+            List<Date> fwdValueDates = new List<Date>();
+            while (date <= endDate)
+            {
+                fwdValueDates.Add(date);
+                date = date.AddTenor(Tenor.Days(10));
+            }
+            double[] epe = coordinator.EPE(new Product[] { physicalSwaption }, valueDate, fwdValueDates.ToArray());
+            Debug.WriteToFile(@"c:\dev\temp\epe_physicalswaption_HW2.csv", epe);
         }
     }
 }

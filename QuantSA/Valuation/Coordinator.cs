@@ -91,7 +91,7 @@ namespace QuantSA.Valuation
         /// <param name="simulatedRegs">The valuesor the regressors by path and date.</param>
         /// <param name="pathStart">The path start.</param>
         /// <param name="pathEnd">The path end.</param>
-        private void PerformSimulationChunk2(List<Product> portfolio, List<Date> fwdValueDates,
+        private void PerformSimulationChunk(List<Product> portfolio, List<Date> fwdValueDates,
             SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs, int pathStart, int pathEnd)
         {
             // clone the simulators and portfolio
@@ -334,22 +334,42 @@ namespace QuantSA.Valuation
                 int end = Math.Min(start + simChunkSize, N);
                 simThreads[i] = new Thread(
                     new ThreadStart(
-                        () => PerformSimulationChunk2(allTrades, allDates, simulatedCFs, simulatedRegs, start, end))
+                        () => PerformSimulationChunk(allTrades, allDates, simulatedCFs, simulatedRegs, start, end))
                     );
                 simThreads[i].Start();
             }
             foreach (Thread thread in simThreads) thread.Join();
         }
 
-        private double[,] ApplyForwardValueRegressions(List<Date> fwdValueDates)
+        private void ApplyForwardValueRegressionsChunk(List<Date> fwdValueDates, int startIndex, int endIndex, double[,] regressedValues)
         {
-            double[,] regressedValues = new double[N, fwdValueDates.Count()];
-            for (int i = 0; i < fwdValueDates.Count; i++)
+            for (int i = startIndex; i < endIndex; i++)
             {
-                // perform regression on each exercise date                
+                // perform regression on each forward date
                 double[] fitted = PerformRegression2(fwdValueDates[i], simulatedCFs, simulatedRegs, originalTrades);
                 regressedValues.SetColumn(i, fitted);
             }
+        }
+
+        private double[,] ApplyForwardValueRegressions(List<Date> fwdValueDates)
+        {
+            double[,] regressedValues = new double[N, fwdValueDates.Count()];
+            int nTasks = 4;
+            if (fwdValueDates.Count<20) nTasks = 1;
+
+            Thread[] regressThreads = new Thread[nTasks];
+            int regressChunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)nTasks);
+            for (int i = 0; i < nTasks; i++)
+            {
+                int start = i * regressChunkSize;
+                int end = Math.Min(start + regressChunkSize, fwdValueDates.Count());
+                regressThreads[i] = new Thread(
+                    new ThreadStart(
+                        () => ApplyForwardValueRegressionsChunk(fwdValueDates, start, end, regressedValues))
+                    );
+                regressThreads[i].Start();
+            }
+            foreach (Thread thread in regressThreads) thread.Join();
             return regressedValues;
         }
 
