@@ -88,12 +88,12 @@ namespace ValuationTest
         public void TestPhysicalSwaptionEPE()
         {
             Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 25000);
-            List<Date> exDate = new List<Date> { new Date(2019, 9, 17) };
+            List<Date> exDate = new List<Date> { new Date(2018, 9, 17) };
             // Couterparty has option to enter into a receive fixed swap
-            BermudanSwaption physicalSwaption = new BermudanSwaption(swapPay, exDate, false);
+            BermudanSwaption physicalSwaption = new BermudanSwaption(swapRec, exDate, true);
 
             Date date = valueDate;
-            Date endDate = valueDate.AddTenor(Tenor.Years(5));
+            Date endDate = valueDate.AddTenor(new Tenor(0,0,3,5));
             List<Date> fwdValueDates = new List<Date>();
             while (date <= endDate)
             {
@@ -101,7 +101,7 @@ namespace ValuationTest
                 date = date.AddTenor(Tenor.Days(10));
             }
             double[] epe = coordinator.EPE(new Product[] { physicalSwaption }, valueDate, fwdValueDates.ToArray());
-            Debug.WriteToFile(@"c:\dev\temp\epe_physicalswaption_HW2.csv", epe);
+            //Debug.WriteToFile(@"c:\dev\temp\ene_physicalswaption_HW.csv", epe);
         }
     }
 }

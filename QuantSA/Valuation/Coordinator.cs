@@ -29,6 +29,9 @@ namespace QuantSA.Valuation
     /// </remarks>
     public class Coordinator
     {
+        private bool useThreads = false;
+        int maxThreads = 4;
+
         private int N;
         private NumeraireSimulator numeraire;
         private List<Simulator> simulators;
@@ -76,6 +79,10 @@ namespace QuantSA.Valuation
             // Use Ordinary Least Squares to estimate a regression model
             MultipleLinearRegression regression = ols.Learn(inputs, outputs);
             double[] fitted = regression.Transform(inputs);
+            //for (int i = 0; i<fitted.Length; i++)
+            //{
+            //    if (Math.Abs(outputs[i]) < 1e-10) fitted[i] = 0;
+            //}
             return fitted;
         }
 
@@ -304,18 +311,28 @@ namespace QuantSA.Valuation
         /// </summary>
         private void ApplyEarlyExercise()
         {
-            Thread[] earlyExThreads = new Thread[postExerciseTrades.Keys.Count];
-            int i = 0;
-            foreach (int key in postExerciseTrades.Keys)
-            {                
-                earlyExThreads[i] = new Thread(
-                    new ThreadStart(
-                        () => ApplyEarlyExercise(key))
-                    );
-                earlyExThreads[i].Start();
-                i++;
+            if (useThreads)
+            {
+                Thread[] earlyExThreads = new Thread[postExerciseTrades.Keys.Count];
+                int i = 0;
+                foreach (int key in postExerciseTrades.Keys)
+                {
+                    earlyExThreads[i] = new Thread(
+                        new ThreadStart(
+                            () => ApplyEarlyExercise(key))
+                        );
+                    earlyExThreads[i].Start();
+                    i++;
+                }
+                foreach (Thread thread in earlyExThreads) thread.Join();
             }
-            foreach (Thread thread in earlyExThreads) thread.Join();
+            else
+            {
+                foreach (int key in postExerciseTrades.Keys)
+                {
+                    ApplyEarlyExercise(key);
+                }
+            }
         }
 
         /// <summary>
@@ -324,21 +341,26 @@ namespace QuantSA.Valuation
         private void PerformSimulation()
         {
             // Run the simulation in chunks on several threads.
-            int nTasks = 4;
-            if (N < 1000) nTasks = 1;
-            Thread[] simThreads = new Thread[nTasks];
-            int simChunkSize = (int)Math.Ceiling(N / (double)nTasks);
-            for (int i = 0; i < nTasks; i++)
-            {
-                int start = i * simChunkSize;
-                int end = Math.Min(start + simChunkSize, N);
-                simThreads[i] = new Thread(
-                    new ThreadStart(
-                        () => PerformSimulationChunk(allTrades, allDates, simulatedCFs, simulatedRegs, start, end))
-                    );
-                simThreads[i].Start();
+            if (useThreads && N >= 1000)
+            {                
+                Thread[] simThreads = new Thread[maxThreads];
+                int simChunkSize = (int)Math.Ceiling(N / (double)maxThreads);
+                for (int i = 0; i < maxThreads; i++)
+                {
+                    int start = i * simChunkSize;
+                    int end = Math.Min(start + simChunkSize, N);
+                    simThreads[i] = new Thread(
+                        new ThreadStart(
+                            () => PerformSimulationChunk(allTrades, allDates, simulatedCFs, simulatedRegs, start, end))
+                        );
+                    simThreads[i].Start();
+                }
+                foreach (Thread thread in simThreads) thread.Join();
             }
-            foreach (Thread thread in simThreads) thread.Join();
+            else
+            {
+                PerformSimulationChunk(allTrades, allDates, simulatedCFs, simulatedRegs, 0, N);
+            }
         }
 
         private void ApplyForwardValueRegressionsChunk(List<Date> fwdValueDates, int startIndex, int endIndex, double[,] regressedValues)
@@ -354,22 +376,27 @@ namespace QuantSA.Valuation
         private double[,] ApplyForwardValueRegressions(List<Date> fwdValueDates)
         {
             double[,] regressedValues = new double[N, fwdValueDates.Count()];
-            int nTasks = 4;
-            if (fwdValueDates.Count<20) nTasks = 1;
 
-            Thread[] regressThreads = new Thread[nTasks];
-            int regressChunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)nTasks);
-            for (int i = 0; i < nTasks; i++)
+            if (fwdValueDates.Count>= 20 && useThreads)
             {
-                int start = i * regressChunkSize;
-                int end = Math.Min(start + regressChunkSize, fwdValueDates.Count());
-                regressThreads[i] = new Thread(
-                    new ThreadStart(
-                        () => ApplyForwardValueRegressionsChunk(fwdValueDates, start, end, regressedValues))
-                    );
-                regressThreads[i].Start();
+                Thread[] regressThreads = new Thread[maxThreads];
+                int regressChunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)maxThreads);
+                for (int i = 0; i < maxThreads; i++)
+                {
+                    int start = i * regressChunkSize;
+                    int end = Math.Min(start + regressChunkSize, fwdValueDates.Count());
+                    regressThreads[i] = new Thread(
+                        new ThreadStart(
+                            () => ApplyForwardValueRegressionsChunk(fwdValueDates, start, end, regressedValues))
+                        );
+                    regressThreads[i].Start();
+                }
+                foreach (Thread thread in regressThreads) thread.Join();
             }
-            foreach (Thread thread in regressThreads) thread.Join();
+            else
+            {
+                ApplyForwardValueRegressionsChunk(fwdValueDates, 0, fwdValueDates.Count(), regressedValues);
+            }
             return regressedValues;
         }
 

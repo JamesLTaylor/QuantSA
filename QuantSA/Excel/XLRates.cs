@@ -128,7 +128,7 @@ namespace QuantSA.Excel
 
                 //Set up the valuation engine.
                 IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(discountCurve, index,
-                    new FloatingRateFixingCurve1Rate(rate, FloatingIndex.JIBAR3M));
+                    new FloatingRateFixingCurve1Rate(rate, index));
                 DeterminsiticCurves curveSim = new DeterminsiticCurves(discountCurve);
                 curveSim.AddRateForecast(forecastCurve);
                 Coordinator coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
