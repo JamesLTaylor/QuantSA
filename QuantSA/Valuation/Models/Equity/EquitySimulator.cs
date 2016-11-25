@@ -61,7 +61,7 @@ namespace QuantSA.Valuation
             if (index is FloatingIndex)
             {
                 double[] result = new double[requiredTimes.Count];
-                for (int i = 0; i<requiredTimes.Count;i++)
+                for (int i = 0; i < requiredTimes.Count; i++)
                 {
                     result[i] = rateForecastCurves[index].GetForwardRate(requiredTimes[i]);
                 }
@@ -97,7 +97,7 @@ namespace QuantSA.Valuation
                 }
                 return result;
             }
-            }
+        }
 
         /// <summary>
         /// Indicate whether the required share price is simulated by this model

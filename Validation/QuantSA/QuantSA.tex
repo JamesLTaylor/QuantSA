@@ -121,7 +121,7 @@ This could be evaluated with another Monte Carlo simulation beyond $t_i$ for eac
 V(t_i) = g(t_t, \textbf{W}(t_i))
 \label{eq:regress}
 \end{equation}
-Longstaff and Schwartz \cite{Longstaff01valuingamerican} describe how to use regression to estimate this function $g$ given realizations of $\sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}}$, an example of this can be seen in Figure \ref{fig:ConditionalExpectationEx1}.
+Longstaff and Schwartz \cite{Longstaff01valuingamerican} describe how to use regression to estimate this function $g$ given realizations of $\sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}}$, an example of this can be seen in Figure \ref{fig:ConditionalExpectationEx1}.  In general $g$ is exactly that function of $\textbf{W}(t_i)$ that minimizes $\E^\Q\left[ \left(g(\textbf{W}(t_i)) - \sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}} \right)^2 \right]$ ref ???. Note that we need to apply our own regularity conditions to $g$ in the simulation since otherwise with only a finite number of observations it would be possible to set the expected square error to zero for one set of paths, this $g$ would then fail for a subsequent set of paths.
 
 \begin{figure}
 	\centering
@@ -165,10 +165,42 @@ The section on optionality is only applied to obtain the optimal stopping times 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Modelling Credit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelling Credit}
+The CVA of a netting set is given by:
+\begin{equation}
+CVA(t_0) = N(t_0) \E \left[ \frac{LGD(\tau)V(\tau)^+}{N(\tau)}\right]
+\label{eq:cva}
+\end{equation}
+which is often rewritten (where $\lambda$ is teh undon..l.) as:
+\begin{equation}
+CVA(t_0) = N(t_0) \int_{t_0}^T \frac{LGD(t)V(t)^+}{N(t)} \lambda(t) dt
+\end{equation}
+but in this second case if there is correlation between the hazard rate $\lambda$ and the value process then $V(t)$
+should actually be calculated as 
+\begin{equation}
+V(t_i) = N(t_i)\E^\Q\left[ \sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}} \middle| \mathcal{F}(t_i) \cap \{\tau=t_i\} \right]
+\end{equation}
+which breaks the general framework for finding the forward values.  The alternative to that is to rewrite Equation \ref{eq:cva} as:
+\begin{align}
+CVA(t_0) &= N(t_0) \int_{t_0}^T \frac{LGD(t)V(t)^+}{N(t)} \mathbbm{1}_{\tau=t} dt\\
+&\approx N(t_0) \sum_{j=1}^{t_j=T} \frac{LGD(t_j)V(t_j)^+}{N(t_j)} \mathbbm{1}_{t_{j-1}<\tau \leq t_j}
+\label{eq:cva2}
+\end{align}
+where the indicator is evaluated on the same path simulations as used in estimating $V(t_j)$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Further work
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Further work}
 What if the option on a contract will depend on higher order cashflows.  For example perhaps a counterparty has the option to exercise into a physical swap, the swap on its own is slightly out of the money but the addition of that swap the the portfolio would decrease capital or margin requirements making the exercise decision optimal.  Or the swap could be in the money at the exercise date on a credit free basis but when it is adjusted for the counterparty risk it has a negative fair value.
+
+Evaluating functions dependent on rare default events could be improved if we could relate: $\E[X|\mathcal{F}(t)]$ to $\E[X|\mathcal{F}(t)\cap \tau<T]$.  Shreve \cite{Shreve} Lemma 5.2.2 seems to imply we would need to find the Radon Nikodym derivative $Z(t)$ that would change $\Q$ to an equivalent measure $\tilde{\Q}$ where $\tilde{\Q}(\tau<T)=1$.
+
+The framework could easily be extended to model a small set of scenarios with custom probabilities to cashflow scenarios.  The regressions functions would need to be stored from a previous calculation.
+
+The regression functions and optimal exercise times could always be stored to allow faster \"intraday\" calculations.
 
 
 \bibliographystyle{plain}

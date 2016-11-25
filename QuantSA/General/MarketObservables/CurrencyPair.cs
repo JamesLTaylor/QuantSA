@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
-    [Serializable]
+    /// <summary>
+    /// A currency pair.  Its observed value will always be units units of counter currency 
+    /// per single unit of base currency
+    /// </summary>
+    [Serializable]    
     public class CurrencyPair : MarketObservable
     {
         Currency baseCurrency;

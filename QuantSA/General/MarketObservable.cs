@@ -14,7 +14,18 @@ namespace QuantSA.General
 
         public sealed override bool Equals(object obj) {
             return ToString().Equals(obj.ToString());
-        }        
+        }
+        public static bool operator ==(MarketObservable left, MarketObservable right)
+        {
+            if ((object)left == null && (object)right == null) return true;
+            if ((object)left != null && (object)right == null) return false;
+            if ((object)left == null && (object)right != null) return false;
+            return (left.GetHashCode() == right.GetHashCode());
+        }
+        public static bool operator !=(MarketObservable left, MarketObservable right)
+        {
+            return !(left == right);
+        }
 
         public sealed override int GetHashCode()
         {
