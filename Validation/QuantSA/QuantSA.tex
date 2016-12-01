@@ -118,7 +118,7 @@ V(t_i) = N(t_i)\E^\Q\left[ \sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}} \middle
 Note that $V(t_0)$ is not random since all states of the world agree up to $t_0$ the time we are at when we fit the model and perform the valuation, but if $t_i>t_0$ then $V(t_i)$ is random and will be a function of the world observed up to $t_i$
 This could be evaluated with another Monte Carlo simulation beyond $t_i$ for each state of the world observed up to $t_i$ but as discussed in many sources [...] this is expensive.  So we assume that $\textbf{W}$ is Markov and note (see Shreve \cite{Shreve} Def 2.3.6) that 
 \begin{equation}
-V(t_i) = g(t_t, \textbf{W}(t_i))
+V(t_i) = g(t_i, \textbf{W}(t_i))
 \label{eq:regress}
 \end{equation}
 Longstaff and Schwartz \cite{Longstaff01valuingamerican} describe how to use regression to estimate this function $g$ given realizations of $\sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}}$, an example of this can be seen in Figure \ref{fig:ConditionalExpectationEx1}.  In general $g$ is exactly that function of $\textbf{W}(t_i)$ that minimizes $\E^\Q\left[ \left(g(\textbf{W}(t_i)) - \sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}} \right)^2 \right]$ ref ???. Note that we need to apply our own regularity conditions to $g$ in the simulation since otherwise with only a finite number of observations it would be possible to set the expected square error to zero for one set of paths, this $g$ would then fail for a subsequent set of paths.
@@ -173,7 +173,7 @@ The CVA of a netting set is given by:
 CVA(t_0) = N(t_0) \E \left[ \frac{LGD(\tau)V(\tau)^+}{N(\tau)}\right]
 \label{eq:cva}
 \end{equation}
-which is often rewritten (where $\lambda$ is teh undon..l.) as:
+which is often rewritten (where $\lambda$ is the unconditional probability of default at ) as:
 \begin{equation}
 CVA(t_0) = N(t_0) \int_{t_0}^T \frac{LGD(t)V(t)^+}{N(t)} \lambda(t) dt
 \end{equation}
@@ -182,14 +182,16 @@ should actually be calculated as
 \begin{equation}
 V(t_i) = N(t_i)\E^\Q\left[ \sum_{u_i>t_i}{\frac{S_{xn}(u_i)X_i}{N(u_i)}} \middle| \mathcal{F}(t_i) \cap \{\tau=t_i\} \right]
 \end{equation}
-which breaks the general framework for finding the forward values.  The alternative to that is to rewrite Equation \ref{eq:cva} as:
-\begin{align}
-CVA(t_0) &= N(t_0) \int_{t_0}^T \frac{LGD(t)V(t)^+}{N(t)} \mathbbm{1}_{\tau=t} dt\\
-&\approx N(t_0) \sum_{j=1}^{t_j=T} \frac{LGD(t_j)V(t_j)^+}{N(t_j)} \mathbbm{1}_{t_{j-1}<\tau \leq t_j}
+which breaks the general framework for finding the forward values.  The alternative to that is to evaluate Equation \ref{eq:cva} on the simulated paths as:
+\begin{equation}
+CVA(t_0) \approx N(t_0) \sum_{j=0}^{j^{max}} \frac{LGD(\tau_j)V(\tau_j)^+}{N(\tau_j)} \mathbbm{1}_{\tau_j<T}\\
 \label{eq:cva2}
-\end{align}
-where the indicator is evaluated on the same path simulations as used in estimating $V(t_j)$.
-
+\end{equation}
+where $\tau_j$ is the simulated default time on path $j$.  This gives us a very easy way to improve convergence: if the model simulating the defaults knows the last time $T$ up to which default is required and knows the probability of default taking place earlier than $T$, then it can simulate only paths where default is indeed before $T$ and the CVA can then be found on all paths as
+\begin{equation}
+CVA(t_0) \approx N(t_0) \P[\tau<T] \sum_{j=0}^{j^{max}} \frac{LGD(\tau_j)V(\tau_j)^+}{N(\tau_j)} 
+\label{eq:cva3}
+\end{equation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Further work
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,7 +202,9 @@ Evaluating functions dependent on rare default events could be improved if we co
 
 The framework could easily be extended to model a small set of scenarios with custom probabilities to cashflow scenarios.  The regressions functions would need to be stored from a previous calculation.
 
-The regression functions and optimal exercise times could always be stored to allow faster \"intraday\" calculations.
+The regression functions and optimal exercise times could always be stored to allow faster ``intraday'' calculations.
+
+When the cashflows are a function of past observables as well as those as time $t$ then $\E[X|\mathcal{F}(t)] = g(\textbf{W}, Z)$ for some unknown and unobserved $Z$. $X(t)$ does however depend on $Z$ so perhaps it is possible to construct a filtering problem where $Z$ is extracted from $X$ and then used in the regression.
 
 
 \bibliographystyle{plain}
