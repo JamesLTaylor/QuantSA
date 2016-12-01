@@ -10,6 +10,9 @@ namespace QuantSA.General
     public class FixedLeg : Product
     {
         Date[] paymentDates;
+        /// <summary>
+        /// The simple rates used to calculate cashflows.
+        /// </summary>
         double[] rates;
         double[] notionals;
         double[] accrualFractions;

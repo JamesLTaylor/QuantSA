@@ -29,7 +29,7 @@ namespace QuantSA.Valuation
     /// </remarks>
     public class Coordinator
     {
-        private bool useThreads = false;
+        private bool useThreads = true;
         int maxThreads = 4;
 
         private int N;
@@ -64,25 +64,11 @@ namespace QuantSA.Valuation
         }
 
 
-        private double[] PerformRegression2(Date date, SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs,
+        private double[] PerformRegression(Date date, SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs,
             List<int> subPortfolio)
         {
-            // We will use Ordinary Least Squares to create a
-            // linear regression model with an intercept term
-            var ols = new OrdinaryLeastSquares()
-            { UseIntercept = true, IsRobust = true };
-
-            // Create the inputs and outputs
-            double[][] inputs = simulatedRegs.GetPolynomialValsRegular(date);
-            double[] outputs = simulatedCFs.GetPathwisePV(date, subPortfolio);
-
-            // Use Ordinary Least Squares to estimate a regression model
-            MultipleLinearRegression regression = ols.Learn(inputs, outputs);
-            double[] fitted = regression.Transform(inputs);
-            //for (int i = 0; i<fitted.Length; i++)
-            //{
-            //    if (Math.Abs(outputs[i]) < 1e-10) fitted[i] = 0;
-            //}
+            double[] cfs = simulatedCFs.GetPathwisePV(date, subPortfolio);
+            double[] fitted = simulatedRegs.FitCFs(date, cfs);
             return fitted;
         }
 
@@ -237,7 +223,7 @@ namespace QuantSA.Valuation
             {
                 // perform regression on each exercise date                
                 int postExerciseProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(exDates[i])];
-                double[] fitted = PerformRegression2(exDates[i], simulatedCFs, simulatedRegs, new List<int> { postExerciseProductInd });
+                double[] fitted = PerformRegression(exDates[i], simulatedCFs, simulatedRegs, new List<int> { postExerciseProductInd });
                 postExRegressedValues.SetColumn(i, fitted);
             }
 
@@ -267,11 +253,7 @@ namespace QuantSA.Valuation
                 }
 
                 // update optimal stopping times
-                var ols = new OrdinaryLeastSquares()
-                { UseIntercept = true, IsRobust = true };
-                double[][] inputs = simulatedRegs.GetPolynomialValsRegular(exDate);
-                MultipleLinearRegression regression = ols.Learn(inputs, pvOptimalCFs);
-                double[] optimalCV = regression.Transform(inputs);
+                double[] optimalCV = simulatedRegs.FitCFs(exDate, pvOptimalCFs);
 
                 for (int pathCount = 0; pathCount < N; pathCount++)
                 {
@@ -363,16 +345,29 @@ namespace QuantSA.Valuation
             }
         }
 
+
+        /// <summary>
+        /// Update the conditional forward PVs over a range.
+        /// </summary>
+        /// <param name="fwdValueDates">The full set of forward value dates.</param>
+        /// <param name="startIndex">The start index of the range.  Forward values after this date will be updated.</param>
+        /// <param name="endIndex">The end index of the range.  forward values stricly before this date will be updated.</param>
+        /// <param name="regressedValues">The full set of estimated forward values.</param>
         private void ApplyForwardValueRegressionsChunk(List<Date> fwdValueDates, int startIndex, int endIndex, double[,] regressedValues)
         {
             for (int i = startIndex; i < endIndex; i++)
             {
                 // perform regression on each forward date
-                double[] fitted = PerformRegression2(fwdValueDates[i], simulatedCFs, simulatedRegs, originalTrades);
+                double[] fitted = PerformRegression(fwdValueDates[i], simulatedCFs, simulatedRegs, originalTrades);
                 regressedValues.SetColumn(i, fitted);
             }
         }
 
+        /// <summary>
+        /// Update the all the conditional forward PVs.  Will break them into ranges and 
+        /// call <see cref="ApplyForwardValueRegressionsChunk(List{Date}, int, int, double[,])"/>
+        /// </summary>
+        /// <param name="fwdValueDates">The dates at which forward values are required.</param>
         private double[,] ApplyForwardValueRegressions(List<Date> fwdValueDates)
         {
             double[,] regressedValues = new double[N, fwdValueDates.Count()];

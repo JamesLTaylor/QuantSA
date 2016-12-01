@@ -87,10 +87,10 @@ namespace ValuationTest
         [TestMethod]
         public void TestPhysicalSwaptionEPE()
         {
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 25000);
+            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
             List<Date> exDate = new List<Date> { new Date(2018, 9, 17) };
             // Couterparty has option to enter into a receive fixed swap
-            BermudanSwaption physicalSwaption = new BermudanSwaption(swapRec, exDate, true);
+            BermudanSwaption physicalSwaption = new BermudanSwaption(swapPay, exDate, false);
 
             Date date = valueDate;
             Date endDate = valueDate.AddTenor(new Tenor(0,0,3,5));

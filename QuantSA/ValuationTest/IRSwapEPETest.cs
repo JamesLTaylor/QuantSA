@@ -41,8 +41,8 @@ namespace ValuationTest
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
             Assert.AreEqual(2512.0, epe[0], 1.0);
-            Assert.AreEqual(6797.2, epe[90], 1.0);
-            Assert.AreEqual(1076.0, epe[182], 1.0);
+            Assert.AreEqual(6797.2, epe[90], 34.0);
+            Assert.AreEqual(1076.0, epe[182], 5.0);
 
         }
     }

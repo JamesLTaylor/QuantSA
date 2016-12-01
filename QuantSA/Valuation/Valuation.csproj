@@ -64,10 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Coordinator.cs" />
-    <Compile Include="Models\DeterministicCreditWithFXJump.cs" />
+    <Compile Include="Models\CreditFX\DeterministicCreditWithFXJump.cs" />
     <Compile Include="Models\Equity\EquitySimulator.cs" />
-    <Compile Include="Models\Equity\SimpleBlackEquity.cs" />
-    <Compile Include="Models\Rates\DeterministicNumeraire.cs" />
     <Compile Include="Models\Rates\DeterminsiticCurves.cs" />
     <Compile Include="Models\Rates\HullWhite1F.cs" />
     <Compile Include="NumeraireSimulator.cs" />
