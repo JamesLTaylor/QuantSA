@@ -24,9 +24,9 @@ Perform a general valuation.
 
 ## Arguments
 
-* **name** Name of object
+* **objectName** The name of the object to be created.
 * **products** A list of products.
-* **valueDate** The value date.
+* **valueDate** The value date.([Date](Date.html))
 * **model** A model able to handle all the market observables required to calculate the cashflows in the portfolio.
 * **nSims** Optional.  The number of simulations required if the model requires simulation.  If left blank will use a default value depending on the model.
 

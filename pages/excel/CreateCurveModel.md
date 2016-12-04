@@ -24,7 +24,7 @@ Create a curve based valuation model.
 
 ## Arguments
 
-* **name** Name of object
+* **objectName** The name of the object to be created.
 * **discountCurve** The discounting curve
 * **rateForecastCurves** The floating rate forecast curves for all the rates that the products in the portfolio will need.
 * **fxForecastCurves** The FX rate forecast curves for all the cashflow currencies other than the discounting currency.

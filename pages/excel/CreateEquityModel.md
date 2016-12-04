@@ -24,9 +24,9 @@ Create a model that simulates multiple equites in one currency.  Assumes lognorm
 
 ## Arguments
 
-* **name** Name of object
+* **objectName** The name of the object to be created.
 * **discountCurve** The discounting curve.  Will be used for discounting and as the drift rate for the equities.
-* **shareCodes** Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.
+* **shares** Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.(Share)
 * **spotPrices** The values of all the shares on the anchor date of the discounting curve. 
 * **volatilities** A single volatility for each share.
 * **divYields** A single continuous dividend yield rate for each equity.

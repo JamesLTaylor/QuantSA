@@ -24,9 +24,9 @@ Create a model that simulates multiple equites in one currency.  Assumes lognorm
 
 ## Arguments
 
-* **name** Name of option.
-* **shareCode** Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.
-* **exerciseDate** Exercise date.
+* **objectName** The name of the object to be created.
+* **share** A share.  This needs to match a share in the model that will be used to value this.([Share](Share.html))
+* **exerciseDate** Exercise date.([Date](Date.html))
 * **strike** Strike
 
 <!--HUMAN EDIT START-->

@@ -51,7 +51,7 @@ entries:
     - title: Exposing function to Excel
       url: /home_expose_to_excel.html 
       output: web      
-    - title: Clone and Serialize
+    - title: Clone and serialize
       url: /home_clone_and_serialize.html 
       output: web
     - title: Writing tests
@@ -59,6 +59,7 @@ entries:
       output: web
     - title: Editing documentation
       url: /home_edit_docs.html 
+      output: web      
     - title: Generating Markdown
       url: /home_generate_markdown.html       
       output: web

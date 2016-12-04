@@ -26,6 +26,21 @@
       output: web, pdf   
             
   # AUTO GENERATED BEYOND THIS POINT
+  - title: Credit
+    output: web, pdf
+    folderitems:
+    - title: CreateCDS
+      url: /CreateCDS.html
+      output: web, pdf
+    - title: CreateHazardCurve
+      url: /CreateHazardCurve.html
+      output: web, pdf
+    - title: CreateModelDeterministicCreditWithFXJump
+      url: /CreateModelDeterministicCreditWithFXJump.html
+      output: web, pdf
+    - title: GetSurvivalProb
+      url: /GetSurvivalProb.html
+      output: web, pdf
   - title: Curves
     output: web, pdf
     folderitems:
@@ -34,9 +49,6 @@
       output: web, pdf
     - title: CreateDatesAndRatesCurve
       url: /CreateDatesAndRatesCurve.html
-      output: web, pdf
-    - title: CreateDatesAndRatesCurveTest
-      url: /CreateDatesAndRatesCurveTest.html
       output: web, pdf
     - title: CreatePCACurveSimulator
       url: /CreatePCACurveSimulator.html
@@ -115,6 +127,9 @@
       output: web, pdf
     - title: CreateRateForecastCurveFromDiscount
       url: /CreateRateForecastCurveFromDiscount.html
+      output: web, pdf
+    - title: CreateZARBermudanSwaption
+      url: /CreateZARBermudanSwaption.html
       output: web, pdf
     - title: CreateZARSwap
       url: /CreateZARSwap.html

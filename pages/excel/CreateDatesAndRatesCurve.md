@@ -24,10 +24,10 @@ Create a curve of dates and rates.
 
 ## Arguments
 
-* **name** The name of the curve.
-* **dates** The dates at which the rates apply.
+* **objectName** The name of the object to be created.
+* **dates** The dates at which the rates apply.([Date](Date.html))
 * **rates** The rates.
-* **currency** Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency. ([Currency](Currency.html))
+* **currency** Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency.([Currency](Currency.html))
 
 <!--HUMAN EDIT START-->
 

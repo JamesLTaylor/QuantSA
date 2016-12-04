@@ -1,5 +1,6 @@
 ---
 title: Valuation Principles
+summary: The maths of how the general valuation works.
 keywords: 
 last_updated: September 18, 2016
 tags: 
@@ -7,6 +8,10 @@ sidebar: home_sidebar
 permalink: home_valuation_principles.html
 folder: home
 ---
+
+# Further Reading
+
+The mathematics of the general valuation and further references can be found in [this document](..\pdf_docs\QuantSA.pdf) or [here](https://github.com/JamesLTaylor/QuantSA/blob/master/Validation/QuantSA/QuantSA.pdf).  A summary follows below.
 
 # Products
 
