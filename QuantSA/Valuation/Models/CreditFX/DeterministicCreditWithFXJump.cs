@@ -39,13 +39,17 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterministicCreditWithFXJump"/> class.
         /// </summary>
-        /// <param name="survivalProbSource"></param>
-        /// <param name="otherCurrency">The other required in the simumalation.  Required since 
-        ///     <paramref name="fxSource"/> may provid multiple pairs.</param>
+        /// <param name="survivalProbSource">A curve that provides survival probabilities.  Usually a hazard curve.</param>
+        /// <param name="otherCurrency">The other currency required in the simulation.  The valuation currency will 
+        /// be inferred from the <paramref name="valueCurrencyDiscount"/>.  This value needs to be explicitly set
+        /// since <paramref name="fxSource"/> may provide multiple pairs.</param>
         /// <param name="fxSource">The source FX spot and forwards.</param>
-        /// <param name="valueCurrencyDiscount">The value currency discount.</param>
-        /// <param name="fxVol">The fx vol.</param>
-        /// <param name="relJumpSizeInDefault">The relative jump size in default.</param>
+        /// <param name="valueCurrencyDiscount">The value currency discount curve.</param>
+        /// <param name="fxVol">The fx volatility.</param>
+        /// <param name="relJumpSizeInDefault">The relative jump size in default.  For example if the value currency is ZAR and the 
+        /// other currency is USD then the fx is modelled as ZAR per USD and in default the fx rate will change to:
+        /// rate before default * (1 + relJumpSizeInDefault).</param>
+        /// <param name="expectedRecoveryRate">The constant recovery rate that will be assumed to apply in default.</param>
         public DeterministicCreditWithFXJump(ISurvivalProbabilitySource survivalProbSource,
             Currency otherCurrency, IFXSource fxSource, IDiscountingSource valueCurrencyDiscount, 
             double fxVol, double relJumpSizeInDefault, double expectedRecoveryRate)
@@ -156,9 +160,10 @@ namespace QuantSA.Valuation
                 dt = dt / 365.0;
                 double sdt = Math.Sqrt(dt);
                 double dW = normal.Generate();
+                // TODO: drift needs to be adjusted for default rate * jump size
                 simRate = simRate * newFXfwd/oldFxFwd * Math.Exp((- 0.5 * fxVol * fxVol) * dt + fxVol * sdt * dW);
                 if (simDefaultTime < allRequiredDates[timeCounter])
-                    simulation[allRequiredDates[timeCounter]] = simRate / (1 - relJumpSizeInDefault);
+                    simulation[allRequiredDates[timeCounter]] = simRate * (1 + relJumpSizeInDefault);
                 else
                     simulation[allRequiredDates[timeCounter]] = simRate;
             }

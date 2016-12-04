@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace QuantSA.General
 {
     /// <summary>
-    /// A credit default swap whose cashflows depend explicitly on the default events.
+    /// A par stype credit default swap whose cashflows depend explicitly on the default events.  
+    /// Protection always applies from the value date: there is not concept in the class of a forward starting 
+    /// CDS.
     /// </summary>
     /// <seealso cref="QuantSA.General.Product" />
     [Serializable]
@@ -33,6 +35,16 @@ namespace QuantSA.General
         Date defaultTimeValue;
         double recoveryRate;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CDS"/> class.
+        /// </summary>
+        /// <param name="refEntity">The reference entity whose default is covered by this CDS.</param>
+        /// <param name="ccy">The currency of the cashflows of the premium and default legs.</param>
+        /// <param name="paymentDates">The payment dates on which the premium is paid.</param>
+        /// <param name="notionals">The notionals that define the protection amount in the period until each payment date and the basis on which the premiums are calculated.</param>
+        /// <param name="rates">The simple rates that apply until the default time.  Used to calculate the premium flows.</param>
+        /// <param name="accrualFractions">The accrual fractions used to calculate the premiums paid on the <paramref name="paymentDates"/>.</param>
+        /// <param name="boughtProtection">If set to <c>true</c> then protection has been bought and the premium will be paid.</param>
         public CDS(ReferenceEntity refEntity, Currency ccy, Date[] paymentDates, double[] notionals, 
             double[] rates, double[] accrualFractions, bool boughtProtection)
         {
@@ -46,6 +58,14 @@ namespace QuantSA.General
             cfMultiplier = boughtProtection ? -1.0 : 1.0;
         }
 
+        /// <summary>
+        /// Call this after <see cref="SetIndexValues(MarketObservable, double[])" /> to get all the cashflows on
+        /// or AFTER the value date.
+        /// </summary>
+        /// <returns>
+        /// A List of cashflows.  Under some circumstances it may be faster if these are ordered by
+        /// increasing time.
+        /// </returns>
         public override List<Cashflow> GetCFs()
         {
             List<Cashflow> cfs = new List<Cashflow>();

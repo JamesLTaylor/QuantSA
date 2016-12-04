@@ -9,6 +9,9 @@ namespace QuantSA.General
 {
     /// <summary>
     /// Obtains survival probabilities from a piecewise linear interpolation in hazard rates.
+    /// <para/>
+    /// The curve parameterizes lambda as a function of T, the time in years since the anchor date and 
+    /// survival is given by exp(-lambda(T)*T)
     /// </summary>
     /// <seealso cref="QuantSA.General.ISurvivalProbabilitySource" />
     [Serializable]
@@ -20,9 +23,9 @@ namespace QuantSA.General
         /// <summary>
         /// Initializes a new instance of the <see cref="HazardCurve"/> class.
         /// </summary>
-        /// <param name="refEntity">The reference entity.</param>
-        /// <param name="anchorDate">The anchor date.</param>
-        /// <param name="dates">The dates on which the rates apply.</param>
+        /// <param name="refEntity">The reference entity for whom these hazard rates apply.</param>
+        /// <param name="anchorDate">The anchor date.  Survival probabilites can only be calculated up to dates after this date.</param>
+        /// <param name="dates">The dates on which the hazard rates apply.</param>
         /// <param name="hazardRates">The hazard rates.</param>
         /// <exception cref="System.ArgumentException">
         /// dates must be on or after the anchor date.
@@ -42,6 +45,12 @@ namespace QuantSA.General
             this.hazardRates = hazardRates;
         }
 
+        /// <summary>
+        /// Gets the survival probability between the anchor date and the date provided.
+        /// </summary>
+        /// <param name="date">The date up to which the survival probability will be calculated.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">Survival probabilities are only defined from the anchor date of the curve.</exception>
         public override double GetSP(Date date)
         {
             if (date < anchorDate) throw new ArgumentException("Survival probabilities are only defined from the anchor date of the curve.");

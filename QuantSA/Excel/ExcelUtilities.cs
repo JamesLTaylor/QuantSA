@@ -51,6 +51,7 @@ namespace QuantSA.Excel
             if (type == typeof(FloatingIndex)) return true;
             if (type == typeof(Tenor)) return true;
             if (type == typeof(Share)) return true;
+            if (type == typeof(ReferenceEntity)) return true;
             return false;
         }
 
@@ -70,6 +71,7 @@ namespace QuantSA.Excel
             if (type == typeof(FloatingIndex)) return true;
             if (type == typeof(Tenor)) return true;
             if (type == typeof(Share)) return true;
+            if (type == typeof(ReferenceEntity)) return true;
             return false;
         }
 
@@ -132,6 +134,21 @@ namespace QuantSA.Excel
         #region converting return data
 
         /// <summary>
+        /// Convert an single double into a 2d array of objects for returning to excel. 
+        /// </summary>
+        /// <remarks>
+        /// Note that we use objects in Excel return types so that we can send values or strings to the cell. 
+        /// </remarks>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public static object[,] ConvertToObjects(double result)
+        {
+            object[,] resultObj = new object[1, 1];
+            resultObj[0, 0] = result;
+            return resultObj;            
+        }
+
+        /// <summary>
         /// Convert an array of doubles into objects for returning to excel. 
         /// </summary>
         /// <remarks>
@@ -158,8 +175,7 @@ namespace QuantSA.Excel
                     resultObj[0, i] = result[i];
                 }
                 return resultObj;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -256,6 +272,18 @@ namespace QuantSA.Excel
                 throw new ArgumentException(inputName + " must be a single cell with a value representing an Excel Date.");
             }
             throw new ArgumentException(inputName + " must be a single cell with a value representing an Excel Date.");
+        }
+
+        /// <summary>
+        /// Get a single <see cref="Date"/> from a single excel date value.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static Date GetDate0D(object[,] values, string inputName, Date defaultValue)
+        {
+            if (values[0, 0] is ExcelMissing) return defaultValue;
+            else return GetDate0D(values, inputName);            
         }
 
         /// <summary>
@@ -771,6 +799,55 @@ namespace QuantSA.Excel
                 throw new ArgumentException(inputName + " must be a single row or column of strings representing shares.");
         }
 
+
+        /// <summary>
+        /// Return a reference entity from a string descriptor.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="inputName"></param>
+        /// <returns></returns>
+        private static ReferenceEntity GetReferenceEntity(object obj, string inputName)
+        {
+            if (obj is ExcelMissing)
+                throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is string)
+            {
+                string strValue = (string)obj;
+                return new ReferenceEntity(strValue);
+            }
+            throw new ArgumentException(inputName + ": reference entities shares must be created from strings.");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static ReferenceEntity GetReferenceEntity0D(object[,] values, string inputName)
+        {
+            if (values[0, 0] is ExcelMissing)
+                throw new ArgumentException(inputName + ": cannot be empty.");
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                if (values[0, 0] is string)
+                {
+                    return GetReferenceEntity((string)values[0, 0], inputName);
+                }
+                throw new ArgumentException(inputName + " must be a single cell with a string representing the name of a refernce entity.");
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a with a string representing the name of a refernce entity.");
+        }
+
+
+        /// <summary>
+        /// Gets an integer value from an Excel value.  The input value needs to be a number and will be rounded to an int.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="inputName">Name of the input.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">
+        /// </exception>
         private static int GetInt(object obj, string inputName)
         {
             if (obj is ExcelMissing)

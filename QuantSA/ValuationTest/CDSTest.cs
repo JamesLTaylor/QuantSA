@@ -14,7 +14,7 @@ namespace ValuationTest
         public void TestQuantoCDS()
         {
             double spot = 1.00;
-            double relJumpSizeInDefault = 0.2;
+            double relJumpSizeInDefault = -0.2;
             double cdsSpread = 0.025;
             // Trades
             Date anchorDate = new Date(2016, 11, 25);
@@ -25,7 +25,7 @@ namespace ValuationTest
             double[] zarNotionals = Vector.Ones(paymentDates.Length).Multiply(1000000.0);
             double[] usdNotionals = zarNotionals.Divide(spot);
             double[] zarSpreads = Vector.Ones(paymentDates.Length).Multiply(cdsSpread);
-            double[] usdSpreads = zarSpreads.Multiply(1/(1- relJumpSizeInDefault)); // Adjusted for the FX jump size.
+            double[] usdSpreads = zarSpreads.Multiply((1+ relJumpSizeInDefault)); // Adjusted for the FX jump size.
             bool boughtProtection = true;
             
             CDS cdsZAR = new CDS(refEntity, Currency.ZAR, paymentDates, zarNotionals, zarSpreads, accrualFractions, boughtProtection);

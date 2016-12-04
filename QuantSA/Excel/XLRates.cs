@@ -85,6 +85,22 @@ namespace QuantSA.Excel
             }
         }
 
+        [QuantSAExcelFunction(Description = "Create a ZAR Bermudan swaption based a ZAR quarterly, fixed for float Jibar swap.",
+            Name = "QSA.CreateZARBermudanSwaption",
+            HasGeneratedVersion = true,
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateZARBermudanSwaption.html")]
+        public static object CreateZARBermudanSwaption([ExcelArgument(Description = "The exercise dates.  The dates on which the person who is long optionality can exercise.")]Date[] exerciseDates,
+            [ExcelArgument(Description = "if set to TRUE then the person valuing this product owns the optionality.")]bool longOptionality,
+            [ExcelArgument(Description = "First reset date of the underlying swap.")]Date startDate,
+            [ExcelArgument(Description = "Tenor of underlying swap, must be a whole number of years.  Example '5Y'.")]Tenor tenor,
+            [ExcelArgument(Description = "The fixed rate paid or received on the underlying swap.")]double rate,
+            [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]bool payFixed,
+            [ExcelArgument(Description = "Flat notional for all dates.")]double notional)
+        {
+            return BermudanSwaption.CreateZARBermudanSwaption(exerciseDates, longOptionality, rate, payFixed, notional, startDate, tenor);
+        }
 
 
         [QuantSAExcelFunction(Description = "Create a ZAR quarterly, fixed for float Jibar swap.",
