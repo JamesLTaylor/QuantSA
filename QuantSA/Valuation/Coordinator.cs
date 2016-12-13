@@ -29,28 +29,36 @@ namespace QuantSA.Valuation
     /// </remarks>
     public class Coordinator
     {
+        // Settings
         private bool useThreads = true;
         int maxThreads = 4;
-
         private int N;
+
+        // Simulators and associated data
         private NumeraireSimulator numeraire;
         private List<Simulator> simulators;
         Dictionary<MarketObservable, int> indexSources;
         Date valueDate;
         Currency valueCurrency;
         List<Date> allDates;
+
+        // Portfolio information
         List<Product> allTrades;
         List<int> originalTrades;
-        SimulatedCashflows simulatedCFs;
-        SimulatedRegressors simulatedRegs;
         /// <summary>
         /// Trades in <see cref="allTrades"/> that are options with the indices of what they exercise into.
         /// </summary>
         Dictionary<int, List<int>> postExerciseTrades;
+        
+        // Simulated data
+        SimulatedCashflows simulatedCFs;
+        SimulatedRegressors simulatedRegs;
+        double[,] regressedValues;
+        
 
 
         /// <summary>
-        /// 
+        /// The main constructor for the Coordinator.
         /// </summary>
         /// <param name="numeraire">A special simulator that also includes the numeraire. There is only one of these.</param>        
         /// <param name="simulators">Optionally any extra simulators independent of the first.  Can be an empty list.</param>
@@ -63,14 +71,6 @@ namespace QuantSA.Valuation
             valueCurrency = numeraire.GetNumeraireCurrency();
         }
 
-
-        private double[] PerformRegression(Date date, SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs,
-            List<int> subPortfolio)
-        {
-            double[] cfs = simulatedCFs.GetPathwisePV(date, subPortfolio);
-            double[] fitted = simulatedRegs.FitCFs(date, cfs);
-            return fitted;
-        }
 
         /// <summary>
         /// Performs the simulation chunk that updates 
@@ -395,8 +395,31 @@ namespace QuantSA.Valuation
             return regressedValues;
         }
 
+        /// <summary>
+        /// Performs the regression for a single date
+        /// </summary>
+        /// <param name="date">The date.</param>
+        /// <param name="simulatedCFs">The simulated c fs.</param>
+        /// <param name="simulatedRegs">The simulated regs.</param>
+        /// <param name="subPortfolio">The sub portfolio.</param>
+        /// <returns></returns>
+        private double[] PerformRegression(Date date, SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs,
+            List<int> subPortfolio)
+        {
+            double[] cfs = simulatedCFs.GetPathwisePV(date, subPortfolio);
+            double[] fitted = simulatedRegs.FitCFs(date, cfs);
+            return fitted;
+        }
 
-        public double[] EPE(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+
+        /// <summary>
+        /// Initializes the Coordinator, runs the suimulation, applies early exercise rules, 
+        /// derives forward value paths.
+        /// </summary>
+        /// <param name="portfolioIn">The portfolio in.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <param name="fwdValueDates">The forward value dates.</param>
+        private void CalculateAll(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
         {
             this.valueDate = valueDate;
             PreparePortfolios(portfolioIn, fwdValueDates);
@@ -406,8 +429,37 @@ namespace QuantSA.Valuation
             simulatedRegs = new SimulatedRegressors(allDates, N, simulators);
             PerformSimulation();
             ApplyEarlyExercise();
+            if (fwdValueDates.Length>0) // Only regress is forward values are required.
+                regressedValues = ApplyForwardValueRegressions(fwdValueDates.ToList());
+        }
+        
 
-            double[,] regressedValues = ApplyForwardValueRegressions(fwdValueDates.ToList());
+        /// <summary>
+        /// Gets all the data that might be of interest after a simulation.
+        /// </summary>
+        /// <param name="portfolioIn">The portfolio in.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <param name="fwdValueDates">The forward value dates.</param>
+        /// <returns></returns>
+        public ResultStore GetValuePaths(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+        {
+            CalculateAll(portfolioIn, valueDate, fwdValueDates);
+            ResultStore results = new ResultStore();
+            return results;
+
+        }
+
+
+        /// <summary>
+        /// Calcualte the expected positive exposure on a portfolio.
+        /// </summary>
+        /// <param name="portfolioIn">The portfolio in.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <param name="fwdValueDates">The forward value dates.</param>
+        /// <returns></returns>
+        public double[] EPE(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+        {
+            CalculateAll(portfolioIn, valueDate, fwdValueDates);
 
             double[] epe = Vector.Zeros(fwdValueDates.Length);
             List<Date> fwdValueDatesList = fwdValueDates.ToList();
@@ -437,15 +489,7 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         public double Value(Product[] portfolioIn, Date valueDate)
         {
-            this.valueDate = valueDate;
-            PreparePortfolios(portfolioIn, new Date[0]);                                    
-            AssociateFactorsWithSimulators(allTrades);
-            InitializeSimulators(allTrades, new List<Date>());
-            simulatedCFs = new SimulatedCashflows(allTrades.Count, N); // initialized outside to allow multiple threads.
-            simulatedRegs = new SimulatedRegressors(allDates, N, simulators);
-            PerformSimulation();
-            ApplyEarlyExercise();
-
+            CalculateAll(portfolioIn, valueDate, new Date[0]);
             double[] pathwisePVs = simulatedCFs.GetPathwisePV(valueDate, originalTrades);
             return pathwisePVs.Average();
         }
