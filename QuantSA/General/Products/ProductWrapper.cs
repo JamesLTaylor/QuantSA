@@ -17,7 +17,7 @@ namespace QuantSA.General
 
         GetIndexValueDelegate getIndexValueToUse;
         Currency currency;
-        Date valueDate;
+        protected Date valueDate;
         List<Date> cfDates;
 
         /// <summary>
