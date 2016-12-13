@@ -101,7 +101,7 @@ namespace QuantSA.Valuation
         }
 
         /// <summary>
-        /// Extraxcts all the x for a given date and regressor nuymber.
+        /// Extracts all the x for a given date and regressor number.
         /// </summary>
         /// <param name="dateCol">The date column.</param>
         /// <param name="regressorNumber">The regressor number.</param>
@@ -144,6 +144,35 @@ namespace QuantSA.Valuation
                     }
                 }
                 result[row] = rowValues;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the number of regressors.
+        /// </summary>
+        /// <returns></returns>
+        public int GetNumberOfRegressors()
+        {
+            return regressors.GetLength(2);
+        }
+
+        /// <summary>
+        /// Gets the realizations of one of the regressors.  (number of simulation) rows by 
+        /// (number of dates) columns.  Only used for debugging and runtime examination of 
+        /// data.  Normally regression should be done by directly the methods in this class.
+        /// </summary>
+        /// <returns></returns>
+        public double[,] GetRegressors(int regressorNumber, Date[] fwdValueDates)
+        {
+            double[,] result = new double[nSims, fwdValueDates.Length];
+            for (int j = 0; j < fwdValueDates.Length; j++)
+            {
+                int dateCol = dates.FindIndex(d => d == fwdValueDates[j]);
+                for (int i = 0; i<nSims; i++)
+                {
+                    result[i, j] = regressors[i, dateCol, regressorNumber];
+                }
             }
             return result;
         }

@@ -445,8 +445,19 @@ namespace QuantSA.Valuation
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
             ResultStore results = new ResultStore();
-            return results;
+            results.Add("regressedFwdsPVs", regressedValues);
+            double[,] fwdCashflowPVs = new double[N, fwdValueDates.Count()];
+            for (int i = 0; i<fwdValueDates.Count(); i++)
+            {
+                fwdCashflowPVs.SetColumn(i, simulatedCFs.GetPathwisePV(fwdValueDates[i], originalTrades));
+            }
+            results.Add("fwdCashflowPVs", fwdCashflowPVs);
 
+            for (int regressorNumber = 0; regressorNumber < simulatedRegs.GetNumberOfRegressors(); regressorNumber++)
+            {
+                results.Add("regressor" + regressorNumber.ToString(), simulatedRegs.GetRegressors(regressorNumber, fwdValueDates));
+            }
+            return results;
         }
 
 

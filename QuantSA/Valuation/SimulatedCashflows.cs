@@ -49,6 +49,7 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         internal double[] GetPathwisePV(Date date, List<int> subPortfolio)
         {
+            //TODO: This could be done faster for a set of dates if the cashflows are ordered by time.  Then the value in column i is the value in column i+1 plus the cashflows that take place between the dates associated with the columns.
             double[] result = Vector.Zeros(nSims);
             foreach (int productCounter in subPortfolio)
             {
