@@ -16,13 +16,27 @@ namespace GenerateXLCode
     {
         private static Dictionary<string, List<string>> categoriesAndGeneratedMethods = new Dictionary<string, List<string>>();
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            string filename = @"C:\Dev\QuantSA\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll";
-            string outputPath = @"C:\Dev\QuantSA\QuantSA\Excel\Generated\";
+            string filename;
+            string outputPath;
+            if (args.Length < 2)
+            {
+                Console.WriteLine("Arguments not provided, using default values");
+                filename = @"C:\Dev\QuantSA\QuantSA\ExcelFunctions\bin\Debug\QuantSA.ExcelFunctions.dll";
+                outputPath = @"C:\Dev\QuantSA\QuantSA\Excel\Generated\";
+            }
+            else
+            {
+                filename = args[0];
+                outputPath = args[1];
+            }
+            Console.WriteLine("filename = " + filename);
+            Console.WriteLine("outputPath = " + outputPath);
             Dictionary<string, MethodInfo> functions = GetFuncsWithGenVersion(filename);            
             GenerateMethodCode(functions);
             WriteFiles(outputPath);
+            return 0;
         }
 
         private static void WriteFiles(string outputPath)
@@ -35,6 +49,7 @@ namespace GenerateXLCode
                 sb.AppendLine("using XU = QuantSA.Excel.ExcelUtilities;");
                 sb.AppendLine("using QuantSA.General;");
                 sb.AppendLine("using QuantSA.Valuation;");
+                sb.AppendLine("using QuantSA.ExcelFunctions;");
                 sb.AppendLine("");
                 sb.AppendLine("namespace QuantSA.Excel");
                 sb.AppendLine("{");
@@ -64,6 +79,7 @@ namespace GenerateXLCode
                 string categoryName = entry.Value.DeclaringType.Name;
                 string xlName = quantsaAttribute.Name;
                 string fName = entry.Value.Name;
+                String returnTypeName = entry.Value.ReturnType.Name;
                 Type returnType = entry.Value.ReturnType;
                 List<Type> argTypes = new List<Type>();
                 List<string> argNames = new List<string>();
@@ -112,11 +128,11 @@ namespace GenerateXLCode
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(Spaces(8) + "[QuantSAExcelFunction(Name = \"" + xlName + "\", IsGeneratedVersion = true)]");
             sb.Append(Spaces(8) + "public static " + returnTypeString + " _" + fName + "(");
-            if (!ExcelUtilities.IsPrimitiveOutput(returnType))
+            if (!TypeInformation.IsPrimitiveOutput(returnType))
                 sb.AppendLine("string objectName,");            
                 
             for (int i = 0; i < argNames.Count; i++) {
-                if (ExcelUtilities.IsPrimitiveOutput(returnType) && i==0)
+                if (TypeInformation.IsPrimitiveOutput(returnType) && i==0)
                     sb.Append("object[,] " + argNames[i]);
                 else
                     sb.Append(Spaces(28) + "object[,] " + argNames[i]);
@@ -138,7 +154,7 @@ namespace GenerateXLCode
             }
             sb.AppendLine(Spaces(16) + returnType.Name + " _result = " + categoryName + "." + fName + "(" + argCallList.ToString() + ");");
 
-            if (ExcelUtilities.IsPrimitiveOutput(returnType))
+            if (TypeInformation.IsPrimitiveOutput(returnType))
                 sb.AppendLine(Spaces(16) + "return XU.ConvertToObjects(_result);");
             else
                 sb.AppendLine(Spaces(16) + "return XU.AddObject(objectName, _result);");
@@ -179,7 +195,7 @@ namespace GenerateXLCode
             else if (type.Name.Contains('['))
                 nD = "1D";
             string name = type.IsArray ? type.GetElementType().Name : type.Name;
-            if (ExcelUtilities.InputTypeHasConversion(type))
+            if (TypeInformation.InputTypeHasConversion(type))
             {
                 if (defaultValue== null)
                     return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\");";
