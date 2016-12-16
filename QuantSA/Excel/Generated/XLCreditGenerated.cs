@@ -2,6 +2,7 @@ using System;
 using XU = QuantSA.Excel.ExcelUtilities;
 using QuantSA.General;
 using QuantSA.Valuation;
+using QuantSA.ExcelFunctions;
 
 namespace QuantSA.Excel
 {

@@ -84,13 +84,7 @@
     <Compile Include="Generated\XLValuationGenerated.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ribbon.cs" />
-    <Compile Include="XLCredit.cs" />
-    <Compile Include="XLCurves.cs" />
-    <Compile Include="XLEquities.cs" />
-    <Compile Include="XLFX.cs" />
     <Compile Include="XLGeneral.cs" />
-    <Compile Include="XLRates.cs" />
-    <Compile Include="XLValuation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -102,6 +96,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExcelFunctions\ExcelFunctions.csproj">
+      <Project>{ce3f5531-09ee-4829-9374-866835521e22}</Project>
+      <Name>ExcelFunctions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\General\General.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>General</Name>

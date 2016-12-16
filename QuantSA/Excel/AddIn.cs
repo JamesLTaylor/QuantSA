@@ -259,18 +259,34 @@ public class MyAddIn : IExcelAddIn
 
 
     /// <summary>
-    /// Use reflection on Excel.dll to find all the members that have 
+    /// Use reflection on QuantSA.Excel.dll and QuantSA.ExcelFunctions.dll to find all the members that have 
     /// the <see cref="QuantSAExcelFunctionAttribute"/> attribute.
     /// </summary>
     /// <returns></returns>
     public static Dictionary<string, MemberInfo> GetQuantSAFunctions()
     {
         Dictionary<string, MemberInfo> quantSAFunctions = new Dictionary<string, MemberInfo>();
-        Assembly excelAssemby = Assembly.GetAssembly(typeof(XLGeneral));
+
+        Assembly assembly1 = Assembly.GetAssembly(typeof(XLGeneral));
+        UpdateFunctionsFromAssembly(assembly1, quantSAFunctions);
+        Assembly assembly2 = Assembly.GetAssembly(typeof(QuantSA.ExcelFunctions.XLEquities));
+        UpdateFunctionsFromAssembly(assembly2, quantSAFunctions);
+
+        return quantSAFunctions;
+    }
+
+    /// <summary>
+    /// Updates the functions from assembly.
+    /// </summary>
+    /// <param name="assembly">The assembly.</param>
+    /// <param name="quantSAFunctions">The quant sa functions.</param>
+    private static void UpdateFunctionsFromAssembly(Assembly assembly, Dictionary<string, MemberInfo> quantSAFunctions)
+    {    
+
         Type[] types = null;
         try
         {
-            types = excelAssemby.GetTypes();
+            types = assembly.GetTypes();
         }
         catch (ReflectionTypeLoadException ex)
         {
@@ -314,7 +330,7 @@ public class MyAddIn : IExcelAddIn
                 }
             }
         }
-        return quantSAFunctions;
+        
     }
 
 
