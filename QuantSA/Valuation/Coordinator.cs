@@ -604,7 +604,7 @@ namespace QuantSA.Valuation
                                 break;
                             }
                         }
-                        if (!found) throw new IndexOutOfRangeException("Required currency pair: " + index.ToString() + " is not provided by any of the simulators");
+                        if (!found) throw new IndexNotAvailableException("Required currency pair: " + index.ToString() + " is not provided by any of the simulators");
 
                     }
                 }

@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Coordinator.cs" />
+    <Compile Include="IndexNotAvailableException.cs" />
     <Compile Include="Models\CreditFX\DeterministicCreditWithFXJump.cs" />
     <Compile Include="Models\Equity\EquitySimulator.cs" />
     <Compile Include="Models\Rates\DeterminsiticCurves.cs" />
