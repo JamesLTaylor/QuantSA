@@ -33,7 +33,7 @@ namespace PluginDemo
         {
             try
             {
-                PluginDiscount discount = new PluginDiscount(ExcelUtilities.GetDates0D(anchorDate, "anchorDate"), rate);                
+                PluginDiscount discount = new PluginDiscount(ExcelUtilities.GetDate0D(anchorDate, "anchorDate"), rate);                
                 return PluginConnection.objectMap.AddObject(name, discount);                
             }
             catch (Exception e)
@@ -52,7 +52,7 @@ namespace PluginDemo
             try
             {
                 IDiscountingSource discountCurve = PluginConnection.objectMap.GetObjectFromID<IDiscountingSource>(name);
-                return discountCurve.GetDF(ExcelUtilities.GetDates0D(date, "date"));
+                return discountCurve.GetDF(ExcelUtilities.GetDate0D(date, "date"));
             }
             catch (Exception e)
             {
