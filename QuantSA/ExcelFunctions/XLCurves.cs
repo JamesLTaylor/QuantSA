@@ -9,6 +9,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve. (Curve)",
             Name = "QSA.FitCurveNelsonSiegel",
             HasGeneratedVersion = true,
+            ExampleSheet = "FitCurveNelsonSiegel.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/FitCurveNelsonSiegel.html")]
@@ -23,6 +24,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Find the interpolated value of any QuantSA created curve.",
             Name = "QSA.CurveInterp",
             HasGeneratedVersion = true,
+            ExampleSheet = "FitCurveNelsonSiegel.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CurveInterp.html")]
@@ -45,6 +47,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Create a curve simulator based on principle components.",
             Name = "QSA.CreatePCACurveSimulator",
             HasGeneratedVersion = true,
+            ExampleSheet = "PCAExample.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreatePCACurveSimulator.html")]
@@ -65,6 +68,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Gets a block of principle component simulated rates.  Each row is a curve at a simulation date.",
             Name = "QSA.PCACurveSimulatorGetRates",
             HasGeneratedVersion = true,
+            ExampleSheet = "PCAExample.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/PCACurveSimulatorGetRates.html")]
@@ -79,6 +83,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Create a curve of dates and rates.",
             Name = "QSA.CreateDatesAndRatesCurve",
             HasGeneratedVersion = true,
+            ExampleSheet = "GeneralSwap.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateDatesAndRatesCurve.html")]
@@ -94,6 +99,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Get the covariance in log returns from a blob of curves.",
             Name = "QSA.CovarianceFromCurves",
             HasGeneratedVersion = true,
+            ExampleSheet = "PCAExample.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CovarianceFromCurves.html")]

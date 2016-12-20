@@ -18,8 +18,9 @@ namespace PrepareRelease
             string tempOutputPath = Path.Combine(rootpath, @"temp");
 
             // Check spreadsheets
-            //SpreadsheetChecker ssChecker = new SpreadsheetChecker(xllPath, exampleSheetPath, tempOutputPath);
+            SpreadsheetChecker ssChecker = new SpreadsheetChecker(xllPath, exampleSheetPath, tempOutputPath);
             //int failedSheets = ssChecker.Check();
+            //Console.WriteLine("Running example sheets: " + failedSheets.ToString() + " errors.");
 
             // Generate the help
             string[] dllsWithExposedFunctions = {
@@ -27,8 +28,15 @@ namespace PrepareRelease
                 Path.Combine(rootpath, @"QuantSA\Excel\bin\Debug\QuantSA.ExcelFunctions.dll") };
             string outputPath = @"C:\Dev\jamesltaylor.github.io\";
             string helpURL = "http://www.quantsa.org/";
-            MarkdownGenerator generator = new MarkdownGenerator(dllsWithExposedFunctions, outputPath, helpURL);
-            generator.Generate();
+            MarkdownGenerator generator = new MarkdownGenerator(dllsWithExposedFunctions, outputPath, helpURL, tempOutputPath);
+            int failedMarkdown = generator.Generate();
+            Console.WriteLine("Generating markdown: " + failedMarkdown.ToString() + " errors.");
+
+            // Check the example sheets are valid
+            int failedExampleSheetRefs = generator.AreAllExampleSheetsValid(ssChecker.GetSheetsAndFuncs());
+            Console.WriteLine("Checking valid example sheets: " + failedExampleSheetRefs.ToString() + " errors.");
+
+            Console.ReadKey();
 
         }
     }

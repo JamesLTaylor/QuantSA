@@ -12,6 +12,7 @@ namespace QuantSA.ExcelFunctions
             Name = "QSA.CreateCurveModel",
             HasGeneratedVersion = true,
             Category = "QSA.Valuation",
+            ExampleSheet = "GeneralSwap.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateCurveModel.html")]
         public static NumeraireSimulator CreateCurveModel([ExcelArgument(Description = "The discounting curve")]IDiscountingSource discountCurve,

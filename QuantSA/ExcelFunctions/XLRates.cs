@@ -11,11 +11,12 @@ namespace QuantSA.ExcelFunctions
     public class XLRates
     {
         [QuantSAExcelFunction(Description = "Create a general fixed leg of a swap.",
-        Name = "QSA.CreateFixedLeg",
+            Name = "QSA.CreateFixedLeg",
             HasGeneratedVersion = true,
-        Category = "QSA.Rates",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateFixedLeg.html")]
+            ExampleSheet = "GeneralSwap.xlsx",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateFixedLeg.html")]
         public static FixedLeg CreateFixedLeg([ExcelArgument(Description = "The currency of the cashflows.")]Currency currency,
         [ExcelArgument(Description = "The dates on which the payments are made.")]Date[] paymentDates,
         [ExcelArgument(Description = "The notionals on which the payments are based.")]double[] notionals,
@@ -26,11 +27,12 @@ namespace QuantSA.ExcelFunctions
         }
 
         [QuantSAExcelFunction(Description = "Create a general floating leg of a swap.",
-        Name = "QSA.CreateFloatLeg",
+            Name = "QSA.CreateFloatLeg",
             HasGeneratedVersion =true,
-        Category = "QSA.Rates",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateFloatLeg.html")]
+            ExampleSheet = "GeneralSwap.xlsx",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateFloatLeg.html")]
         public static FloatLeg CreateFloatLeg([ExcelArgument(Description = "The currency of the cashflows. (Currency)")]Currency currency,
         [ExcelArgument(Description = "A string describing the floating index.")]FloatingIndex floatingIndex,
         [ExcelArgument(Description = "The dates on which the floating indices reset.")]Date[] resetDates,
@@ -45,11 +47,12 @@ namespace QuantSA.ExcelFunctions
 
 
         [QuantSAExcelFunction(Description = "Create a general set of cashflows that can be valued like any other product.",
-        Name = "QSA.CreateCashLeg",
-        Category = "QSA.Rates",
+            Name = "QSA.CreateCashLeg",
+            Category = "QSA.Rates",
             HasGeneratedVersion = true,
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateCashLeg.html")]
+            ExampleSheet = "GeneralSwap.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateCashLeg.html")]
         public static CashLeg CreateCashLeg([ExcelArgument(Description = "The dates on which the cashflows take place.")]Date[] paymentDates,
             [ExcelArgument(Description = "The sizes of the cashflows.  Positive for cashflows that are received.")]double[] amounts,
             [ExcelArgument(Description = "The currencies of the cashflows.")]Currency[] currencies)
@@ -60,6 +63,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Create a ZAR Bermudan swaption based a ZAR quarterly, fixed for float Jibar swap.",
             Name = "QSA.CreateZARBermudanSwaption",
             HasGeneratedVersion = true,
+            ExampleSheet = "BermudanSwaption.xlsx",
             Category = "QSA.Rates",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateZARBermudanSwaption.html")]
@@ -77,7 +81,8 @@ namespace QuantSA.ExcelFunctions
 
         [QuantSAExcelFunction(Description = "Create a ZAR quarterly, fixed for float Jibar swap.",
             Name = "QSA.CreateZARSwap",
-            HasGeneratedVersion = true, 
+            HasGeneratedVersion = true,
+            ExampleSheet = "ZARSwap.xlsx", 
             Category = "QSA.Rates",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateZARSwap.html")]
@@ -91,11 +96,12 @@ namespace QuantSA.ExcelFunctions
         }
 
         [QuantSAExcelFunction(Description = "Basic swap valuation.  Uses the same curve for forecasting and discounting and uses the 3 month rate off the curve as the Jibar Fix.",
-        Name = "QSA.ValueZARSwap",
-            HasGeneratedVersion = true, 
-        Category = "QSA.Rates",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/ValueZARSwap.html")]
+            Name = "QSA.ValueZARSwap",
+            HasGeneratedVersion = true,
+            ExampleSheet = "ZARSwap.xlsx",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/ValueZARSwap.html")]
         public static double ValueZARSwap1Curve([ExcelArgument(Description = "The name of the swap.")]IRSwap swap,
             [ExcelArgument(Description = "The date on which valuation is required.  Cannot be before the anchor date of the curve.")]Date valueDate,
             [ExcelArgument(Description = "The discounting curve.  Will also be used for forecasting Jibar and providing the most recent required Jibar fix.")]IDiscountingSource curve)
@@ -126,6 +132,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Create a curve to forecast floating interest rates based on a discount curve.",
             Name = "QSA.CreateRateForecastCurveFromDiscount",
             HasGeneratedVersion = true,
+            ExampleSheet = "GeneralSwap.xlsx",
             Category = "QSA.Rates",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateRateForecastCurveFromDiscount.html")]
@@ -193,16 +200,16 @@ namespace QuantSA.ExcelFunctions
 
 
         [QuantSAExcelFunction(Description = "Create demo Hull White model.  Will be used for discounting and forecasting any indices specified.",
-        Name = "QSA.CreateHWModelDemo",
-        Category = "QSA.Rates",
+            Name = "QSA.CreateHWModelDemo",
+            Category = "QSA.Rates",
             HasGeneratedVersion = true,
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateHWModelDemo.html",
-            ExampleSheet = "")]
-        public static HullWhite1F CreateHWModelDemo([ExcelArgument(Description = "")]double meanReversion,
-            [ExcelArgument(Description = "")]double flatVol,
-            [ExcelArgument(Description = "")]IDiscountingSource baseCurve,
-            [ExcelArgument(Description = "")]FloatingIndex forecastIndices)
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateHWModelDemo.html",
+            ExampleSheet = "EPE.xlsx")]
+        public static HullWhite1F CreateHWModelDemo([ExcelArgument(Description = "The constant rate of mean reversion.")]double meanReversion,
+            [ExcelArgument(Description = "The constant short rate volatility.  Note that this is a Gaussian vol and will in general be lower than the vol that would be used in Black.")]double flatVol,
+            [ExcelArgument(Description = "The curve to which zero coupon bond prices will be calibrated.")]IDiscountingSource baseCurve,
+            [ExcelArgument(Description = "The indices that should be forecast with this same cuve.  No spreads are added.")]FloatingIndex forecastIndices)
         {
             Date anchorDate = baseCurve.getAnchorDate();
             double flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));

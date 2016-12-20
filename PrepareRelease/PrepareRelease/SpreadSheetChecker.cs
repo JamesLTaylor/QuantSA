@@ -40,6 +40,27 @@ namespace PrepareRelease
         }
 
         /// <summary>
+        /// Read the sheets and functions called in each sheet from <see cref="SHEET_AND_FUNCS_FILE"/>
+        /// </summary>
+        /// <returns></returns>
+        internal Dictionary<string, HashSet<string>> GetSheetsAndFuncs()
+        {
+            string[] lines = File.ReadAllLines(Path.Combine(tempOutputPath, SHEET_AND_FUNCS_FILE));
+            Dictionary<string, HashSet<string>> localSheetsAndFuncs = new Dictionary<string, HashSet<string>>();
+            foreach (string line in lines)
+            {
+                string sheet = line.Split(',')[0];
+                string name = line.Split(',')[1];                
+                if (!localSheetsAndFuncs.ContainsKey(sheet))
+                {
+                    localSheetsAndFuncs[sheet] = new HashSet<string>();
+                }
+                localSheetsAndFuncs[sheet].Add(name);
+            }
+            return localSheetsAndFuncs;
+        }
+
+        /// <summary>
         /// Counts the number of failed sheets and write the failed cells to a file in 
         /// <see cref="tempOutputPath"/> whose name is contained in <see cref="ERROR_OUTPUT_FILE"/>
         /// </summary>
@@ -100,14 +121,13 @@ namespace PrepareRelease
                     {
                         string temp = cell.Formula.ToString();
                         temp = temp.Substring(1, temp.IndexOf('(')-1);
-                        funcs.Add(temp);
+                        funcs.Add(temp.Split('.')[1]);
                     }
 
                     if (cell.HasFormula && IsError(cell.Value))
                     {
                         errorCount++;
                         sheetErrorInfo.Add(wb.Name + "," + sheet.Name +"," + cell.Address +"," + cell.Text.ToString());
-                        //Console.WriteLine(wb.Name + "," + sheet.Name + "," + cell.Address + "," + cell.Text.ToString());                        
                     }
                 }
             }

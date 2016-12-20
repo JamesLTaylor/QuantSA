@@ -107,27 +107,70 @@ namespace PrepareRelease
     /// </summary>
     class MarkdownGenerator
     {
+        public const string MD_ERROR_OUTPUT_FILE = "MarkdownGenerator.csv";
+        public const string SS_ERROR_OUTPUT_FILE = "AreExampleSheetsValuid.csv";
         List<string> documentedTypes;
         Dictionary<string, int> generatedMethodArgCount;
         contentCollection contentCollection;
+        List<string> errorInfo;
         private string[] dllsWithExposedFunctions;
         private string outputPath;
         private string helpURL;
+        private string tempOutputPath;
 
-        public MarkdownGenerator(string[] dllsWithExposedFunctions, string outputPath, string helpURL)
+        public MarkdownGenerator(string[] dllsWithExposedFunctions, string outputPath, string helpURL, string tempOutputPath)
         {
             this.dllsWithExposedFunctions = dllsWithExposedFunctions;
             this.outputPath = outputPath;
             this.helpURL = helpURL;
+            this.tempOutputPath = tempOutputPath;
             documentedTypes = new List<string>();
             generatedMethodArgCount = new Dictionary<string, int>();
+            
         }
 
-        public void Generate()
+        public int Generate()
         {
             contentCollection = new contentCollection();
+            errorInfo = new List<string>();
             UpdateContentCollection();
             UpdateHelpYMLAndWriteMD();
+            File.WriteAllLines(Path.Combine(tempOutputPath, MD_ERROR_OUTPUT_FILE), errorInfo.ToArray());
+            return errorInfo.Count();
+        }
+
+
+        /// <summary>
+        /// Checks if all the example sheets listed in the markdown are.
+        /// <para/>
+        /// Only call after Generate has been called.
+        /// </summary>
+        /// <returns></returns>
+        public int AreAllExampleSheetsValid(Dictionary<string, HashSet<string>> sheetsAndFuncs)
+        {
+            List<string> errorList = new List<string>();
+            if (contentCollection == null) throw new Exception("Call Generate() before calling AreAllExampleSheetsValid().");
+            foreach (string category in contentCollection.GetCategories())
+            {
+                foreach (string name in contentCollection.GetNames(category))
+                {
+                    FileContents contents = contentCollection.Get(category, name);
+                    string listedExample = contents.exampleSheet;
+                    if (sheetsAndFuncs.ContainsKey(listedExample))
+                    {
+                        HashSet<string> funcs = sheetsAndFuncs[listedExample];
+                        if (!funcs.Contains(name))
+                            errorList.Add(name + ", Lists '" + listedExample + "' but that sheet does not call it.");
+                    }
+                    else
+                    {
+                        errorList.Add(name + ", Lists '" + listedExample + "' but that sheet does not exist.");
+                    }
+
+                }
+            }
+            File.WriteAllLines(Path.Combine(tempOutputPath, SS_ERROR_OUTPUT_FILE), errorList.ToArray());
+            return errorList.Count();
         }
 
         /// <summary>
@@ -305,6 +348,7 @@ namespace PrepareRelease
         /// <returns></returns>
         private bool InputTypeShouldHaveHelpLink(Type inputType)
         {
+            //TODO: This method should be replaces with checking if the type is in documentedTypes.  That would mean one less thing to maintain.
             Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
             if (type == typeof(bool)) return true;
             if (type.Name == "Date") return true;
@@ -370,7 +414,6 @@ namespace PrepareRelease
         private void UpdateContentCollection1dll(string dllName)
         {
             Assembly DLL = Assembly.LoadFile(dllName);
-            List<string> errorList = new List<string>();
             foreach (Type type in DLL.GetExportedTypes())
             {
                 foreach (MemberInfo member in type.GetMembers())
@@ -389,20 +432,20 @@ namespace PrepareRelease
                         // Check consistency of contents
                         string[] categoryParts = attribute.Category.Split('.');
                         string[] nameParts = attribute.Name.Split('.');
-                        if (attribute.Description.Length < 5) errorList.Add(type.Name + "," + attribute.Name + ",,Does not have a description.");
-                        if (!nameParts[0].Equals("QSA")) errorList.Add(type.Name + "," + attribute.Name + ",,Name does not start with 'QSA'.");
-                        if (!("XL" + categoryParts[1]).Equals(type.Name)) errorList.Add(type.Name + "," + attribute.Name + ",,Category does not match file.");
+                        if (attribute.Description.Length < 5) errorInfo.Add(type.Name + "," + attribute.Name + ",,Does not have a description.");
+                        if (!nameParts[0].Equals("QSA")) errorInfo.Add(type.Name + "," + attribute.Name + ",,Name does not start with 'QSA'.");
+                        if (!("XL" + categoryParts[1]).Equals(type.Name)) errorInfo.Add(type.Name + "," + attribute.Name + ",,Category does not match file.");
                         if (attribute.HelpTopic == null)
                         {
-                            errorList.Add(type.Name + "," + attribute.Name + ",,Does not have a help topic.");
+                            errorInfo.Add(type.Name + "," + attribute.Name + ",,Does not have a help topic.");
                         }
                         else if (!attribute.HelpTopic.Equals(helpURL + nameParts[1] + ".html"))
                         {
-                            errorList.Add(type.Name + "," + attribute.Name + ",,Help topic should be," + helpURL + nameParts[1] + ".html");
+                            errorInfo.Add(type.Name + "," + attribute.Name + ",,Help topic should be," + helpURL + nameParts[1] + ".html");
                         }
                         if (attribute.ExampleSheet == null)
                         {
-                            errorList.Add(type.Name + "," + attribute.Name + ",,Example sheet has not been set.");
+                            errorInfo.Add(type.Name + "," + attribute.Name + ",,Example sheet has not been set.");
                             contents.exampleSheet = "Not available";
                         }
                         else
@@ -430,19 +473,17 @@ namespace PrepareRelease
                                 contents.argDescriptions.Add(argAttrib.Description);
 
                                 if (argAttrib.Description.Length < 5)
-                                    errorList.Add(type.Name + "," + attribute.Name + "," + param.Name + ",No argument description");
+                                    errorInfo.Add(type.Name + "," + attribute.Name + "," + param.Name + ",No argument description");
                             }
                             else
                             {
-                                errorList.Add(type.Name + "," + attribute.Name + "," + param.Name + ",Argument does not have ExcelArgumentAttribute");
+                                errorInfo.Add(type.Name + "," + attribute.Name + "," + param.Name + ",Argument does not have ExcelArgumentAttribute");
                             }
                         }
                         contentCollection.AddFile(contents);
                     }
                 }
             }
-            foreach (string error in errorList) System.Diagnostics.Trace.WriteLine(error);
-
         }
     }
 }

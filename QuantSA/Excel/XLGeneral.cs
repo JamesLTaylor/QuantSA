@@ -74,10 +74,11 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Description = "Get a list of available results in the results object.",
-        Name = "QSA.GetAvailableResults",
-        Category = "QSA.General",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/GetAvailableResults.html")]
+            Name = "QSA.GetAvailableResults",
+            Category = "QSA.General",
+            ExampleSheet = "ZARSwap.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetAvailableResults.html")]
         public static object[,] GetAvailableResults([ExcelArgument(Description = "The name of the results object as returned by call to another QuantSA function")]string objectName)
         {
             try
@@ -98,10 +99,11 @@ namespace QuantSA.Excel
         }
 
         [QuantSAExcelFunction(Description = "Get the stored results of a calculation from a results object.",
-        Name = "QSA.GetResults",
-        Category = "QSA.General",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/GetResults.html")]
+            Name = "QSA.GetResults",
+            Category = "QSA.General",
+            ExampleSheet = "ZARSwap.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetResults.html")]
         public static object[,] GetResults([ExcelArgument(Description = "The name of the results object as returned by a call to another QuantSA function")]string objectName,
             [ExcelArgument(Description = "The name of the result required.  Use QSA.GetAvailableResults to get a list of all availabale results in this object.")]string resultName)
         {
@@ -131,10 +133,11 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Description = "The Black Scholes formula for a call.",
-        IsHidden = false,
-        Name = "QSA.FormulaBlackScholes",
-        Category = "QSA.General",
-        HelpTopic = "http://www.quantsa.org/FormulaBlackScholes.html")]
+            IsHidden = false,
+            Name = "QSA.FormulaBlackScholes",
+            ExampleSheet = "EquityValuation.xlsx",
+            Category = "QSA.General",
+            HelpTopic = "http://www.quantsa.org/FormulaBlackScholes.html")]
         public static object FormulaBlackScholes([ExcelArgument(Description = "Strike")]object[,] strike,
             [ExcelArgument(Description = "The value date as and Excel date.")]object[,] valueDate,
             [ExcelArgument(Description = "The exercise date of the option.  Must be greater than the value date.")]object[,] exerciseDate,
@@ -177,10 +180,11 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Description = "A linear interpolator.",
-        IsHidden = false,
-        Name = "QSA.InterpLinear",
-        Category = "QSA.General",
-        HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
+            IsHidden = false,
+            Name = "QSA.InterpLinear",
+            ExampleSheet = "InterpLinearExample.xlsx",
+            Category = "QSA.General",
+            HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
         public static object[,] InterpLinear([ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]double[] knownX,
             [ExcelArgument(Description = "A vector of y values.  Must be the same length as knownX")]Double[] knownY,
             [ExcelArgument(Description = "x values at which interpolation is required.")]Double[,] requiredX)

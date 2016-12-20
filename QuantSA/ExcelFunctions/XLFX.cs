@@ -7,11 +7,12 @@ namespace QuantSA.ExcelFunctions
     public class XLFX
     {
         [QuantSAExcelFunction(Description = "Create a curve to be used for FX rate forecasting.",
-        Name = "QSA.CreateFXForecastCurve",
+            Name = "QSA.CreateFXForecastCurve",
             HasGeneratedVersion = true,
-        Category = "QSA.FX",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateFXForecastCurve.html")]
+            Category = "QSA.FX",
+            ExampleSheet = "GeneralSwap.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateFXForecastCurve.html")]
         public static object CreateFXForecastCurve([ExcelArgument(Description = "The base currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency baseCurrency,
             [ExcelArgument(Description = "The counter currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency counterCurrency,
             [ExcelArgument(Description = "The rate at the anchor date of the two curves.")]double fxRateAtAnchorDate,
