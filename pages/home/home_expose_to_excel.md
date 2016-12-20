@@ -33,7 +33,7 @@ Argument attributes can actually be either ExcelDNA's `ExcelArgumentAttribute` o
 
 ## Automatically exposing functions
 
-As described below, exposing functions comes with some boiler plate code that needs to be written.  This can be reduced by generating some it.  An excel function can be written as normal with the attributes as described above but a new attribute property:
+As described below, exposing functions comes with some boiler plate code that needs to be written.  This can be reduced by generating some of it.  An excel function can be written as normal with the attributes as described above but a new attribute property:
 
  * HasGeneratedVersion
 
@@ -47,7 +47,7 @@ To effectively use the automatic linking to types in the help, the return type m
 
 ## Generating the ExcelWrapper Code
 
-Open the GenerateXLCode solution.  Update the location of the built dlls and the output folder and run the console application.
+The project `ExcelFunctions` has a post build step that generates Excel wrappers usings Excel types.  To be able to use this the `GenerateXLFunctions` solution needs to have been run once and the post build event must be modified to point to the output folder of that build.
 
 
 ## Manually exposing functions

@@ -15,4 +15,7 @@ The skeleton of the help markdown files can be generated from the attributes set
 
 <https://github.com/JamesLTaylor/QuantSA/tree/master/GenerateDocs> 
 
+ * Update the references to the latest binaries of QuantSA.Excel.
+ * Update the output folder to the location where  you have the documentation checked out.
+ * Compile and run the solution.
 
