@@ -173,7 +173,7 @@ namespace GenerateXLCode
         /// <summary>
         /// Create a string with n spaces.
         /// </summary>
-        /// <param name="n">The n.</param>
+        /// <param name="n">The number of spaces.</param>
         /// <returns></returns>
         private static string Spaces(int n)
         {
@@ -197,14 +197,20 @@ namespace GenerateXLCode
             string name = type.IsArray ? type.GetElementType().Name : type.Name;
             if (TypeInformation.InputTypeHasConversion(type))
             {
-                if (defaultValue== null)
+                if (defaultValue == null)
                     return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\");";
                 else
                     return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\", " + defaultValue + ");";
             }
             else
-                return "XU.GetObject" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\");";
+            {
+                if (defaultValue == null)
+                    return "XU.GetObject" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\");";
+                else
+                    return "XU.GetObject" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\", " + defaultValue + ");";
+            }
         }
+            
 
         /// <summary>
         /// Gets the dimension of the type, based on "Type" = 0, "Type[]" = 1 or "Type[,]" = 2

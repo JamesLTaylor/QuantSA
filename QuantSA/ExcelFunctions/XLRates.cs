@@ -199,14 +199,16 @@ namespace QuantSA.ExcelFunctions
         IsHidden = false,
         HelpTopic = "http://www.quantsa.org/CreateHWModelDemo.html",
             ExampleSheet = "")]
-        public static object CreateHWModelDemo([ExcelArgument(Description = "")]double meanReversion,
+        public static HullWhite1F CreateHWModelDemo([ExcelArgument(Description = "")]double meanReversion,
             [ExcelArgument(Description = "")]double flatVol,
             [ExcelArgument(Description = "")]IDiscountingSource baseCurve,
             [ExcelArgument(Description = "")]FloatingIndex forecastIndices)
         {
             Date anchorDate = baseCurve.getAnchorDate();
             double flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));
-            return new HullWhite1F(meanReversion, flatVol, flatCurveRate, flatCurveRate, anchorDate);
+            HullWhite1F model = new HullWhite1F(meanReversion, flatVol, flatCurveRate, flatCurveRate, anchorDate);
+            model.AddForecast(forecastIndices);
+            return model;
         }
 
     }

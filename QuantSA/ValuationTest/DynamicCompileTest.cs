@@ -18,7 +18,7 @@ namespace ValuationTest
         {
             Stopwatch watch;
             // Make a product at runtime
-            Product runtimeProduct = RuntimeProduct.CreateFromScript(@"C:\Dev\QuantSA\Scripts\EuropeanOption.cs");
+            Product runtimeProduct = RuntimeProduct.CreateFromSourceFile(@"ScriptEuropeanOption.txt");
 
             // Setup an approriate simulation
             Share[] shares = new Share[] { new Share("AAA", Currency.ZAR) };// One needs to know the index that will be required by the product to simulate it.

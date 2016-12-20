@@ -168,7 +168,7 @@ namespace QuantSA.Excel
             {
                 FloatingIndex _floatingRateIndex = XU.GetFloatingIndex0D(floatingRateIndex, "floatingRateIndex");
                 IDiscountingSource _discountCurve = XU.GetObject0D<IDiscountingSource>(discountCurve, "discountCurve");
-                IFloatingRateSource _fixingCurve = XU.GetObject0D<IFloatingRateSource>(fixingCurve, "fixingCurve");
+                IFloatingRateSource _fixingCurve = XU.GetObject0D<IFloatingRateSource>(fixingCurve, "fixingCurve", null);
                 IFloatingRateSource _result = XLRates.CreateRateForecastCurveFromDiscount(_floatingRateIndex, _discountCurve, _fixingCurve);
                 return XU.AddObject(objectName, _result);
             }
@@ -259,7 +259,7 @@ namespace QuantSA.Excel
                 Double _flatVol = XU.GetDouble0D(flatVol, "flatVol");
                 IDiscountingSource _baseCurve = XU.GetObject0D<IDiscountingSource>(baseCurve, "baseCurve");
                 FloatingIndex _forecastIndices = XU.GetFloatingIndex0D(forecastIndices, "forecastIndices");
-                Object _result = XLRates.CreateHWModelDemo(_meanReversion, _flatVol, _baseCurve, _forecastIndices);
+                HullWhite1F _result = XLRates.CreateHWModelDemo(_meanReversion, _flatVol, _baseCurve, _forecastIndices);
                 return XU.AddObject(objectName, _result);
             }
             catch (Exception e)

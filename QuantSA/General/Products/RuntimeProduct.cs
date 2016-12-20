@@ -12,7 +12,13 @@ namespace QuantSA.General
     [Serializable]
     public class RuntimeProduct
     {
-        public static Product CreateFromScript(String filename)
+        /// <summary>
+        /// Creates a from a full source file.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception">The defined type must derive from QuantSA.General.Product</exception>
+        public static Product CreateFromSourceFile(string filename)
         {
             CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
             CompilerParameters parameters = new CompilerParameters();
@@ -34,6 +40,13 @@ namespace QuantSA.General
             return (Product)Activator.CreateInstance(productType);
         }
 
+        /// <summary>
+        /// Processes compile errors and makes them into a readable string.
+        /// </summary>
+        /// <param name="results">The compiler results.</param>
+        /// <exception cref="System.Exception">
+        /// Assembly must only define one type : A Class that extends QuantSA.General.Product.
+        /// </exception>
         private static void ProcessErrors(CompilerResults results)
         {
             if (results.Errors.Count > 0)
@@ -54,6 +67,30 @@ namespace QuantSA.General
             }
         }
 
+        /// <summary>
+        /// Creates a <see cref="RuntimeProduct"/> from a source listing in a file.  The file must only
+        /// contain the class fields and a GetCFs method.  If a full implementation of the product is required 
+        /// rather use <see cref="CreateFromSourceFile(string)"/>
+        /// </summary>
+        /// <param name="filename">The filename of the script with the full path.</param>
+        /// <returns></returns>        
+        public static Product CreateFromScript(string filename)
+        {
+            string sourceCode = File.ReadAllText(filename);
+            string productName = Path.GetFileNameWithoutExtension(filename);
+
+            return CreateFromString(productName, sourceCode);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="RuntimeProduct"/> from a string containing C# source code.  The file must only
+        /// contain the class fields and a GetCFs method.  If a full implementation of the product is required 
+        /// rather use <see cref="CreateFromSourceFile(string)"/>
+        /// </summary>
+        /// <param name="productName">Name of the product.</param>
+        /// <param name="sourceCode">The source code.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception">The defined type must derive from QuantSA.General.Product</exception>
         public static Product CreateFromString(string productName, string sourceCode)
         {
             CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
@@ -78,6 +115,13 @@ namespace QuantSA.General
             return (Product)Activator.CreateInstance(productType);
         }
 
+        /// <summary>
+        /// Expands the specified product by turning it into a full C# class file with usings at the top 
+        /// and inserts a clone method.
+        /// </summary>
+        /// <param name="productName">Name of the product.</param>
+        /// <param name="sourceCode">The source code.</param>
+        /// <returns></returns>
         private static string Expand(string productName, string sourceCode)
         {
             StringBuilder sb = new StringBuilder();

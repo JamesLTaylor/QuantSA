@@ -80,6 +80,7 @@
     <Compile Include="Generated\XLCreditGenerated.cs" />
     <Compile Include="Generated\XLCurvesGenerated.cs" />
     <Compile Include="Generated\XLEquitiesGenerated.cs" />
+    <Compile Include="Generated\XLFXGenerated.cs" />
     <Compile Include="Generated\XLRatesGenerated.cs" />
     <Compile Include="Generated\XLValuationGenerated.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
