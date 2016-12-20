@@ -11,29 +11,6 @@ namespace QuantSA.Excel
     /// </summary>
     public class ExcelUtilities
     {
-
-        /// <summary>
-        /// Should the input of this type include a link to the help about that type?  For example
-        /// if the input type is <see cref="FloatingIndex"/> then it is useful to link to the
-        /// page on FloatingIndex so that the user can see the permissable strings.
-        /// </summary>
-        /// <param name="inputType">Type of the input.</param>
-        /// <returns></returns>
-        public static bool InputTypeShouldHaveHelpLink(Type inputType)
-        {
-            Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
-            if (type == typeof(bool)) return true;
-            if (type == typeof(Date)) return true;
-            if (type == typeof(Currency)) return true;
-            if (type == typeof(FloatingIndex)) return true;
-            if (type == typeof(Tenor)) return true;
-            if (type == typeof(Share)) return true;
-            if (type == typeof(ReferenceEntity)) return true;
-            return false;
-        }
-
-
-
         /// <summary>
         /// Add an object to the object map.
         /// </summary>

@@ -18,9 +18,17 @@ namespace PrepareRelease
             string tempOutputPath = Path.Combine(rootpath, @"temp");
 
             // Check spreadsheets
-            SpreadsheetChecker ssChecker = new SpreadsheetChecker(xllPath, exampleSheetPath, tempOutputPath);
-            int failedSheets = ssChecker.Check();
-            
+            //SpreadsheetChecker ssChecker = new SpreadsheetChecker(xllPath, exampleSheetPath, tempOutputPath);
+            //int failedSheets = ssChecker.Check();
+
+            // Generate the help
+            string[] dllsWithExposedFunctions = {
+                Path.Combine(rootpath, @"QuantSA\Excel\bin\Debug\QuantSA.Excel.dll"),
+                Path.Combine(rootpath, @"QuantSA\Excel\bin\Debug\QuantSA.ExcelFunctions.dll") };
+            string outputPath = @"C:\Dev\jamesltaylor.github.io\";
+            string helpURL = "http://www.quantsa.org/";
+            MarkdownGenerator generator = new MarkdownGenerator(dllsWithExposedFunctions, outputPath, helpURL);
+            generator.Generate();
 
         }
     }
