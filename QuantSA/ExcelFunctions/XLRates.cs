@@ -154,12 +154,13 @@ namespace QuantSA.ExcelFunctions
 
 
         [QuantSAExcelFunction(Description = "Get the discount factor from a curve object.  The DF will be from the anchor date until the supplied date.",
-        Name = "QSA.GetDF",
+            Name = "QSA.GetDF",
             HasGeneratedVersion = true,
-        Category = "QSA.Rates",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/GetDF.html")]
-        public static object GetDF([ExcelArgument(Description = "The curve from which the DF is required.")]IDiscountingSource curve,
+            Category = "QSA.Rates",
+            ExampleSheet = "Introduction.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetDF.html")]
+        public static double GetDF([ExcelArgument(Description = "The curve from which the DF is required.")]IDiscountingSource curve,
             [ExcelArgument(Description = "The date on which the discount factor is required.  Cannot be before the anchor date of the curve.")]Date date)
         {
             return curve.GetDF(date);            
@@ -167,11 +168,11 @@ namespace QuantSA.ExcelFunctions
 
 
         [QuantSAExcelFunction(Description = "Create fixed rate loan.",
-        Name = "QSA.CreateLoanFixedRate",
-        Category = "QSA.Rates",
+            Name = "QSA.CreateLoanFixedRate",
+            Category = "QSA.Rates",
             HasGeneratedVersion = true,
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/CreateLoanFixedRate.html",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateLoanFixedRate.html",
             ExampleSheet ="Loans.xlsx")]
         public static LoanFixedRate CreateLoanFixedRate([ExcelArgument(Description = "The currency of the cashflows.")]Currency currency,
         [ExcelArgument(Description = "The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.")]Date[] balanceDates,

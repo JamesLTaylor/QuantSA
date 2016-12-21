@@ -19,8 +19,8 @@ namespace PrepareRelease
 
             // Check spreadsheets
             SpreadsheetChecker ssChecker = new SpreadsheetChecker(xllPath, exampleSheetPath, tempOutputPath);
-            //int failedSheets = ssChecker.Check();
-            //Console.WriteLine("Running example sheets: " + failedSheets.ToString() + " errors.");
+            int failedSheets = ssChecker.Check();
+            Console.WriteLine("Running example sheets: " + failedSheets.ToString() + " errors. (see " + SpreadsheetChecker.ERROR_OUTPUT_FILE + ")");
 
             // Generate the help
             string[] dllsWithExposedFunctions = {
@@ -30,11 +30,11 @@ namespace PrepareRelease
             string helpURL = "http://www.quantsa.org/";
             MarkdownGenerator generator = new MarkdownGenerator(dllsWithExposedFunctions, outputPath, helpURL, tempOutputPath);
             int failedMarkdown = generator.Generate();
-            Console.WriteLine("Generating markdown: " + failedMarkdown.ToString() + " errors.");
+            Console.WriteLine("Generating markdown: " + failedMarkdown.ToString() + " errors. (see " + MarkdownGenerator.MD_ERROR_OUTPUT_FILE + ")");
 
             // Check the example sheets are valid
             int failedExampleSheetRefs = generator.AreAllExampleSheetsValid(ssChecker.GetSheetsAndFuncs());
-            Console.WriteLine("Checking valid example sheets: " + failedExampleSheetRefs.ToString() + " errors.");
+            Console.WriteLine("Checking valid example sheets: " + failedExampleSheetRefs.ToString() + " errors. (see " + MarkdownGenerator.SS_ERROR_OUTPUT_FILE + ")");
 
             Console.ReadKey();
 

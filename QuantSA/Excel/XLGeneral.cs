@@ -14,7 +14,7 @@ namespace QuantSA.Excel
         Category = "QSA.General",
         IsMacroType = true,
         IsHidden = true)]
-        public static object LatestError(string name, string serializedObject, int deserialize)
+        public static object LatestError()
         {
             try {
                 if (ExcelUtilities.latestException == null)
@@ -37,9 +37,10 @@ namespace QuantSA.Excel
         }
         
         [QuantSAExcelFunction(Description = "Create a C# representation of data in a spreadsheet.",
-        Name = "QSA.GetCSArray",
-        Category = "QSA.General",
-        IsHidden = false,
+            Name = "QSA.GetCSArray",
+            Category = "QSA.General",
+            ExampleSheet = "Introduction.xlsx",
+            IsHidden = false,
             HelpTopic = "http://www.quantsa.org/GetCSArray.html")]
         public static object[,] GetCSArray([ExcelArgument(Description = "The block of values you want to use in C#.")]object[,] data,
             [ExcelArgument(Description = "The number of decimal places each value must have in the string.")]double decimalPlaces)
@@ -159,13 +160,13 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Description = "Create a product defined in a script file.",
-        IsHidden = false,
-        Name = "QSA.CreateProductFromFile",
-        Category = "QSA.General",
-            ExampleSheet = "ProductFromFile.xlsx",
-        HelpTopic = "http://www.quantsa.org/CreateProductFromFile.html")]
+            IsHidden = false,
+            Name = "QSA.CreateProductFromFile",
+            Category = "QSA.General",
+            ExampleSheet = "CreateProductFromFile.xlsx",
+            HelpTopic = "http://www.quantsa.org/CreateProductFromFile.html")]
         public static object CreateProductFromFile([ExcelArgument(Description = "Name of product")]string name,
-    [ExcelArgument(Description = "Full path to the file.")]string filename)
+            [ExcelArgument(Description = "Full path to the file.")]string filename)
         {
             try
             {
@@ -182,7 +183,7 @@ namespace QuantSA.Excel
         [QuantSAExcelFunction(Description = "A linear interpolator.",
             IsHidden = false,
             Name = "QSA.InterpLinear",
-            ExampleSheet = "InterpLinearExample.xlsx",
+            ExampleSheet = "InterpLinear.xlsx",
             Category = "QSA.General",
             HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
         public static object[,] InterpLinear([ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]double[] knownX,

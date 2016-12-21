@@ -180,16 +180,15 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Name = "QSA.GetDF", IsGeneratedVersion = true)]
-        public static object _GetDF(string objectName,
-                            object[,] curve,
+        public static object _GetDF(object[,] curve,
                             object[,] date)
         {
             try
             {
                 IDiscountingSource _curve = XU.GetObject0D<IDiscountingSource>(curve, "curve");
                 Date _date = XU.GetDate0D(date, "date");
-                Object _result = XLRates.GetDF(_curve, _date);
-                return XU.AddObject(objectName, _result);
+                Double _result = XLRates.GetDF(_curve, _date);
+                return XU.ConvertToObjects(_result);
             }
             catch (Exception e)
             {

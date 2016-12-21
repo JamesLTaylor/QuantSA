@@ -108,7 +108,7 @@ namespace PrepareRelease
     class MarkdownGenerator
     {
         public const string MD_ERROR_OUTPUT_FILE = "MarkdownGenerator.csv";
-        public const string SS_ERROR_OUTPUT_FILE = "AreExampleSheetsValuid.csv";
+        public const string SS_ERROR_OUTPUT_FILE = "AreExampleSheetsValid.csv";
         List<string> documentedTypes;
         Dictionary<string, int> generatedMethodArgCount;
         contentCollection contentCollection;

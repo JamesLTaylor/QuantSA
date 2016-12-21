@@ -35,16 +35,15 @@ namespace QuantSA.Excel
 
 
         [QuantSAExcelFunction(Name = "QSA.GetFXRate", IsGeneratedVersion = true)]
-        public static object _GetFXRate(string objectName,
-                            object[,] fxCurve,
+        public static object _GetFXRate(object[,] fxCurve,
                             object[,] date)
         {
             try
             {
                 IFXSource _fxCurve = XU.GetObject0D<IFXSource>(fxCurve, "fxCurve");
                 Date _date = XU.GetDate0D(date, "date");
-                Object _result = XLFX.GetFXRate(_fxCurve, _date);
-                return XU.AddObject(objectName, _result);
+                Double _result = XLFX.GetFXRate(_fxCurve, _date);
+                return XU.ConvertToObjects(_result);
             }
             catch (Exception e)
             {

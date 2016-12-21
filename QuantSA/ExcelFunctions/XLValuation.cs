@@ -29,6 +29,7 @@ namespace QuantSA.ExcelFunctions
             Name = "QSA.Value",
             HasGeneratedVersion = true,
             Category = "QSA.Valuation",
+            ExampleSheet = "GeneralSwap.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/Value.html")]
         public static ResultStore Value([ExcelArgument(Description = "A list of products.")]Product[] products,
@@ -50,6 +51,7 @@ namespace QuantSA.ExcelFunctions
             Name = "QSA.EPE",
             HasGeneratedVersion = true,
             Category = "QSA.Valuation",
+            ExampleSheet = "EPE.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/EPE.html")]
         public static double[] EPE([ExcelArgument(Description = "A list of products.")]Product[] products,

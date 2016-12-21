@@ -24,12 +24,13 @@ namespace QuantSA.ExcelFunctions
         }
 
         [QuantSAExcelFunction(Description = "Get the FX rate at a date.  There is no spot settlement adjustment.",
-        Name = "QSA.GetFXRate",
+            Name = "QSA.GetFXRate",
             HasGeneratedVersion = true,
-        Category = "QSA.FX",
-        IsHidden = false,
-        HelpTopic = "http://www.quantsa.org/GetFXRate.html")]
-        public static object GetFXRate([ExcelArgument(Description = "Name of FX curve")]IFXSource fxCurve,
+            ExampleSheet = "Introduction.xlsx",
+            Category = "QSA.FX",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetFXRate.html")]
+        public static double GetFXRate([ExcelArgument(Description = "Name of FX curve")]IFXSource fxCurve,
             [ExcelArgument(Description = "Date on which FX rate is required.")]Date date)
         {
             return fxCurve.GetRate(date);

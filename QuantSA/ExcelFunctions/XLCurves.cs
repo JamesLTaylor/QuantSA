@@ -47,7 +47,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Create a curve simulator based on principle components.",
             Name = "QSA.CreatePCACurveSimulator",
             HasGeneratedVersion = true,
-            ExampleSheet = "PCAExample.xlsx",
+            ExampleSheet = "PCA.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreatePCACurveSimulator.html")]
@@ -68,7 +68,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Gets a block of principle component simulated rates.  Each row is a curve at a simulation date.",
             Name = "QSA.PCACurveSimulatorGetRates",
             HasGeneratedVersion = true,
-            ExampleSheet = "PCAExample.xlsx",
+            ExampleSheet = "PCA.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/PCACurveSimulatorGetRates.html")]
@@ -99,7 +99,7 @@ namespace QuantSA.ExcelFunctions
         [QuantSAExcelFunction(Description = "Get the covariance in log returns from a blob of curves.",
             Name = "QSA.CovarianceFromCurves",
             HasGeneratedVersion = true,
-            ExampleSheet = "PCAExample.xlsx",
+            ExampleSheet = "PCA.xlsx",
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CovarianceFromCurves.html")]
@@ -113,7 +113,7 @@ namespace QuantSA.ExcelFunctions
             Name = "QSA.PCAFromCurves",
             HasGeneratedVersion = true,
             Category = "QSA.Curves",
-            ExampleSheet = "PCAExample.xlsx",
+            ExampleSheet = "PCA.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/PCAFromCurves.html")]
         public static double[,] PCAFromCurves([ExcelArgument(Description = "Blob of curves, each row is a curve of the same length.")]double[,] curves,
