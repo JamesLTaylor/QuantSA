@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelAddin", "Excel\ExcelAddin.csproj", "{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{72CE0E67-4D38-4F53-91A1-299F9E155558}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelFunctions", "ExcelFunctions\ExcelFunctions.csproj", "{CE3F5531-09EE-4829-9374-866835521E22}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|x64.Build.0 = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}.Release|x86.Build.0 = Release|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Debug|x64.Build.0 = Debug|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Debug|x86.Build.0 = Debug|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Release|x64.ActiveCfg = Release|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Release|x64.Build.0 = Release|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE3F5531-09EE-4829-9374-866835521E22}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
