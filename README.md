@@ -1,4 +1,7 @@
 # QuantSA
+
+<img src="https://jameslatimertaylor.visualstudio.com/_apis/public/build/definitions/e7d214b3-b944-4d42-b277-57c5882f09ff/1/badge"/>
+
 An open source quant finance library for South Africa.
 
 # Website
