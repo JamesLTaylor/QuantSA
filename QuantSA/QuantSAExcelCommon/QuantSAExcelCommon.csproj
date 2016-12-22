@@ -7,8 +7,8 @@
     <ProjectGuid>{AB407873-268C-4AE1-B1FB-62B9830DF979}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantSAInterfaces</RootNamespace>
-    <AssemblyName>QuantSA.Interfaces</AssemblyName>
+    <RootNamespace>QuantSA.Excel.Common</RootNamespace>
+    <AssemblyName>QuantSA.Excel.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

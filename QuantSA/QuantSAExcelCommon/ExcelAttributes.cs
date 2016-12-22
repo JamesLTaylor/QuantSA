@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Common
 {
     /// <summary>
     /// This Attribute is a replica of <see cref="ExcelFunctionAttribute"/> but the functions in 

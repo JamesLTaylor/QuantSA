@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Common
 {
     public class ObjectMap
     {
