@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using QuantSA.General;
+using QuantSA.Excel.Common;
 
 namespace QuantSA.Excel
 {

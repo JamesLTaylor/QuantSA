@@ -4,6 +4,7 @@ using ExcelDna.Integration;
 using XU = QuantSA.Excel.ExcelUtilities;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General;
+using QuantSA.Excel.Common;
 
 namespace QuantSA.Excel
 {

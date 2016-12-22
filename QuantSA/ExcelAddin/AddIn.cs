@@ -1,4 +1,5 @@
-﻿using QuantSA.Excel;
+﻿using QuantSA.Excel.Common;
+using QuantSA.Excel;
 using ExcelDna.Integration;
 using System;
 using System.Collections.Generic;

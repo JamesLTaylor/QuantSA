@@ -1,4 +1,4 @@
-﻿using QuantSA.Excel;
+﻿using QuantSA.Excel.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,6 +50,7 @@ namespace GenerateXLCode
                 sb.AppendLine("using QuantSA.General;");
                 sb.AppendLine("using QuantSA.Valuation;");
                 sb.AppendLine("using QuantSA.ExcelFunctions;");
+                sb.AppendLine("using QuantSA.Excel.Common;");
                 sb.AppendLine("");
                 sb.AppendLine("namespace QuantSA.Excel");
                 sb.AppendLine("{");

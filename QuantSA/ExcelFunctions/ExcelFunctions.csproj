@@ -36,6 +36,17 @@
     <Reference Include="ExcelDna.Integration">
       <HintPath>..\packages\ExcelDna.Integration.0.33.9\lib\ExcelDna.Integration.dll</HintPath>
     </Reference>
+    <Reference Include="QuantSA.Excel.Common">
+      <HintPath>..\ExcelCommon\bin\$(Configuration)\QuantSA.Excel.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.General, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\General\bin\$(Configuration)\QuantSA.General.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.Valuation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Valuation\bin\$(Configuration)\QuantSA.Valuation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,20 +64,6 @@
     <Compile Include="XLFX.cs" />
     <Compile Include="XLRates.cs" />
     <Compile Include="XLValuation.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\General\General.csproj">
-      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>General</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuantSAInterfaces\QuantSAInterfaces.csproj">
-      <Project>{ab407873-268c-4ae1-b1fb-62b9830df979}</Project>
-      <Name>QuantSAInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Valuation\Valuation.csproj">
-      <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
-      <Name>Valuation</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

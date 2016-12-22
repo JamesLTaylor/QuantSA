@@ -2,7 +2,7 @@
 using QuantSA.General;
 using QuantSA.Valuation;
 using System.Collections.Generic;
-using QuantSA.Excel;
+using QuantSA.Excel.Common;
 
 namespace QuantSA.ExcelFunctions
 {

@@ -1,6 +1,6 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.General;
-using QuantSA.Excel;
+using QuantSA.Excel.Common;
 
 namespace QuantSA.ExcelFunctions
 {

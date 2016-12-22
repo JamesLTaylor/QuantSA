@@ -36,11 +36,14 @@
     <Reference Include="ExcelDna.Integration">
       <HintPath>..\..\QuantSA\packages\ExcelDna.Integration.0.33.9\lib\ExcelDna.Integration.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSA.Interfaces">
-      <HintPath>..\..\QuantSA\QuantSAInterfaces\bin\Debug\QuantSA.Interfaces.dll</HintPath>
+    <Reference Include="QuantSA.Excel.Common">
+      <HintPath>..\..\QuantSA\ExcelCommon\bin\$(Configuration)\QuantSA.Excel.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.General">
+      <HintPath>..\..\QuantSA\General\bin\$(Configuration)\QuantSA.General.dll</HintPath>
     </Reference>
     <Reference Include="QuantSA.Valuation">
-      <HintPath>..\..\QuantSA\Valuation\bin\Debug\QuantSA.Valuation.dll</HintPath>
+      <HintPath>..\..\QuantSA\Valuation\bin\$(Configuration)\QuantSA.Valuation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

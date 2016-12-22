@@ -7,8 +7,8 @@
     <ProjectGuid>{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantSA.Excel</RootNamespace>
-    <AssemblyName>QuantSA.Excel</AssemblyName>
+    <RootNamespace>QuantSA.Excel.Addin</RootNamespace>
+    <AssemblyName>QuantSA.Excel.Addin</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -58,6 +58,17 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="QuantSA.Excel.Common">
+      <HintPath>..\ExcelCommon\bin\$(Configuration)\QuantSA.Excel.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.General, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\General\bin\$(Configuration)\QuantSA.General.dll</HintPath>
+    </Reference>
+    <Reference Include="QuantSA.Valuation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Valuation\bin\$(Configuration)\QuantSA.Valuation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -100,18 +111,6 @@
     <ProjectReference Include="..\ExcelFunctions\ExcelFunctions.csproj">
       <Project>{ce3f5531-09ee-4829-9374-866835521e22}</Project>
       <Name>ExcelFunctions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\General\General.csproj">
-      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>General</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuantSAInterfaces\QuantSAInterfaces.csproj">
-      <Project>{ab407873-268c-4ae1-b1fb-62b9830df979}</Project>
-      <Name>QuantSAInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Valuation\Valuation.csproj">
-      <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
-      <Name>Valuation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

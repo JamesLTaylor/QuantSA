@@ -3,6 +3,7 @@ using XU = QuantSA.Excel.ExcelUtilities;
 using QuantSA.General;
 using QuantSA.Valuation;
 using QuantSA.ExcelFunctions;
+using QuantSA.Excel.Common;
 
 namespace QuantSA.Excel
 {

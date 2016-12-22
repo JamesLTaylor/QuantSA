@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ExcelDna.Integration;
 using System.Text;
 using QuantSA.Excel;
+using QuantSA.Excel.Common;
 using System.Drawing;
 
 [ComVisible(true)]
