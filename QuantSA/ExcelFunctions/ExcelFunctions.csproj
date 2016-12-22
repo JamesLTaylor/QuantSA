@@ -67,7 +67,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)..\GenerateXLCode\GenerateXLCode\bin\Debug\GenerateXLCode.exe $(TargetPath) $(SolutionDir)Excel\Generated\</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)..\GenerateXLCode\GenerateXLCode\$(OutDir)GenerateXLCode.exe $(TargetPath) $(SolutionDir)ExcelAddin\Generated\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
