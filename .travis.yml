@@ -1,2 +1,2 @@
 language: csharp
-solution: QuantSACore.sln
+solution: ./QuantSA/QuantSACore.sln
