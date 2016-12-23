@@ -1,0 +1,154 @@
+﻿entries:
+- title: Sidebar
+  levels: one
+  folders:
+
+  - title: Types
+    output: web, pdf
+    folderitems:
+    - title: Boolean
+      url: /Boolean.html
+      output: web, pdf
+    - title: Date
+      url: /Date.html
+      output: web, pdf
+    - title: Currency
+      url: /Currency.html
+      output: web, pdf
+    - title: FloatingIndex
+      url: /FloatingIndex.html
+      output: web, pdf
+    - title: Tenor
+      url: /Tenor.html
+      output: web, pdf            
+    - title: Share
+      url: /Share.html
+      output: web, pdf   
+            
+  # AUTO GENERATED BEYOND THIS POINT
+  - title: Credit
+    output: web, pdf
+    folderitems:
+    - title: CreateCDS
+      url: /CreateCDS.html
+      output: web, pdf
+    - title: CreateHazardCurve
+      url: /CreateHazardCurve.html
+      output: web, pdf
+    - title: CreateModelDeterministicCreditWithFXJump
+      url: /CreateModelDeterministicCreditWithFXJump.html
+      output: web, pdf
+    - title: GetSurvivalProb
+      url: /GetSurvivalProb.html
+      output: web, pdf
+  - title: Curves
+    output: web, pdf
+    folderitems:
+    - title: CovarianceFromCurves
+      url: /CovarianceFromCurves.html
+      output: web, pdf
+    - title: CreateDatesAndRatesCurve
+      url: /CreateDatesAndRatesCurve.html
+      output: web, pdf
+    - title: CreatePCACurveSimulator
+      url: /CreatePCACurveSimulator.html
+      output: web, pdf
+    - title: CurveInterp
+      url: /CurveInterp.html
+      output: web, pdf
+    - title: FitCurveNelsonSiegel
+      url: /FitCurveNelsonSiegel.html
+      output: web, pdf
+    - title: PCACurveSimulatorGetRates
+      url: /PCACurveSimulatorGetRates.html
+      output: web, pdf
+    - title: PCAFromCurves
+      url: /PCAFromCurves.html
+      output: web, pdf
+  - title: Equities
+    output: web, pdf
+    folderitems:
+    - title: CreateEquityCall
+      url: /CreateEquityCall.html
+      output: web, pdf
+    - title: CreateEquityModel
+      url: /CreateEquityModel.html
+      output: web, pdf
+  - title: FX
+    output: web, pdf
+    folderitems:
+    - title: CreateFXForecastCurve
+      url: /CreateFXForecastCurve.html
+      output: web, pdf
+    - title: GetFXRate
+      url: /GetFXRate.html
+      output: web, pdf
+  - title: General
+    output: web, pdf
+    folderitems:
+    - title: CreateProductFromFile
+      url: /CreateProductFromFile.html
+      output: web, pdf
+    - title: FormulaBlackScholes
+      url: /FormulaBlackScholes.html
+      output: web, pdf
+    - title: GetAvailableResults
+      url: /GetAvailableResults.html
+      output: web, pdf
+    - title: GetCSArray
+      url: /GetCSArray.html
+      output: web, pdf
+    - title: GetResults
+      url: /GetResults.html
+      output: web, pdf
+    - title: InterpLinear
+      url: /InterpLinear.html
+      output: web, pdf
+  - title: Rates
+    output: web, pdf
+    folderitems:
+    - title: CreateCashLeg
+      url: /CreateCashLeg.html
+      output: web, pdf
+    - title: CreateFixedLeg
+      url: /CreateFixedLeg.html
+      output: web, pdf
+    - title: CreateFloatLeg
+      url: /CreateFloatLeg.html
+      output: web, pdf
+    - title: CreateHWModelDemo
+      url: /CreateHWModelDemo.html
+      output: web, pdf
+    - title: CreateLoanFixedRate
+      url: /CreateLoanFixedRate.html
+      output: web, pdf
+    - title: CreateLoanFloatingRate
+      url: /CreateLoanFloatingRate.html
+      output: web, pdf
+    - title: CreateRateForecastCurveFromDiscount
+      url: /CreateRateForecastCurveFromDiscount.html
+      output: web, pdf
+    - title: CreateZARBermudanSwaption
+      url: /CreateZARBermudanSwaption.html
+      output: web, pdf
+    - title: CreateZARSwap
+      url: /CreateZARSwap.html
+      output: web, pdf
+    - title: GetDF
+      url: /GetDF.html
+      output: web, pdf
+    - title: ValueZARSwap
+      url: /ValueZARSwap.html
+      output: web, pdf
+  - title: Valuation
+    output: web, pdf
+    folderitems:
+    - title: CreateCurveModel
+      url: /CreateCurveModel.html
+      output: web, pdf
+    - title: EPE
+      url: /EPE.html
+      output: web, pdf
+    - title: Value
+      url: /Value.html
+      output: web, pdf
