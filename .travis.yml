@@ -1,2 +1,9 @@
-language: csharp
-solution: ./QuantSA/QuantSACore.sln
+language: ruby
+sudo: false
+cache: bundler
+rvm:
+- 2.2.2
+install: bundle install
+
+cd Documentation
+script: bundle exec jekyll build
