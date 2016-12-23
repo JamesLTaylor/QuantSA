@@ -75,9 +75,9 @@ namespace QuantSA.Valuation
         /// Return the simulated values at the required times.  Will only be called after 
         /// <see cref="RunSimulation"/>
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="requiredDates"></param>
-        /// <returns></returns>
+        /// <param name="index">The index that is required.</param>
+        /// <param name="requiredDates">The dates on which the index is required.</param>
+        /// <returns>An array of doubles the same length as <paramref name="requiredDates"/></returns>
         public abstract double[] GetIndices(MarketObservable index, List<Date> requiredDates);
 
         /// <summary>
