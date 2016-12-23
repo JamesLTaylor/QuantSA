@@ -11,10 +11,10 @@ install:
   - bundle install
 
 script:  
-  - bundle exec jekyll build
-  - bundle exec htmlproofer --help
+  - bundle exec jekyll build  
   - bundle exec htmlproofer ./_site --allow-hash-href --disable-external 
   
 env:
   global:
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+  
