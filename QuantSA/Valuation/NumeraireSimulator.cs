@@ -20,10 +20,14 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Get the numeraire within a simulation at the provided date.
         /// </summary>
-        /// <param name="valueDate"></param>
+        /// <param name="valueDate">The date on which the Numeraire is required.</param>
         /// <returns></returns>
         public abstract double Numeraire(Date valueDate);
 
+        /// <summary>
+        /// Sets dates on which it is expected that the numeraire will be required.
+        /// </summary>
+        /// <param name="requiredDates">The required dates.</param>
         public abstract void SetNumeraireDates(List<Date> requiredDates);
 
     }

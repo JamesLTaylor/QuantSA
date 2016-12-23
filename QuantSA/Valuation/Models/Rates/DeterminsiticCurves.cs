@@ -18,8 +18,14 @@ namespace QuantSA.Valuation
         private Currency numeraireCurrency;
         private IDiscountingSource discountCurve;
         private Dictionary<MarketObservable, IFloatingRateSource> forecastCurves;
-        private Dictionary<MarketObservable, IFXSource> fxCurves;           
+        private Dictionary<MarketObservable, IFXSource> fxCurves;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeterminsiticCurves"/> class with just a discounting curve.
+        /// Additional rate forecast curves are added with <see cref="AddRateForecast(IFloatingRateSource)"/>, and 
+        /// FXC forecast sources are added with <see cref="AddFXForecast(IFXSource)"/>.
+        /// </summary>
+        /// <param name="discountCurve">The discount curve.</param>
         public DeterminsiticCurves(IDiscountingSource discountCurve)
         {
             numeraireCurrency = discountCurve.GetCurrency();
@@ -28,6 +34,12 @@ namespace QuantSA.Valuation
             fxCurves = new Dictionary<MarketObservable, IFXSource>();
         }
 
+        /// <summary>
+        /// Adds a source for interest rate forecasts.
+        /// </summary>
+        /// <param name="forecastCurve">The forecast curve.</param>
+        /// <exception cref="System.ArgumentException"></exception>
+        /// <seealso cref="AddFXForecast(IFXSource[])"/>
         public void AddRateForecast(IFloatingRateSource forecastCurve)
         {
             if (!forecastCurves.ContainsKey(forecastCurve.GetFloatingIndex()))
@@ -36,11 +48,17 @@ namespace QuantSA.Valuation
                 throw new ArgumentException(forecastCurve.GetFloatingIndex().ToString() + " has already been added to the model.");            
         }
 
+        /// <summary>
+        /// Adds an array of interest rate forecast sources.
+        /// </summary>
+        /// <param name="forecastCurves">The forecast curves.</param>
+        /// /// <seealso cref="AddFXForecast(IFXSource)"/>
         public void AddRateForecast(IFloatingRateSource[] forecastCurves)
         {
             foreach (IFloatingRateSource forecastCurve in forecastCurves)
                 AddRateForecast(forecastCurve);                
         }
+
 
         public void AddFXForecast(IFXSource fxForecastCurve)
         {
@@ -58,6 +76,14 @@ namespace QuantSA.Valuation
                 AddFXForecast(fxForecastCurve);
         }
 
+        /// <summary>
+        /// Return the simulated values at the required times.  Will only be called after
+        /// <see cref="RunSimulation" />
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="requiredDates"></param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">This model instance does not provide values for " + index.ToString()</exception>
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
         {
             double[] result = new double[requiredDates.Count];

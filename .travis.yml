@@ -3,8 +3,11 @@ sudo: false
 cache: bundler
 rvm:
 - 2.2.2
+
+before_install: 
+  - cd ./Documentation
+
 install: bundle install
 
-script:
-  - cd ./Documentation
+script:  
   - bundle exec jekyll build
