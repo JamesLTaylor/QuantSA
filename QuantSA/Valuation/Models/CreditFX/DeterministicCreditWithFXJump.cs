@@ -69,7 +69,18 @@ namespace QuantSA.Valuation
             simRecoveryRate = expectedRecoveryRate;
         }
 
-
+        /// <summary>
+        /// Gets the indices.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="requiredTimes">The required times.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">
+        /// defaultTime must only be queried with a single date.
+        /// or
+        /// defaultRecovery must only be queried with a single date.
+        /// or
+        /// </exception>
         public override double[] GetIndices(MarketObservable index, List<Date> requiredTimes)
         {
             if (index == currencyPair)
