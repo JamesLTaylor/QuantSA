@@ -20,7 +20,7 @@ Create a curve simulator based on principle components.
 
 ## Example Sheet
 
-    Not available
+    PCA.xlsx
 
 ## Arguments
 

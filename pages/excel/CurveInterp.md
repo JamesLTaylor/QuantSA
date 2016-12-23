@@ -20,7 +20,7 @@ Find the interpolated value of any QuantSA created curve.
 
 ## Example Sheet
 
-    Not available
+    FitCurveNelsonSiegel.xlsx
 
 ## Arguments
 

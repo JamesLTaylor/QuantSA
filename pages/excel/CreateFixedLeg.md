@@ -20,13 +20,13 @@ Create a general fixed leg of a swap.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 
-* **name** Name of object
-* **currency** The currency of the cashflows.
-* **paymentDates** The dates on which the payments are made.
+* **objectName** The name of the object to be created.
+* **currency** The currency of the cashflows.([Currency](Currency.html))
+* **paymentDates** The dates on which the payments are made.([Date](Date.html))
 * **notionals** The notionals on which the payments are based.
 * **rates** The simple rates that are paid at each payment date.
 * **accrualFractions** The accrual fraction to be used in calulating the fixed flow.  Will depend on the daycount convention agreed in the contract.

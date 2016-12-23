@@ -20,7 +20,7 @@ Create a ZAR Bermudan swaption based a ZAR quarterly, fixed for float Jibar swap
 
 ## Example Sheet
 
-    Not available
+    BermudanSwaption.xlsx
 
 ## Arguments
 

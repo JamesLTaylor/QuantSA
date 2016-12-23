@@ -20,7 +20,7 @@ Create a curve based valuation model.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 

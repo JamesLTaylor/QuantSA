@@ -20,7 +20,7 @@ Create a product defined in a script file.
 
 ## Example Sheet
 
-    ProductFromFile.xlsx
+    CreateProductFromFile.xlsx
 
 ## Arguments
 

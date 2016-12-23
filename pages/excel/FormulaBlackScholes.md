@@ -20,7 +20,7 @@ The Black Scholes formula for a call.
 
 ## Example Sheet
 
-    Not available
+    EquityValuation.xlsx
 
 ## Arguments
 

@@ -20,14 +20,14 @@ Create a general set of cashflows that can be valued like any other product.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 
-* **name** Name of object
-* **paymentDates** The dates on which the cashflows take place.
+* **objectName** The name of the object to be created.
+* **paymentDates** The dates on which the cashflows take place.([Date](Date.html))
 * **amounts** The sizes of the cashflows.  Positive for cashflows that are received.
-* **currencies** The currencies of the cashflows. ([Currency](Currency.html))
+* **currencies** The currencies of the cashflows.([Currency](Currency.html))
 
 <!--HUMAN EDIT START-->
 

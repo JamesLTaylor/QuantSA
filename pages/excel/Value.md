@@ -20,7 +20,7 @@ Perform a general valuation.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 

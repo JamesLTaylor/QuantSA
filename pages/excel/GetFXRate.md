@@ -20,12 +20,12 @@ Get the FX rate at a date.  There is no spot settlement adjustment.
 
 ## Example Sheet
 
-    Not available
+    Introduction.xlsx
 
 ## Arguments
 
-* **FXCurveName** Name of FX curve
-* **date** Date on which FX rate is required.
+* **fxCurve** Name of FX curve
+* **date** Date on which FX rate is required.(Date)
 
 <!--HUMAN EDIT START-->
 

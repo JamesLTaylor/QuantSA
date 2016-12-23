@@ -20,15 +20,15 @@ Create demo Hull White model.  Will be used for discounting and forecasting any 
 
 ## Example Sheet
 
-    
+    EPE.xlsx
 
 ## Arguments
 
-* **name** Name of object
-* **meanReversion** 
-* **flatVol** 
-* **baseCurve** 
-* **forecastIndices** 
+* **objectName** The name of the object to be created.
+* **meanReversion** The constant rate of mean reversion.
+* **flatVol** The constant short rate volatility.  Note that this is a Gaussian vol and will in general be lower than the vol that would be used in Black.
+* **baseCurve** The curve to which zero coupon bond prices will be calibrated.
+* **forecastIndices** The indices that should be forecast with this same cuve.  No spreads are added.([FloatingIndex](FloatingIndex.html))
 
 <!--HUMAN EDIT START-->
 

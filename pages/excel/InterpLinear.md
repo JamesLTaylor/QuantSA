@@ -20,7 +20,7 @@ A linear interpolator.
 
 ## Example Sheet
 
-    Not available
+    InterpLinear.xlsx
 
 ## Arguments
 

@@ -20,7 +20,7 @@ Get a list of available results in the results object.
 
 ## Example Sheet
 
-    Not available
+    ZARSwap.xlsx
 
 ## Arguments
 

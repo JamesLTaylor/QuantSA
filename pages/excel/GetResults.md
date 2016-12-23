@@ -20,7 +20,7 @@ Get the stored results of a calculation from a results object.
 
 ## Example Sheet
 
-    Not available
+    ZARSwap.xlsx
 
 ## Arguments
 

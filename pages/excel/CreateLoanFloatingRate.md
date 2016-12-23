@@ -24,11 +24,11 @@ Create floationg rate loan.
 
 ## Arguments
 
-* **name** Name of object
-* **currency** The currency of the cashflows.
-* **balanceDates** The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.
+* **objectName** The name of the object to be created.
+* **currency** The currency of the cashflows.([Currency](Currency.html))
+* **balanceDates** The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.([Date](Date.html))
 * **balanceAmounts** The notionals on which the payments are based.
-* **floatingIndex** The reference index on which the floating flows are based.
+* **floatingIndex** The reference index on which the floating flows are based.([FloatingIndex](FloatingIndex.html))
 * **floatingSpread** The spread that will be added to the floating index.
 
 <!--HUMAN EDIT START-->

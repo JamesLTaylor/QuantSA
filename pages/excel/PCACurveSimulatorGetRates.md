@@ -20,7 +20,7 @@ Gets a block of principle component simulated rates.  Each row is a curve at a s
 
 ## Example Sheet
 
-    Not available
+    PCA.xlsx
 
 ## Arguments
 

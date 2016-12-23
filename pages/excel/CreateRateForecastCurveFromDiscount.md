@@ -20,12 +20,12 @@ Create a curve to forecast floating interest rates based on a discount curve.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 
-* **name** The name of the new curve.
-* **floatingRateIndex** The floating rate that this curve will be used to forecast. ([FloatingIndex](FloatingIndex.html))
+* **objectName** The name of the object to be created.
+* **floatingRateIndex** The floating rate that this curve will be used to forecast.([FloatingIndex](FloatingIndex.html))
 * **discountCurve** The name of the discount curve that will be used to obtain the forward rates.
 * **fixingCurve** Optional: The name of the fixing curve for providing floating rates at dates before the anchor date of the discount curve.  If it is left out then the first floating rate implied by the discount curve will be used for all historical fixes.
 

@@ -40,7 +40,7 @@ Where the original blob is a matrix <span>\\( M_{rate} \\)</span> where element 
 
 ## Example Sheet
 
-    PCAExample.xlsx
+    PCA.xlsx
 
 ## Arguments
 

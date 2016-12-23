@@ -20,13 +20,13 @@ Create a curve to be used for FX rate forecasting.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 
-* **name** Name of object
-* **baseCurrency** The base currency.  Values are measured in units of counter currency per one base currency.([Currency](Currency.html))
-* **counterCurrency** The counter currency.  Values are measured in units of counter currency per one base currency.([Currency](Currency.html))
+* **objectName** The name of the object to be created.
+* **baseCurrency** The base currency.  Values are measured in units of counter currency per one base currency.([Currency](Currency.html))(Currency)
+* **counterCurrency** The counter currency.  Values are measured in units of counter currency per one base currency.([Currency](Currency.html))(Currency)
 * **fxRateAtAnchorDate** The rate at the anchor date of the two curves.
 * **baseCurrencyFXBasisCurve** A curve that will be used to obatin forward rates.
 * **counterCurrencyFXBasisCurve** A curve that will be used to obtain forward rates.

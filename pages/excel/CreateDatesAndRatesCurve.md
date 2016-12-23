@@ -20,7 +20,7 @@ Create a curve of dates and rates.
 
 ## Example Sheet
 
-    Not available
+    GeneralSwap.xlsx
 
 ## Arguments
 
