@@ -7,3 +7,5 @@ install: bundle install
 
 cd Documentation
 script: bundle exec jekyll build
+
+
