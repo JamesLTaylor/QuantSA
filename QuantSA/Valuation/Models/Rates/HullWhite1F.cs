@@ -8,6 +8,11 @@ using System.Linq;
 
 namespace QuantSA.Valuation
 {
+    /// <summary>
+    /// A single factor Hull White simulator.  It can simulate a numeraire and any number of
+    /// forward rates off the same curve.
+    /// </summary>
+    /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
     public class HullWhite1F : NumeraireSimulator
     {
         public delegate double MarketForwards(Date date);        
