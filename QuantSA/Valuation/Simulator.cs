@@ -36,7 +36,7 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Identify if the the simulator is able to simulate the provided index.
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="index">The index that is tested for.</param>
         /// <returns></returns>
         public abstract bool ProvidesIndex(MarketObservable index);
 
