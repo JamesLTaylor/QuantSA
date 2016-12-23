@@ -7,7 +7,9 @@ rvm:
 before_install: 
   - cd ./Documentation
 
-install: bundle install
+install: 
+  - bundle install
 
 script:  
   - bundle exec jekyll build
+  - bundle exec htmlproofer ./_site --disable-external

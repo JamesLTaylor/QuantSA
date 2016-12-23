@@ -7,6 +7,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace QuantSA.Valuation
 {
+    /// <summary>
+    /// The fundemental class in QuantSA valuations.  Implementations of this are responsible primarily 
+    /// for producing realizations of <see cref="MarketObservable"/>s.
+    /// <para/>
+    /// Implementations also need to provide underlying variables that can be used in regressions for 
+    /// forward values.  See QuantSA.pdf.
+    /// </summary>
     [Serializable]
     public abstract class Simulator
     {
