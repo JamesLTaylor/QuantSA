@@ -5,7 +5,6 @@ rvm:
 - 2.2.2
 install: bundle install
 
-cd ./Documentation
-script: bundle exec jekyll build
-
-
+script:
+  - cd ./Documentation
+  - bundle exec jekyll build

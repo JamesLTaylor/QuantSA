@@ -4,6 +4,14 @@ using QuantSA.General;
 
 namespace QuantSA.Valuation
 {
+    /// <summary>
+    /// A "Simulator" that works with only 1 simulation.  The numeraire and all forward rates are obtained 
+    /// directly from a curve.
+    /// <para/>
+    /// Using this model is the equivalent of the usual forecasting and discounting valuetion for linear 
+    /// instrments like swaps.
+    /// </summary>
+    /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
     [Serializable]
     public class DeterminsiticCurves : NumeraireSimulator
     {
