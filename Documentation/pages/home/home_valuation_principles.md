@@ -11,7 +11,7 @@ folder: home
 
 # Further Reading
 
-The mathematics of the general valuation and further references can be found in [this document](..\pdf_docs\QuantSA.pdf) or [here](https://github.com/JamesLTaylor/QuantSA/blob/master/Validation/QuantSA/QuantSA.pdf).  A summary follows below.
+The mathematics of the general valuation and further references can be found in [this document](http://www.quantsa.org/pdf_docs/QuantSA.pdf) or [here](https://github.com/JamesLTaylor/QuantSA/blob/master/Validation/QuantSA/QuantSA.pdf).  A summary follows below.
 
 # Products
 

@@ -12,5 +12,5 @@ Once the addin is installed, you will be able to tell it is present when you can
 
 Start typing `=QSA.` and the list of available functions will appear.
 
-Alternatively browse the [online documentation](/../excel_introduction.html). 
+Alternatively browse the [online documentation](excel_introduction.html). 
 
