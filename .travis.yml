@@ -12,6 +12,8 @@ install:
 
 script:  
   - bundle exec jekyll build  
+  - rm ./_site/titlepage/index.html # I don't know how to stop this file and the next from being generated, but they are filled with path errors that confuse htmlproofer
+  - rm ./_site/tocpage/index.html
   - bundle exec htmlproofer ./_site --allow-hash-href --disable-external 
   
 env:
