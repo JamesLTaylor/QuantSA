@@ -1,8 +1,8 @@
 ---
-title: "News"
-tagName: news
+title: "Pages for Developer"
+tagName: developers
 search: exclude
-permalink: tag_news.html
+permalink: tag_developers.html
 sidebar: mydoc_sidebar
 folder: tags
 ---
