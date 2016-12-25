@@ -1,11 +1,11 @@
 ---
-title: bool
+title: Boolean.html
 keywords:
 last_updated: November 6, 2016
 tags:
 summary: The bool input type
 sidebar: excel_sidebar
-permalink: bool.html
+permalink: Boolean.html
 folder: excel
 ---
 
