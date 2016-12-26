@@ -83,6 +83,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoAll.cs">
+      <Link>Properties\AssemblyInfoAll.cs</Link>
+    </Compile>
     <Compile Include="AddIn.cs" />
     <Compile Include="ExcelUtilities.cs" />
     <Compile Include="ExcelMessage.xaml.cs">

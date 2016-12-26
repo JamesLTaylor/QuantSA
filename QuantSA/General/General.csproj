@@ -63,6 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoAll.cs">
+      <Link>Properties\AssemblyInfoAll.cs</Link>
+    </Compile>
     <Compile Include="Cashflow.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="Curves\DatesAndRates.cs" />

@@ -63,6 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoAll.cs">
+      <Link>Properties\AssemblyInfoAll.cs</Link>
+    </Compile>
     <Compile Include="Coordinator.cs" />
     <Compile Include="IndexNotAvailableException.cs" />
     <Compile Include="Models\CreditFX\DeterministicCreditWithFXJump.cs" />

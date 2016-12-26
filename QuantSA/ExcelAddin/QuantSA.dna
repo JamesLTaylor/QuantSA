@@ -1,3 +1,3 @@
-<DnaLibrary Name="QuantSA" RuntimeVersion="v4.0">
-  <ExternalLibrary Path="QuantSA.Excel.dll" LoadFromBytes="true" Pack="true" ExplicitExports="true" />  
+<DnaLibrary Name="QuantSA (v0.0.7)" RuntimeVersion="v4.0">
+  <ExternalLibrary Path="QuantSA.Excel.Addin.dll" LoadFromBytes="true" Pack="true" ExplicitExports="true" />  
 </DnaLibrary>

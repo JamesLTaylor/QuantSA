@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoAll.cs">
+      <Link>Properties\AssemblyInfoAll.cs</Link>
+    </Compile>
     <Compile Include="ExcelAttributes.cs" />
     <Compile Include="IQuantSAPlugin.cs" />
     <Compile Include="ObjectMap.cs" />
