@@ -45,6 +45,9 @@ entries:
     - title: Setup environment
       url: /home_setup.html 
       output: web  
+    - title: Projects and Solutions
+      url: /home_projects.html 
+      output: web      
     - title: Introduction to the code
       url: /home_code_intro.html 
       output: web
@@ -71,7 +74,14 @@ entries:
       output: web
     - title: Control exposed functions
       url: /home_exposed_functions.html 
-      output: web            
+      output: web
+    - title: Automated builds
+      url: /home_builds.html 
+      output: web                    
+    - title: Versioning
+      url: /home_versioning.html 
+      output: web                    
+      
              
   - title: Valuation    
     output: web
