@@ -1,8 +1,11 @@
 # QuantSA
 
-<img src="https://jameslatimertaylor.visualstudio.com/_apis/public/build/definitions/e7d214b3-b944-4d42-b277-57c5882f09ff/1/badge"/>
-
 An open source quant finance library for South Africa.
+
+|Status|Description|
+|:----:|-----------|
+|<img src="https://jameslatimertaylor.visualstudio.com/_apis/public/build/definitions/e7d214b3-b944-4d42-b277-57c5882f09ff/1/badge"/> |Visual Studio Team Services: C# solutions and unit tests.|
+|[![Build Status](https://travis-ci.org/JamesLTaylor/QuantSA.svg?branch=master)](https://travis-ci.org/JamesLTaylor/QuantSA)|Travis CI: Ruby script for Jekyll user docs and HTML checker.|
 
 # Website
 www.QuantSA.org
@@ -15,4 +18,4 @@ www.QuantSA.org
 # Motivation
 To try and stop too many wheels from being invented.  
 
-By making this open source everyone can use it and by making it extensible, advanced users can build their own IP on top of it allowing them to focus only on the value adding development while the basics don't need to be done again.
+By making this open source everyone can use it and improve on it. By making it extensible, advanced users can build their own IP on top of it allowing them to focus only on the value adding development.
