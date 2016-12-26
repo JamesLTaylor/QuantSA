@@ -17,5 +17,7 @@ The version displayed alongside the Excel add-in is the string in `QuantSA.dna`.
 
 # Policy
 
+Versions should follow <http://semver.org/>.
+
 At the moment we are just heading towards a 1.0 release.  That would be a version that provides a reasonable amount of functionality and has had 100s of hours of testing in the wild.
 
