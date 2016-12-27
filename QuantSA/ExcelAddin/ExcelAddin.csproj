@@ -141,7 +141,17 @@ xcopy $(SolutionDir)..\Scripts\*.* $(TargetDir)\Scripts\ /y</PostBuildEvent>
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  
+  <Import Project="C:\Dev\QuantSA\QuantSA\packages\MSBuildTasks.1.5.0.214\tools\MSBuild.Community.Tasks.Targets"/>
+  <ItemGroup>
+    <DebugApplicationFiles Include="$(TargetDir)\*.dll"/>
+  </ItemGroup>
+  <Target Name="AfterBuild">  
+  <Zip Files="@(DebugApplicationFiles)"
+          WorkingDirectory="$(TargetDir)"
+          ZipFileName="$(TargetDir)\test.zip"
+          ZipLevel="9" />
+  </Target>
+  
 </Project>

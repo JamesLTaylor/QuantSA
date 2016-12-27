@@ -13,10 +13,11 @@ namespace PrepareRelease
         {
             // Variables
             string rootpath = @"c:\dev\QuantSA";
-            string xllPath = Path.Combine(rootpath, @"QuantSA\Excel\bin\Debug\QuantSA.xll");
+            string xllPath = Path.Combine(rootpath, @"QuantSA\ExcelAddin\bin\Debug\QuantSA.xll");
             string exampleSheetPath = Path.Combine(rootpath, @"ExcelExamples");
             string tempOutputPath = Path.Combine(rootpath, @"temp");
 
+            /*
             // Check spreadsheets
             SpreadsheetChecker ssChecker = new SpreadsheetChecker(xllPath, exampleSheetPath, tempOutputPath);
             int failedSheets = ssChecker.Check();
@@ -35,7 +36,14 @@ namespace PrepareRelease
             // Check the example sheets are valid
             int failedExampleSheetRefs = generator.AreAllExampleSheetsValid(ssChecker.GetSheetsAndFuncs());
             Console.WriteLine("Checking valid example sheets: " + failedExampleSheetRefs.ToString() + " errors. (see " + MarkdownGenerator.SS_ERROR_OUTPUT_FILE + ")");
+            */
+            // Generate the installer resource files
+            string installFilesPartialPath = Path.Combine(@"QuantSA\ExcelAddin\bin\Release");
+            InstallerGenerator installFileGenerator = new InstallerGenerator(rootpath, installFilesPartialPath);
+            installFileGenerator.Generate();
 
+
+            // Wait for keyboard
             Console.ReadKey();
 
         }

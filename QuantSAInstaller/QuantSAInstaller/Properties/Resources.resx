@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -127,28 +127,93 @@
     <data name="InstallFileInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\InstallFileInfo.csv;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  
-  <data name="CDS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CDS.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="BermudanSwaption" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\ExcelExamples\BermudanSwaption.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-
-  <data name="Accord" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Accord.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_dna" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\QuantSA.dna;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_Help" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\QuantSA Help.url;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="BEELoanExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BEELoanExample.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
+<!--AUTO-->
+<!--  Start of generated version.  See PrepareRelease.sln.  If the resources are edited in Visual Studio this comment will be removed and will be need to be reverted from git. -->
   <data name="QuantSA_xll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.xll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-
+  <data name="QuantSA_Help_url" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA Help.url;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="QuantSA_dna" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.dna;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Accord_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Accord_Math_Core_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.Math.Core.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Accord_Math_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.Math.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Accord_Statistics_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.Statistics.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ExcelDna_Integration_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelDna.Integration.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MathNet_Numerics_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\MathNet.Numerics.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="QuantSA_Excel_Addin_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.Excel.Addin.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="QuantSA_Excel_Common_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.Excel.Common.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="QuantSA_ExcelFunctions_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.ExcelFunctions.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="QuantSA_General_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.General.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="QuantSA_Valuation_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.Valuation.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BermudanSwaption_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\BermudanSwaption.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CDS_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\CDS.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CreateProductFromFile_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\CreateProductFromFile.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EPE_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\EPE.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EquityValuation_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\EquityValuation.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="FitCurveNelsonSiegel_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\FitCurveNelsonSiegel.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GeneralSwap_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\GeneralSwap.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="InterpLinear_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\InterpLinear.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Introduction_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\Introduction.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Loans_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\Loans.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PCA_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\PCA.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ZARSwap_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\ZARSwap.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BEELoanExample_cs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Scripts\BEELoanExample.cs;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EuropeanCallSimple_cs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Scripts\EuropeanCallSimple.cs;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="IncentiveOptionExample_cs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Scripts\IncentiveOptionExample.cs;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

@@ -59,7 +59,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <None Include="Resources\BEELoanExample.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -97,11 +96,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\CDS.xlsx" />
     <None Include="Resources\InstallFileInfo.csv" />
-    <None Include="Resources\QuantSA Help.url" />
-    <None Include="Resources\QuantSA.dna" />
-    <None Include="Resources\QuantSA.xll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -111,9 +106,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\LogoTemp1_512.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Accord.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
