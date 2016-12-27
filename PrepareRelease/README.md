@@ -6,15 +6,15 @@ This performs several custom steps.  (for now not all of them hacve been impleme
  - [ ] Check that all scripts that get published run without error (the correctness of the output should be checked in the unit tests)
  - [x] Generate a list of Excel sheets and the QSA functions they contain
  - [x] Generate markdown files from Excel source comments
- - [ ] Check that all Excel comments include an example sheet and the listed example sheet does contain that function
+ - [x] Check that all Excel comments include an example sheet and the listed example sheet does contain that function
  
 
 The steps that should be performed by the conventional build process are:
- - [ ] Compile source
- - [ ] Run tests
+ - [x] Compile source
+ - [x] Run tests
  - [ ] Call the above custom steps 
  - [ ] Generate Doxygen files
- - [ ] Generate HTML from markdown (Jekyll)
+ - [x] Generate HTML from markdown (Jekyll)
  - [ ] Build the installer 
  - [ ] Publish the Jekyll generated HTML
  - [ ] Publish the Doxygen generated HTML

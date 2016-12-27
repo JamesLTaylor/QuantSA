@@ -127,8 +127,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy $(SolutionDir)..\ExcelExamples\*.xlsx $(TargetDir)\ExcelExamples\ /y
+xcopy $(SolutionDir)..\Scripts\*.* $(TargetDir)\Scripts\ /y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Accord.3.2.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.2.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
