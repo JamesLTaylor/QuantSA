@@ -16,6 +16,8 @@ script:
 
 after_success:
 #- "curl --ftp-create-dirs -T ./_site/CreateCDS.html -u $FTP_USER:$FTPPWD ftp://quantsa.org/test/"
+- cd ..
+- gulp
 - gulp deploy --user $FTP_USER --password $FTPPWD
 
 env:
