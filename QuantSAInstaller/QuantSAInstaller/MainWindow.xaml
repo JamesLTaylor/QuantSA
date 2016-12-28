@@ -10,7 +10,7 @@
         <StackPanel HorizontalAlignment="Left" Margin="10" Orientation="Vertical">
             <Label Content="Install location:"/>
             <StackPanel HorizontalAlignment="Left" Margin="0" Orientation="Horizontal">
-                <TextBox x:Name="tbInstallPath" Text="c:\Program File (x86)\QuantSA" Width="300" Margin="0,0,10,0" IsEnabled="False"/>
+                <TextBox x:Name="tbInstallPath" Text="C:\Program Files (x86)\QuantSA" Width="300" Margin="0,0,10,0" IsEnabled="False"/>
                 <Button x:Name="btnFolderBrowser" Content="..." Padding="5,0,5,0" IsEnabled="False"/>                
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
