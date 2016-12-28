@@ -7,15 +7,15 @@ before_install:
 - npm install vinyl-ftp gulp-util minimist --save-dev
 - cd ./Documentation
 install:
-- bundle install
+#- bundle install
 script:
-- bundle exec jekyll build
-- rm ./_site/titlepage/index.html
-- rm ./_site/tocpage/index.html
-- bundle exec htmlproofer ./_site --allow-hash-href --disable-external
+#- bundle exec jekyll build
+#- rm ./_site/titlepage/index.html
+#- rm ./_site/tocpage/index.html
+#- bundle exec htmlproofer ./_site --allow-hash-href --disable-external
 
 after_success:
-- "curl --ftp-create-dirs -T ./_site/CreateCDS.html -u $FTP_USER:$FTPPWD ftp://quantsa.org/test/"
+#- "curl --ftp-create-dirs -T ./_site/CreateCDS.html -u $FTP_USER:$FTPPWD ftp://quantsa.org/test/"
 - gulp deploy --user $FTP_USER --password $FTPPWD
 
 env:
