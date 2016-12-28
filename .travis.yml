@@ -4,7 +4,9 @@ cache: bundler
 rvm:
 - 2.2.2
 before_install:
-- npm install vinyl-ftp gulp-util minimist --save-dev
+- npm install gulp
+- npm install gulp-cli
+- npm install vinyl-ftp gulp-util minimist
 - cd ./Documentation
 install:
 - bundle install
