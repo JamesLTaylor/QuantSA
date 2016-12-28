@@ -10,7 +10,7 @@ gulp.task('deploy', function() {
     password: args.password,
     log: gutil.log
   });
-  gulp.src(['index.html', '.site/**/*.html'])
+  gulp.src(['./_site/index.html', './_site/**/*.html'])
     .pipe(conn.newer(remotePath))
     .pipe(conn.dest(remotePath));
 });
