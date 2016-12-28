@@ -7,14 +7,14 @@ gutil.log('gulp did something outside.');
 
 gulp.task('deploy', function() {
     gutil.log('gulp did something.');
-  var remotePath = '/public_html/test2';
+  var remotePath = '/test2';
   var conn = ftp.create({
     host: 'quantsa.org',
     user: args.user,
     password: args.password,
     log: gutil.log
   });
-  gulp.src(['./_site/index.html', './_site/**/*.html'])
+  gulp.src(['/**/index.html', './_site/**/*.html'])
     .pipe(conn.newer(remotePath))
     .pipe(conn.dest(remotePath));
 });
