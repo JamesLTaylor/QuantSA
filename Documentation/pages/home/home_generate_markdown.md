@@ -13,9 +13,11 @@ folder: home
 
 The skeleton of the help markdown files can be generated from the attributes set when a function is exposed to excel.  Use the solution:
 
-<https://github.com/JamesLTaylor/QuantSA/tree/master/GenerateDocs> 
+<https://github.com/JamesLTaylor/QuantSA/tree/master/PrepareRelease> 
 
  * Update the references to the latest binaries of QuantSA.Excel.
  * Update the output folder to the location where  you have the documentation checked out.
  * Compile and run the solution.
+
+Note that the docs are built officialy by the Travis build described [here](/home_builds.html).
 
