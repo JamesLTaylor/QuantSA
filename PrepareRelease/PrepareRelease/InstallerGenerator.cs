@@ -39,7 +39,8 @@ namespace PrepareRelease
             AddFile("QuantSA.xll", @"");
             AddFile("QuantSA Help.url", @"");
             AddFile("QuantSA.dna", @"");
-            AddFiles(@"", ".dll");
+            AddFile("zipped_dlls.zip", @"");
+            //AddFiles(@"", ".dll");
             AddFiles(@"ExcelExamples", ".xlsx");
             AddFiles(@"Scripts", ".cs");
             WriteInstallFileInfo();

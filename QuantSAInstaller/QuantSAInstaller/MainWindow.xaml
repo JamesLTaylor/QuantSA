@@ -19,7 +19,7 @@
             </StackPanel>
             <Label x:Name="lblStep" Content="Step:"/>
             <Label Content="Progress:"/>
-            <TextBox x:Name="tbOutput" Margin="0" TextWrapping="Wrap" Text="Output from install" ScrollViewer.CanContentScroll="True" IsReadOnly="True" Height="200"/>
+            <TextBox x:Name="tbOutput" Margin="0" TextWrapping="NoWrap" Text="" ScrollViewer.CanContentScroll="True" IsReadOnly="True" Height="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
 
     </Grid>

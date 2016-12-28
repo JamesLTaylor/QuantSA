@@ -138,38 +138,8 @@
   <data name="QuantSA_dna" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.dna;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Accord_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Accord_Math_Core_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.Math.Core.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Accord_Math_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.Math.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Accord_Statistics_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\Accord.Statistics.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="ExcelDna_Integration_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelDna.Integration.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MathNet_Numerics_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\MathNet.Numerics.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_Excel_Addin_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.Excel.Addin.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_Excel_Common_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.Excel.Common.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_ExcelFunctions_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.ExcelFunctions.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_General_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.General.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="QuantSA_Valuation_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\QuantSA.Valuation.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="zipped_dlls_zip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\ExcelAddin\bin\Release\zipped_dlls.zip;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="BermudanSwaption_xlsx" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\QuantSA\ExcelAddin\bin\Release\ExcelExamples\BermudanSwaption.xlsx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

@@ -33,27 +33,34 @@ namespace QuantSAInstaller
         private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
             btnStart.IsEnabled = false;
-            btnCancel.IsEnabled = true;
+            // btnCancel.IsEnabled = true;
             
             cancellationSource.Dispose();
             cancellationSource = new CancellationTokenSource();
 
-            tbOutput.Text = "started";
             installer = new Installer();
 
-            var progressOutput = new Progress<string>(s => tbOutput.Text = s);
-            var progressStep = new Progress<string>(s => lblStep.Content = "Step: " + s);
+            var progressOutput = new Progress<string>(s => tbOutput.AppendText("\n" + s));
+            var progressStep = new Progress<string>(s => UpdateStep(s));
 
             string installPath = tbInstallPath.Text;
 
             await Task.Factory.StartNew(() => installer.Start(installPath, progressOutput, progressStep, cancellationSource.Token),
                                         TaskCreationOptions.LongRunning);
-            MessageBox.Show("Installation Complete!", "Finished", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Installation Complete!\n\nClose the window when done.", "Finished", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void UpdateStep(string stepName)
+        {
+            lblStep.Content = "Step: " + stepName;
+            tbOutput.AppendText("\n****************************\n" + stepName + "\n****************************\n");
+            tbOutput.ScrollToEnd();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
     }
 }
