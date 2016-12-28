@@ -145,12 +145,12 @@ xcopy $(SolutionDir)..\Scripts\*.* $(TargetDir)\Scripts\ /y</PostBuildEvent>
   
   <Import Project="$(SolutionDir)\packages\MSBuildTasks.1.5.0.214\tools\MSBuild.Community.Tasks.Targets"/>
   <ItemGroup>
-    <DebugApplicationFiles Include="$(TargetDir)\*.dll"/>
+    <AllDlls Include="$(TargetDir)\*.dll"/>
   </ItemGroup>
   <Target Name="AfterBuild">  
-  <Zip Files="@(DebugApplicationFiles)"
+  <Zip Files="@(AllDlls)"
           WorkingDirectory="$(TargetDir)"
-          ZipFileName="$(TargetDir)\test.zip"
+          ZipFileName="$(TargetDir)\zipped_dlls.zip"
           ZipLevel="9" />
   </Target>
   
