@@ -1,3 +1,4 @@
+var gulp = require('gulp');
 var ftp = require('vinyl-ftp');
 var gutil = require('gulp-util');
 var minimist = require('minimist');
@@ -14,7 +15,7 @@ gulp.task('deploy', function() {
     password: args.password,
     log: gutil.log
   });
-  gulp.src(['/**/index.html', './_site/**/*.html'])
+  gulp.src(['/**/index.html', './Documentation/_site/**/*.html'])
     .pipe(conn.newer(remotePath))
     .pipe(conn.dest(remotePath));
 });
