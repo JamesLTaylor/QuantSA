@@ -21,4 +21,4 @@ QuantSA is written in C#.  It includes visual Studio 2015 solution files so the 
  
 
 ## Running tests
-* Each project comes with its own test project, find more details [here](/home_tests.html).
+* Each project comes with its own test project, find more details [here](home_tests.html).

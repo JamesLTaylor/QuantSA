@@ -5,6 +5,7 @@ using XU = QuantSA.Excel.ExcelUtilities;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General;
 using QuantSA.Excel.Common;
+using System.Diagnostics;
 
 namespace QuantSA.Excel
 {
@@ -16,7 +17,7 @@ namespace QuantSA.Excel
         IsMacroType = true,
         IsHidden = true)]
         public static object LatestError()
-        {
+        {            
             try {
                 if (ExcelUtilities.latestException == null)
                 {
@@ -36,7 +37,18 @@ namespace QuantSA.Excel
                 return ExcelUtilities.Error0D(e);
             }
         }
-        
+
+        [ExcelFunction(Description = "",
+            Name = "QSA.OpenExampleSheetsDir",
+            Category = "QSA.General",
+            IsMacroType = true,
+            IsHidden = true)]
+        public static object OpenExampleSheetsDir()
+        {
+            Process.Start(AppDomain.CurrentDomain.BaseDirectory.ToString() + @"\ExcelExamples");
+            return "";
+        }
+
         [QuantSAExcelFunction(Description = "Create a C# representation of data in a spreadsheet.",
             Name = "QSA.GetCSArray",
             Category = "QSA.General",
@@ -73,7 +85,24 @@ namespace QuantSA.Excel
             }
         }
 
-
+        //var dir = AppDomain.CurrentDomain.BaseDirectory;
+        [QuantSAExcelFunction(Description = "Get a string representing the path in which QuantSA is intalled.",
+            Name = "QSA.GetInstallPath",
+            Category = "QSA.General",
+            ExampleSheet = "CreateProductFromFile.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetInstallPath.html")]
+        public static object[,] GetInstallPath()
+        {
+            try
+            {
+                return XU.ConvertToObjects(AppDomain.CurrentDomain.BaseDirectory.ToString());
+            }
+            catch (Exception e)
+            {
+                return XU.Error2D(e);
+            }
+        }
 
         [QuantSAExcelFunction(Description = "Get a list of available results in the results object.",
             Name = "QSA.GetAvailableResults",

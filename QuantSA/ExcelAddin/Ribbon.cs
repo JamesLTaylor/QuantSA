@@ -32,8 +32,9 @@ public class Ribbon : ExcelRibbon
         }
 
         string commonGroup = @"<group id='groupCommon' label='QuantSA'>
-            <button id='btnAbout' label='About' imageMso='PropertySheet' size='large' onAction='RunTagMacro' tag='QSA.ShowAbout' />            
-            <button id='btnLatestError' label='Latest Error' size='large' onAction='RunTagMacro' tag='QSA.LatestError' />"
+            <button id='btnAbout' label='About' image='LogoTemp1_256' size='large' onAction='RunTagMacro' tag='QSA.ShowAbout' />           
+            <button id='btnOpenExcel' label='Example Sheets' imageMso='FileOpen' size='large' onAction='RunTagMacro' tag='QSA.OpenExampleSheetsDir' />
+            <button id='btnLatestError' label='Latest Error' imageMso='Risks' size='large' onAction='RunTagMacro' tag='QSA.LatestError' />"
             + pluginSubmenu.ToString()
             + "</group>";
         string customUIStart = @"<customUI xmlns='http://schemas.microsoft.com/office/2006/01/customui' loadImage='LoadImage'>
@@ -57,11 +58,23 @@ public class Ribbon : ExcelRibbon
         return customUI;
     }
 
+    /// <summary>
+    /// Used when an image tag is found in the ribbon xml.  First checks in the image resources from the plugins, 
+    /// then in the resources of this assembly then trys to use a standard imageMso.
+    /// </summary>
+    /// <param name="imageId">The image identifier.</param>
+    /// <returns></returns>
     public override object LoadImage(string imageId)
     {
         if (MyAddIn.assemblyImageResources.ContainsKey(imageId))
             return (MyAddIn.assemblyImageResources[imageId]);
 
+        try
+        {
+            return QuantSA.Excel.Addin.Properties.Resources.ResourceManager.GetObject(imageId);
+        }
+        catch { }
+        
         return base.LoadImage(imageId);
     }
 

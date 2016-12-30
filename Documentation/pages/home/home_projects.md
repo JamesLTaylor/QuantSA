@@ -41,6 +41,3 @@ An InstallShield Setup Project for QuantSA ().
 
 The setup project ensures that the client has the required .NET framework and automatically adds the correct verison of the add-in to all installed versions of Excel.
 
-## QuantSASetupLite.sln
-
-A simpler installer that does nothing other than package the files but does not require any licenses to produce.

@@ -187,6 +187,18 @@ namespace QuantSA.Excel
             return result;
         }
 
+        /// <summary>
+        /// Converts a string to a 2d array of objects.
+        /// </summary>
+        /// <param name="strValues"></param>
+        /// <returns></returns>
+        public static object[,] ConvertToObjects(string strValue)
+        {
+            object[,] result = new object[1,1];
+            result[0, 0] = strValue;            
+            return result;
+        }
+
 
         /// <summary>
         /// Converts an array of strings to objects.

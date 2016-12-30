@@ -17,11 +17,13 @@ topnav_dropdowns:
         - title: Github Wiki
           external_url: https://github.com/JamesLTaylor/QuantSA/wiki
         - title: Source Documentation
-          external_url: http://www.quantsa.org/source_docs/index.html                    
+          external_url: http://www.quantsa.org/source_docs/index.html
+        - title: Documentation History
+          external_url: /documentation_history.html                      
         
     - title: Help Category
       folderitems:
-        - title: QuantSA
-          url: /home_introduction.html
+        - title: QuantSA General
+          url: home_introduction.html
         - title: Excel Functions
-          url: /excel_introduction.html
+          url: excel_introduction.html

@@ -2,13 +2,13 @@
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
 
-topnav_title: QuantSA
+topnav_title: QuantSA (v0.1.0-alpha)
 # this appears on the top navigation bar next to the home button
 
 site_title: QuantSA
 # this appears in the html browser tab for the site title (seen mostly by search engines, not users)
 
-company_name: QuantSA
+company_name: QuantSA.org
 # this appears in the footer
 
 github_editme_path: 
