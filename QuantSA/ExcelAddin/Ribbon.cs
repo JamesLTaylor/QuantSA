@@ -81,7 +81,7 @@ public class Ribbon : ExcelRibbon
     [ExcelFunction(IsMacroType = true, Description = "Show information about QuantSA", Name = "QSA.ShowAbout", Category = "QSA.General", IsHidden = true)]
     public static int ShowAbout()
     {
-        ExcelMessage em = new ExcelMessage("QuantSA", "QuantSA is an open source Quant Library customized for the South African Market\n\n" +
+        ExcelMessage em = new ExcelMessage("QuantSA", "QuantSA is an open source library for quantitative finance, customized for the South African market\n\n" +
             "View the code at: https://github.com/JamesLTaylor/QuantSA \n\n" +
             "Visit the website at www.quantsa.org");
         em.ShowDialog();

@@ -59,6 +59,6 @@ The deploy steps are manual, for a version X.Y.Z:
 ## Further work
 
 * None of the excel functionality is currently tested.  This needs to be added somewhere rather than relying on developer's good behaviour.
-* It would be nice to change the QuantSACore solution projects to be able to run on mono and hence on the travis build.  This could be useful in the futire for distributing calculations.  
+* It would be nice to change the QuantSACore solution projects to be able to run on mono and hence on the travis build.  This could be useful in the future for distributing calculations.  
 * Should add python testing to one of the builds.
 
