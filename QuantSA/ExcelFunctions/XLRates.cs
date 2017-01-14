@@ -143,9 +143,9 @@ namespace QuantSA.ExcelFunctions
             if (fixingCurve == null) {
                 // Calculate the first fixing off the curve to use at all past dates.
                 double df1 = 1.0;
-                Date laterDate = discountCurve.getAnchorDate().AddTenor(floatingRateIndex.tenor);
+                Date laterDate = discountCurve.GetAnchorDate().AddTenor(floatingRateIndex.tenor);
                 double df2 = discountCurve.GetDF(laterDate);
-                double dt = (laterDate - discountCurve.getAnchorDate()) / 365.0;
+                double dt = (laterDate - discountCurve.GetAnchorDate()) / 365.0;
                 double rate = (df1 / df2 - 1) / dt;
                 fixingCurve = new FloatingRateFixingCurve1Rate(rate, floatingRateIndex);
             }
@@ -212,7 +212,7 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "The curve to which zero coupon bond prices will be calibrated.")]IDiscountingSource baseCurve,
             [ExcelArgument(Description = "The indices that should be forecast with this same cuve.  No spreads are added.")]FloatingIndex forecastIndices)
         {
-            Date anchorDate = baseCurve.getAnchorDate();
+            Date anchorDate = baseCurve.GetAnchorDate();
             double flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));
             HullWhite1F model = new HullWhite1F(meanReversion, flatVol, flatCurveRate, flatCurveRate, anchorDate);
             model.AddForecast(forecastIndices);
