@@ -69,7 +69,7 @@ namespace QuantSA.General
         public static IRSwap CreateZARSwap(double rate, bool payFixed, double notional, Date startDate, Tenor tenor)
         {
             IRSwap newSwap = new IRSwap();
-            int quarters = tenor.years * 4;
+            int quarters = tenor.years * 4 + tenor.months / 3;
             newSwap.payFixed = payFixed ? -1 : 1;
             newSwap.indexDates = new Date[quarters];
             newSwap.paymentDates = new Date[quarters];

@@ -31,7 +31,7 @@ namespace QuantSA.Valuation
     {
         // Settings
         private bool useThreads = true;
-        int maxThreads = 4;
+        private int maxThreads = 4;
         private int N;
 
         // Simulators and associated data
@@ -71,6 +71,28 @@ namespace QuantSA.Valuation
             valueCurrency = numeraire.GetNumeraireCurrency();
         }
 
+        /// <summary>
+        /// Specifies if threads should be used.  If it set to <c>true</c> then the default maximum number of threads will be used.
+        /// </summary>
+        /// <seealso cref="SetThreadedness(bool, int)"/>
+        /// <param name="useThreads">if set to <c>true</c> then the coordinator will perform calculation on multiple threads.</param>
+        public void SetThreadedness(bool useThreads)
+        {
+            this.useThreads = useThreads;
+        }
+
+        /// <summary>
+        /// Specifies if threads should be used and if so what the maximum number of threads should be.
+        /// </summary>
+        /// <seealso cref="SetThreadedness(bool)"/>
+        /// <param name="useThreads">if set to <c>true</c> then the coordinator will perform calculation on multiple threads.</param>
+        /// <param name="maxThreads">The maximum number of threads to use.</param>
+        public void SetThreadedness(bool useThreads, int maxThreads)
+        {
+            this.useThreads = useThreads;
+            this.maxThreads = maxThreads;
+        }
+
 
         /// <summary>
         /// Performs the simulation chunk that updates 
@@ -87,11 +109,21 @@ namespace QuantSA.Valuation
         private void PerformSimulationChunk(List<Product> portfolio, List<Date> fwdValueDates,
             SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs, int pathStart, int pathEnd)
         {
-            // clone the simulators and portfolio
-            List<Product> localPortfolio = portfolio.Clone();
+            // clone the simulators and portfolio if this is running multi threaded
+            List<Product> localPortfolio;
             NumeraireSimulator localNumeraire = null;
             List<Simulator> localSimulators = null;
-            CopySimulators(out localNumeraire, out localSimulators);
+
+            if (useThreads)
+            {
+                localPortfolio = portfolio.Clone();
+                CopySimulators(out localNumeraire, out localSimulators);
+            }else
+            {
+                localPortfolio = portfolio;
+                localNumeraire = numeraire;
+                localSimulators = simulators;
+            }
 
             for (int pathCounter = pathStart; pathCounter < pathEnd; pathCounter++)
             {
@@ -167,7 +199,7 @@ namespace QuantSA.Valuation
         }
 
         /// <summary>
-        /// Prepares the portfolios by splitting produicts with early exercise into 
+        /// Prepares the portfolios by splitting products with early exercise into 
         /// the products they become after exercise and the product that produces their
         /// cashflows until exercise.
         /// </summary>
@@ -489,13 +521,24 @@ namespace QuantSA.Valuation
             }
             return epe;
         }
-       
+
+
+        /// <summary>
+        /// Values a single specified product
+        /// </summary>
+        /// <param name="product">The product to be valued.</param>
+        /// <param name="valueDate">The value date.</param>
+        /// <returns></returns>
+        public double Value(Product product, Date valueDate)
+        {
+            return Value(new Product[] { product }, valueDate);
+        }
 
 
         /// <summary>
         /// Values the specified portfolio.
         /// </summary>
-        /// <param name="portfolioIn">The portfolio in.</param>
+        /// <param name="portfolioIn">The portfolio to be valued.</param>
         /// <param name="valueDate">The value date.</param>
         /// <returns></returns>
         public double Value(Product[] portfolioIn, Date valueDate)

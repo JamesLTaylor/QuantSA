@@ -64,7 +64,7 @@ namespace QuantSA.Valuation
             defaultTime = new DefaultTime(refEntity);
             defaultRecovery = new DefaultRecovery(refEntity);
             currencyPair = new CurrencyPair(otherCurrency, valueCurrency);            
-            anchorDate = valueCurrencyDiscount.getAnchorDate();
+            anchorDate = valueCurrencyDiscount.GetAnchorDate();
             spot = fxSource.GetRate(anchorDate);
             simRecoveryRate = expectedRecoveryRate;
         }

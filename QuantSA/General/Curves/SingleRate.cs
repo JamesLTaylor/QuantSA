@@ -23,7 +23,7 @@ namespace QuantSA.General
             return new SingleRate(rate, anchorDate);
         }
 
-        public Date getAnchorDate()
+        public Date GetAnchorDate()
         {
             return anchorDate;
         }

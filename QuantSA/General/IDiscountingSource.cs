@@ -12,7 +12,7 @@ namespace QuantSA.General
         /// The earliest date after which discount factors can be obtained.
         /// </summary>
         /// <returns></returns>
-        Date getAnchorDate();
+        Date GetAnchorDate();
 
         /// <summary>
         /// The currency of cashflows for which this curve should be used for discounting.
