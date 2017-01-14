@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using QuantSA.General;
 using Accord.Math.Optimization;
+using Accord.Math.Convergence;
 
 namespace QuantSA.Valuation
 {
@@ -128,10 +129,19 @@ namespace QuantSA.Valuation
                 throw new ArgumentException(string.Format("There are {0} metrics as contraints but the curves have {1} free parameters.", targetMetrics.Count, guessList.Count));
 
             double[] guess = guessList.ToArray();
-            var nm = new NelderMead(numberOfVariables: guess.Length, function: ErrorFunction);
-            bool success = nm.Minimize(guess);
-            double minValue = nm.Value;
-            double[] solution = nm.Solution;
+            var optimizer = new NelderMead(numberOfVariables: guess.Length, function: ErrorFunction);
+            //var optimizer = new Cobyla(numberOfVariables: guess.Length, function: ErrorFunction);
+            //var optimizer = new BroydenFletcherGoldfarbShanno(numberOfVariables: guess.Length);
+            //optimizer.Function = ErrorFunction;
+            //optimizer.Gradient = ??
+            //nm.Convergence.
+            bool success = optimizer.Minimize(guess);
+            double minValue = optimizer.Value;
+            double[] solution = optimizer.Solution;
+
+            var optimizer2 = new NelderMead(numberOfVariables: guess.Length, function: ErrorFunction);
+            optimizer2.Minimize(solution);
+
         }
 
         private double ErrorFunction(double[] x)

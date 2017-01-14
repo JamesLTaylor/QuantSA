@@ -161,6 +161,16 @@ namespace ValuationTest
         }
 
         /// <summary>
+        /// Helper function to make a depo
+        /// </summary>
+        private Product MakeDepo(Date anchorDate, double rate, int months)
+        {
+            return new CashLeg(new Date[] { anchorDate, anchorDate.AddMonths(months) }, 
+                               new double[] { -1.0, 1.0 * (1 + rate * months / 12.0) }, 
+                               new Currency[] { Currency.ZAR, Currency.ZAR });
+        }
+
+        /// <summary>
         /// Here we assume that we know the USD collateral implied ZAR discount curve, we imply 
         /// Jibar forwards from the USD collateralized swaps and then imply a new discount curve 
         /// from uncollateralized swap quotes.  The key here is that the same bootstrapping call
@@ -169,6 +179,51 @@ namespace ValuationTest
         [TestMethod]
         public void TestCurveStripTwoZARDiscount()
         {
+            Date valueDate = new Date(2017, 1, 13);
+            Currency zar = Currency.ZAR;
+            
+            // Empty curves
+            ZeroRatesCurveForStripping zarDiscUSDColl = new ZeroRatesCurveForStripping(valueDate, zar);
+            ZeroRatesCurveForStripping zarDisc = new ZeroRatesCurveForStripping(valueDate, zar);
+            ForwardRatesCurveForStripping jibarCurve = new ForwardRatesCurveForStripping(valueDate, FloatingIndex.JIBAR3M);
+
+            // Models
+            DeterminsiticCurves modelZARDiscUSDColl = new DeterminsiticCurves(zarDiscUSDColl);
+            modelZARDiscUSDColl.AddRateForecast(jibarCurve);
+            Coordinator coordZARDiscUSDColl = new Coordinator(modelZARDiscUSDColl, new List<Simulator>(), 1);
+            coordZARDiscUSDColl.SetThreadedness(false);
+            DeterminsiticCurves modelZARDisc = new DeterminsiticCurves(zarDisc);
+            modelZARDisc.AddRateForecast(jibarCurve); // same jibar curve in both coordinators.
+            Coordinator coordZARDisc = new Coordinator(modelZARDisc, new List<Simulator>(), 1);
+            coordZARDisc.SetThreadedness(false);
+
+            //Instruments for USDColl discounting curve.
+            MultiCurveStripper mcs = new MultiCurveStripper(valueDate);
+            Product depo1 = MakeDepo(valueDate, 0.07, 24);
+            Product depo2 = MakeDepo(valueDate, 0.072, 48);                        
+            mcs.AddDiscounting(depo1, () => coordZARDiscUSDColl.Value(depo1, valueDate), 1.0, 1.0, zarDiscUSDColl);
+            mcs.AddDiscounting(depo2, () => coordZARDiscUSDColl.Value(depo2, valueDate), 1.0, 1.0, zarDiscUSDColl);
+
+            Product swapUSDColl1 = IRSwap.CreateZARSwap(0.07, true, 1.0, valueDate, Tenor.Months(24));
+            Product swapUSDColl2 = IRSwap.CreateZARSwap(0.072, true, 1.0, valueDate, Tenor.Months(48));
+            mcs.AddForecast(swapUSDColl1, () => coordZARDiscUSDColl.Value(swapUSDColl1, valueDate), 0, 1, jibarCurve, FloatingIndex.JIBAR3M);
+            mcs.AddForecast(swapUSDColl2, () => coordZARDiscUSDColl.Value(swapUSDColl2, valueDate), 0, 1, jibarCurve, FloatingIndex.JIBAR3M);
+
+            Product swapNoColl1 = IRSwap.CreateZARSwap(0.0709, true, 1.0, valueDate, Tenor.Months(36));
+            Product swapNoColl2 = IRSwap.CreateZARSwap(0.0719, true, 1.0, valueDate, Tenor.Months(48));
+            mcs.AddDiscounting(swapNoColl1, () => coordZARDisc.Value(swapNoColl1, valueDate), 0, 1, zarDisc);
+            mcs.AddDiscounting(swapNoColl2, () => coordZARDisc.Value(swapNoColl2, valueDate), 0, 1, zarDisc);
+
+            mcs.Strip();
+
+            Assert.AreEqual(1.0, coordZARDiscUSDColl.Value(depo1, valueDate), 1e-6);
+            Assert.AreEqual(1.0, coordZARDiscUSDColl.Value(depo2, valueDate), 1e-6);
+            Assert.AreEqual(0.0, coordZARDiscUSDColl.Value(swapUSDColl2, valueDate), 1e-6);
+            Assert.AreEqual(0.0, coordZARDiscUSDColl.Value(swapUSDColl2, valueDate), 1e-6);
+            //Assert.AreNotEqual(0.0, coordZARDisc.Value(swapUSDColl1, valueDate), 1e-6); No discount sensitivity
+            Assert.AreNotEqual(0.0, coordZARDisc.Value(swapUSDColl2, valueDate), 1e-6);
+            Assert.AreEqual(0.0, coordZARDisc.Value(swapNoColl1, valueDate), 1e-6);
+            Assert.AreEqual(0.0, coordZARDisc.Value(swapNoColl2, valueDate), 1e-6);
         }
 
         [TestMethod]

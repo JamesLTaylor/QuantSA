@@ -81,7 +81,7 @@ namespace QuantSA.General
                 this.dates = dates;
             }
             dateValues = this.dates.GetValues();
-            rates = Vector.Ones(this.dates.Length).Multiply(0.01);
+            rates = Vector.Ones(this.dates.Length).Multiply(0.02);
             spline = LinearSpline.InterpolateSorted(dateValues, rates);
         }
 

@@ -8,8 +8,19 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
+    /// <summary>
+    /// A curve that can be used in bootstrapping a forward rate source.  The forward rates
+    /// themselves are linearly interpolated and are not based on discount factors.  The curve 
+    /// can be made to follow the shape of an underlying curve, <see cref="underlyingCurve"/>.
+    /// </summary>
+    /// <seealso cref="QuantSA.General.ICurveForStripping" />
+    /// <seealso cref="QuantSA.General.IFloatingRateSource" />
     public class ForwardRatesCurveForStripping : ICurveForStripping, IFloatingRateSource
     {
+        /// <summary>
+        /// An <see cref="IFloatingRateSource"/> that always returns zero.
+        /// </summary>
+        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
         private class ZeroFloatingRates : IFloatingRateSource
         {
             private FloatingIndex index;
@@ -18,6 +29,12 @@ namespace QuantSA.General
             public double GetForwardRate(Date date) { return 0.0; }
         }
 
+        /// <summary>
+        /// An <see cref="IFloatingRateSource"/> that always returns the forward rates implied by a
+        /// discount curve.  Takes a shortcut in calculating the forward rate from discount factors by adding
+        /// 3 months with no date adjustments and assuming actual 365 and simple compounding for the implied rate.
+        /// </summary>
+        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
         private class DiscountBasedFloatingRates : IFloatingRateSource
         {
             private FloatingIndex index;
@@ -27,6 +44,7 @@ namespace QuantSA.General
                 this.index = index;
                 this.discountingSource = discountingSource;
             }
+
             public FloatingIndex GetFloatingIndex()
             {
                 return index;
@@ -42,8 +60,6 @@ namespace QuantSA.General
             }
         }
 
-
-
         FloatingIndex index;
         Date anchorDate;
         private Date[] dates;
@@ -57,6 +73,7 @@ namespace QuantSA.General
         {
             this.anchorDate = anchorDate;
             this.index = index;
+            underlyingCurve = new ZeroFloatingRates(index);
         }
 
         public ForwardRatesCurveForStripping(Date anchorDate, FloatingIndex index, IDiscountingSource underlyingCurve)
@@ -98,7 +115,7 @@ namespace QuantSA.General
                 this.dates = dates;
             }
             dateValues = this.dates.GetValues();
-            rates = Vector.Ones(this.dates.Length).Multiply(0.01);
+            rates = Vector.Ones(this.dates.Length).Multiply(0.02);
             spline = LinearSpline.InterpolateSorted(dateValues, rates);
         }
 
