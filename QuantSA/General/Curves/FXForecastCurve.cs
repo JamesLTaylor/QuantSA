@@ -32,7 +32,7 @@ namespace QuantSA.General
         public FXForecastCurve(Currency baseCurrency, Currency counterCurrency, double fxRateAtAnchorDate, IDiscountingSource baseCurrencyFXBasisCurve, 
             IDiscountingSource counterCurrencyFXBasisCurve)
         {
-            if (baseCurrencyFXBasisCurve.getAnchorDate() != counterCurrencyFXBasisCurve.getAnchorDate()) throw new ArgumentException("The two basis curves must have the same anchor dates.");
+            if (baseCurrencyFXBasisCurve.GetAnchorDate() != counterCurrencyFXBasisCurve.GetAnchorDate()) throw new ArgumentException("The two basis curves must have the same anchor dates.");
             if (baseCurrency != baseCurrencyFXBasisCurve.GetCurrency()) throw new ArgumentException("The currency of the baseCurrencyFXBasisCurve must the base currency.");
             if (counterCurrency != counterCurrencyFXBasisCurve.GetCurrency()) throw new ArgumentException("The currency of the counterCurrencyFXBasisCurve must the counter currency.");
             this.baseCurrency = baseCurrency;

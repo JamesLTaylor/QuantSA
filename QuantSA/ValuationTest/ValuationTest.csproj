@@ -86,6 +86,7 @@
     <Compile Include="IRSwapEPETest.cs" />
     <Compile Include="EarlyExerciseTest.cs" />
     <Compile Include="SpeedTest.cs" />
+    <Compile Include="MultiCurveStripperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\General\General.csproj">

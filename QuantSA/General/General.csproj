@@ -68,6 +68,8 @@
     </Compile>
     <Compile Include="Cashflow.cs" />
     <Compile Include="Currency.cs" />
+    <Compile Include="Curves\ForwardRatesCurveForStripping.cs" />
+    <Compile Include="Curves\ZeroRatesCurveForStripping.cs" />
     <Compile Include="Curves\DatesAndRates.cs" />
     <Compile Include="Curves\FloatingRateFixingCurve.cs" />
     <Compile Include="Curves\FloatingRateFixingCurve1Rate.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Debug.cs" />
     <Compile Include="Formulae\Formulae.cs" />
     <Compile Include="ICurve.cs" />
+    <Compile Include="ICurveForStripping.cs" />
     <Compile Include="IDiscountingSource.cs" />
     <Compile Include="IFloatingRateSource.cs" />
     <Compile Include="IFXSource.cs" />

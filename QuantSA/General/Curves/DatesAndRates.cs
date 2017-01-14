@@ -55,7 +55,7 @@ namespace QuantSA.General
             this.currency = currency;
         }
 
-        public Date getAnchorDate()
+        public Date GetAnchorDate()
         {
             return anchorDate;
         }

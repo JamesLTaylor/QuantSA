@@ -42,7 +42,7 @@ namespace ValuationTest
 
 
 
-        //[Ignore]
+        [Ignore]
         [TestMethod]        
         public void TestManySwaps()
         {

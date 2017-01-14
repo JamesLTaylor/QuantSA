@@ -46,7 +46,7 @@ namespace QuantSA.Valuation
             this.vols = vols;
             this.divYields = divYields;
             this.discountCurve = discountCurve;
-            anchorDate = discountCurve.getAnchorDate();
+            anchorDate = discountCurve.GetAnchorDate();
             normal = new MultivariateNormalDistribution(Vector.Zeros(prices.Length), correlations);
             this.rateForecastCurves = new Dictionary<MarketObservable, IFloatingRateSource>();
             foreach (IFloatingRateSource floatingRateSource in rateForecastCurves)
