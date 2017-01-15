@@ -25,7 +25,7 @@ namespace ValuationTest
             double a = 0.05;
             double vol = 0.01;
             double flatCurveRate = 0.07;
-            hullWiteSim = new HullWhite1F(a, vol, flatCurveRate, flatCurveRate, valueDate);
+            hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
 
             // Make the underlying swap

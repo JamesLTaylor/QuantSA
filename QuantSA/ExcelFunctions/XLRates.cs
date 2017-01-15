@@ -214,7 +214,7 @@ namespace QuantSA.ExcelFunctions
         {
             Date anchorDate = baseCurve.GetAnchorDate();
             double flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));
-            HullWhite1F model = new HullWhite1F(meanReversion, flatVol, flatCurveRate, flatCurveRate, anchorDate);
+            HullWhite1F model = new HullWhite1F(baseCurve.GetCurrency(), meanReversion, flatVol, flatCurveRate, flatCurveRate, anchorDate);
             model.AddForecast(forecastIndices);
             return model;
         }

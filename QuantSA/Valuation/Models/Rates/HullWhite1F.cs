@@ -41,7 +41,7 @@ namespace QuantSA.Valuation
         public override Simulator Clone()
         {
             //TODO: Take deep copies of everything.  The current implemenation is safe for use in the Coordinator though.
-            HullWhite1F newSimulator = new HullWhite1F(a, vol, r0, rate, time0);
+            HullWhite1F newSimulator = new HullWhite1F(currency, a, vol, r0, rate, time0);
             newSimulator.forecastTenors = forecastTenors; 
             newSimulator.allDates = allDates.Clone();
             newSimulator.allDatesDouble = (double[])allDatesDouble.Clone();
@@ -50,9 +50,9 @@ namespace QuantSA.Valuation
             return newSimulator;
         }
 
-        public HullWhite1F(double a, double vol, double r0, double rate, Date time0)
+        public HullWhite1F(Currency currency, double a, double vol, double r0, double rate, Date time0)
         {
-            fM = date => 0.07;
+            fM = date => rate;
             PM = date => Math.Exp(-rate * (date - time0) / 365.0);
             this.a = a;
             this.vol = vol;
@@ -60,7 +60,7 @@ namespace QuantSA.Valuation
             this.rate = rate;
             this.time0 = time0;
             forecastTenors = new Dictionary<MarketObservable, Tenor>();
-            currency = Currency.ZAR;
+            this.currency = currency;
         }
 
         public void AddForecast(FloatingIndex index)
@@ -84,10 +84,13 @@ namespace QuantSA.Valuation
         /// <param name="date2"></param>
         /// <returns></returns>
         private double BondPrice(double r, Date date1, Date date2)
-        {            
-            double B = (1 / a) * (1 - Math.Exp(-a * (date2 - date1) / 365.0));
+        {
+            // Equation 3.39 in Brigo Mercurio 2nd edition:
+            double T = (date2 - time0) / 365.0;
+            double t = (date1 - time0) / 365.0;
+            double B = (1 / a) * (1 - Math.Exp(-a * (T-t)));                        
             double A = PM(date2) / PM(date1);
-            A *= Math.Exp(B * fM(date1) - ((vol * vol) / (4 * a)) * (1 - Math.Exp(-2 * a * (date1 - time0) / 365.0))*B*B);
+            A *= Math.Exp(B * fM(date1) - ((vol * vol) / (4 * a)) * (1 - Math.Exp(-2 * a * t))*B*B);
             return A * Math.Exp(-B * r);           
         }
 
@@ -183,7 +186,7 @@ namespace QuantSA.Valuation
                 throw new ArgumentException("Numeraire requested at: " + valueDate.ToString() + " but model only starts at " + time0.ToString());
             }
             if (valueDate == time0) return 1.0;
-            return Tools.Interpolate1D(valueDate, allDatesDouble, bankAccount, 0, 1);
+            return Tools.Interpolate1D(valueDate, allDatesDouble, bankAccount, 1, bankAccount.Last());
         }
 
         public override bool ProvidesIndex(MarketObservable index)

@@ -13,8 +13,8 @@ namespace QuantSA.General
     [Serializable]    
     public class CurrencyPair : MarketObservable
     {
-        Currency baseCurrency;
-        Currency counterCurrency;
+        public Currency baseCurrency { get; private set; }
+        public Currency counterCurrency { get; private set; }
         string toString;
 
         /// <summary>

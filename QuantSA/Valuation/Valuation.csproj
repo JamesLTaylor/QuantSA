@@ -70,6 +70,7 @@
     <Compile Include="IndexNotAvailableException.cs" />
     <Compile Include="Models\CreditFX\DeterministicCreditWithFXJump.cs" />
     <Compile Include="Models\Equity\EquitySimulator.cs" />
+    <Compile Include="Models\RatesFX\MultiHWAndFXToy.cs" />
     <Compile Include="Models\Rates\DeterminsiticCurves.cs" />
     <Compile Include="Models\Rates\HullWhite1F.cs" />
     <Compile Include="MultiCurveStripper.cs" />

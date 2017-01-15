@@ -58,6 +58,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <Choose>
@@ -80,6 +81,8 @@
     <Compile Include="DynamicCompileTest.cs" />
     <Compile Include="EquitySimulatorTest.cs" />
     <Compile Include="FXProductTest.cs" />
+    <Compile Include="HullWhite1FTest.cs" />
+    <Compile Include="MultiHWAndFXToyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RateProductTest.cs" />
     <Compile Include="ProductWrapperTest.cs" />
