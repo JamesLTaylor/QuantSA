@@ -91,7 +91,7 @@ namespace QuantSA.Valuation
         public double[] FitCFs(Date date, double[] cfs)
         {
             //double[][] inputs = GetPolynomialValsRegular(date, 3);
-            double[][] inputs = GetIntrinsic(date, 5);
+            double[][] inputs = GetIntrinsic(date, 10);
 
             var ols = new OrdinaryLeastSquares()
             { UseIntercept = true, IsRobust = true };            
@@ -122,28 +122,38 @@ namespace QuantSA.Valuation
         {
             int col = dates.FindIndex(d => d == date);
             double[][] result = new double[regressors.GetLength(0)][];
-            double[] xVec = GetSingleX(col, 0);
-            EmpiricalDistribution xDist = new EmpiricalDistribution(xVec);
-            double[] strikes = new double[order];
-            for (int i = 1; i <= order; i++)
-            {
-                strikes[i-1] = xDist.InverseDistributionFunction((double)i/(order+1));
-            }
 
-            for (int row = 0; row < regressors.GetLength(0); row++)
+            for (int regressorNumber = 0; regressorNumber < regressors.GetLength(2); regressorNumber++)
             {
-                double[] rowValues = new double[1 + 2*order * regressors.GetLength(2)];
-                rowValues[0] = 1;
-                for (int i = 0; i < regressors.GetLength(2); i++)
+                // For each regressor get the partition of the possible values
+                double[] xVec = GetSingleX(col, regressorNumber);
+                EmpiricalDistribution xDist = new EmpiricalDistribution(xVec);
+                double[] strikes = new double[order - 1];
+                for (int i = 1; i < order; i++)
                 {
-                    double x = regressors[row, col, i];                    
-                    for (int orderCounter = 0; orderCounter < order; orderCounter++)
+                    strikes[i - 1] = xDist.InverseDistributionFunction((double)i / (order + 1));
+                }
+                // Create the values of the basis functions for each regressor
+                for (int row = 0; row < regressors.GetLength(0); row++)
+                {
+                    double[] rowValues;
+                    if (regressorNumber == 0) // On the first pass for the first regressor, create the rows on the result matrix.
                     {
-                        rowValues[1 + i * order + 2 * orderCounter] = Math.Max(0, x - strikes[orderCounter]);
-                        rowValues[2 + i * order + 2 * orderCounter] = Math.Max(0, strikes[orderCounter] - x);
+                        rowValues = new double[1 + order * regressors.GetLength(2)];
+                        rowValues[0] = 1;
+                        result[row] = rowValues;
+                    }
+                    else 
+                    {
+                        rowValues = result[row];
+                    }
+                    double x = regressors[row, col, regressorNumber];
+                    rowValues[1 + regressorNumber * order] = Math.Max(0, strikes[0] - x);
+                    for (int orderCounter = 0; orderCounter < (order-1); orderCounter++)
+                    {
+                        rowValues[2 + regressorNumber * order + orderCounter] = Math.Max(0, x - strikes[orderCounter]);
                     }
                 }
-                result[row] = rowValues;
             }
             return result;
         }

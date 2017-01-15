@@ -54,16 +54,22 @@ namespace ValuationTest
             }
             double meanUSDZAR = fwdSpotValues.GetColumn(0).Mean();
             double meanEURZAR = fwdSpotValues.GetColumn(1).Mean();
-
-
+            double meanJibar = fwdSpotValues.GetColumn(2).Mean();
+            double meanLibor = fwdSpotValues.GetColumn(3).Mean();
+            double meanEuribor = fwdSpotValues.GetColumn(4).Mean();
+            Assert.AreEqual(15.7, meanUSDZAR, 0.1);
+            Assert.AreEqual(17.2, meanEURZAR, 0.1);
+            Assert.AreEqual(0.071, meanJibar, 1e-4);
+            Assert.AreEqual(0.01, meanLibor, 1e-4);
+            Assert.AreEqual(0.005, meanEuribor, 1e-4);
         }
 
 
         private FloatLeg CreateFloatingLeg(Currency ccy, Date startDate, double notional, FloatingIndex index, int tenorYears)
         {
-            int quarters = tenorYears / 4;
+            int quarters = tenorYears * 4;
             Date[] paymentDates = Enumerable.Range(1, quarters).Select(i => startDate.AddMonths(3 * i)).ToArray();
-            Date[] resetDates = Enumerable.Range(0, quarters-1).Select(i => startDate.AddMonths(3 * i)).ToArray();
+            Date[] resetDates = Enumerable.Range(0, quarters).Select(i => startDate.AddMonths(3 * i)).ToArray();
             double[] notionals = Vector.Ones(quarters).Multiply(notional);
             double[] spreads = Vector.Zeros(quarters);
             double[] accrualFractions = Vector.Ones(quarters).Multiply(0.25);
@@ -95,12 +101,22 @@ namespace ValuationTest
                                     currencyPairs, spots, vols, correlations);
 
             List<Product> portfolio = new List<Product>();
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 15e6, FloatingIndex.JIBAR3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, -1e6, FloatingIndex.EURIBOR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, FloatingIndex.JIBAR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatingIndex.EURIBOR3M, 7));
             portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatingIndex.JIBAR3M, 13));
             portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatingIndex.EURIBOR3M, 13));
             portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.Years(4)));
 
+            int stepInMonths = 1;
+            Date[] fwdValueDates = Enumerable.Range(1, 13*12/stepInMonths).Select(i => valueDate.AddMonths(stepInMonths * i)).ToArray();
+            Coordinator coord = new Coordinator(model, new List<Simulator>(), 1000);
+            //coord.SetThreadedness(false);
+            double[] epe = coord.EPE(portfolio.ToArray(), valueDate, fwdValueDates);
+            Assert.AreEqual(1555002, epe[0], 5);
+            Assert.AreEqual(2170370, epe[87], 5);
+            Assert.AreEqual(0, epe[155], 5);
+
+            //Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_singlethread_10000.csv", epe);
 
         }
     }

@@ -456,7 +456,7 @@ namespace QuantSA.Valuation
             this.valueDate = valueDate;
             PreparePortfolios(portfolioIn, fwdValueDates);
             AssociateFactorsWithSimulators(allTrades);
-            InitializeSimulators(allTrades, new List<Date>());
+            InitializeSimulators(allTrades, fwdValueDates.ToList());
             simulatedCFs = new SimulatedCashflows(allTrades.Count, N); // initialized outside to allow multiple threads.
             simulatedRegs = new SimulatedRegressors(allDates, N, simulators);
             PerformSimulation();
@@ -568,7 +568,8 @@ namespace QuantSA.Valuation
                 foreach (MarketObservable index in product.GetRequiredIndices())
                 {
                     List<Date> requiredTimes = product.GetRequiredIndexDates(index);
-                    simulators[indexSources[index]].SetRequiredDates(index, requiredTimes);
+                    simulators[indexSources[index]].SetRequiredDates(index, requiredTimes);                    
+                    simulators[indexSources[index]].SetRequiredDates(index, extraDates);
                 }
                 // Tell the nummeraire simulator at what times it will be required.
                 // Tell the FX simulators at what times they will be required.
@@ -576,10 +577,12 @@ namespace QuantSA.Valuation
                 {
                     List<Date> requiredDates = product.GetCashflowDates(ccy);
                     numeraire.SetNumeraireDates(requiredDates);
+                    numeraire.SetNumeraireDates(extraDates);
                     if (ccy != numeraire.GetNumeraireCurrency())
                     {
                         MarketObservable index = new CurrencyPair(ccy, numeraire.GetNumeraireCurrency());
                         simulators[indexSources[index]].SetRequiredDates(index, requiredDates);
+                        simulators[indexSources[index]].SetRequiredDates(index, extraDates);
                     }
                 }
             }

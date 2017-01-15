@@ -19,12 +19,12 @@ namespace QuantSA.Valuation.Models
         private double[] spots;
         private double[] vols;
         private Date anchorDate;
+        private double[,] correlations;
 
         private Dictionary<Currency, HullWhite1F> ccySimMap;
 
         private List<Date> allRequiredDates; // the set of all dates that will be simulated.
         private Dictionary<int, double[]> simulation; // stores the simulated spot rates at each required date
-
 
         public MultiHWAndFXToy(Date anchorDate, Currency numeraireCcy, HullWhite1F[] rateSimulators, CurrencyPair[] currencyPairs, 
             double[] spots, double[] vols, double[,] correlations)
@@ -35,6 +35,7 @@ namespace QuantSA.Valuation.Models
             this.currencyPairs = currencyPairs;
             this.spots = spots;
             this.vols = vols;
+            this.correlations = correlations;
             normal = new MultivariateNormalDistribution(Vector.Zeros(currencyPairs.Length), correlations);
             numeraireSimulator = null;
             ccySimMap = new Dictionary<Currency, HullWhite1F>();
@@ -49,7 +50,16 @@ namespace QuantSA.Valuation.Models
             if (numeraireSimulator == null) throw new ArgumentException("A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString());
 
         }
-            
+
+        public override Simulator Clone()
+        {
+            HullWhite1F[] rateSimulatorsCopy = rateSimulators.Select(sim => (HullWhite1F)sim.Clone()).ToArray();
+            MultiHWAndFXToy model = new MultiHWAndFXToy(new Date(anchorDate), numeraireCcy, rateSimulatorsCopy, currencyPairs,
+                                                        spots, vols, correlations);
+            model.allRequiredDates = allRequiredDates.Clone();
+            return model;
+        }
+
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
         {
@@ -163,6 +173,7 @@ namespace QuantSA.Valuation.Models
         {
             foreach (HullWhite1F simulator in rateSimulators)
                 simulator.SetNumeraireDates(requiredDates);
+            allRequiredDates.AddRange(requiredDates);
         }
 
         public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
@@ -171,8 +182,9 @@ namespace QuantSA.Valuation.Models
             {
                 if (simulator.ProvidesIndex(index)) simulator.SetRequiredDates(index, requiredDates);              
             }
-            if (index is CurrencyPair)
-                allRequiredDates.AddRange(requiredDates);
+            allRequiredDates.AddRange(requiredDates);
+            //if (index is CurrencyPair)
+            //    allRequiredDates.AddRange(requiredDates);
         }
     }
 }
