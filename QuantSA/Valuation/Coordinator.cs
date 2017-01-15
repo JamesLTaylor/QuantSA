@@ -1,4 +1,5 @@
 ﻿using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
 using Accord.Statistics.Models.Regression.Linear;
 using QuantSA.General;
 using System;
@@ -520,6 +521,23 @@ namespace QuantSA.Valuation
                 epe[col] /= N;
             }
             return epe;
+        }
+
+        public double[,] PFE(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates, double[] percentiles)
+        {
+            CalculateAll(portfolioIn, valueDate, fwdValueDates);
+            
+            double[,] pfe = new double[fwdValueDates.Length, percentiles.Length];
+
+            for (int col = 0; col < regressedValues.GetLength(1); col++)
+            {
+                EmpiricalDistribution xDist = new EmpiricalDistribution(regressedValues.GetColumn(col));
+                for (int percCount = 0; percCount<percentiles.Length; percCount++)
+                {
+                    pfe[col, percCount] = xDist.InverseDistributionFunction(percentiles[percCount]);
+                }                
+            }
+            return pfe;
         }
 
 

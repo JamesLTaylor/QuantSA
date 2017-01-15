@@ -40,9 +40,9 @@ namespace ValuationTest
             double[] epe = coordinator.EPE(new Product[] { swap }, valueDate, fwdValueDates.ToArray());
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
-            Assert.AreEqual(2403, epe[0], 5.0);
-            Assert.AreEqual(6531, epe[90], 5.0);
-            Assert.AreEqual(734, epe[182], 5.0);
+            Assert.AreEqual(2560, epe[0], 100.0);
+            Assert.AreEqual(6630, epe[90], 100.0);
+            Assert.AreEqual(734, epe[182], 30);
 
         }
     }

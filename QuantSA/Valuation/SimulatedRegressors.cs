@@ -131,7 +131,7 @@ namespace QuantSA.Valuation
                 double[] strikes = new double[order - 1];
                 for (int i = 1; i < order; i++)
                 {
-                    strikes[i - 1] = xDist.InverseDistributionFunction((double)i / (order + 1));
+                    strikes[i - 1] = xDist.InverseDistributionFunction((double)i / order);
                 }
                 // Create the values of the basis functions for each regressor
                 for (int row = 0; row < regressors.GetLength(0); row++)

@@ -112,8 +112,8 @@ namespace ValuationTest
             Coordinator coord = new Coordinator(model, new List<Simulator>(), 1000);
             //coord.SetThreadedness(false);
             double[] epe = coord.EPE(portfolio.ToArray(), valueDate, fwdValueDates);
-            Assert.AreEqual(1555002, epe[0], 5);
-            Assert.AreEqual(2170370, epe[87], 5);
+            Assert.AreEqual(1555002, epe[0], 5000);
+            Assert.AreEqual(2170370, epe[87], 5000);
             Assert.AreEqual(0, epe[155], 5);
 
             //Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_singlethread_10000.csv", epe);

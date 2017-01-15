@@ -1,6 +1,9 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.General;
 using QuantSA.Excel.Common;
+using QuantSA.Valuation.Models;
+using QuantSA.Valuation;
+using System.Linq;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -34,6 +37,26 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "Date on which FX rate is required.")]Date date)
         {
             return fxCurve.GetRate(date);
+        }
+
+
+        [QuantSAExcelFunction(Description = "",
+                Name = "QSA.CreateMultiHWAndFXToy",
+                HasGeneratedVersion = true,
+                ExampleSheet = "MultiFX_PFE.xlsx",
+                Category = "QSA.FX",
+                IsHidden = false,
+                HelpTopic = "http://www.quantsa.org/CreateMultiHWAndFXToy.html")]
+        public static NumeraireSimulator CreateMultiHWAndFXToy([ExcelArgument(Description = "The date from which the model applies")]Date anchorDate,
+            [QuantSAExcelArgument(Description = "")]Currency numeraireCcy,
+            [QuantSAExcelArgument(Description = "")]HullWhite1F[] rateSimulators,
+            [QuantSAExcelArgument(Description = "")]Currency[] currencies,
+            [QuantSAExcelArgument(Description = "")]double[] spots,
+            [QuantSAExcelArgument(Description = "")]double[] vols,
+            [QuantSAExcelArgument(Description = "")]double[,] correlations)            
+        {
+            CurrencyPair[] currencyPairs = currencies.Select(ccy => new CurrencyPair(ccy, numeraireCcy)).ToArray();
+            return new MultiHWAndFXToy(anchorDate, numeraireCcy, rateSimulators, currencyPairs, spots, vols, correlations);
         }
     }
 }

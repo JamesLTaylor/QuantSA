@@ -77,5 +77,31 @@ namespace QuantSA.Excel
             }
         }
 
+
+        [QuantSAExcelFunction(Name = "QSA.PFE", IsGeneratedVersion = true)]
+        public static object[,] _PFE(object[,] products,
+                            object[,] valueDate,
+                            object[,] forwardValueDates,
+                            object[,] requiredPecentiles,
+                            object[,] model,
+                            object[,] nSims)
+        {
+            try
+            {
+                Product[] _products = XU.GetObject1D<Product>(products, "products");
+                Date _valueDate = XU.GetDate0D(valueDate, "valueDate");
+                Date[] _forwardValueDates = XU.GetDate1D(forwardValueDates, "forwardValueDates");
+                Double[] _requiredPecentiles = XU.GetDouble1D(requiredPecentiles, "requiredPecentiles");
+                NumeraireSimulator _model = XU.GetObject0D<NumeraireSimulator>(model, "model");
+                Int32 _nSims = XU.GetInt320D(nSims, "nSims");
+                Double[,] _result = XLValuation.PFE(_products, _valueDate, _forwardValueDates, _requiredPecentiles, _model, _nSims);
+                return XU.ConvertToObjects(_result);
+            }
+            catch (Exception e)
+            {
+                return XU.Error2D(e);
+            }
+        }
+
     }
 }

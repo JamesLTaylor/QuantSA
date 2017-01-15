@@ -52,5 +52,34 @@ namespace QuantSA.Excel
             }
         }
 
+
+        [QuantSAExcelFunction(Name = "QSA.CreateMultiHWAndFXToy", IsGeneratedVersion = true)]
+        public static object _CreateMultiHWAndFXToy(string objectName,
+                            object[,] anchorDate,
+                            object[,] numeraireCcy,
+                            object[,] rateSimulators,
+                            object[,] currencies,
+                            object[,] spots,
+                            object[,] vols,
+                            object[,] correlations)
+        {
+            try
+            {
+                Date _anchorDate = XU.GetDate0D(anchorDate, "anchorDate");
+                Currency _numeraireCcy = XU.GetCurrency0D(numeraireCcy, "numeraireCcy");
+                HullWhite1F[] _rateSimulators = XU.GetObject1D<HullWhite1F>(rateSimulators, "rateSimulators");
+                Currency[] _currencies = XU.GetCurrency1D(currencies, "currencies");
+                Double[] _spots = XU.GetDouble1D(spots, "spots");
+                Double[] _vols = XU.GetDouble1D(vols, "vols");
+                Double[,] _correlations = XU.GetDouble2D(correlations, "correlations");
+                NumeraireSimulator _result = XLFX.CreateMultiHWAndFXToy(_anchorDate, _numeraireCcy, _rateSimulators, _currencies, _spots, _vols, _correlations);
+                return XU.AddObject(objectName, _result);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
     }
 }

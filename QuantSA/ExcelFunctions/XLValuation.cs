@@ -47,7 +47,7 @@ namespace QuantSA.ExcelFunctions
         }
 
 
-        [QuantSAExcelFunction(Description = "Calculate the expected posiitive exposure for a general portfolio",
+        [QuantSAExcelFunction(Description = "Calculate the expected positive exposure for a general portfolio",
             Name = "QSA.EPE",
             HasGeneratedVersion = true,
             Category = "QSA.Valuation",
@@ -62,6 +62,25 @@ namespace QuantSA.ExcelFunctions
         {
             Coordinator coordinator = new Coordinator(model, new List<Simulator>(), nSims);
             return coordinator.EPE(products, valueDate, forwardValueDates);
+        }
+
+
+        [QuantSAExcelFunction(Description = "",
+            Name = "QSA.PFE",
+            HasGeneratedVersion = true,
+            Category = "QSA.Valuation",
+            ExampleSheet = "PFE.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/EPE.html")]
+        public static double[,] PFE([ExcelArgument(Description = "A list of products.")]Product[] products,
+            [ExcelArgument(Description = "The value date.")]Date valueDate,
+            [ExcelArgument(Description = "The dates at which the expected positive exposure is required.")]Date[] forwardValueDates,
+            [ExcelArgument(Description = "")]double[] requiredPecentiles,
+            [ExcelArgument(Description = "A model able to handle all the market observables required to calculate the cashflows in the portfolio.")]NumeraireSimulator model,
+            [ExcelArgument(Description = "The number of simulations required.")]int nSims)
+        {
+            Coordinator coordinator = new Coordinator(model, new List<Simulator>(), nSims);
+            return coordinator.PFE(products, valueDate, forwardValueDates, requiredPecentiles);
         }
     }
 }
