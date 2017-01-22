@@ -78,8 +78,10 @@ namespace QuantSA.General
         /// <param name="simulationDates">Dates on which the simulation is run.  Must all be greater than the 
         /// anchor date.</param>
         /// <returns></returns>
-        public ICurve[] GetSimulatedCurves(Date[] simulationDates)
+        public ICurve[] GetSimulatedCurves(Date[] simulationDates, Currency curveCcy = null)
         {
+            if (curveCcy == null)
+                curveCcy = Currency.ANY;
             ICurve[] results = new ICurve[simulationDates.Length];
             MathNet.Numerics.Distributions.Normal dist = new MathNet.Numerics.Distributions.Normal();
             Date previousDate = anchorDate;
@@ -119,7 +121,7 @@ namespace QuantSA.General
                 }
 
                 currentRates = currentRates.Multiply(multiplier);
-                results[simCounter] = new DatesAndRates(Currency.ANY, simulationDates[simCounter], curveDates, currentRates, simulationDates[simCounter].AddMonths(360));
+                results[simCounter] = new DatesAndRates(curveCcy, simulationDates[simCounter], curveDates, currentRates, simulationDates[simCounter].AddMonths(360));
                 previousRates = currentRates.Clone() as double[];
                 previousDate = new Date(currentDate);
             }

@@ -8,7 +8,7 @@ namespace QuantSA.General
     [Serializable]
     public class FloatingIndex : MarketObservable
     {
-        private Currency currency;
+        public Currency currency { get; private set; }
         private string name;
         private string toString;
         public Tenor tenor { get; private set; }        

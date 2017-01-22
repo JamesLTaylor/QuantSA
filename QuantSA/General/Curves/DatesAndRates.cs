@@ -12,16 +12,18 @@ namespace QuantSA.General
     /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 
     /// discount factors or interpolated directly.
     /// </summary>
-    [Serializable]    
+    [Serializable]      
     public class DatesAndRates : IDiscountingSource, ICurve
     {
         //TODO: Separate this class into one that discounts and one that interpolates.  It could be abused/misused in its current form
         private double anchorDateValue;
         private Date anchorDate;
         private double[] dates;
-        private double[] rates;
+        public double[] rates { get; private set; }
         private Currency currency;
-        
+
+        [NonSerialized] LinearSpline spline = null;
+
         /// <summary>
         /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
         /// </summary>
@@ -53,7 +55,8 @@ namespace QuantSA.General
             this.dates = datesList.ToArray();
             this.rates = ratesList.ToArray();
             this.currency = currency;
-        }
+            spline = LinearSpline.InterpolateSorted(this.dates, this.rates);
+        }       
 
         public Date GetAnchorDate()
         {
@@ -80,9 +83,9 @@ namespace QuantSA.General
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
+            if (spline== null) spline = LinearSpline.InterpolateSorted(this.dates, this.rates);
             if (date.value < anchorDateValue) throw new ArgumentException("Interpolation date  (" + date.ToString() + ") is before the anchor date of the curve.(" + (new Date(anchorDateValue)).ToString() + ")");
-            if (date.value > dates.Last()) throw new ArgumentException("Interpolation date (" + date.ToString() + ") is after the last date on the curve.(" + (new Date(dates.Last())).ToString() +")");
-            LinearSpline spline = LinearSpline.InterpolateSorted(dates, rates);
+            if (date.value > dates.Last()) throw new ArgumentException("Interpolation date (" + date.ToString() + ") is after the last date on the curve.(" + (new Date(dates.Last())).ToString() +")");            
             return spline.Interpolate(date);            
         }
 

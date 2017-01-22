@@ -477,6 +477,33 @@ namespace QuantSA.Excel
         }
 
 
+        /// <summary>
+        /// Get an array of <see cref="String"/> from an excel range of string objects.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static String[] GetString1D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            {
+                String[] result = new String[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                    result[i] = values[0, i] as String;
+                return result;
+            }
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                String[] result = new String[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                    result[i] = values[i, 0] as String;
+                return result;
+            }
+            else
+                throw new ArgumentException(inputName + " must be a single row or column of strings representing currencies.");
+        }
+
+
         public static Currency GetCurrencyFromString(string strValue, string inputName)
         {
             switch (strValue.ToUpper())
@@ -557,21 +584,14 @@ namespace QuantSA.Excel
                 throw new ArgumentException(inputName + " must be a single row or column of strings representing currencies.");
         }
 
-        /// <summary>
-        /// Get a <see cref="FloatingIndex"/> from a string.
-        /// </summary>
-        /// <remarks>
-        /// This is implemented in the Excel layer rather than in <see cref="FloatingIndex"/> itself to make sure that users in the library don't use strings to construct things.
-        /// </remarks>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static FloatingIndex GetFloatingIndex0D(object[,] values, string inputName)
+
+        private static FloatingIndex GetFloatingIndex(object obj, string inputName)
         {
-            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            if (obj is ExcelMissing)
+                throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is string)
             {
-                string strValue = (string)values[0, 0];
+                string strValue = (string)obj;
                 switch (strValue.ToUpper())
                 {
                     case "JIBAR1M": return FloatingIndex.JIBAR1M;
@@ -583,10 +603,60 @@ namespace QuantSA.Excel
                     case "LIBOR6M": return FloatingIndex.LIBOR6M;
                     case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
                     case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
-                    default: throw new ArgumentException(strValue + " is not a known floating rate index in input: " + inputName);
+                    default:
+                        throw new ArgumentException(strValue + " is not a known floating rate index in input: " + inputName);
                 }
             }
+            else
+                throw new ArgumentException(inputName + ": Floating indices must be strings: ");
+        }
+
+
+
+    /// <summary>
+    /// Get a <see cref="FloatingIndex"/> from a string.
+    /// </summary>
+    /// <remarks>
+    /// This is implemented in the Excel layer rather than in <see cref="FloatingIndex"/> itself to make sure that users in the library don't use strings to construct things.
+    /// </remarks>
+    /// <param name="values"></param>
+    /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+    /// <returns></returns>
+    public static FloatingIndex GetFloatingIndex0D(object[,] values, string inputName)
+        {
+            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                return GetFloatingIndex(values[0, 0], inputName);               
+            }
             throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
+        }
+
+
+        /// <summary>
+        /// Get an array of <see cref="FloatingIndex"/> from an excel range of strings.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static FloatingIndex[] GetFloatingIndex1D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            {
+                FloatingIndex[] result = new FloatingIndex[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                    result[i] = GetFloatingIndex(values[0, i], inputName);
+                return result;
+            }
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                FloatingIndex[] result = new FloatingIndex[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                    result[i] = GetFloatingIndex(values[i, 0], inputName);
+                return result;
+            }
+            else
+                throw new ArgumentException(inputName + " must be a single row or column of strings representing floating indices.");
         }
 
 
