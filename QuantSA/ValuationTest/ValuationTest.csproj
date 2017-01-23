@@ -76,6 +76,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CallableBondTest.cs" />
     <Compile Include="CDSTest.cs" />
     <Compile Include="CoordinatorTest.cs" />
     <Compile Include="DynamicCompileTest.cs" />
