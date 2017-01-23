@@ -263,20 +263,25 @@ namespace QuantSA.Valuation
             // Iterate backwards
             // initially the stoppping time on all paths is infinity (actually the year 3000)
             Date[] optimalStop = new Date[N];
-            for (int i = 0; i < N; i++) optimalStop[i] = new Date(3000, 1, 1);
+            Date finalDate = new Date(3000, 1, 1);
+            for (int i = 0; i < N; i++) optimalStop[i] = finalDate;
 
             for (int exDateCount = exDates.Count - 1; exDateCount >= 0; exDateCount--)
             {
                 Date exDate = exDates[exDateCount];
-                int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(exDate)];                
+                                
                 // Optimal flows are underlying product up to the stopping time, then the post exercise product flows afterwards
                 double[] pvOptimalCFs = Vector.Zeros(N);
                 for (int pathCount = 0; pathCount < N; pathCount++)
                 {
-                    foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
+                    if (optimalStop[pathCount] < finalDate)
                     {
-                        if (cf.date > optimalStop[pathCount])
-                            pvOptimalCFs[pathCount] += cf.amount;
+                        int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
+                        foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
+                        {
+                            if (cf.date > optimalStop[pathCount])
+                                pvOptimalCFs[pathCount] += cf.amount;
+                        }
                     }
                     foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                     {
@@ -309,7 +314,7 @@ namespace QuantSA.Valuation
                     if (cf.date > optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
                 }
-                foreach (Cashflow cf in simulatedCFs.GetCFs(0, pathCount))
+                foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                 {
                     if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
