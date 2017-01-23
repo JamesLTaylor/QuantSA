@@ -19,7 +19,7 @@ namespace ValuationTest
             Date valueDate = new Date(2017, 1, 23);
             double a = 0.05;
             double vol = 0.01;
-            double flatCurveRate = 0.07;
+            double flatCurveRate = 0.18;
             HullWhite1F hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
 
             Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);

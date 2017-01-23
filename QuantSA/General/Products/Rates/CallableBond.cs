@@ -9,7 +9,7 @@ namespace QuantSA.General.Products.Rates
     [Serializable]
     public class CallableBond : ProductWithEarlyExercise
     {
-        Date previousCouponDate;
+        Date firstCouponDate;
         Date[] couponDates;
         Date maturityDate;
         double coupon;
@@ -21,8 +21,8 @@ namespace QuantSA.General.Products.Rates
 
         public CallableBond()
         {
-            previousCouponDate = new Date(2016, 12, 30);
-            couponDates = Enumerable.Range(1, 10).Select(i => previousCouponDate.AddMonths(6 * i)).ToArray();
+            firstCouponDate = new Date(2016, 12, 30);
+            couponDates = Enumerable.Range(1, 10).Select(i => firstCouponDate.AddMonths(6 * i)).ToArray();
             maturityDate = couponDates[couponDates.Length - 1];
             coupon = 0.185;
             notional = 100;
@@ -34,7 +34,7 @@ namespace QuantSA.General.Products.Rates
             exDates = new List<Date>();
             for (int i = 0; i < couponDates.Length; i++)
             {
-                if (couponDates[i] > couponDates[0])
+                if (couponDates[i] > firstCouponDate)
                 {
                     exDates.Add(couponDates[i]);
 
@@ -43,7 +43,7 @@ namespace QuantSA.General.Products.Rates
             exProducts = new List<Product>();
             for (int i = 0; i < couponDates.Length; i++)
             {
-                if (couponDates[i] > couponDates[0])
+                if (couponDates[i] > firstCouponDate)
                 {
                     exProducts.Add(new CashLeg(new Date[] { couponDates[i].AddTenor(Tenor.Days(1)) }, new double[] { -notional }, new Currency[] { Currency.ZAR }));
                 }
