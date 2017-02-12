@@ -9,6 +9,12 @@ using Accord.Statistics.Distributions.Multivariate;
 
 namespace QuantSA.Valuation.Models
 {
+    public class HWParams
+    {
+        public double vol;
+        public double meanReversionSpeed;
+    }
+
     public class MultiHWAndFXToy : NumeraireSimulator
     {
         private MultivariateNormalDistribution normal;
@@ -26,6 +32,69 @@ namespace QuantSA.Valuation.Models
         private List<Date> allRequiredDates; // the set of all dates that will be simulated.
         private Dictionary<int, double[]> simulation; // stores the simulated spot rates at each required date
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MultiHWAndFXToy"/> class.
+        /// </summary>
+        /// <param name="anchorDate">The anchor date.</param>
+        /// <param name="numeraireCurve">The numeraire curve.</param>
+        /// <param name="numeraireHWParams"></param>
+        /// <param name="otherCcys">The other currencies that will be simulated.</param>
+        /// <param name="otherCcySpots">The exchange rates at the anchor date.  Discounted from the spot values. Quoted in units of the numeraire currency per unit of the foreign currency.</param>
+        /// <param name="otherCcyVols"></param>
+        /// <param name="otherCcyCurves"></param>
+        /// <param name="otherCcyHwParams"></param>
+        /// <param name="correlations">The correlation matrix ordered by: numeraireRate, otherCcy1Rate, ..., otherCcyFX1, ...</param>
+        /// <exception cref="System.ArgumentException">A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString()</exception>
+        public MultiHWAndFXToy(Date anchorDate, IDiscountingSource numeraireCurve, 
+            List<FloatingIndex> numeraireCcyRequiredIndices,  HWParams numeraireHWParams,
+            List<Currency> otherCcys, List<double> otherCcySpots, List<double> otherCcyVols,
+            List<IDiscountingSource> otherCcyCurves, List<List<FloatingIndex>> otherCcyRequiredIndices, 
+            List<HWParams> otherCcyHwParams,
+            double[,] correlations)
+        {
+            this.anchorDate = anchorDate;
+            numeraireCcy = numeraireCurve.GetCurrency();
+
+            List<HullWhite1F> rateSimulatorsList = new List<HullWhite1F>();
+            ccySimMap = new Dictionary<Currency, HullWhite1F>();
+            double rate = -Math.Log(numeraireCurve.GetDF(anchorDate.AddMonths(12)));
+            numeraireSimulator = new HullWhite1F(numeraireCcy, numeraireHWParams.meanReversionSpeed,
+                numeraireHWParams.vol, rate, rate, anchorDate);
+            foreach (FloatingIndex index in numeraireCcyRequiredIndices)
+                numeraireSimulator.AddForecast(index);
+
+            rateSimulatorsList.Add(numeraireSimulator);
+            ccySimMap[numeraireCcy] = numeraireSimulator;
+            for (int i = 0; i<otherCcys.Count; i++)
+            {
+                rate = -Math.Log(otherCcyCurves[i].GetDF(anchorDate.AddMonths(12)));
+                HullWhite1F thisSim = new HullWhite1F(otherCcys[i], otherCcyHwParams[i].meanReversionSpeed,
+                    otherCcyHwParams[i].vol, rate, rate, anchorDate);
+                foreach (FloatingIndex index in otherCcyRequiredIndices[i])
+                    thisSim.AddForecast(index);
+                rateSimulatorsList.Add(thisSim);
+                ccySimMap[otherCcys[i]] = thisSim;
+            }
+
+            currencyPairs = otherCcys.Select(ccy => new CurrencyPair(ccy, numeraireCcy)).ToArray();
+            spots = otherCcySpots.ToArray();
+            vols = otherCcyVols.ToArray();
+            this.correlations = Matrix.Identity(otherCcys.Count);
+            normal = new MultivariateNormalDistribution(Vector.Zeros(currencyPairs.Length), correlations);
+            rateSimulators = rateSimulatorsList.ToArray();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MultiHWAndFXToy"/> class.
+        /// </summary>
+        /// <param name="anchorDate">The anchor date.</param>
+        /// <param name="numeraireCcy">The numeraire currency.</param>
+        /// <param name="rateSimulators"></param>
+        /// <param name="currencyPairs"></param>
+        /// <param name="spots">The exchange rates at the anchor date.  Discounted from the spot values. Quoted in units of the numeraire currency per unit of the foreign currency.</param>
+        /// <param name="vols"></param>
+        /// <param name="correlations"></param>
+        /// <exception cref="System.ArgumentException">A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString()</exception>
         public MultiHWAndFXToy(Date anchorDate, Currency numeraireCcy, HullWhite1F[] rateSimulators, CurrencyPair[] currencyPairs, 
             double[] spots, double[] vols, double[,] correlations)
         {

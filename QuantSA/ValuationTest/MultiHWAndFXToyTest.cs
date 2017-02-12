@@ -119,5 +119,67 @@ namespace ValuationTest
             //Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_singlethread_10000.csv", epe);
 
         }
+
+        /// <summary>
+        /// Tests the <see cref="MultiHWAndFXToy"/> with respect to generating PFEs on a portfolio of CCIRSs
+        /// </summary>
+        [TestMethod]
+        public void TestMultiHWAndFXToyCCIRSAltConstructor()
+        {
+            Date valueDate = new Date(2016, 9, 17);
+            List<double> spots = new List<double> { 13.6, 15.0 };
+            List<double> vols = new List<double> { 0.15, 0.15 };
+            double[,] correlations = new double[,] { { 1.0, 0.0 },
+                                                     { 0.0, 1.0 } };
+            // ZAR HW specs
+            IDiscountingSource zarCurve = new DatesAndRates(Currency.ZAR, valueDate, new Date[] { valueDate, valueDate.AddMonths(240) },
+                new double[] { 0.07, 0.07 });
+            HWParams zarHWParams = new HWParams() { vol = 0.01, meanReversionSpeed = 0.05 };
+            List<FloatingIndex> zarRequiredIndices = new List<FloatingIndex> { FloatingIndex.JIBAR3M };
+
+            // Lists to be populated for other currencies
+            List<Currency> otherCcys = new List<Currency>();
+            List<IDiscountingSource> otherCcyCurves = new List<IDiscountingSource>();
+            List<HWParams> otherCcyHwParams = new List<HWParams>();
+            List<List<FloatingIndex>> otherCcyRequiredIndices = new List<List<FloatingIndex>>();
+
+            // USD HW specs
+            otherCcys.Add(Currency.USD);
+            otherCcyCurves.Add(new DatesAndRates(Currency.USD, valueDate, new Date[] { valueDate, valueDate.AddMonths(240) },
+                new double[] { 0.01, 0.01 }));
+            otherCcyHwParams.Add(new HWParams() { vol = 0.01, meanReversionSpeed = 0.05 });
+            otherCcyRequiredIndices.Add(new List<FloatingIndex> { FloatingIndex.LIBOR3M });
+
+            // EUR HW specs
+            otherCcys.Add(Currency.EUR);
+            otherCcyCurves.Add(new DatesAndRates(Currency.EUR, valueDate, new Date[] { valueDate, valueDate.AddMonths(240) },
+                new double[] { 0.005, 0.005 }));
+            otherCcyHwParams.Add(new HWParams() { vol = 0.01, meanReversionSpeed = 0.05 });
+            otherCcyRequiredIndices.Add(new List<FloatingIndex> { FloatingIndex.EURIBOR3M });
+
+            // Construct the model
+            MultiHWAndFXToy model = new MultiHWAndFXToy(valueDate, zarCurve, zarRequiredIndices, zarHWParams,
+                otherCcys, spots, vols, otherCcyCurves, otherCcyRequiredIndices, otherCcyHwParams, correlations);                  
+
+            List<Product> portfolio = new List<Product>();
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, FloatingIndex.JIBAR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatingIndex.EURIBOR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatingIndex.JIBAR3M, 13));
+            portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatingIndex.EURIBOR3M, 13));
+            portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.Years(4)));
+
+            int stepInMonths = 1;
+            Date[] fwdValueDates = Enumerable.Range(1, 13 * 12 / stepInMonths).Select(i => valueDate.AddMonths(stepInMonths * i)).ToArray();
+            Coordinator coord = new Coordinator(model, new List<Simulator>(), 1000);
+            //coord.SetThreadedness(false);
+            double[] epe = coord.EPE(portfolio.ToArray(), valueDate, fwdValueDates);
+            Assert.AreEqual(1555002, epe[0], 5000);
+            Assert.AreEqual(2170370, epe[87], 5000);
+            Assert.AreEqual(0, epe[155], 5);
+
+            Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_2.csv", epe);
+
+        }
+
     }
 }

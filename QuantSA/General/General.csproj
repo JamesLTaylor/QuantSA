@@ -69,6 +69,7 @@
     <Compile Include="Cashflow.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="Curves\ForwardRatesCurveForStripping.cs" />
+    <Compile Include="Curves\ShiftedDiscountSource.cs" />
     <Compile Include="Curves\ZeroRatesCurveForStripping.cs" />
     <Compile Include="Curves\DatesAndRates.cs" />
     <Compile Include="Curves\FloatingRateFixingCurve.cs" />
