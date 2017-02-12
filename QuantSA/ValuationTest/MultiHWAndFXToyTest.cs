@@ -177,7 +177,7 @@ namespace ValuationTest
             Assert.AreEqual(2170370, epe[87], 5000);
             Assert.AreEqual(0, epe[155], 5);
 
-            Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_2.csv", epe);
+            //Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_2.csv", epe);
 
         }
 
