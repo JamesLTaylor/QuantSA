@@ -181,7 +181,7 @@ namespace QuantSA.Excel
             {
                 for (int j = 0; j < dates.GetLength(1); j++)
                 {
-                    result[i, j] = dates[i, j].date.ToOADate();
+                    result[i, j] = dates[i, j].ToOADate();
                 }
             }
             return result;

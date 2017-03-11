@@ -21,7 +21,7 @@ namespace QuantSA.General
     public class Date : IComparable<Date>
     {
         private static DateTime Epoch = new DateTime(2000,1,1);
-        public DateTime date { get; private set; }
+        private DateTime date { get; }//private set; }
         public int value { get; private set; }
 
         /// <summary>
@@ -54,6 +54,32 @@ namespace QuantSA.General
             return date.ToString("dd MMM yyyy");
         }
 
+        public int Day { get { return date.Day; } }
+
+        public int Month { get { return date.Month; } }
+
+        public int Year { get { return date.Year; } }
+
+        public static bool IsLeapYear(int y)
+        {
+            return DateTime.IsLeapYear(y);
+        }
+
+        public static int DaysInMonth(int y, int m)
+        {
+            return DateTime.DaysInMonth(y, m);
+        }
+
+        public static Date endOfMonth(Date d)
+        {
+            return new Date(d - d.Day + DaysInMonth(d.Year, d.Month));
+        }
+
+        public static bool isEndOfMonth(Date d)
+        {
+            return (d.Day == DaysInMonth(d.Year, d.Month));
+        }
+
         /// <summary>
         /// Number of whole calendar days from d1 to d2
         /// </summary>
@@ -73,6 +99,16 @@ namespace QuantSA.General
         static public implicit operator double (Date d)
         {
             return d.value;
+        }
+
+        /// <summary>
+        /// Returns a new date <paramref name="days"/> after the current date.  Leaves input date unchanged. 
+        /// </summary>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        public Date AddDays(int days)
+        {
+            return new Date(date.AddDays(days));
         }
 
         /// <summary>
@@ -97,7 +133,7 @@ namespace QuantSA.General
             newDate = newDate.AddDays(tenor.weeks * 7 + tenor.days);
             return new Date(newDate);
         }
-
+                
         #region Comparisons
         public int CompareTo(Date compareDate)
         {
@@ -129,6 +165,16 @@ namespace QuantSA.General
         {
             return value;
         }
+
+        public object ToOADate()
+        {
+            return date.ToOADate();
+        }
+
+        public DayOfWeek DayOfWeek()
+        {
+            return date.DayOfWeek;
+        }
         #endregion
 
         /*static public implicit operator Date (double d)
@@ -136,36 +182,5 @@ namespace QuantSA.General
             return new Date(d);
         }*/
 
-    }
-
-    /// <summary>
-    /// Extension methods for Dates and arrays of Dates
-    /// </summary>
-    public static class DateExtensionMethods
-    {
-        /// <summary>
-        /// Returns a copy of the date values.
-        /// </summary>
-        /// <param name="dates">The array from which values are required.</param>
-        /// <returns></returns>
-        public static double[] GetValues(this Date[] dates)
-        {
-            double[] values = new double[dates.Length];
-            for (int i = 0; i < dates.Length; i++) { values[i] = dates[i]; }
-
-            return values;
-        }
-
-        /// <summary>
-        /// Returns a new list of dates with the same date values and order as the original list.
-        /// </summary>
-        /// <param name="dates">The list to be copied.</param>
-        /// <returns></returns>
-        public static List<Date> Clone(this List<Date> dates)
-        {
-            List<Date> newDates = new List<Date>();
-            foreach (Date date in dates) newDates.Add(new Date(date));            
-            return newDates;
-        }
     }
 }

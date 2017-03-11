@@ -75,6 +75,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AccordTest.cs" />
+    <Compile Include="Conventions\DayCount\DayCountTests.cs" />
     <Compile Include="NelsonSiegelTest.cs" />
     <Compile Include="RatesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

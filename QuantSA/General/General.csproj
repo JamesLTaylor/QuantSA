@@ -67,6 +67,12 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="Cashflow.cs" />
+    <Compile Include="Conventions\BusinessDay\BusinessDayConvention.cs" />
+    <Compile Include="Conventions\DayCount\ActActISDA.cs" />
+    <Compile Include="Conventions\DayCount\Actual365Fixed.cs" />
+    <Compile Include="Conventions\DayCount\DayCountStore.cs" />
+    <Compile Include="Conventions\DayCount\IDayCount.cs" />
+    <Compile Include="Conventions\DayCount\Thirty360Euro.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="Curves\ForwardRatesCurveForStripping.cs" />
     <Compile Include="Curves\ShiftedDiscountSource.cs" />
@@ -83,8 +89,10 @@
     <Compile Include="CurveTools\PCACurveSimulator.cs" />
     <Compile Include="CurveTools\ZARSwapCurveStripper.cs" />
     <Compile Include="DataAnalysis\PCA.cs" />
-    <Compile Include="Date.cs" />
-    <Compile Include="DateGenerators.cs" />
+    <Compile Include="Dates\Calendar.cs" />
+    <Compile Include="Dates\DateExtensions.cs" />
+    <Compile Include="Dates\Date.cs" />
+    <Compile Include="Dates\DateGenerators.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Formulae\Formulae.cs" />
     <Compile Include="ICurve.cs" />
