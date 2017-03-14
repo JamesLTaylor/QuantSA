@@ -4,6 +4,7 @@ using QuantSA.General;
 using QuantSA.Valuation;
 using QuantSA.ExcelFunctions;
 using QuantSA.Excel.Common;
+using QuantSA.General.Products.Rates;
 
 namespace QuantSA.Excel
 {

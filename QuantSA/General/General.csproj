@@ -126,6 +126,7 @@
     <Compile Include="Products\Rates\CashLeg.cs" />
     <Compile Include="Products\Rates\FixedLeg.cs" />
     <Compile Include="Products\Rates\FloatLeg.cs" />
+    <Compile Include="Products\Rates\FRA.cs" />
     <Compile Include="Products\Rates\GeneralSwap.cs" />
     <Compile Include="Products\Rates\IRSwap.cs" />
     <Compile Include="Products\Rates\JSEBond.cs" />

@@ -4,6 +4,7 @@ using QuantSA.General;
 using QuantSA.Valuation;
 using QuantSA.ExcelFunctions;
 using QuantSA.Excel.Common;
+using QuantSA.General.Products.Rates;
 
 namespace QuantSA.Excel
 {
@@ -130,6 +131,31 @@ namespace QuantSA.Excel
                 Boolean _payFixed = XU.GetBoolean0D(payFixed, "payFixed");
                 Double _notional = XU.GetDouble0D(notional, "notional");
                 IRSwap _result = XLRates.CreateZARSwap(_startDate, _tenor, _rate, _payFixed, _notional);
+                return XU.AddObject(objectName, _result);
+            }
+            catch (Exception e)
+            {
+                return XU.Error0D(e);
+            }
+        }
+
+
+        [QuantSAExcelFunction(Name = "QSA.CreateZARFRA", IsGeneratedVersion = true)]
+        public static object _CreateZARFRA(string objectName,
+                            object[,] tradeDate,
+                            object[,] notional,
+                            object[,] rate,
+                            object[,] fraCode,
+                            object[,] payFixed)
+        {
+            try
+            {
+                Date _tradeDate = XU.GetDate0D(tradeDate, "tradeDate");
+                Double _notional = XU.GetDouble0D(notional, "notional");
+                Double _rate = XU.GetDouble0D(rate, "rate");
+                String _fraCode = XU.GetString0D(fraCode, "fraCode");
+                Boolean _payFixed = XU.GetBoolean0D(payFixed, "payFixed");
+                FRA _result = XLRates.CreateZARFRA(_tradeDate, _notional, _rate, _fraCode, _payFixed);
                 return XU.AddObject(objectName, _result);
             }
             catch (Exception e)

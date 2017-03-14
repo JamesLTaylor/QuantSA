@@ -5,6 +5,8 @@ using System.Linq;
 using QuantSA.General;
 using QuantSA.Valuation;
 using QuantSA.Excel.Common;
+using QuantSA.General.Products.Rates;
+using QuantSA.General.Dates;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -94,6 +96,26 @@ namespace QuantSA.ExcelFunctions
         {
             return IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
         }
+
+
+        [QuantSAExcelFunction(Description = "Create a standard ZAR FRA",
+                Name = "QSA.CreateZARFRA",
+                HasGeneratedVersion = true,
+                ExampleSheet = "ZARFRA.xlsx",
+                Category = "QSA.Rates",
+                IsHidden = false,
+                HelpTopic = "http://www.quantsa.org/CreateZARFRA.html")]
+        public static FRA CreateZARFRA([ExcelArgument(Description = "The trade date of the FRA.  The near and far dates will be calculated from this.")]Date tradeDate,
+            [ExcelArgument(Description = "The notional of the FRA in rands.")]double notional,
+            [ExcelArgument(Description = "The fixed rate paid or received.")]double rate,
+            [ExcelArgument(Description = "The fra code, eg '3x6'.")]string fraCode,
+            [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]bool payFixed)
+            
+        {
+            Calendar zaCalendar = StaticData.GetCalendar("ZA");
+            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, zaCalendar);
+        }
+
 
         [QuantSAExcelFunction(Description = "Basic swap valuation.  Uses the same curve for forecasting and discounting and uses the 3 month rate off the curve as the Jibar Fix.",
             Name = "QSA.ValueZARSwap",

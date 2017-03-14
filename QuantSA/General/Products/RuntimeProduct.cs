@@ -132,6 +132,8 @@ namespace QuantSA.General
             sb.AppendLine("public class " + productName + " : ProductWrapper");
             sb.AppendLine("{");
             sb.AppendLine(sourceCode);
+            sb.AppendLine("public " + productName + " ()");
+            sb.AppendLine("{ Init(); }");
             sb.AppendLine("public override Product Clone()");
             sb.AppendLine("{");
             sb.AppendLine(productName + " product = new " + productName + "(); ");

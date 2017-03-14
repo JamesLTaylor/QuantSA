@@ -9,7 +9,7 @@ namespace GenerateXLCode
     public class TypeInformation
     {
         /// <summary>
-        /// Determines whether the output type of a function is primitive and will be written deirectly 
+        /// Determines whether the output type of a function is primitive and will be written directly 
         /// to the cells or is not primitive and will be placed on the object map and a reference returned 
         /// to the cells.
         /// </summary>

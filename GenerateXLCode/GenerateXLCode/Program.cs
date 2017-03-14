@@ -24,7 +24,7 @@ namespace GenerateXLCode
             {
                 Console.WriteLine("Arguments not provided, using default values");
                 filename = @"C:\Dev\QuantSA\QuantSA\ExcelFunctions\bin\Debug\QuantSA.ExcelFunctions.dll";
-                outputPath = @"C:\Dev\QuantSA\QuantSA\Excel\Generated\";
+                outputPath = @"C:\Dev\QuantSA\QuantSA\ExcelAddin\Generated\";
             }
             else
             {
@@ -51,6 +51,7 @@ namespace GenerateXLCode
                 sb.AppendLine("using QuantSA.Valuation;");
                 sb.AppendLine("using QuantSA.ExcelFunctions;");
                 sb.AppendLine("using QuantSA.Excel.Common;");
+                sb.AppendLine("using QuantSA.General.Products.Rates;");
                 sb.AppendLine("");
                 sb.AppendLine("namespace QuantSA.Excel");
                 sb.AppendLine("{");

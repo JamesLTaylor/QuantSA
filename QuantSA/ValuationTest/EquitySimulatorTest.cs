@@ -22,6 +22,8 @@ namespace ValuationTest
         Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
         FloatingIndex jibar = FloatingIndex.JIBAR3M;
 
+        public ProductWithDiviAndFwd() { Init(); }
+
         public override List<Cashflow> GetCFs()
         {
             double loanBalance = 40; // Opening balance on startDate

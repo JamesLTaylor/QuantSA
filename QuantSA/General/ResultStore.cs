@@ -89,6 +89,34 @@ namespace QuantSA.General
             data[name] = result.Clone() as double[,];
         }
 
+        public void Add(string name, Date result)
+        {
+            dataDates[name] = new Date[,] { { result } };
+            
+        }
+
+        public void Add(string name, Date[] result, bool column = true)
+        {
+            if (column)
+            {
+                Date[,] fullSizeResult = new Date[result.Length, 1];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    fullSizeResult[i, 0] = result[i];
+                }
+                dataDates[name] = fullSizeResult;
+            }
+            else
+            {
+                Date[,] fullSizeResult = new Date[1, result.Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    fullSizeResult[0, i] = result[i];
+                }
+                dataDates[name] = fullSizeResult;
+            }
+        }
+
         /// <summary>
         /// Return the list of all results available in this store.
         /// </summary>
@@ -182,28 +210,7 @@ namespace QuantSA.General
         {
             return this;
         }
-
-
-        public void Add(string name, Date[] result, bool column = true)
-        {
-            if (column)
-            {
-                Date[,] fullSizeResult = new Date[result.Length, 1];
-                for (int i = 0; i < result.Length; i++)
-                {
-                    fullSizeResult[i, 0] = result[i];
-                }
-                dataDates[name] = fullSizeResult;
-            }
-            else
-            {
-                Date[,] fullSizeResult = new Date[1, result.Length];
-                for (int i = 0; i < result.Length; i++)
-                {
-                    fullSizeResult[0, i] = result[i];
-                }
-                dataDates[name] = fullSizeResult;
-            }
-        }
+        
+        
     }
 }

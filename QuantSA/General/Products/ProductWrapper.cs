@@ -21,7 +21,7 @@ namespace QuantSA.General
         List<Date> cfDates;
 
         /// <summary>
-        /// For each index, store the dates it are required and during a valuation
+        /// For each index, store the dates that are required and during a valuation
         /// also the values at each of those dates.  
         /// Stored in a dictionary of lists rather than a 
         /// disctionary of dictionaries since the order of the dates and values is
@@ -35,11 +35,7 @@ namespace QuantSA.General
         Dictionary<MarketObservable, List<double>> indexAndValues;
 
         protected ProductWrapper()
-        {
-            indexAndDates = new Dictionary<MarketObservable, List<Date>>();
-            indexAndValues = new Dictionary<MarketObservable, List<double>>();
-            getIndexValueToUse = new GetIndexValueDelegate(GetNormal);
-            Init();
+        {            
         }
 
         /// <summary>
@@ -102,6 +98,9 @@ namespace QuantSA.General
         /// </summary>
         protected void Init()
         {
+            indexAndDates = new Dictionary<MarketObservable, List<Date>>();
+            indexAndValues = new Dictionary<MarketObservable, List<double>>();
+            getIndexValueToUse = new GetIndexValueDelegate(GetNormal);
             getIndexValueToUse = new GetIndexValueDelegate(GetWithLogging);
             List<Cashflow> cfs = GetCFs();
             SetCashflowDates(cfs.GetDates());

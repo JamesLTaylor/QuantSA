@@ -476,6 +476,26 @@ namespace QuantSA.Excel
             return result;
         }
 
+        /// <summary>
+        /// Get an array of <see cref="String"/> from an excel range of string objects.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        internal static string GetString0D(object[,] values, string inputName)
+        {
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                if (values[0, 0] is string)
+                {
+                    return (string)values[0, 0];
+                }
+                throw new ArgumentException(inputName + " must be a single cell with a value.");
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a value.");
+        }
+
+
 
         /// <summary>
         /// Get an array of <see cref="String"/> from an excel range of string objects.

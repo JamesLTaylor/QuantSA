@@ -33,6 +33,7 @@ namespace ValuationTest
             List<Date> cfDates = new List<Date>();
             cfDates.Add(date3);
             SetCashflowDates(cfDates);
+            Init();
         }
 
         public override List<Cashflow> GetCFs()
@@ -66,6 +67,8 @@ namespace ValuationTest
         Share alsi = new Share("ALSI", Currency.ZAR);
         double threshAbs = 0.10; // AAA share must return at least 10% each year 
         double threshRel = 0.03; // AA share must outperform the ALSI by at least 3% in each year
+
+        public ProductWrapperEquitySample2() { Init(); }
 
         public override List<Cashflow> GetCFs()
         {
