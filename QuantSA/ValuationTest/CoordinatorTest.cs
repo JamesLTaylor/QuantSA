@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Valuation;
+using QuantSA.General.Formulae;
 
 namespace ValuationTest
 {
@@ -67,7 +68,7 @@ namespace ValuationTest
 
             Coordinator coordinator = new Coordinator(sim, new List<Simulator>(), 10000);
             double value = coordinator.Value(new Product[] { p }, valueDate);
-            double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365.0, spotPrice[0],
+            double refValue = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365.0, spotPrice[0],
                                                     vol[0], 0.07, divYield[0]);
             Assert.AreEqual(refValue, value, refValue * 0.05);
         }

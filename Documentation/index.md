@@ -14,13 +14,13 @@ QuantSA is a library of quantitative finance tools, it is also an Excel addin wh
 
 # Why?
 
-In 2016 I found myself doing a few hours of consulting in Quantititive Finance.  I wrote one or two VBA functions and then the prospect of ever doing that again made me feel ill.  I decided I would save myself and as many others as possible from ever again writing a curve stripper, a Monte Carlo simulation or anything like that (especially in VBA).
+Many quants in South Africa are spending hours implementing the same things over and over again.  Often in VBA without source control, testing or an effecive way to share the work.  At the same time students are learning how to do these same things.  This project aims to collect the uncontroversial pieces of quant finance in South Africa into a single open place for students and practitioners to use and contribute to.
 
-Why not [QuantLib](http://quantlib.org/index.shtml) or simular?  QuantLib is extensive in its modelling and I intend to draw on its ideas and use it as a reference as much as possible.  QuantSA attempts to significantly lower the barriers to entry for usage and contribution by using C# rather than C++, often choosing just Monte Carlo implementations and having a smaller scope.  The South African quant community is small which means that if we control the library we can quickly reach consensus on its applicability in the local market.
+Why not [QuantLib](http://quantlib.org/index.shtml) or simular?  QuantLib is extensive in its modelling and I intend to draw on its ideas and use it as a reference as much as possible.  QuantSA attempts to significantly lower the barriers to entry for usage and contribution by using C# rather than C++, often choosing Monte Carlo implementations and having a smaller scope.  The South African quant community is small which means that if we control the library we can quickly reach consensus on its applicability in the local market.
 
 Another key advantage that QuantSA offers over all other Quant libraries is its customizability, including:
 
-* **[plugins](home_plugins.html)** - Allow developers to create user specific functions using the full power of QuantSA but not clutter the function space of the main library
+* **[plugins](home_plugins.html)** - Allow developers to create user specific functions using the full features of QuantSA but not cluttering the function space of the main library
 * **[scripts](home_scripts.html)** - At run time new products can be created and valued.
 * **[control of function visibility](home_exposed_functions.html)** - Developers can either enable or disable sets of functions for their users, making the user experience more efficient less overwhelming.
 
@@ -31,7 +31,6 @@ Another key advantage that QuantSA offers over all other Quant libraries is its 
 * The most commonly used functions are quick and easy to use.
 * User experience can be customized so that a subset of regularly used funcions can be shown and the rest hidden.
 * Extra functionality can be added via plugins and not shared with the whole world.
-
 
 # Objectives
 * Make it as easy as possible to perform common valuations, including:

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using QuantSA.General;
 using QuantSA.Valuation;
 using System;
+using QuantSA.General.Formulae;
 
 namespace ValuationTest
 {
@@ -56,7 +57,7 @@ namespace ValuationTest
             watch.Stop();
             long timeStatic = watch.ElapsedMilliseconds;
 
-            double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice[0],
+            double refValue = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice[0],
                                                     vol[0], 0.07, divYield[0]);
 
             Assert.AreEqual(refValue, valueRuntime, refValue * 0.03);
@@ -104,7 +105,7 @@ public override List<Cashflow> GetCFs()
 
             Date exerciseDate = new Date(2017, 08, 28);
             double strike = 100.0;
-            double refValue = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice[0],
+            double refValue = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - valueDate) / 365, spotPrice[0],
                                                     vol[0], 0.07, divYield[0]);
 
             Assert.AreEqual(refValue, valueRuntime, refValue * 0.03);

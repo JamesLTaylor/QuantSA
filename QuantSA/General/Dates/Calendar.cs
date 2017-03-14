@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace QuantSA.General.Dates
 {
@@ -28,14 +29,35 @@ namespace QuantSA.General.Dates
                 this.holidays.Add(new Date(date));
         }
 
-        /// <summary>
-        /// Determines whether the specified date is a business day.
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified date is neither a holiday nor a Saturday or Sunday; otherwise, <c>false</c>.
-        /// </returns>
-        public bool isBusinessDay(Date d)
+        public static Calendar FromFile(string filename)
+        {
+            string[] holidayStrings = File.ReadAllLines(filename);
+            List<Date> holsFromFile = new List<Date>();
+            foreach (string str in holidayStrings)
+            {
+                string[] vals = str.Split('-');
+                if (vals.Length == 3)
+                {
+                    Date date = new Date(int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2]));
+                    holsFromFile.Add(date);
+                }
+                else
+                {
+                    throw new FormatException("Encountered date " + str + " which is not in the required format 'yyyy-mm-dd'.");
+                }
+            }
+            return new Calendar(holsFromFile);
+        }
+            
+
+    /// <summary>
+    /// Determines whether the specified date is a business day.
+    /// </summary>
+    /// <param name="d">The d.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified date is neither a holiday nor a Saturday or Sunday; otherwise, <c>false</c>.
+    /// </returns>
+    public bool isBusinessDay(Date d)
         {
 
             if (holidays.Contains(d))
@@ -121,5 +143,6 @@ namespace QuantSA.General.Dates
             if (isBusinessDay(d))
                 holidays.Add(d);
         }
+
     }
 }

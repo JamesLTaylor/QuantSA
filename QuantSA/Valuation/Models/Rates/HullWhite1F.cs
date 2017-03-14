@@ -2,6 +2,7 @@
 using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
+using QuantSA.General.Dates;
 using System;
 using System.Collections.Generic;
 using System.Linq;

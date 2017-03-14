@@ -6,6 +6,7 @@ using MathNet.Numerics.Interpolation;
 using QuantSA.General;
 using QuantSA.Excel.Common;
 using System.Diagnostics;
+using QuantSA.General.Formulae;
 
 namespace QuantSA.Excel
 {
@@ -178,7 +179,7 @@ namespace QuantSA.Excel
             [ExcelArgument(Description = "Continuously compounded dividend yield.")]object[,] divYield)
         {
             try {
-                return Formulae.BlackScholes(PutOrCall.Call, XU.GetDouble0D(strike, "strike"),
+                return BlackEtc.BlackScholes(PutOrCall.Call, XU.GetDouble0D(strike, "strike"),
                     (XU.GetDate0D(exerciseDate, "exerciseDate") - XU.GetDate0D(valueDate, "valueDate")) / 365.0,
                     XU.GetDouble0D(spotPrice, "spotPrice"), XU.GetDouble0D(vol, "vol"),
                     XU.GetDouble0D(riskfreeRate, "riskfreeRate"), XU.GetDouble0D(divYield, "divYield"));

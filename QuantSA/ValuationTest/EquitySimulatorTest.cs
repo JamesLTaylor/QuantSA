@@ -5,6 +5,7 @@ using QuantSA.General;
 using QuantSA.Valuation;
 using Accord.Math;
 using Accord.Statistics;
+using QuantSA.General.Formulae;
 
 namespace ValuationTest
 {
@@ -167,7 +168,7 @@ namespace ValuationTest
             strike = prices[p] * 1.05;
             Product call0 = new EuropeanOption(shares[p], strike, exerciseDate);
             double value0 = coordinator.Value(new Product[] { call0 }, anchorDate);
-            double refValue0 = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
+            double refValue0 = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
                                                     vols[p], 0.07, divYields[p]);
             Assert.AreEqual(refValue0, value0, refValue0 * 0.05);
 
@@ -176,7 +177,7 @@ namespace ValuationTest
             strike = prices[p] * 1.05;
             Product call1 = new EuropeanOption(shares[p], strike, exerciseDate);
             double value1 = coordinator.Value(new Product[] { call1 }, anchorDate);
-            double refValue1 = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
+            double refValue1 = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
                                                     vols[p], 0.07, divYields[p]);
             Assert.AreEqual(refValue1, value1, refValue1 * 0.05);
 
@@ -185,7 +186,7 @@ namespace ValuationTest
             strike = prices[p] * 1.05;
             Product call2 = new EuropeanOption(shares[p], strike, exerciseDate);
             double value2 = coordinator.Value(new Product[] { call2 }, anchorDate);
-            double refValue2 = Formulae.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
+            double refValue2 = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - anchorDate) / 365.0, prices[p],
                                                     vols[p], 0.07, divYields[p]);
             Assert.AreEqual(refValue1, value1, refValue1 * 0.05);
 

@@ -67,9 +67,14 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="Cashflow.cs" />
-    <Compile Include="Conventions\BusinessDay\BusinessDayConvention.cs" />
+    <Compile Include="Conventions\BusinessDay\BusinessDayStore.cs" />
+    <Compile Include="Conventions\BusinessDay\IBusinessDay.cs" />
+    <Compile Include="Conventions\Compounding\CompoundingStore.cs" />
+    <Compile Include="Conventions\Compounding\ICompounding.cs" />
     <Compile Include="Conventions\DayCount\ActActISDA.cs" />
+    <Compile Include="Conventions\DayCount\Actual360.cs" />
     <Compile Include="Conventions\DayCount\Actual365Fixed.cs" />
+    <Compile Include="Conventions\DayCount\Business252.cs" />
     <Compile Include="Conventions\DayCount\DayCountStore.cs" />
     <Compile Include="Conventions\DayCount\IDayCount.cs" />
     <Compile Include="Conventions\DayCount\Thirty360Euro.cs" />
@@ -94,7 +99,8 @@
     <Compile Include="Dates\Date.cs" />
     <Compile Include="Dates\DateGenerators.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="Formulae\Formulae.cs" />
+    <Compile Include="Formulae\BlackEtc.cs" />
+    <Compile Include="Formulae\JSEBondPrice.cs" />
     <Compile Include="ICurve.cs" />
     <Compile Include="ICurveForStripping.cs" />
     <Compile Include="IDiscountingSource.cs" />
@@ -122,6 +128,7 @@
     <Compile Include="Products\Rates\FloatLeg.cs" />
     <Compile Include="Products\Rates\GeneralSwap.cs" />
     <Compile Include="Products\Rates\IRSwap.cs" />
+    <Compile Include="Products\Rates\JSEBond.cs" />
     <Compile Include="Products\Rates\LoanFixedRate.cs" />
     <Compile Include="Products\Rates\LoanFloatingRate.cs" />
     <Compile Include="Products\RuntimeProduct.cs" />

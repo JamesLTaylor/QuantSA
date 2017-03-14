@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuantSA.General
+namespace QuantSA.General.Formulae
 {
     public enum PutOrCall : int{Call = 1, Put = -1};
-    public class Formulae
+    public class BlackEtc
     {
         /// <summary>
         /// The Black the scholes formula
