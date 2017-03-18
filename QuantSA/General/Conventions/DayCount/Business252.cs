@@ -2,7 +2,7 @@
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class Business252 : IDayCount
+    public class Business252 : DayCountConvention
     {
         private readonly Calendar calendar;
         public Business252(Calendar calendar) { this.calendar = calendar; }

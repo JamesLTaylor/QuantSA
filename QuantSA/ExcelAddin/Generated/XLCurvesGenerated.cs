@@ -1,10 +1,8 @@
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
+using QuantSA.General;
 using System;
 using XU = QuantSA.Excel.ExcelUtilities;
-using QuantSA.General;
-using QuantSA.Valuation;
-using QuantSA.ExcelFunctions;
-using QuantSA.Excel.Common;
-using QuantSA.General.Products.Rates;
 
 namespace QuantSA.Excel
 {
@@ -65,7 +63,7 @@ namespace QuantSA.Excel
             {
                 Date _anchorDate = XU.GetDate0D(anchorDate, "anchorDate");
                 Double[] _initialRates = XU.GetDouble1D(initialRates, "initialRates");
-                Tenor[] _tenors = XU.GetTenor1D(tenors, "tenors");
+                Tenor[] _tenors = XU.GetSpecialType1D<Tenor>(tenors, "tenors");
                 Double[,] _components = XU.GetDouble2D(components, "components");
                 Double[] _vols = XU.GetDouble1D(vols, "vols");
                 Double _multiplier = XU.GetDouble0D(multiplier, "multiplier");
@@ -90,7 +88,7 @@ namespace QuantSA.Excel
             {
                 PCACurveSimulator _simulator = XU.GetObject0D<PCACurveSimulator>(simulator, "simulator");
                 Date[] _simulationDates = XU.GetDate1D(simulationDates, "simulationDates");
-                Tenor[] _requiredTenors = XU.GetTenor1D(requiredTenors, "requiredTenors");
+                Tenor[] _requiredTenors = XU.GetSpecialType1D<Tenor>(requiredTenors, "requiredTenors");
                 Double[,] _result = XLCurves.PCACurveSimulatorGetRates(_simulator, _simulationDates, _requiredTenors);
                 return XU.ConvertToObjects(_result);
             }
@@ -111,7 +109,7 @@ namespace QuantSA.Excel
             {
                 Date[] _dates = XU.GetDate1D(dates, "dates");
                 Double[] _rates = XU.GetDouble1D(rates, "rates");
-                Currency _currency = XU.GetCurrency0D(currency, "currency", Currency.ANY);
+                Currency _currency = XU.GetSpecialType0D<Currency>(currency, "currency", Currency.ANY);
                 IDiscountingSource _result = XLCurves.CreateDatesAndRatesCurve(_dates, _rates, _currency);
                 return XU.AddObject(objectName, _result);
             }

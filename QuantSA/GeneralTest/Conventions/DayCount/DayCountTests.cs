@@ -34,8 +34,8 @@ namespace GeneralTest.Conventions.DayCount
             // Business 252
             Calendar weekendsOnly = new Calendar(new List<Date>());
             Calendar weekendsAndOneHoliday = new Calendar(new List<Date>() { new Date(2008, 3, 21) } );
-            IDayCount business252Weekends = DayCountStore.Business252(weekendsOnly);
-            IDayCount business252WeekendsAndHolday = DayCountStore.Business252(weekendsAndOneHoliday);
+            DayCountConvention business252Weekends = DayCountStore.Business252(weekendsOnly);
+            DayCountConvention business252WeekendsAndHolday = DayCountStore.Business252(weekendsAndOneHoliday);
             Assert.AreEqual(22.0 / 252, business252Weekends.YearFraction(date1, date2), 1e-9);
             Assert.AreEqual(21.0 / 252, business252WeekendsAndHolday.YearFraction(date1, date2), 1e-9);
 

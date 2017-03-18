@@ -1,10 +1,9 @@
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
 using QuantSA.General;
 using QuantSA.Valuation;
-using QuantSA.ExcelFunctions;
-using QuantSA.Excel.Common;
-using QuantSA.General.Products.Rates;
+using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
 {
@@ -21,8 +20,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                Currency _baseCurrency = XU.GetCurrency0D(baseCurrency, "baseCurrency");
-                Currency _counterCurrency = XU.GetCurrency0D(counterCurrency, "counterCurrency");
+                Currency _baseCurrency = XU.GetSpecialType0D<Currency>(baseCurrency, "baseCurrency");
+                Currency _counterCurrency = XU.GetSpecialType0D<Currency>(counterCurrency, "counterCurrency");
                 Double _fxRateAtAnchorDate = XU.GetDouble0D(fxRateAtAnchorDate, "fxRateAtAnchorDate");
                 IDiscountingSource _baseCurrencyFXBasisCurve = XU.GetObject0D<IDiscountingSource>(baseCurrencyFXBasisCurve, "baseCurrencyFXBasisCurve");
                 IDiscountingSource _counterCurrencyFXBasisCurve = XU.GetObject0D<IDiscountingSource>(counterCurrencyFXBasisCurve, "counterCurrencyFXBasisCurve");
@@ -67,9 +66,9 @@ namespace QuantSA.Excel
             try
             {
                 Date _anchorDate = XU.GetDate0D(anchorDate, "anchorDate");
-                Currency _numeraireCcy = XU.GetCurrency0D(numeraireCcy, "numeraireCcy");
+                Currency _numeraireCcy = XU.GetSpecialType0D<Currency>(numeraireCcy, "numeraireCcy");
                 HullWhite1F[] _rateSimulators = XU.GetObject1D<HullWhite1F>(rateSimulators, "rateSimulators");
-                Currency[] _currencies = XU.GetCurrency1D(currencies, "currencies");
+                Currency[] _currencies = XU.GetSpecialType1D<Currency>(currencies, "currencies");
                 Double[] _spots = XU.GetDouble1D(spots, "spots");
                 Double[] _vols = XU.GetDouble1D(vols, "vols");
                 Double[,] _correlations = XU.GetDouble2D(correlations, "correlations");

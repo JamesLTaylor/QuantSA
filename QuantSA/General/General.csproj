@@ -68,15 +68,15 @@
     </Compile>
     <Compile Include="Cashflow.cs" />
     <Compile Include="Conventions\BusinessDay\BusinessDayStore.cs" />
-    <Compile Include="Conventions\BusinessDay\IBusinessDay.cs" />
+    <Compile Include="Conventions\BusinessDay\BusinessDayConvention.cs" />
     <Compile Include="Conventions\Compounding\CompoundingStore.cs" />
-    <Compile Include="Conventions\Compounding\ICompounding.cs" />
+    <Compile Include="Conventions\Compounding\CompoundingConvention.cs" />
     <Compile Include="Conventions\DayCount\ActActISDA.cs" />
     <Compile Include="Conventions\DayCount\Actual360.cs" />
     <Compile Include="Conventions\DayCount\Actual365Fixed.cs" />
     <Compile Include="Conventions\DayCount\Business252.cs" />
     <Compile Include="Conventions\DayCount\DayCountStore.cs" />
-    <Compile Include="Conventions\DayCount\IDayCount.cs" />
+    <Compile Include="Conventions\DayCount\DayCountConvention.cs" />
     <Compile Include="Conventions\DayCount\Thirty360Euro.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="Curves\ForwardRatesCurveForStripping.cs" />

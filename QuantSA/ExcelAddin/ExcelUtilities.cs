@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Excel.Common;
+using QuantSA.General.Conventions.Compounding;
 
 namespace QuantSA.Excel
 {
@@ -17,11 +18,14 @@ namespace QuantSA.Excel
         /// if the input type is <see cref="FloatingIndex"/> then it is useful to link to the
         /// page on FloatingIndex so that the user can see the permissable strings.
         /// </summary>
+        /// <remarks>
+        /// This method is a copy of PrepareRelease.MarkdownGenerator.InputTypeShouldHaveHelpLink        /// 
+        /// </remarks>
         /// <param name="inputType">Type of the input.</param>
         /// <returns></returns>
         internal static bool InputTypeShouldHaveHelpLink(Type inputType)
         {
-            //TODO: This method should be replaces with checking if the type is in documentedTypes.  That would mean one less thing to maintain.
+            //TODO: This method should be replaced with checking if the type is in documentedTypes.  That would mean one less thing to maintain.
             Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
             if (type == typeof(bool)) return true;
             if (type.Name == "Date") return true;
@@ -30,6 +34,10 @@ namespace QuantSA.Excel
             if (type.Name == "Tenor") return true;
             if (type.Name == "Share") return true;
             if (type.Name == "ReferenceEntity") return true;
+            if (type.Name == "CompoundingConvention") return true;
+            if (type.Name == "DayCountConvention") return true;
+            if (type.Name == "BusinessDayConvention") return true;
+            if (type.Name == "Calendar") return true;
             return false;
         }
 
@@ -401,7 +409,7 @@ namespace QuantSA.Excel
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
         public static double GetDouble0D(object[,] values, string inputName)
-        {
+        {            
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
                 if (values[0, 0] is double)
@@ -411,7 +419,12 @@ namespace QuantSA.Excel
                 throw new ArgumentException(inputName + " must be a single cell with a value.");
             }
             throw new ArgumentException(inputName + " must be a single cell with a value.");
+        }
 
+        public static double GetDouble0D(object[,] values, string inputName, double defaultValue)
+        {
+            if (values[0,0] is ExcelMissing) return defaultValue;
+            return GetDouble0D(values, inputName);
         }
 
         /// <summary>
@@ -476,53 +489,26 @@ namespace QuantSA.Excel
             return result;
         }
 
-        /// <summary>
-        /// Get an array of <see cref="String"/> from an excel range of string objects.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        internal static string GetString0D(object[,] values, string inputName)
+
+        public static String GetStringFromString(string strValue, string inputName)
         {
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                if (values[0, 0] is string)
-                {
-                    return (string)values[0, 0];
-                }
-                throw new ArgumentException(inputName + " must be a single cell with a value.");
-            }
-            throw new ArgumentException(inputName + " must be a single cell with a value.");
+            return strValue;
         }
 
-
-
         /// <summary>
-        /// Get an array of <see cref="String"/> from an excel range of string objects.
+        /// Return a share from a string of form 'ZAR:ALSI'
         /// </summary>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <param name="strValue">The string value.</param>
+        /// <param name="inputName">Name of the input.</param>
         /// <returns></returns>
-        public static String[] GetString1D(object[,] values, string inputName)
+        /// <exception cref="System.ArgumentException"></exception>
+        private static Share GetShareFromString(string strValue, string inputName)
         {
-            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
-            {
-                String[] result = new String[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = values[0, i] as String;
-                return result;
-            }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
-            {
-                String[] result = new String[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = values[i, 0] as String;
-                return result;
-            }
-            else
-                throw new ArgumentException(inputName + " must be a single row or column of strings representing currencies.");
+            string[] parts = strValue.Split(':');
+            if (parts.Length != 2) throw new ArgumentException(strValue + " in " + inputName + " does not correspond to a share.");
+            Currency ccy = GetCurrencyFromString(parts[0], inputName);
+            return new Share(parts[1].ToUpper(), ccy);
         }
-
 
         public static Currency GetCurrencyFromString(string strValue, string inputName)
         {
@@ -536,149 +522,54 @@ namespace QuantSA.Excel
         }
 
 
-        /// <summary>
-        /// Used by the various GetCurrencies utility methods.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="inputName"></param>
-        /// <returns></returns>
-        private static Currency GetCurrency(object obj, string inputName, Currency defaultValue = null)
+
+        public static CompoundingConvention GetCompoundingConventionFromString(string strValue, string inputName)
         {
-            if (obj is ExcelMissing)
-                if (defaultValue!=null)
-                    return defaultValue;
-                else
-                    throw new ArgumentException(inputName + " cannot be empty.");
-            if (obj is string)
-            {
-                return GetCurrencyFromString((string)obj, inputName);
+            switch (strValue.ToUpper())
+            {                
+                case "SIMPLE": return CompoundingStore.Simple;
+                case "DISCOUNT": return CompoundingStore.Discount;
+                case "C":
+                case "NACC":
+                case "CONTINUOUS": return CompoundingStore.Continuous;
+                case "D":
+                case "NACD":
+                case "DAILY": return CompoundingStore.Daily;
+                case "M":
+                case "NACM":
+                case "MONTHLY": return CompoundingStore.Monthly;
+                case "Q":
+                case "NACQ":
+                case "QUARTERLY": return CompoundingStore.Quarterly;
+                case "S":
+                case "NACS":
+                case "SEMIANNUAL": return CompoundingStore.SemiAnnual;
+                case "A":
+                case "NACA":
+                case "ANNUAL": return CompoundingStore.Annual;
+
+
+                default: throw new ArgumentException(strValue + " is not a known compounding convention in input: " + inputName);
             }
-            else
-                throw new ArgumentException(inputName + ": Currencies must be strings: ");
         }
 
-        /// <summary>
-        /// Get a <see cref="Currency"/> from a string.
-        /// </summary>
-        /// <remarks>
-        /// This is implemented in the Excel layer rather than in <see cref="Currency"/> itself to make sure that users in the library don't use strings to construct things.
-        /// </remarks>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static Currency GetCurrency0D(object[,] values, string inputName, Currency defaultValue = null)
-        {            
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                return GetCurrency(values[0, 0], inputName, defaultValue);
-            }
-            throw new ArgumentException(inputName + " must be a single cell with a string representing a currency.");
-        }
-
-        /// <summary>
-        /// Get an array of <see cref="Currency"/> from an excel range of strings.
-        /// </summary>
-        /// <remarks>
-        /// This is implemented in the Excel layer rather than in <see cref="Currency"/> itself to make sure that users in the library don't use strings to construct things.
-        /// </remarks>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static Currency[] GetCurrency1D(object[,] values, string inputName)
+        private static FloatingIndex GetFloatingIndexFromString(string strValue, string inputName)
         {
-            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
+            switch (strValue.ToUpper())
             {
-                Currency[] result = new Currency[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = GetCurrency(values[0, i], inputName, null);
-                return result;
+                case "JIBAR1M": return FloatingIndex.JIBAR1M;
+                case "JIBAR3M": return FloatingIndex.JIBAR3M;
+                case "JIBAR6M": return FloatingIndex.JIBAR6M;
+                case "PRIME1M_AVG": return FloatingIndex.PRIME1M_AVG;
+                case "LIBOR1M": return FloatingIndex.LIBOR1M;
+                case "LIBOR3M": return FloatingIndex.LIBOR3M;
+                case "LIBOR6M": return FloatingIndex.LIBOR6M;
+                case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
+                case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
+                default:
+                    throw new ArgumentException(strValue + " is not a known floating rate index in input: " + inputName);
             }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
-            {
-                Currency[] result = new Currency[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = GetCurrency(values[i, 0], inputName, null);
-                return result;
-            }
-            else
-                throw new ArgumentException(inputName + " must be a single row or column of strings representing currencies.");
         }
-
-
-        private static FloatingIndex GetFloatingIndex(object obj, string inputName)
-        {
-            if (obj is ExcelMissing)
-                throw new ArgumentException(inputName + " cannot be empty.");
-            if (obj is string)
-            {
-                string strValue = (string)obj;
-                switch (strValue.ToUpper())
-                {
-                    case "JIBAR1M": return FloatingIndex.JIBAR1M;
-                    case "JIBAR3M": return FloatingIndex.JIBAR3M;
-                    case "JIBAR6M": return FloatingIndex.JIBAR6M;
-                    case "PRIME1M_AVG": return FloatingIndex.PRIME1M_AVG;
-                    case "LIBOR1M": return FloatingIndex.LIBOR1M;
-                    case "LIBOR3M": return FloatingIndex.LIBOR3M;
-                    case "LIBOR6M": return FloatingIndex.LIBOR6M;
-                    case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
-                    case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
-                    default:
-                        throw new ArgumentException(strValue + " is not a known floating rate index in input: " + inputName);
-                }
-            }
-            else
-                throw new ArgumentException(inputName + ": Floating indices must be strings: ");
-        }
-
-
-
-    /// <summary>
-    /// Get a <see cref="FloatingIndex"/> from a string.
-    /// </summary>
-    /// <remarks>
-    /// This is implemented in the Excel layer rather than in <see cref="FloatingIndex"/> itself to make sure that users in the library don't use strings to construct things.
-    /// </remarks>
-    /// <param name="values"></param>
-    /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-    /// <returns></returns>
-    public static FloatingIndex GetFloatingIndex0D(object[,] values, string inputName)
-        {
-            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                return GetFloatingIndex(values[0, 0], inputName);               
-            }
-            throw new ArgumentException(inputName + " must be a single cell with a string representing a floating rate index.");
-        }
-
-
-        /// <summary>
-        /// Get an array of <see cref="FloatingIndex"/> from an excel range of strings.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static FloatingIndex[] GetFloatingIndex1D(object[,] values, string inputName)
-        {
-            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
-            {
-                FloatingIndex[] result = new FloatingIndex[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = GetFloatingIndex(values[0, i], inputName);
-                return result;
-            }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
-            {
-                FloatingIndex[] result = new FloatingIndex[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = GetFloatingIndex(values[i, 0], inputName);
-                return result;
-            }
-            else
-                throw new ArgumentException(inputName + " must be a single row or column of strings representing floating indices.");
-        }
-
 
         private static Tenor GetTenorFromString(string strValue, string inputName)
         {
@@ -722,179 +613,149 @@ namespace QuantSA.Excel
         }
 
 
-
-        /// <summary>
-        /// Used by the various GetTenor utility methods.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="inputName"></param>
-        /// <returns></returns>
-        private static Tenor GetTenor(object obj, string inputName)
-        {
-            if (obj is ExcelMissing)
-                    throw new ArgumentException(inputName + " cannot be empty.");
-            if (obj is string)
-            {
-                return GetTenorFromString((string)obj, inputName);
-            }
-            else
-                throw new ArgumentException(inputName + ": Tenors must be provided as strings with a number and a period identifier. e.g. '3M' or '5Y' ");
-        }
-
-
-        /// <summary>
-        /// Convert a string to a tenor object
-        /// </summary>
-        /// <remarks>Implemented here to make sure that users in the libary don't construct with strings.</remarks>
-        /// <param name="values">String describing a tenor object.  Example '3M' or '5Y'.</param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>/// 
-        /// <returns></returns>
-        public static Tenor GetTenor0D(object[,] values, string inputName)
-        {
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                return GetTenor(values[0, 0], inputName);
-            }
-            throw new ArgumentException(inputName + " must be a single cell with a string representing a tenor. e.g. '3M' or '5Y'");
-
-        }
-
-        /// <summary>
-        /// Get an array of <see cref="Tenor"/> from an excel range of strings.
-        /// </summary>
-        /// <remarks>
-        /// This is implemented in the Excel layer rather than in <see cref="Tenor"/> itself to make sure that users in the library don't use strings to construct things.
-        /// </remarks>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static Tenor[] GetTenor1D(object[,] values, string inputName)
-        {
-            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
-            {
-                Tenor[] result = new Tenor[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = GetTenor(values[0, i], inputName);
-                return result;
-            }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
-            {
-                Tenor[] result = new Tenor[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = GetTenor(values[i, 0], inputName);
-                return result;
-            }
-            else
-                throw new ArgumentException(inputName + " must be a single row or column of strings representing tenors.");
-        }
-
-        /// <summary>
-        /// Return a share from a string of form 'ZAR:ALSI'
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="inputName"></param>
-        /// <returns></returns>
-        private static Share GetShare(object obj, string inputName)
-        {
-            if (obj is ExcelMissing)
-                throw new ArgumentException(inputName + " cannot be empty.");
-            if (obj is string)
-            {
-                string strValue = (string)obj;
-                string[] parts = strValue.Split(':');
-                if (parts.Length != 2) throw new ArgumentException(strValue + " in " + inputName + " does not correspond to a share.");
-                Currency ccy = GetCurrencyFromString(parts[0], inputName);
-                return new Share(parts[1].ToUpper(), ccy);
-            }
-            throw new ArgumentException(inputName + " shares must be created from strings of the form: 'CCY:CODE', eg 'ZAR:ALSI'");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static Share GetShare0D(object[,] values, string inputName)
-        {
-            if (values[0, 0] is ExcelMissing)
-                throw new ArgumentException(inputName + " cannot be empty.");
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                if (values[0, 0] is string)
-                {
-                    return GetShare((string)values[0, 0], inputName);
-                }
-                throw new ArgumentException(inputName + " must be a single cell with a value representing a share code.");
-            }
-            throw new ArgumentException(inputName + " must be a single cell with a value representing a share code.");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
-        /// <returns></returns>
-        public static Share[] GetShare1D(object[,] values, string inputName)
-        {
-            if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
-            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
-            {
-                Share[] result = new Share[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                    result[i] = GetShare(values[0, i], inputName);
-                return result;
-            }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
-            {
-                Share[] result = new Share[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                    result[i] = GetShare(values[i, 0], inputName);
-                return result;
-            }
-            else
-                throw new ArgumentException(inputName + " must be a single row or column of strings representing shares.");
-        }
-
-
         /// <summary>
         /// Return a reference entity from a string descriptor.
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="inputName"></param>
         /// <returns></returns>
-        private static ReferenceEntity GetReferenceEntity(object obj, string inputName)
+        private static ReferenceEntity GetReferenceEntityFromString(string strValue, string inputName)
         {
-            if (obj is ExcelMissing)
-                throw new ArgumentException(inputName + " cannot be empty.");
-            if (obj is string)
-            {
-                string strValue = (string)obj;
-                return new ReferenceEntity(strValue);
-            }
-            throw new ArgumentException(inputName + ": reference entities shares must be created from strings.");
+            return new ReferenceEntity(strValue);
         }
 
         /// <summary>
-        /// 
+        /// Used by the various GetCurrencies utility methods.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="inputName"></param>
+        /// <returns></returns>
+        private static T GetSpecialType<T>(object obj, string inputName, T defaultValue = null) where T : class
+        {
+            if (obj is ExcelMissing)
+                if (defaultValue != null)
+                    return defaultValue;
+                else
+                    throw new ArgumentException(inputName + " cannot be empty.");
+            if (obj is string)
+            {
+                switch (typeof(T).Name)
+                {
+                    case ("Currency"):
+                        {
+                            Currency temp = GetCurrencyFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
+                    case ("FloatingIndex"):
+                        {
+                            FloatingIndex temp = GetFloatingIndexFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
+                    case ("Tenor"):
+                        {                            
+                            Tenor temp = GetTenorFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
+                    case ("ReferenceEntity"):
+                        {
+                            ReferenceEntity temp = GetReferenceEntityFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
+                    case ("Share"):
+                        {
+                            Share temp = GetShareFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
+                    case ("String"):
+                        {
+                            string temp = GetStringFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
+                    case ("CompoundingConvention"):
+                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                    case ("DayCountConvention"):
+                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                    case ("BusinessDayConvention"):
+                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                    case ("Calendar"):
+                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                    default:
+                        throw new ArgumentException("No conversion exists from string to " + typeof(T).Name);                        
+                }
+            }
+            else
+                throw new ArgumentException(inputName + " : " + typeof(T).Name + " can only be created from a string.");
+        }
+
+
+        /// <summary>
+        /// Get a <see cref="Currency"/> from a string.
+        /// </summary>
+        /// <remarks>
+        /// This is implemented in the Excel layer rather than in <see cref="Currency"/> itself to make sure that users in the library don't use strings to construct things.
+        /// </remarks>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static T GetSpecialType0D<T>(object[,] values, string inputName, T defaultValue = null)  where T : class
+        {            
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            {
+                return GetSpecialType<T>(values[0, 0], inputName, defaultValue);
+            }
+            throw new ArgumentException(inputName + " must be a single cell with a string representing a " + typeof(T).Name + ".");
+        }
+
+
+        /// <summary>
+        /// Get an array of <typeparamref name="T"/> from an excel range of strings.
         /// </summary>
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static ReferenceEntity GetReferenceEntity0D(object[,] values, string inputName)
+        public static T[] GetSpecialType1D<T>(object[,] values, string inputName) where T : class
         {
-            if (values[0, 0] is ExcelMissing)
-                throw new ArgumentException(inputName + ": cannot be empty.");
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
-                if (values[0, 0] is string)
-                {
-                    return GetReferenceEntity((string)values[0, 0], inputName);
-                }
-                throw new ArgumentException(inputName + " must be a single cell with a string representing the name of a refernce entity.");
+                T[] result = new T[values.GetLength(1)];
+                for (int i = 0; i < values.GetLength(1); i++)
+                    result[i] = GetSpecialType<T>(values[0, i], inputName, null);
+                return result;
             }
-            throw new ArgumentException(inputName + " must be a single cell with a with a string representing the name of a refernce entity.");
+            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                T[] result = new T[values.GetLength(0)];
+                for (int i = 0; i < values.GetLength(0); i++)
+                    result[i] = GetSpecialType<T>(values[i, 0], inputName, null);
+                return result;
+            }
+            else
+                throw new ArgumentException(inputName + " must be a single row or column of strings, each representing a " + typeof(T).Name + ".");
+        }
+
+        /// <summary>
+        /// Gets an 2D array of <typeparamref name="T"/> from an excel range of strings.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
+        /// <returns></returns>
+        public static T[,] GetSpecialType2D<T>(object[,] values, string inputName) where T : class
+        {
+            T[,] result = new T[values.GetLength(0), values.GetLength(1)];
+            for (int i = 0; i < values.GetLength(0); i++)
+            {
+                for (int j = 0; j < values.GetLength(1); j++)
+                {
+                    result[i, j] = GetSpecialType<T>(values[0, i], inputName, null);
+                }
+            }
+            return result;
         }
 
 

@@ -14,7 +14,15 @@ namespace GenerateXLCode
     /// </summary>
     class Program
     {
+        /// <summary>
+        /// The categories and generated methods in that category
+        /// </summary>
         private static Dictionary<string, List<string>> categoriesAndGeneratedMethods = new Dictionary<string, List<string>>();
+
+        /// <summary>
+        /// The categories and the required usings for that source file
+        /// </summary>
+        private static Dictionary<string, List<string>> categoriesAndUsings = new Dictionary<string, List<string>>();
 
         static int Main(string[] args)
         {
@@ -45,13 +53,26 @@ namespace GenerateXLCode
             {
                 string classname = entry.Key + "Generated";
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("using System;");
+                /*sb.AppendLine("using System;");
                 sb.AppendLine("using XU = QuantSA.Excel.ExcelUtilities;");
                 sb.AppendLine("using QuantSA.General;");
                 sb.AppendLine("using QuantSA.Valuation;");
                 sb.AppendLine("using QuantSA.ExcelFunctions;");
                 sb.AppendLine("using QuantSA.Excel.Common;");
-                sb.AppendLine("using QuantSA.General.Products.Rates;");
+                */
+                List<string> extraUsings = categoriesAndUsings[entry.Key];
+                extraUsings.Add("System");
+                extraUsings.Add("XU = QuantSA.Excel.ExcelUtilities");
+                //extraUsings.Add("QuantSA.General");
+                //extraUsings.Add("QuantSA.Valuation");
+                extraUsings.Add("QuantSA.ExcelFunctions");
+                extraUsings.Add("QuantSA.Excel.Common");
+                extraUsings = extraUsings.Distinct().ToList();
+                extraUsings.Sort();
+                foreach (var extraUsing in extraUsings)
+                {
+                    sb.AppendLine("using " + extraUsing + ";");
+                }
                 sb.AppendLine("");
                 sb.AppendLine("namespace QuantSA.Excel");
                 sb.AppendLine("{");
@@ -96,13 +117,16 @@ namespace GenerateXLCode
                     else
                         defaultValues.Add(argAttrib.Default);
                 }
+                var listOfNameSpaces = new List<string>();
                 string generatedMethod = GetGeneratedMethodCode(categoryName, xlName, fName,
-                    argNames, argTypes, defaultValues, returnType);
+                    argNames, argTypes, defaultValues, returnType, listOfNameSpaces);
 
                 if (!categoriesAndGeneratedMethods.ContainsKey(categoryName)){
                     categoriesAndGeneratedMethods[categoryName] = new List<string>();
+                    categoriesAndUsings[categoryName] = new List<string>();
                 }
                 categoriesAndGeneratedMethods[categoryName].Add(generatedMethod);
+                categoriesAndUsings[categoryName].AddRange(listOfNameSpaces);
             }
         }
 
@@ -117,10 +141,11 @@ namespace GenerateXLCode
         /// <param name="returnType">The return type of the method.</param>
         /// <returns></returns>
         private static string GetGeneratedMethodCode(string categoryName, string xlName, string fName, 
-            List<string> argNames, List<Type> argTypes, List<string> defaultValues, Type returnType)
+            List<string> argNames, List<Type> argTypes, List<string> defaultValues, Type returnType, List<string> listOfNameSpaces)
         {
             string returnTypeString;
             int dim = getTypeDimension(returnType);
+            listOfNameSpaces.Add(returnType.Namespace);
             switch (dim) {
                 case 0: returnTypeString = "object"; break;
                 case 1: returnTypeString = "object[,]"; break;
@@ -149,6 +174,7 @@ namespace GenerateXLCode
             StringBuilder argCallList = new StringBuilder();
             for (int i = 0; i < argNames.Count; i++)
             {
+                listOfNameSpaces.Add(argTypes[i].Namespace);
                 sb.Append(Spaces(16) + argTypes[i].Name + " _" + argNames[i] + " = ");
                 sb.AppendLine(GetConverterString(argTypes[i], argNames[i], defaultValues[i]));
                 if (i > 0) argCallList.Append(", ");
@@ -197,12 +223,22 @@ namespace GenerateXLCode
             else if (type.Name.Contains('['))
                 nD = "1D";
             string name = type.IsArray ? type.GetElementType().Name : type.Name;
-            if (TypeInformation.InputTypeHasConversion(type))
+            if (TypeInformation.ConvertibleFromString(type))
+            {
+                if (defaultValue == null)
+                    return "XU.GetSpecialType" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\");";
+                else
+                {
+                    return "XU.GetSpecialType" + nD + "<" + name + ">(" + argName + ", \"" + argName + "\", " + defaultValue + ");";
+                }
+            }
+            else if (TypeInformation.InputTypeHasCustomConversion(type))
             {
                 if (defaultValue == null)
                     return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\");";
                 else
                     return "XU.Get" + name + nD + "(" + argName + ", \"" + argName + "\", " + defaultValue + ");";
+
             }
             else
             {

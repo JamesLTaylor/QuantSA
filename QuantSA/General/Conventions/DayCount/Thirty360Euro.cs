@@ -1,6 +1,6 @@
 ﻿namespace QuantSA.General.Conventions.DayCount
 {
-    public class Thirty360Euro : IDayCount
+    public class Thirty360Euro : DayCountConvention
     {
         public static readonly Thirty360Euro Instance = new Thirty360Euro();
 

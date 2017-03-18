@@ -5,7 +5,7 @@ namespace QuantSA.General.Conventions.BusinessDay
     /// <summary>
     /// A business day convention adjusts a date according to a rule and with a provided calendar.
     /// </summary>
-    public interface IBusinessDay
+    public interface BusinessDayConvention
     {
         /// <summary>
         /// Adjusts the specified date using the provided calendar.

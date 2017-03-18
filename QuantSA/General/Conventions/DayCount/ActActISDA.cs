@@ -3,7 +3,7 @@ using System;
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class ActActISDA : IDayCount
+    public class ActActISDA : DayCountConvention
     {
         public static readonly ActActISDA Instance = new ActActISDA();
 

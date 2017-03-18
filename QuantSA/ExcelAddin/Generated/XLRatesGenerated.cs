@@ -1,10 +1,10 @@
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
+using QuantSA.General;
+using QuantSA.General.Products.Rates;
+using QuantSA.Valuation;
 using System;
 using XU = QuantSA.Excel.ExcelUtilities;
-using QuantSA.General;
-using QuantSA.Valuation;
-using QuantSA.ExcelFunctions;
-using QuantSA.Excel.Common;
-using QuantSA.General.Products.Rates;
 
 namespace QuantSA.Excel
 {
@@ -21,7 +21,7 @@ namespace QuantSA.Excel
         {
             try
             {
-                Currency _currency = XU.GetCurrency0D(currency, "currency");
+                Currency _currency = XU.GetSpecialType0D<Currency>(currency, "currency");
                 Date[] _paymentDates = XU.GetDate1D(paymentDates, "paymentDates");
                 Double[] _notionals = XU.GetDouble1D(notionals, "notionals");
                 Double[] _rates = XU.GetDouble1D(rates, "rates");
@@ -48,8 +48,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                Currency _currency = XU.GetCurrency0D(currency, "currency");
-                FloatingIndex _floatingIndex = XU.GetFloatingIndex0D(floatingIndex, "floatingIndex");
+                Currency _currency = XU.GetSpecialType0D<Currency>(currency, "currency");
+                FloatingIndex _floatingIndex = XU.GetSpecialType0D<FloatingIndex>(floatingIndex, "floatingIndex");
                 Date[] _resetDates = XU.GetDate1D(resetDates, "resetDates");
                 Date[] _paymentDates = XU.GetDate1D(paymentDates, "paymentDates");
                 Double[] _notionals = XU.GetDouble1D(notionals, "notionals");
@@ -75,7 +75,7 @@ namespace QuantSA.Excel
             {
                 Date[] _paymentDates = XU.GetDate1D(paymentDates, "paymentDates");
                 Double[] _amounts = XU.GetDouble1D(amounts, "amounts");
-                Currency[] _currencies = XU.GetCurrency1D(currencies, "currencies");
+                Currency[] _currencies = XU.GetSpecialType1D<Currency>(currencies, "currencies");
                 CashLeg _result = XLRates.CreateCashLeg(_paymentDates, _amounts, _currencies);
                 return XU.AddObject(objectName, _result);
             }
@@ -101,7 +101,7 @@ namespace QuantSA.Excel
                 Date[] _exerciseDates = XU.GetDate1D(exerciseDates, "exerciseDates");
                 Boolean _longOptionality = XU.GetBoolean0D(longOptionality, "longOptionality");
                 Date _startDate = XU.GetDate0D(startDate, "startDate");
-                Tenor _tenor = XU.GetTenor0D(tenor, "tenor");
+                Tenor _tenor = XU.GetSpecialType0D<Tenor>(tenor, "tenor");
                 Double _rate = XU.GetDouble0D(rate, "rate");
                 Boolean _payFixed = XU.GetBoolean0D(payFixed, "payFixed");
                 Double _notional = XU.GetDouble0D(notional, "notional");
@@ -126,7 +126,7 @@ namespace QuantSA.Excel
             try
             {
                 Date _startDate = XU.GetDate0D(startDate, "startDate");
-                Tenor _tenor = XU.GetTenor0D(tenor, "tenor");
+                Tenor _tenor = XU.GetSpecialType0D<Tenor>(tenor, "tenor");
                 Double _rate = XU.GetDouble0D(rate, "rate");
                 Boolean _payFixed = XU.GetBoolean0D(payFixed, "payFixed");
                 Double _notional = XU.GetDouble0D(notional, "notional");
@@ -153,7 +153,7 @@ namespace QuantSA.Excel
                 Date _tradeDate = XU.GetDate0D(tradeDate, "tradeDate");
                 Double _notional = XU.GetDouble0D(notional, "notional");
                 Double _rate = XU.GetDouble0D(rate, "rate");
-                String _fraCode = XU.GetString0D(fraCode, "fraCode");
+                String _fraCode = XU.GetSpecialType0D<String>(fraCode, "fraCode");
                 Boolean _payFixed = XU.GetBoolean0D(payFixed, "payFixed");
                 FRA _result = XLRates.CreateZARFRA(_tradeDate, _notional, _rate, _fraCode, _payFixed);
                 return XU.AddObject(objectName, _result);
@@ -193,7 +193,7 @@ namespace QuantSA.Excel
         {
             try
             {
-                FloatingIndex _floatingRateIndex = XU.GetFloatingIndex0D(floatingRateIndex, "floatingRateIndex");
+                FloatingIndex _floatingRateIndex = XU.GetSpecialType0D<FloatingIndex>(floatingRateIndex, "floatingRateIndex");
                 IDiscountingSource _discountCurve = XU.GetObject0D<IDiscountingSource>(discountCurve, "discountCurve");
                 IFloatingRateSource _fixingCurve = XU.GetObject0D<IFloatingRateSource>(fixingCurve, "fixingCurve", null);
                 IFloatingRateSource _result = XLRates.CreateRateForecastCurveFromDiscount(_floatingRateIndex, _discountCurve, _fixingCurve);
@@ -233,7 +233,7 @@ namespace QuantSA.Excel
         {
             try
             {
-                Currency _currency = XU.GetCurrency0D(currency, "currency");
+                Currency _currency = XU.GetSpecialType0D<Currency>(currency, "currency");
                 Date[] _balanceDates = XU.GetDate1D(balanceDates, "balanceDates");
                 Double[] _balanceAmounts = XU.GetDouble1D(balanceAmounts, "balanceAmounts");
                 Double _fixedRate = XU.GetDouble0D(fixedRate, "fixedRate");
@@ -257,10 +257,10 @@ namespace QuantSA.Excel
         {
             try
             {
-                Currency _currency = XU.GetCurrency0D(currency, "currency");
+                Currency _currency = XU.GetSpecialType0D<Currency>(currency, "currency");
                 Date[] _balanceDates = XU.GetDate1D(balanceDates, "balanceDates");
                 Double[] _balanceAmounts = XU.GetDouble1D(balanceAmounts, "balanceAmounts");
-                FloatingIndex _floatingIndex = XU.GetFloatingIndex0D(floatingIndex, "floatingIndex");
+                FloatingIndex _floatingIndex = XU.GetSpecialType0D<FloatingIndex>(floatingIndex, "floatingIndex");
                 Double _floatingSpread = XU.GetDouble0D(floatingSpread, "floatingSpread");
                 LoanFloatingRate _result = XLRates.CreateLoanFloatingRate(_currency, _balanceDates, _balanceAmounts, _floatingIndex, _floatingSpread);
                 return XU.AddObject(objectName, _result);
@@ -284,7 +284,7 @@ namespace QuantSA.Excel
                 Double _meanReversion = XU.GetDouble0D(meanReversion, "meanReversion");
                 Double _flatVol = XU.GetDouble0D(flatVol, "flatVol");
                 IDiscountingSource _baseCurve = XU.GetObject0D<IDiscountingSource>(baseCurve, "baseCurve");
-                FloatingIndex _forecastIndices = XU.GetFloatingIndex0D(forecastIndices, "forecastIndices");
+                FloatingIndex _forecastIndices = XU.GetSpecialType0D<FloatingIndex>(forecastIndices, "forecastIndices");
                 HullWhite1F _result = XLRates.CreateHWModelDemo(_meanReversion, _flatVol, _baseCurve, _forecastIndices);
                 return XU.AddObject(objectName, _result);
             }

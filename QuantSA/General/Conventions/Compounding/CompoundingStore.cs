@@ -17,7 +17,7 @@ namespace QuantSA.General.Conventions.Compounding
         public static Continuous Continuous = Continuous.Instance;
     }
 
-    public class Simple : ICompounding
+    public class Simple : CompoundingConvention
     {
         public static readonly Simple Instance = new Simple();
         private Simple() { }
@@ -25,9 +25,13 @@ namespace QuantSA.General.Conventions.Compounding
         {
             return 1.0 / (1 + rate * yearFraction);
         }
+        public double rateFromDF(double df, double yearFraction)
+        {
+            return (1 / df) - 1 / yearFraction;
+        }        
     }
 
-    public class Discount : ICompounding
+    public class Discount : CompoundingConvention
     {
         public static readonly Discount Instance = new Discount();
         private Discount() { }
@@ -35,9 +39,14 @@ namespace QuantSA.General.Conventions.Compounding
         {
             return (1 - rate * yearFraction);
         }
+
+        public double rateFromDF(double df, double yearFraction)
+        {
+            return (1 - df) / yearFraction;
+        }
     }
 
-    public class Periodically : ICompounding
+    public class Periodically : CompoundingConvention
     {
         private int n;
         public static readonly Periodically DailyInstance = new Periodically(365);
@@ -49,11 +58,16 @@ namespace QuantSA.General.Conventions.Compounding
         private Periodically(int n) { this.n = n; }
         public double DF(double rate, double yearFraction)
         {
-            return Math.Pow(1 + rate / 365, 365 * yearFraction);
+            return Math.Pow(1 + rate / n, n * yearFraction);
+        }
+
+        public double rateFromDF(double df, double yearFraction)
+        {
+            return (Math.Pow(df, 1 / (n * yearFraction)) - 1) * n;
         }
     }
 
-    public class Continuous : ICompounding
+    public class Continuous : CompoundingConvention
     {
         private static readonly Continuous instance = new Continuous();
         private Continuous() { }
@@ -62,6 +76,11 @@ namespace QuantSA.General.Conventions.Compounding
         public double DF(double rate, double yearFraction)
         {
             return Math.Exp(-rate * yearFraction);
+        }
+
+        public double rateFromDF(double df, double yearFraction)
+        {
+            return (-Math.Log(df)) / yearFraction;
         }
     }
 

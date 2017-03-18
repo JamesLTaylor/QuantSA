@@ -4,17 +4,30 @@
   folders:
 
   - title: Types
-    output: web, pdf
+    url: /Types.html
+    output: web, pdf    
     folderitems:
     - title: Boolean
       url: /Boolean.html
       output: web, pdf
+    - title: BusinessDayConvention
+      url: /BusinessDayConvention.html
+      output: web, pdf      
+    - title: Calendar
+      url: /Calendar.html
+      output: web, pdf        
+    - title: CompoundingConvention
+      url: /CompoundingConvention.html
+      output: web, pdf      
+    - title: Currency
+      url: /Currency.html
+      output: web, pdf      
     - title: Date
       url: /Date.html
       output: web, pdf
-    - title: Currency
-      url: /Currency.html
-      output: web, pdf
+    - title: DayCountConvention
+      url: /DayCountConvention.html
+      output: web, pdf      
     - title: FloatingIndex
       url: /FloatingIndex.html
       output: web, pdf

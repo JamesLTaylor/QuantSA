@@ -344,11 +344,15 @@ namespace PrepareRelease
         /// if the input type is <see cref="FloatingIndex"/> then it is useful to link to the
         /// page on FloatingIndex so that the user can see the permissable strings.
         /// </summary>
+        /// <remarks>
+        /// If you update the values in this method then you probably need to update the values in
+        /// GenerateXLCode.TypeInformation.InputTypeHasConversion
+        /// </remarks>        
         /// <param name="inputType">Type of the input.</param>
         /// <returns></returns>
         private bool InputTypeShouldHaveHelpLink(Type inputType)
         {
-            //TODO: This method should be replaces with checking if the type is in documentedTypes.  That would mean one less thing to maintain.
+            //TODO: This method should be replaced with checking if the type is in documentedTypes.  That would mean one less thing to maintain.
             Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
             if (type == typeof(bool)) return true;
             if (type.Name == "Date") return true;
@@ -357,6 +361,10 @@ namespace PrepareRelease
             if (type.Name == "Tenor") return true;
             if (type.Name == "Share") return true;
             if (type.Name == "ReferenceEntity") return true;
+            if (type.Name == "CompoundingConvention") return true;
+            if (type.Name == "DayCountConvention") return true;
+            if (type.Name == "BusinessDayConvention") return true;
+            if (type.Name == "Calendar") return true;
             return false;
         }
 

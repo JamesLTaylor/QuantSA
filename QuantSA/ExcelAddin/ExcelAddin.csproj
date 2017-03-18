@@ -91,6 +91,7 @@
     <Compile Include="ExcelMessage.xaml.cs">
       <DependentUpon>ExcelMessage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Generated\XLConventionsGenerated.cs" />
     <Compile Include="Generated\XLCreditGenerated.cs" />
     <Compile Include="Generated\XLCurvesGenerated.cs" />
     <Compile Include="Generated\XLEquitiesGenerated.cs" />

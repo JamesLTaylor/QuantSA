@@ -1,10 +1,9 @@
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
 using QuantSA.General;
 using QuantSA.Valuation;
-using QuantSA.ExcelFunctions;
-using QuantSA.Excel.Common;
-using QuantSA.General.Products.Rates;
+using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
 {
@@ -23,8 +22,8 @@ namespace QuantSA.Excel
         {
             try
             {
-                ReferenceEntity _refEntity = XU.GetReferenceEntity0D(refEntity, "refEntity");
-                Currency _ccy = XU.GetCurrency0D(ccy, "ccy");
+                ReferenceEntity _refEntity = XU.GetSpecialType0D<ReferenceEntity>(refEntity, "refEntity");
+                Currency _ccy = XU.GetSpecialType0D<Currency>(ccy, "ccy");
                 Date[] _paymentDates = XU.GetDate1D(paymentDates, "paymentDates");
                 Double[] _notionals = XU.GetDouble1D(notionals, "notionals");
                 Double[] _rates = XU.GetDouble1D(rates, "rates");
@@ -53,7 +52,7 @@ namespace QuantSA.Excel
             try
             {
                 ISurvivalProbabilitySource _survivalProbSource = XU.GetObject0D<ISurvivalProbabilitySource>(survivalProbSource, "survivalProbSource");
-                Currency _otherCurrency = XU.GetCurrency0D(otherCurrency, "otherCurrency");
+                Currency _otherCurrency = XU.GetSpecialType0D<Currency>(otherCurrency, "otherCurrency");
                 IFXSource _fxSource = XU.GetObject0D<IFXSource>(fxSource, "fxSource");
                 IDiscountingSource _valueCurrencyDiscount = XU.GetObject0D<IDiscountingSource>(valueCurrencyDiscount, "valueCurrencyDiscount");
                 Double _fxVol = XU.GetDouble0D(fxVol, "fxVol");
@@ -78,7 +77,7 @@ namespace QuantSA.Excel
         {
             try
             {
-                ReferenceEntity _referenceEntity = XU.GetReferenceEntity0D(referenceEntity, "referenceEntity");
+                ReferenceEntity _referenceEntity = XU.GetSpecialType0D<ReferenceEntity>(referenceEntity, "referenceEntity");
                 Date _anchorDate = XU.GetDate0D(anchorDate, "anchorDate");
                 Date[] _dates = XU.GetDate1D(dates, "dates");
                 Double[] _hazardRates = XU.GetDouble1D(hazardRates, "hazardRates");

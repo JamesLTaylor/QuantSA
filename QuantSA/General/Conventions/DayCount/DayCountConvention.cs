@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public interface IDayCount
+    public interface DayCountConvention
     {
         double YearFraction(Date date1, Date date2);
     }

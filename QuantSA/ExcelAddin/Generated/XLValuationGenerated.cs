@@ -1,10 +1,9 @@
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
 using QuantSA.General;
 using QuantSA.Valuation;
-using QuantSA.ExcelFunctions;
-using QuantSA.Excel.Common;
-using QuantSA.General.Products.Rates;
+using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
 {

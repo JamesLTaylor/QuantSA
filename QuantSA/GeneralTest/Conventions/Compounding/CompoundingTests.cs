@@ -9,12 +9,12 @@ namespace GeneralTest.Conventions.DayCount
         [TestMethod]
         public void SingleInstance()
         {
-            ICompounding annual1 = CompoundingStore.Annual;
-            ICompounding annual2 = CompoundingStore.Annual;
+            CompoundingConvention annual1 = CompoundingStore.Annual;
+            CompoundingConvention annual2 = CompoundingStore.Annual;
             Assert.IsTrue(annual1 == annual2);
 
-            ICompounding cont1 = CompoundingStore.Continuous;
-            ICompounding cont2 = CompoundingStore.Continuous;
+            CompoundingConvention cont1 = CompoundingStore.Continuous;
+            CompoundingConvention cont2 = CompoundingStore.Continuous;
             Assert.IsTrue(cont1 == cont2);
         }
         //TODO: Add compounding tests.

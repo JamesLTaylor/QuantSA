@@ -23,7 +23,6 @@ namespace GenerateXLCode
             if (type == typeof(double)) return true;
             if (type == typeof(string)) return true;
             if (type == typeof(int)) return true;
-            if (type.Name == "Date") return true;
             return false;
 
         }
@@ -31,23 +30,37 @@ namespace GenerateXLCode
 
         /// <summary>
         /// Does the input type have an automatic conversion from Excel cell values.  If it does not
-        /// then an object will need to be retrieved from the object map.
+        /// then an object will need to be retrieved from the object map.  
         /// </summary>
+        /// <remarks>
+        /// If you update the values in this method then you probably need to update the values in
+        /// PrepareRelease.MarkdownGenerator.InputTypeShouldHaveHelpLink 
+        /// </remarks>
         /// <param name="inputType">Type of the input.</param>
         /// <returns></returns>
-        public static bool InputTypeHasConversion(Type inputType)
+        public static bool ConvertibleFromString(Type inputType)
         {
             Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
-            if (type == typeof(double)) return true;
             if (type == typeof(string)) return true;
-            if (type == typeof(int)) return true;
-            if (type == typeof(bool)) return true;
-            if (type.Name == "Date") return true;
             if (type.Name == "Currency") return true;
             if (type.Name == "FloatingIndex") return true;
             if (type.Name == "Tenor") return true;
             if (type.Name == "Share") return true;
             if (type.Name == "ReferenceEntity") return true;
+            if (type.Name == "CompoundingConvention") return true;
+            if (type.Name == "DayCountConvention") return true;
+            if (type.Name == "BusinessDayConvention") return true;
+            if (type.Name == "Calendar") return true;            
+            return false;
+        }
+
+        public static bool InputTypeHasCustomConversion(Type inputType)
+        {
+            Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
+            if (type == typeof(double)) return true;
+            if (type == typeof(int)) return true;
+            if (type == typeof(bool)) return true;
+            if (type.Name == "Date") return true;
             return false;
         }
     }

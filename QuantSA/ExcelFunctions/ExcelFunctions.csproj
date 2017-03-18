@@ -61,6 +61,7 @@
     <Compile Include="..\AssemblyInfoAll.cs">
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
+    <Compile Include="XLConventions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticData.cs" />
     <Compile Include="XLCredit.cs" />

@@ -2,7 +2,7 @@
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class Actual365Fixed : IDayCount
+    public class Actual365Fixed : DayCountConvention
     {
         public static readonly Actual365Fixed Instance = new Actual365Fixed();
 

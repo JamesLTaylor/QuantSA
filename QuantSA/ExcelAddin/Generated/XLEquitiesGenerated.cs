@@ -1,10 +1,9 @@
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
 using QuantSA.General;
 using QuantSA.Valuation;
-using QuantSA.ExcelFunctions;
-using QuantSA.Excel.Common;
-using QuantSA.General.Products.Rates;
+using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
 {
@@ -24,7 +23,7 @@ namespace QuantSA.Excel
             try
             {
                 IDiscountingSource _discountCurve = XU.GetObject0D<IDiscountingSource>(discountCurve, "discountCurve");
-                Share[] _shares = XU.GetShare1D(shares, "shares");
+                Share[] _shares = XU.GetSpecialType1D<Share>(shares, "shares");
                 Double[] _spotPrices = XU.GetDouble1D(spotPrices, "spotPrices");
                 Double[] _volatilities = XU.GetDouble1D(volatilities, "volatilities");
                 Double[] _divYields = XU.GetDouble1D(divYields, "divYields");
@@ -48,7 +47,7 @@ namespace QuantSA.Excel
         {
             try
             {
-                Share _share = XU.GetShare0D(share, "share");
+                Share _share = XU.GetSpecialType0D<Share>(share, "share");
                 Date _exerciseDate = XU.GetDate0D(exerciseDate, "exerciseDate");
                 Double _strike = XU.GetDouble0D(strike, "strike");
                 Product _result = XLEquities.CreateEquityCall(_share, _exerciseDate, _strike);
