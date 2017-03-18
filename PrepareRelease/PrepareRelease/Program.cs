@@ -19,7 +19,7 @@ namespace PrepareRelease
         static void Main(string[] args)
         {
             // Variables
-            string rootpath = @"c:\dev\QuantSA";
+            string rootpath = @"c:\dev\QuantSA"; 
             string xllPath = Path.Combine(rootpath, @"QuantSA\ExcelAddin\bin\Debug\QuantSA.xll");
             string exampleSheetPath = Path.Combine(rootpath, @"ExcelExamples");
             string tempOutputPath = Path.Combine(rootpath, @"temp");
@@ -37,9 +37,9 @@ namespace PrepareRelease
             // Generate the help
             if (generateHelp) {
                 string[] dllsWithExposedFunctions = {
-                Path.Combine(rootpath, @"QuantSA\Excel\bin\Debug\QuantSA.Excel.dll"),
-                Path.Combine(rootpath, @"QuantSA\Excel\bin\Debug\QuantSA.ExcelFunctions.dll") };
-                string outputPath = @"C:\Dev\jamesltaylor.github.io\";
+                Path.Combine(rootpath, @"QuantSA\ExcelAddin\bin\Debug\QuantSA.Excel.Addin.dll"),
+                Path.Combine(rootpath, @"QuantSA\ExcelAddin\bin\Debug\QuantSA.ExcelFunctions.dll") };
+                string outputPath = Path.Combine(rootpath, @"Documentation\");
                 string helpURL = "http://www.quantsa.org/";
                 generator = new MarkdownGenerator(dllsWithExposedFunctions, outputPath, helpURL, tempOutputPath);
                 int failedMarkdown = generator.Generate();

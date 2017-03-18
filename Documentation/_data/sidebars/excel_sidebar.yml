@@ -39,6 +39,12 @@
       output: web, pdf   
             
   # AUTO GENERATED BEYOND THIS POINT
+  - title: Conventions
+    output: web, pdf
+    folderitems:
+    - title: RateConvert
+      url: /RateConvert.html
+      output: web, pdf
   - title: Credit
     output: web, pdf
     folderitems:
@@ -93,6 +99,9 @@
     - title: CreateFXForecastCurve
       url: /CreateFXForecastCurve.html
       output: web, pdf
+    - title: CreateMultiHWAndFXToy
+      url: /CreateMultiHWAndFXToy.html
+      output: web, pdf
     - title: GetFXRate
       url: /GetFXRate.html
       output: web, pdf
@@ -110,6 +119,9 @@
       output: web, pdf
     - title: GetCSArray
       url: /GetCSArray.html
+      output: web, pdf
+    - title: GetInstallPath
+      url: /GetInstallPath.html
       output: web, pdf
     - title: GetResults
       url: /GetResults.html
@@ -144,6 +156,9 @@
     - title: CreateZARBermudanSwaption
       url: /CreateZARBermudanSwaption.html
       output: web, pdf
+    - title: CreateZARFRA
+      url: /CreateZARFRA.html
+      output: web, pdf
     - title: CreateZARSwap
       url: /CreateZARSwap.html
       output: web, pdf
@@ -161,6 +176,9 @@
       output: web, pdf
     - title: EPE
       url: /EPE.html
+      output: web, pdf
+    - title: PFE
+      url: /PFE.html
       output: web, pdf
     - title: Value
       url: /Value.html

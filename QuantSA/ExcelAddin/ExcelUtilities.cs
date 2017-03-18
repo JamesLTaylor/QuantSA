@@ -548,7 +548,6 @@ namespace QuantSA.Excel
                 case "NACA":
                 case "ANNUAL": return CompoundingStore.Annual;
 
-
                 default: throw new ArgumentException(strValue + " is not a known compounding convention in input: " + inputName);
             }
         }

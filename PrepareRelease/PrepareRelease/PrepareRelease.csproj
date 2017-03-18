@@ -41,11 +41,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 10.0\Visual Studio Tools for Office\PIA\Office14\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
+    <Reference Include="QuantSA.Excel.Common">
+      <HintPath>..\..\QuantSA\ExcelAddin\bin\Debug\QuantSA.Excel.Common.dll</HintPath>
+    </Reference>
     <Reference Include="QuantSA.General">
       <HintPath>..\..\QuantSA\General\bin\Debug\QuantSA.General.dll</HintPath>
-    </Reference>
-    <Reference Include="QuantSA.Interfaces">
-      <HintPath>..\..\QuantSA\QuantSAInterfaces\bin\Debug\QuantSA.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="QuantSA.Valuation">
       <HintPath>..\..\QuantSA\Valuation\bin\Debug\QuantSA.Valuation.dll</HintPath>

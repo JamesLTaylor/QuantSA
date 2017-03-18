@@ -1,16 +1,16 @@
 ---
-title: EPE
+title: PFE
 keywords:
-last_updated: November 07, 2016
+last_updated: March 18, 2017
 tags:
-summary: Calculate the expected positive exposure for a general portfolio.
+summary: .
 sidebar: excel_sidebar
-permalink: EPE.html
+permalink: PFE.html
 folder: excel
 ---
 
 ## Description
-Calculate the expected positive exposure for a general portfolio
+
 
 <!--HUMAN EDIT START-->
 
@@ -20,13 +20,14 @@ Calculate the expected positive exposure for a general portfolio
 
 ## Example Sheet
 
-    EPE.xlsx
+    PFE.xlsx
 
 ## Arguments
 
 * **products** A list of products.
 * **valueDate** The value date.([Date](Date.html))
 * **forwardValueDates** The dates at which the expected positive exposure is required.([Date](Date.html))
+* **requiredPecentiles** 
 * **model** A model able to handle all the market observables required to calculate the cashflows in the portfolio.
 * **nSims** The number of simulations required.
 

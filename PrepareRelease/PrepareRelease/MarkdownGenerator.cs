@@ -1,5 +1,5 @@
 ﻿using ExcelDna.Integration;
-using QuantSA.Excel;
+using QuantSA.Excel.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -421,11 +421,15 @@ namespace PrepareRelease
         /// <param name="dllName">Name of the DLL.</param>
         private void UpdateContentCollection1dll(string dllName)
         {
-            Assembly DLL = Assembly.LoadFile(dllName);
+            Assembly DLL = Assembly.LoadFrom(dllName);
             foreach (Type type in DLL.GetExportedTypes())
             {
                 foreach (MemberInfo member in type.GetMembers())
                 {
+                    if (member.Name == "_RateConvert")
+                    {
+                        double a = 1;
+                    }
                     QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
                     if (attribute != null && attribute.IsGeneratedVersion)
                     {
