@@ -18,9 +18,9 @@ folder: excel
  * `ACTACT` - Actual/actual 
  * `ACT360` - Actual/360 - The number of days over 360.
  
-a `Business252` convention cannot be made directly from a string since it needs a calendar.  In this is required use [CreateBusiness252DayCount](CreateBusiness252DayCount).
+a `Business252` convention cannot be made directly from a string since it needs a calendar.  In this is required use [CreateBusiness252DayCount](CreateBusiness252DayCount.html).
  
 ## Related functions
 
- * [GetYearFraction](GetYearFraction)
- * [CreateBusiness252DayCount](CreateBusiness252DayCount)
+ * [GetYearFraction](GetYearFraction.html)
+ * [CreateBusiness252DayCount](CreateBusiness252DayCount.html)

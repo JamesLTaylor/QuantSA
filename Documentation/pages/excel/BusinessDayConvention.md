@@ -26,5 +26,5 @@ All allowed values are:
 
 ## Related functions     
 
- * [ApplyBusinessDayAdjustment](ApplyBusinessDayAdjustment)
+ * [ApplyBusinessDayAdjustment](ApplyBusinessDayAdjustment.html)
  

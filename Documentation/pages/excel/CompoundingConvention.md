@@ -11,7 +11,7 @@ folder: excel
 
 ## Description
 
-A compounding convention defines how to convert from a number representing a rate to a discount factor or accrual factor over a given period of time quotes in years according to some [daycount convention](DayCountConvention)
+A compounding convention defines how to convert from a number representing a rate to a discount factor or accrual factor over a given period of time quotes in years according to some [daycount convention](DayCountConvention.html)
 
 ## Allowed values
 
@@ -26,6 +26,6 @@ A compounding convention defines how to convert from a number representing a rat
 
 ## Related functions
 
- * [RateConvert](RateConvert)
- * [DFFromRate](DFFromRate)
+ * [RateConvert](RateConvert.html)
+ * [DFFromRate](DFFromRate.html)
 

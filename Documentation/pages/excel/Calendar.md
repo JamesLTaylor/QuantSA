@@ -27,4 +27,4 @@ The QuantSA installation usually includes:
 
 ## Related functions
 
- * [IsHoliday](IsHoliday)
+ * [IsHoliday](IsHoliday.html)
