@@ -11,10 +11,10 @@ namespace PrepareRelease
     {
         // Default values
         //TODO: Make it possible to overwrite these in args of main.
-        static bool checkSpreadsheets = false;
+        static bool checkSpreadsheets = true;
         static bool generateHelp = true;
-        static bool checkExampleSheetsAreValid = checkSpreadsheets && generateHelp && false;
-        static bool generateInstallerResources = false;
+        static bool checkExampleSheetsAreValid = checkSpreadsheets && generateHelp && true;
+        static bool generateInstallerResources = true;
 
         static void Main(string[] args)
         {

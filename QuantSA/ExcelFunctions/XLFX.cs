@@ -40,20 +40,20 @@ namespace QuantSA.ExcelFunctions
         }
 
 
-        [QuantSAExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "A sample model that simulates FX processes according to geometric brownian motion and short rates according to Hull White.",
                 Name = "QSA.CreateMultiHWAndFXToy",
                 HasGeneratedVersion = true,
-                ExampleSheet = "MultiFX_PFE.xlsx",
+                ExampleSheet = "PFE.xlsx",
                 Category = "QSA.FX",
                 IsHidden = false,
                 HelpTopic = "http://www.quantsa.org/CreateMultiHWAndFXToy.html")]
         public static NumeraireSimulator CreateMultiHWAndFXToy([ExcelArgument(Description = "The date from which the model applies")]Date anchorDate,
-            [QuantSAExcelArgument(Description = "")]Currency numeraireCcy,
-            [QuantSAExcelArgument(Description = "")]HullWhite1F[] rateSimulators,
-            [QuantSAExcelArgument(Description = "")]Currency[] currencies,
-            [QuantSAExcelArgument(Description = "")]double[] spots,
-            [QuantSAExcelArgument(Description = "")]double[] vols,
-            [QuantSAExcelArgument(Description = "")]double[,] correlations)            
+            [QuantSAExcelArgument(Description = "The currency into which all valuations will be converted.")]Currency numeraireCcy,
+            [QuantSAExcelArgument(Description = "Hull White simulators for each of the currencies")]HullWhite1F[] rateSimulators,
+            [QuantSAExcelArgument(Description = "The list of other currencies to be simulated.")]Currency[] currencies,
+            [QuantSAExcelArgument(Description = "The initial values for the FX processes at the anchor date.  These would actually need to be discounted spot rates.")]double[] spots,
+            [QuantSAExcelArgument(Description = "The volatilities for the FX processes.")]double[] vols,
+            [QuantSAExcelArgument(Description = "A correlation matrix for the FX processes, rows and columns must be in the order of the currencies in 'currencies'")]double[,] correlations)            
         {
             CurrencyPair[] currencyPairs = currencies.Select(ccy => new CurrencyPair(ccy, numeraireCcy)).ToArray();
             return new MultiHWAndFXToy(anchorDate, numeraireCcy, rateSimulators, currencyPairs, spots, vols, correlations);

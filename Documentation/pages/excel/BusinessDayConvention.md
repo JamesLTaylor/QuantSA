@@ -11,15 +11,20 @@ folder: excel
 
 ## Description
 
-A business day convention adjusts a date that represents non business day to another dates that is a good businees day.  Different conventions do this in different ways.
+A business day convention adjusts a date that may represent a non business day to another dates that is a good business day.  Different conventions do this in different ways but for all of them the date is unadjusted if it is already a business day.
 
 ## Allowed values
 
 All allowed values are:
 
- * `MF`, `ModFollow` - 
- * `F`, `Following` - 
+ * `F`, `FOLLOWING` - the next business day.
+ * `MF`, `MODFOLLOW`, `MODIFIEDFOLLOWING` - the next business day unless that is in the next month then the previous business day.
+ * `P`, `PRECEDING` - the previous business day.
+ * `MP`, `MODIFIEDPRECEDING` - non standard convention. The previous business day unless that is in the previous month then the next business day.
+ * `U`, `UNADJUSTED` - do no adjustment even if the provided date is a holiday.
 
-## Related functions
-      
 
+## Related functions     
+
+ * [ApplyBusinessDayAdjustment](ApplyBusinessDayAdjustment)
+ 

@@ -23,6 +23,7 @@ namespace GenerateXLCode
             if (type == typeof(double)) return true;
             if (type == typeof(string)) return true;
             if (type == typeof(int)) return true;
+            if (type.Name == "Date") return true;
             return false;
 
         }

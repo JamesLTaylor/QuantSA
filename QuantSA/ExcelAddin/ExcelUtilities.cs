@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Excel.Common;
 using QuantSA.General.Conventions.Compounding;
+using QuantSA.General.Dates;
+using QuantSA.ExcelFunctions;
+using QuantSA.General.Conventions.BusinessDay;
+using QuantSA.General.Conventions.DayCount;
 
 namespace QuantSA.Excel
 {
@@ -175,6 +179,16 @@ namespace QuantSA.Excel
                 }
             }
             return resultObj;
+        }
+
+        /// <summary>
+        /// Converts an array of <see cref="Date"/> to objects whose values represent Excel dates.
+        /// </summary>
+        /// <param name="dates"></param>
+        /// <returns></returns>
+        public static object[,] ConvertToObjects(Date date)
+        {
+            return ConvertToObjects(new Date[,] { { date } });            
         }
 
         /// <summary>
@@ -520,8 +534,7 @@ namespace QuantSA.Excel
                 default: throw new ArgumentException(strValue + " is not a known currency in input: " + inputName);
             }
         }
-
-
+        
 
         public static CompoundingConvention GetCompoundingConventionFromString(string strValue, string inputName)
         {
@@ -551,6 +564,49 @@ namespace QuantSA.Excel
                 default: throw new ArgumentException(strValue + " is not a known compounding convention in input: " + inputName);
             }
         }
+
+
+        public static Calendar GetCalendarFromString(string strValue, string inputName)
+        {
+            return StaticData.GetCalendar(strValue.ToUpper());            
+        }
+
+        public static BusinessDayConvention GetBusinessDayConventionFromString(string strValue, string inputName)
+        {
+
+            switch (strValue.ToUpper())
+            {
+                case "F":
+                case "FOLLOWING": return BusinessDayStore.Following;
+                case "MF":
+                case "MODFOLLOW": 
+                case "MODIFIEDFOLLOWING": return BusinessDayStore.ModifiedFollowing;
+                case "P":
+                case "PRECEDING": return BusinessDayStore.Preceding;
+                case "MP":
+                case "MODIFIEDPRECEDING": return BusinessDayStore.ModifiedPreceding;
+                case "U":
+                case "UNADJUSTED": return BusinessDayStore.Unadjusted;
+                    
+                default: throw new ArgumentException(strValue + " is not a known business day convention convention in input: " + inputName);
+            }
+        }
+
+
+        public static DayCountConvention GetDayCountConventionFromString(string strValue, string inputName)
+        {
+            switch (strValue.ToUpper())
+            {
+                case "ACTACT": return DayCountStore.ActActISDA;
+                case "ACT360": return DayCountStore.Actual360;
+                case "ACT365F":
+                case "ACT365": return DayCountStore.Actual365Fixed;
+                case "30360EU": return DayCountStore.Thirty360Euro;                
+
+                default: throw new ArgumentException(strValue + " is not a known day count convention: " + inputName);
+            }
+        }
+
 
         private static FloatingIndex GetFloatingIndexFromString(string strValue, string inputName)
         {
@@ -638,6 +694,12 @@ namespace QuantSA.Excel
                     throw new ArgumentException(inputName + " cannot be empty.");
             if (obj is string)
             {
+                string strValue = (string)obj;
+                if (strValue.IndexOf('.')>0) // If the string looks like a reference to an object then get that object off the map
+                {
+                    //TODO: Make a function that checks if a string looks like an object reference.
+                    return ObjectMap.Instance.GetObjectFromID<T>(strValue);
+                }
                 switch (typeof(T).Name)
                 {
                     case ("Currency"):
@@ -679,11 +741,15 @@ namespace QuantSA.Excel
                     case ("CompoundingConvention"):
                         return (T)GetCompoundingConventionFromString((string)obj, inputName);
                     case ("DayCountConvention"):
-                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                        return (T)GetDayCountConventionFromString((string)obj, inputName);
                     case ("BusinessDayConvention"):
-                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                        return (T)GetBusinessDayConventionFromString((string)obj, inputName);
                     case ("Calendar"):
-                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
+                        {
+                            Calendar temp = GetCalendarFromString((string)obj, inputName);
+                            T returnVal = temp as T;
+                            return returnVal;
+                        }
                     default:
                         throw new ArgumentException("No conversion exists from string to " + typeof(T).Name);                        
                 }

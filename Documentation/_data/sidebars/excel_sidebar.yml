@@ -42,6 +42,21 @@
   - title: Conventions
     output: web, pdf
     folderitems:
+    - title: ApplyBusinessDayAdjustment
+      url: /ApplyBusinessDayAdjustment.html
+      output: web, pdf
+    - title: CreateBusiness252DayCount
+      url: /CreateBusiness252DayCount.html
+      output: web, pdf
+    - title: DFFromRate
+      url: /DFFromRate.html
+      output: web, pdf
+    - title: GetYearFraction
+      url: /GetYearFraction.html
+      output: web, pdf
+    - title: IsHoliday
+      url: /IsHoliday.html
+      output: web, pdf
     - title: RateConvert
       url: /RateConvert.html
       output: web, pdf

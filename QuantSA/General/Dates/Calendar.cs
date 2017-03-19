@@ -48,22 +48,23 @@ namespace QuantSA.General.Dates
             }
             return new Calendar(holsFromFile);
         }
-            
 
-    /// <summary>
-    /// Determines whether the specified date is a business day.
-    /// </summary>
-    /// <param name="d">The d.</param>
-    /// <returns>
-    ///   <c>true</c> if the specified date is neither a holiday nor a Saturday or Sunday; otherwise, <c>false</c>.
-    /// </returns>
-    public bool isBusinessDay(Date d)
+
+        /// <summary>
+        /// Determines whether the specified date is a business day.  That means not a holiday and not a weekend.
+        /// </summary>
+        /// <param name="date">The date.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified date is neither a holiday nor a Saturday or Sunday; otherwise, <c>false</c>.
+        /// </returns>
+        public bool isBusinessDay(Date date)
         {
 
-            if (holidays.Contains(d))
+            if (holidays.Contains(date))
                 return false;
-            return (!isWeekend(d.DayOfWeek()));            
+            return (!isWeekend(date.DayOfWeek()));
         }
+    
 
 
         //<summary>
@@ -74,7 +75,14 @@ namespace QuantSA.General.Dates
             return w == DayOfWeek.Saturday || w == DayOfWeek.Sunday;
         }
 
-        public bool isHoliday(Date d) { return !isBusinessDay(d); }
+        /// <summary>
+        /// Determines whether the specified date is a holiday.  Does not check for weekends.
+        /// </summary>
+        /// <param name="date">The date to check.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified d is holiday; otherwise, <c>false</c>.
+        /// </returns>
+        public bool isHoliday(Date date) { return (holidays.Contains(date)); }
 
         /// <summary>
         /// Returns <tt>true</tt> iff the date is last business day for the

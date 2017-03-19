@@ -24,3 +24,7 @@ The QuantSA installation usually includes:
 
  * `ZA` - The south african public holidays.
  * `TEST` - A test calendar that will never change.  Useful if you are testing functions and don't want the results to potentially change if a new public holiday happens to be declared.
+
+## Related functions
+
+ * [IsHoliday](IsHoliday)

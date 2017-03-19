@@ -65,17 +65,17 @@ namespace QuantSA.ExcelFunctions
         }
 
 
-        [QuantSAExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "An approximate PFE for a portfolio of trades.",
             Name = "QSA.PFE",
             HasGeneratedVersion = true,
             Category = "QSA.Valuation",
             ExampleSheet = "PFE.xlsx",
             IsHidden = false,
-            HelpTopic = "http://www.quantsa.org/EPE.html")]
+            HelpTopic = "http://www.quantsa.org/PFE.html")]
         public static double[,] PFE([ExcelArgument(Description = "A list of products.")]Product[] products,
             [ExcelArgument(Description = "The value date.")]Date valueDate,
             [ExcelArgument(Description = "The dates at which the expected positive exposure is required.")]Date[] forwardValueDates,
-            [ExcelArgument(Description = "")]double[] requiredPecentiles,
+            [ExcelArgument(Description = "The required percentiles.  95th percentile should be entered as 0.95.  Can be a list of percentiles and the PFE will be calculated at each of the provided levels.")]double[] requiredPecentiles,
             [ExcelArgument(Description = "A model able to handle all the market observables required to calculate the cashflows in the portfolio.")]NumeraireSimulator model,
             [ExcelArgument(Description = "The number of simulations required.")]int nSims)
         {

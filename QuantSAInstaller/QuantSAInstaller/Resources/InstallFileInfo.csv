@@ -13,6 +13,7 @@ InterpLinear_xlsx,..\..\..\QuantSA\ExcelAddin\bin\Release,ExcelExamples\InterpLi
 Introduction_xlsx,..\..\..\QuantSA\ExcelAddin\bin\Release,ExcelExamples\Introduction.xlsx
 Loans_xlsx,..\..\..\QuantSA\ExcelAddin\bin\Release,ExcelExamples\Loans.xlsx
 PCA_xlsx,..\..\..\QuantSA\ExcelAddin\bin\Release,ExcelExamples\PCA.xlsx
+PFE_xlsx,..\..\..\QuantSA\ExcelAddin\bin\Release,ExcelExamples\PFE.xlsx
 ZARSwap_xlsx,..\..\..\QuantSA\ExcelAddin\bin\Release,ExcelExamples\ZARSwap.xlsx
 BEELoanExample_cs,..\..\..\QuantSA\ExcelAddin\bin\Release,Scripts\BEELoanExample.cs
 EuropeanCallSimple_cs,..\..\..\QuantSA\ExcelAddin\bin\Release,Scripts\EuropeanCallSimple.cs
