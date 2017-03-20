@@ -22,6 +22,14 @@ namespace QuantSA.General.Dates
     {
         private List<Date> holidays = new List<Date>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Calendar"/> class with no public holidays only weekends.
+        /// </summary>        
+        public Calendar()
+        {
+            holidays = new List<Date>();            
+        }
+
         public Calendar(List<Date> holidays)
         {
             this.holidays = new List<Date>();
@@ -29,6 +37,12 @@ namespace QuantSA.General.Dates
                 this.holidays.Add(new Date(date));
         }
 
+        /// <summary>
+        /// Construct a Calendar with weekends and public holidays stored in a csv file. see http://www.quantsa.org/latest/Calendar.html
+        /// </summary>
+        /// <param name="filename">The filename of the csv file with holidays.</param>
+        /// <returns></returns>
+        /// <exception cref="System.FormatException">Encountered date " + str + " which is not in the required format 'yyyy-mm-dd'.</exception>
         public static Calendar FromFile(string filename)
         {
             string[] holidayStrings = File.ReadAllLines(filename);

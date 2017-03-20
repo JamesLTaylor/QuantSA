@@ -129,10 +129,10 @@
     <Compile Include="Products\Rates\FRA.cs" />
     <Compile Include="Products\Rates\GeneralSwap.cs" />
     <Compile Include="Products\Rates\IRSwap.cs" />
-    <Compile Include="Products\Rates\JSEBond.cs" />
     <Compile Include="Products\Rates\LoanFixedRate.cs" />
     <Compile Include="Products\Rates\LoanFloatingRate.cs" />
     <Compile Include="Products\RuntimeProduct.cs" />
+    <Compile Include="Products\SAMarket\BesaJseBond.cs" />
     <Compile Include="Products\Swap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceEntity.cs" />

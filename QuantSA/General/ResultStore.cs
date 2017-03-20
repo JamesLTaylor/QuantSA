@@ -145,6 +145,22 @@ namespace QuantSA.General
         }
 
         /// <summary>
+        /// Get the results stored with the provided name.
+        /// </summary>
+        /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.</param>
+        /// <returns></returns>
+        public double GetScalar(string name)
+        {
+            if (data.ContainsKey(name))
+            {
+                if (data[name].GetLength(0) > 1 || data[name].GetLength(1) > 1)
+                    throw new ArgumentException(name + " is not a scalar value in this ResultStore");
+                return data[name][0,0];
+            }
+            else throw new ArgumentException(name + " does not exist in this store.  Use GetNames to check all available names.");
+        }
+
+        /// <summary>
         /// Get the Date results stored with the provided name.
         /// </summary>
         /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.  
