@@ -1,6 +1,6 @@
 ---
 title: Automated builds
-summary: The QuantSA automated builds
+summary: The QuantSA automated builds and release process.
 keywords: 
 last_updated: December 26, 2016
 tags: developers
@@ -22,7 +22,7 @@ Both of which need private log on details and can't be changed by other develope
 
  * Build the markdown docs using Jekyll
  * Checks that there are no dead links
- * Upload all output to <www.quantsa.org/latest>.  
+ * Upload all output to <http://www.quantsa.org/latest>.  
  
 This was easier to set up on Travis than installing Ruby into Visual Studio Team Servives.
 
@@ -34,6 +34,7 @@ Core library:
 * Run tests
 
 Excel parts:
+
 * Build QuantSACommon.sln
 * Build GenerateXLCode.sln
 * Build QuantSAExcelAddin.sln (includes excel code generation via GenerateXLCode.exe)
@@ -58,7 +59,7 @@ The deploy steps are manual, for a version X.Y.Z:
 
 ## Further work
 
-* None of the excel functionality is currently tested.  This needs to be added somewhere rather than relying on developer's good behaviour.
+* None of the excel functionality is currently tested.  This needs to be added somewhere rather than relying on developer's good behaviour. (The developer can check their own behaviour by using the [PrepareRelease](home_projects.html#preparereleasesln) solution.)
 * It would be nice to change the QuantSACore solution projects to be able to run on mono and hence on the travis build.  This could be useful in the future for distributing calculations.  
 * Should add python testing to one of the builds.
 
