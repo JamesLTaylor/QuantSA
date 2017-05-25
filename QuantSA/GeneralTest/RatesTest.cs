@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
+using QuantSA.General.Dates;
 
 namespace GeneralTest
 {

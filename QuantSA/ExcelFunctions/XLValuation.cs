@@ -3,6 +3,7 @@ using QuantSA.General;
 using QuantSA.Valuation;
 using System.Collections.Generic;
 using QuantSA.Excel.Common;
+using QuantSA.General.Dates;
 
 namespace QuantSA.ExcelFunctions
 {

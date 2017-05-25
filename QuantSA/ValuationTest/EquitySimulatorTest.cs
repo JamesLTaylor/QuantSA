@@ -5,6 +5,7 @@ using QuantSA.General;
 using QuantSA.Valuation;
 using Accord.Math;
 using Accord.Statistics;
+using QuantSA.General.Dates;
 using QuantSA.General.Formulae;
 
 namespace ValuationTest
