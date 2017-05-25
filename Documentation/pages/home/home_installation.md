@@ -13,6 +13,8 @@ folder: home
 
 Download and run the latest official installer from [Github releases](https://github.com/JamesLTaylor/QuantSA/releases).  (The latest unofficial installer is continuously updated [here](https://quantsa.blob.core.windows.net/builds/QuantSAInstaller_Latest.exe) )
 
+A full listing of all past builds can be found at <https://quantsa.blob.core.windows.net/builds>
+
 If all goes well QuantSA will be available to use next time you open Excel, if not then read the Zip section below for enabling the add-in.
 
 ## Excel users - Zip

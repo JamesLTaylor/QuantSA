@@ -50,10 +50,13 @@ Excel parts:
 The deploy steps are manual, for a version X.Y.Z:
 
 * Copy <http://www.QuantSA.org/latest> to <http://www.QuantSA.org/[vX.Y.Z]> and <http://www.QuantSA.org>
+  * This can only be done by delopers who have an FTP account and password on QuantSA.org
+  * Note that with FileZilla you cannot copy files between folders on the server.  They need to be downloaded then uploaded to a new location.
 * Make a github release
 * Copy latest zip and installer to github release, rename to include version.
 * Add link to help menu in github release.
-* Add help links to an index page on QuantSA.org.
+* Add help links to the index page on QuantSA.org.
+  * edit `\Documentation\documentation_history.html` and ftp it to the root folder on the QuantSA.org server.
 
 
 
