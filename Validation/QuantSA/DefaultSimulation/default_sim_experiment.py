@@ -114,7 +114,7 @@ def fva_on_fwd(hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob, times):
     v_plus[v_plus<0] = 0
     fva_def = 0
     for i in range(len(tau)):        
-        fva_def += np.sum(v_plus[i, 0:tau[i]] * spread * dt)
+        fva_def += np.sum(v_plus[i, 0:(tau[i]-1)] * spread * dt)
     fva_def = fva_def / nsims
     
     # default based with importance    
@@ -122,22 +122,23 @@ def fva_on_fwd(hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob, times):
     v_plus[v_plus<0] = 0
     fva_def2 = 0
     for i in range(len(tau_imp)):
-        fva_def2 += prob[i] * np.sum(v_plus[i, :tau_imp[i]]* spread * dt)
+        fva_def2 += prob[i] * np.sum(v_plus[i, :(tau_imp[i]-1)]* spread * dt)
     fva_def2 = fva_def2 / nsims
     
     return fva_haz, fva_def, fva_def2    
 
-def convergence():
+def convergence(xva_func, title, xva_label):
     cva_haz_conv = []
     cva_def_conv = []
     cva_def2_conv = []
     x = []
-    for i in range(20, 39):        
+    for i in range(20, 40):        
+    #for i in range(10, 21):        
         N = int(2**(i/2))
         print(str(N) + " simulations" )
         x.append(N)
         hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob = generate_paths(times, N, hazard0, fx0, vol_haz, vol_fx, rho, jump)
-        cva_haz, cva_def, cva_def2 = cva_on_fwd(hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob, times)
+        cva_haz, cva_def, cva_def2 = xva_func(hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob, times)
         cva_haz_conv.append(cva_haz)
         cva_def_conv.append(cva_def)
         cva_def2_conv.append(cva_def2)
@@ -147,9 +148,9 @@ def convergence():
     plt.plot(x, cva_def2_conv)
     plt.plot(x, cva_haz_conv)    
     plt.legend(("default simulation", "default simulation with importance", "forward default prob weighting"))
-    plt.title("CVA convergence")
+    plt.title(title)
     plt.xlabel("number of simulations")
-    plt.ylabel("CVA")
+    plt.ylabel(xva_label)
     plt.show()                
         
     plt.figure()        
@@ -157,9 +158,9 @@ def convergence():
     plt.plot(x[0:16], cva_def2_conv[0:16])
     plt.plot(x[0:16], cva_haz_conv[0:16])    
     plt.legend(("default simulation", "default simulation with importance", "forward default prob weighting"))
-    plt.title("CVA convergence")
+    plt.title(title)
     plt.xlabel("number of simulations")
-    plt.ylabel("CVA")        
+    plt.ylabel(xva_label)        
     plt.show()
         
     return x, cva_haz_conv, cva_def_conv, cva_def2_conv
@@ -179,9 +180,10 @@ if __name__ == "__main__":
     jump = 0.3
     
     # Test call
-    #hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob = generate_paths(times, N, hazard0, fx0, vol_haz, vol_fx, rho, jump)
+    hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob = generate_paths(times, N, hazard0, fx0, vol_haz, vol_fx, rho, jump)
     #cva_haz, cva_def, cva_def2 = cva_on_fwd(hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob, times)
     #fva_haz, fva_def, fva_def2 = fva_on_fwd(hazard, fx, fx_imp, fx_deval, tau, tau_imp, prob, times)
 
     # convergence call
-    x, cva_haz_conv, cva_def_conv, cva_def2_conv = convergence();
+    #x, cva_haz_conv, cva_def_conv, cva_def2_conv = convergence(cva_on_fwd, "CVA convergence", "CVA");
+    #x, cva_haz_conv, cva_def_conv, cva_def2_conv = convergence(fva_on_fwd, "FVA convergence", "FVA");

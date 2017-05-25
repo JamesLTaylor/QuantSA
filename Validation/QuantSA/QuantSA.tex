@@ -192,6 +192,18 @@ where $\tau_j$ is the simulated default time on path $j$.  This gives us a very 
 CVA(t_0) \approx N(t_0) \P[\tau<T] \sum_{j=0}^{j^{max}} \frac{LGD(\tau_j)V(\tau_j)^+}{N(\tau_j)} 
 \label{eq:cva3}
 \end{equation}
+
+\subsection{Default Simulation Experiment}
+hazard process:
+\[\lambda(T_{i+1}) = \lambda(T_i) e ^ {-0.5 \sigma^2 \Delta_i + \sigma \sqrt{\Delta_i} W_1(T_i)}  \]
+default time:
+
+Simulate a uniformly distributed random variable U, then $\tau$ is the smallest $T_i$ such that 
+$\exp{ \left\{ -\sum_0^i \lambda(T_i) \Delta_i \right\} < U }$ 
+
+FX process:
+\[X(T_{i+1}) = X(T_i) e ^ {-\lambda(T_i) \Delta_i J(T_{i+1}) -0.5 \sigma^2 \Delta_i + \sigma \sqrt{\Delta_i} W_2(T_i)} \left(1 + J(T_i) \mathbbm{1} _{T_i < \tau \leq T_{i+1}} \right)  \]
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Further work
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
