@@ -7,6 +7,7 @@ using Accord.Math;
 using System.Linq;
 using System.Collections.Generic;
 using Accord.Statistics;
+using QuantSA.General.Dates;
 
 namespace ValuationTest
 {

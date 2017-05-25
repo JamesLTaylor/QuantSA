@@ -7,6 +7,7 @@ using QuantSA.Valuation;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using QuantSA.General.Dates;
 
 namespace ValuationTest
 {

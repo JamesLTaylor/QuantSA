@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using QuantSA.General;
 using Accord.Math.Optimization;
 using Accord.Math.Convergence;
+using QuantSA.General.Dates;
 
 namespace QuantSA.Valuation
 {

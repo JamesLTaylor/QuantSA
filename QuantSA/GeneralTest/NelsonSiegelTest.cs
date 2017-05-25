@@ -4,6 +4,7 @@ using QuantSA.General;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
 using System.Linq;
+using QuantSA.General.Dates;
 
 namespace GeneralTest
 {

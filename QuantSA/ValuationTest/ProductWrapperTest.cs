@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Valuation;
 using System;
+using QuantSA.General.Dates;
 
 namespace ValuationTest
 {

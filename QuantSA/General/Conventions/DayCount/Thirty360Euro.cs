@@ -1,4 +1,6 @@
-﻿namespace QuantSA.General.Conventions.DayCount
+﻿using QuantSA.General.Dates;
+
+namespace QuantSA.General.Conventions.DayCount
 {
     public class Thirty360Euro : DayCountConvention
     {

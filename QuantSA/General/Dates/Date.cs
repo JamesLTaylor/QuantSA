@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace QuantSA.General
+namespace QuantSA.General.Dates
 {
     /// <summary>
     /// Dates should always be thought of as whole numbers in the QuantSA library.  They are treated as doubles

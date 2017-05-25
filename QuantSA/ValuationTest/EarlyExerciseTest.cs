@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.Valuation;
 using System.Collections.Generic;
+using QuantSA.General.Dates;
 
 namespace ValuationTest
 {

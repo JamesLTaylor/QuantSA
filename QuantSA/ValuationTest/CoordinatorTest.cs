@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using QuantSA.General;
+using QuantSA.General.Dates;
 using QuantSA.Valuation;
 using QuantSA.General.Formulae;
 
