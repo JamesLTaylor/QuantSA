@@ -1,11 +1,7 @@
-﻿using QuantSA.General;
-using QuantSA.General.Products.SAMarket;
+﻿using QuantSA.General.Products.SAMarket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QuantSA.General.Dates;
+using QuantSA.General;
 
 namespace QuantSA.ProductExtensions.SAMarket
 {

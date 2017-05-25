@@ -1,6 +1,7 @@
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
 using QuantSA.General;
+using QuantSA.General.Dates;
 using QuantSA.General.Products.Rates;
 using QuantSA.Valuation;
 using System;

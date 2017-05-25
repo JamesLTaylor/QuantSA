@@ -31,7 +31,7 @@ namespace ProductExtensionsTest.SAMarket
             Assert.AreEqual(87.85608, results.GetScalar(BesaJseBondEx.Keys.roundedAip), 1e-8);
             Assert.AreEqual(87.15470822, results.GetScalar(BesaJseBondEx.Keys.unroundedClean), 1e-8);
             Assert.AreEqual(87.15471, results.GetScalar(BesaJseBondEx.Keys.roundedClean), 1e-8);
-            Assert.AreEqual(0.701369836, results.GetScalar(BesaJseBondEx.Keys.unroundedAccrued), 1e-8);
+            Assert.AreEqual(0.701369836, results.GetScalar(BesaJseBondEx.Keys.unroundedAccrued), 1e-7);
         }
     }
 }

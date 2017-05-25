@@ -28,6 +28,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelCommon", "ExcelCommon\ExcelCommon.csproj", "{BACDDAF1-3C62-47B3-8D28-ADF47264FE48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductExtensions", "ProductExtensions\ProductExtensions.csproj", "{F8101F09-3ABD-472E-A9A6-D3D45E748E06}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE53E241-C329-4D56-965A-F6E2BB1FCE50} = {EE53E241-C329-4D56-965A-F6E2BB1FCE50}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductExtensionsTest", "ProductExtensionsTest\ProductExtensionsTest.csproj", "{553515B7-E5D5-46EB-8B25-94020EBDCEC1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -36,6 +39,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductExtensionsTest", "Pr
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

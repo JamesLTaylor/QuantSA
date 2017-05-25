@@ -63,7 +63,7 @@ namespace GenerateXLCode
                 List<string> extraUsings = categoriesAndUsings[entry.Key];
                 extraUsings.Add("System");
                 extraUsings.Add("XU = QuantSA.Excel.ExcelUtilities");
-                //extraUsings.Add("QuantSA.General");
+                extraUsings.Add("QuantSA.General.Dates");
                 //extraUsings.Add("QuantSA.Valuation");
                 extraUsings.Add("QuantSA.ExcelFunctions");
                 extraUsings.Add("QuantSA.Excel.Common");
