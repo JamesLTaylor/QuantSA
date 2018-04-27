@@ -1,7 +1,10 @@
 ﻿using ExcelDna.Integration;
-using QuantSA.General;
 using QuantSA.Excel.Common;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Curves;
+using QuantSA.Primitives.CurveTools;
+using QuantSA.Primitives.DataAnalysis;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.ExcelFunctions
 {

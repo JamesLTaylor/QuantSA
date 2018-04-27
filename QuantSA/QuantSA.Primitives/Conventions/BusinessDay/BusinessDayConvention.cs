@@ -1,6 +1,6 @@
-﻿using QuantSA.General.Dates;
+﻿using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General.Conventions.BusinessDay
+namespace QuantSA.Primitives.Conventions.BusinessDay
 {
     /// <summary>
     /// A business day convention adjusts a date according to a rule and with a provided calendar.

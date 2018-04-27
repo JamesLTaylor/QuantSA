@@ -1,11 +1,12 @@
+using System;
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
-using QuantSA.General;
-using QuantSA.General.Dates;
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Primitives;
+using QuantSA.Primitives.CurveTools;
+using QuantSA.Primitives.Dates;
+using XU = QuantSA.Excel.Addin.ExcelUtilities;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Addin.Generated
 {
     public class XLCurvesGenerated
     {

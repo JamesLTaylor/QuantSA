@@ -1,11 +1,8 @@
-﻿using QuantSA.General.Dates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.Curves
 {
     /// <summary>
     /// Linearly interpolates forward rates.  Must only be used for a single floating index.  This is generally enforced 

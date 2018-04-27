@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives
 {
     [Serializable]
     public abstract class MarketObservable

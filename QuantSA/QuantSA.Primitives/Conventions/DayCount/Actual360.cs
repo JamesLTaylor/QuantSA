@@ -1,6 +1,6 @@
-﻿using QuantSA.General.Dates;
+﻿using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General.Conventions.DayCount
+namespace QuantSA.Primitives.Conventions.DayCount
 {
     public class Actual360 : DayCountConvention
     {

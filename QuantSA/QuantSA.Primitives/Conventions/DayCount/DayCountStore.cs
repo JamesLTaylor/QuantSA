@@ -1,11 +1,6 @@
-﻿using QuantSA.General.Dates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General.Conventions.DayCount
+namespace QuantSA.Primitives.Conventions.DayCount
 {
     /// <summary>
     /// A collection of the daycounts available in QuantSA.  The ones that require no arguments to 

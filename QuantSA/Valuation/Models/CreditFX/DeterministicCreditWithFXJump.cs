@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuantSA.General;
-using Accord.Statistics.Distributions.Univariate;
 using Accord.Math.Random;
-using QuantSA.General.Dates;
+using Accord.Statistics.Distributions.Univariate;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
 
-namespace QuantSA.Valuation 
+namespace QuantSA.Valuation.Models.CreditFX 
 {
     /// <summary>
     /// Provides an FX process and the default event for a single name.

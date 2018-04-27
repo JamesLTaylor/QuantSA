@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
 using System.Linq;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Curves;
+using QuantSA.Primitives.Dates;
 
 namespace GeneralTest
 {

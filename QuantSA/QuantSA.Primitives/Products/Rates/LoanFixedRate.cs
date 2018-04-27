@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.Products.Rates
 {
     /// <summary>    
     /// </summary>
     /// <remarks>
     /// This fixed rate loan has been implemented as a CashLeg with a convenient constructor.
     /// </remarks>
-    /// <seealso cref="QuantSA.General.CashLeg" />
-    /// <seealso cref="QuantSA.General.IProvidesResultStore" />
+    /// <seealso cref="CashLeg" />
+    /// <seealso cref="IProvidesResultStore" />
     [Serializable]
     public class LoanFixedRate : CashLeg, IProvidesResultStore
     {

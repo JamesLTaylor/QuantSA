@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.MarketObservables
 {
     /// <summary>
     /// A currency pair.  Its observed value will always be units units of counter currency 

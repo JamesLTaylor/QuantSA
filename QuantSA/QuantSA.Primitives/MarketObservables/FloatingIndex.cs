@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.MarketObservables
 {
     /// <summary>
     /// An object to describe a floating rate index such as 3 Month Jibar.

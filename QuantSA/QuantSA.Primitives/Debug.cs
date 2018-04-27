@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives
 {
     /// <summary>
     /// A collection of Debuging tools, such as for writing data to file, writing to output and timing.  

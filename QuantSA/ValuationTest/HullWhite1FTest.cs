@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Valuation;
-using QuantSA.General;
 using Accord.Math;
 using Accord.Statistics;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {

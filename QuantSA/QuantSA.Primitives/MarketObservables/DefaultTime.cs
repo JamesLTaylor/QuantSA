@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.MarketObservables
 {
     /// <summary>
     /// The observed default time of a reference entity.  If default has no taken place
     /// it should have the value of 1 Jan 3000.
     /// </summary>
-    /// <seealso cref="QuantSA.General.MarketObservable" />
+    /// <seealso cref="MarketObservable" />
     [Serializable]
     public class DefaultTime : MarketObservable
     {

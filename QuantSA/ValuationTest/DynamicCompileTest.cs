@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
-using QuantSA.General;
 using QuantSA.Valuation;
 using System;
-using QuantSA.General.Dates;
-using QuantSA.General.Formulae;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Curves;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Formulae;
+using QuantSA.Primitives.MarketObservables;
+using QuantSA.Primitives.Products;
+using QuantSA.Primitives.Products.Equity;
+using QuantSA.Valuation.Models.Equity;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {

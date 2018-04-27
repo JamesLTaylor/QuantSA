@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.Products.Credit
 {
     /// <summary>
     /// A par stype credit default swap whose cashflows depend explicitly on the default events.  
     /// Protection always applies from the value date: there is not concept in the class of a forward starting 
     /// CDS.
     /// </summary>
-    /// <seealso cref="QuantSA.General.Product" />
+    /// <seealso cref="Product" />
     [Serializable]
     public class CDS : Product
     {

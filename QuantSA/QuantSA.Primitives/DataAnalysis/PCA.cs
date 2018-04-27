@@ -2,9 +2,8 @@
 using Accord.Math;
 using Accord.Math.Decompositions;
 using Accord.Statistics;
-using Accord.Statistics.Analysis;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.DataAnalysis
 {
     public class PCA
     {

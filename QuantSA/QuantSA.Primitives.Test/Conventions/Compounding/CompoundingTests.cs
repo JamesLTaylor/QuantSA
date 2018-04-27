@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General.Conventions.Compounding;
+using QuantSA.Primitives.Conventions.Compounding;
 
-namespace GeneralTest.Conventions.DayCount
+namespace GeneralTest.Conventions.Compounding
 {
     [TestClass]
     public class CompoundingTests

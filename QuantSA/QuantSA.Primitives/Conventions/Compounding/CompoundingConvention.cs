@@ -1,4 +1,4 @@
-﻿namespace QuantSA.General.Conventions.Compounding
+﻿namespace QuantSA.Primitives.Conventions.Compounding
 {
     /// <summary>
     /// A compounding convention defines how a rate and year fraction are converted to a 

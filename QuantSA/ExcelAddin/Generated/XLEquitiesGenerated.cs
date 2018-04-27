@@ -1,12 +1,14 @@
+using System;
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
-using QuantSA.General;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
+using QuantSA.Primitives.Products;
 using QuantSA.Valuation;
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using XU = QuantSA.Excel.Addin.ExcelUtilities;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Addin.Generated
 {
     public class XLEquitiesGenerated
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.Products.Equity
 {
     [Serializable]
     public class EuropeanOption : Product

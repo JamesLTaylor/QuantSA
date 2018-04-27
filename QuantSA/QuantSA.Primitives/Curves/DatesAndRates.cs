@@ -1,13 +1,10 @@
-﻿using MathNet.Numerics.Interpolation;
-using QuantSA.General.Dates;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using MathNet.Numerics.Interpolation;
+using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.Curves
 {
     /// <summary>
     /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 

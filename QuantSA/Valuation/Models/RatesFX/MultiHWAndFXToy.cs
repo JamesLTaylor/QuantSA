@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.General;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
+using QuantSA.Valuation.Models.Rates;
 
-namespace QuantSA.Valuation.Models
+namespace QuantSA.Valuation.Models.RatesFX
 {
     public class HWParams
     {
@@ -126,7 +126,7 @@ namespace QuantSA.Valuation.Models
             HullWhite1F[] rateSimulatorsCopy = rateSimulators.Select(sim => (HullWhite1F)sim.Clone()).ToArray();
             MultiHWAndFXToy model = new MultiHWAndFXToy(new Date(anchorDate), numeraireCcy, rateSimulatorsCopy, currencyPairs,
                                                         spots, vols, correlations);
-            model.allRequiredDates = allRequiredDates.Clone();
+            model.allRequiredDates = Primitives.Dates.DateExtensions.Clone(allRequiredDates);
             return model;
         }
 

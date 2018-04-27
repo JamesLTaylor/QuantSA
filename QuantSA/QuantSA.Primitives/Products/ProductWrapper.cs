@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives.Products
 {
     /// <summary>
     /// Wraps the general <see cref="Product" /> class in a simple case where there are cashflows

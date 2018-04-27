@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace QuantSA.General.Dates
+namespace QuantSA.Primitives.Dates
 {
 
     /// <summary>

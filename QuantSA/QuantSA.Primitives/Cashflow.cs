@@ -1,8 +1,8 @@
-﻿using QuantSA.General.Dates;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Primitives
 {
     [Serializable]
     public class Cashflow

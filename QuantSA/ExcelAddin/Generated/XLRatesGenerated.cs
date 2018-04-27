@@ -1,13 +1,14 @@
+using System;
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
-using QuantSA.General;
-using QuantSA.General.Dates;
-using QuantSA.General.Products.Rates;
-using QuantSA.Valuation;
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
+using QuantSA.Primitives.Products.Rates;
+using QuantSA.Valuation.Models.Rates;
+using XU = QuantSA.Excel.Addin.ExcelUtilities;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Addin.Generated
 {
     public class XLRatesGenerated
     {

@@ -1,13 +1,13 @@
+using System;
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
-using QuantSA.General.Conventions.BusinessDay;
-using QuantSA.General.Conventions.Compounding;
-using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
-using System;
-using XU = QuantSA.Excel.ExcelUtilities;
+using QuantSA.Primitives.Conventions.BusinessDay;
+using QuantSA.Primitives.Conventions.Compounding;
+using QuantSA.Primitives.Conventions.DayCount;
+using QuantSA.Primitives.Dates;
+using XU = QuantSA.Excel.Addin.ExcelUtilities;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Addin.Generated
 {
     public class XLConventionsGenerated
     {

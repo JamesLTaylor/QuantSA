@@ -1,7 +1,11 @@
-﻿using QuantSA.General;
-using QuantSA.Valuation;
+﻿using QuantSA.Valuation;
 using QuantSA.Excel.Common;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
+using QuantSA.Primitives.Products;
+using QuantSA.Primitives.Products.Equity;
+using QuantSA.Valuation.Models.Equity;
 
 namespace QuantSA.ExcelFunctions
 {

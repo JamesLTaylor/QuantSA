@@ -1,13 +1,14 @@
-﻿using Accord.Math;
-using Accord.Math.Random;
-using Accord.Statistics.Distributions.Univariate;
-using QuantSA.General;
-using QuantSA.General.Dates;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Accord.Math;
+using Accord.Math.Random;
+using Accord.Statistics.Distributions.Univariate;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.MarketObservables;
 
-namespace QuantSA.Valuation
+namespace QuantSA.Valuation.Models.Rates
 {
     /// <summary>
     /// A single factor Hull White simulator.  It can simulate a numeraire and any number of
@@ -44,7 +45,7 @@ namespace QuantSA.Valuation
             //TODO: Take deep copies of everything.  The current implemenation is safe for use in the Coordinator though.
             HullWhite1F newSimulator = new HullWhite1F(currency, a, vol, r0, rate, time0);
             newSimulator.forecastTenors = forecastTenors; 
-            newSimulator.allDates = allDates.Clone();
+            newSimulator.allDates = Primitives.Dates.DateExtensions.Clone(allDates);
             newSimulator.allDatesDouble = (double[])allDatesDouble.Clone();
             //newSimulator.r;
             //newSimulator.bankAccount;

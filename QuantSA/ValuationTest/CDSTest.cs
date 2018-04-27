@@ -1,10 +1,14 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General;
 using Accord.Math;
 using QuantSA.Valuation;
 using System.Collections.Generic;
-using QuantSA.General.Dates;
+using QuantSA.Primitives;
+using QuantSA.Primitives.Curves;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Products;
+using QuantSA.Primitives.Products.Credit;
+using QuantSA.Valuation.Models.CreditFX;
 
 namespace ValuationTest
 {
