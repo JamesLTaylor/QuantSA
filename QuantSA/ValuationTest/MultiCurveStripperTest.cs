@@ -1,14 +1,10 @@
 ﻿using System;
 using QuantSA.Valuation;
+using QuantSA.General;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Curves;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
-using QuantSA.Primitives.Products;
-using QuantSA.Primitives.Products.Rates;
-using QuantSA.Valuation.Models.Rates;
+using QuantSA.General.Dates;
 
 namespace ValuationTest
 {
@@ -96,7 +92,7 @@ namespace ValuationTest
         /// A curve that ensures that the overnight rate as calculated on the turnDate will be 
         /// different from the rate before or after that by turnSize.
         /// </summary>
-        /// <seealso cref="IDiscountingSource" />
+        /// <seealso cref="QuantSA.General.IDiscountingSource" />
         private class DFCurveWithTurn : IDiscountingSource
         {
             private Date anchorDate;

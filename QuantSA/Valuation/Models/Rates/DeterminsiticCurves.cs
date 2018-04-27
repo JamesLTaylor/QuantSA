@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
+﻿using System.Collections.Generic;
+using System;
+using QuantSA.General;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Valuation.Models.Rates
+namespace QuantSA.Valuation
 {
     /// <summary>
     /// A "Simulator" that works with only 1 simulation.  The numeraire and all forward rates are obtained 

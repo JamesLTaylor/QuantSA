@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantSA.Primitives.MarketObservables
+namespace QuantSA.General
 {
     [Serializable]
     public class Dividend : MarketObservable

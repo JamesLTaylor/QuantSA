@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Accord.Statistics.Distributions.Multivariate;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Accord.Math;
-using Accord.Statistics.Distributions.Multivariate;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Valuation.Models.Equity
+namespace QuantSA.Valuation
 {
     /// <summary>
     /// A <see cref="Simulator"/> that can provide realizations of several share prices in a single currency.

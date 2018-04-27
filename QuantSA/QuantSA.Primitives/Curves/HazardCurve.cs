@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Accord.Math;
-using QuantSA.Primitives.Dates;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.Curves
+namespace QuantSA.General
 {
     /// <summary>
     /// Obtains survival probabilities from a piecewise linear interpolation in hazard rates.
@@ -10,7 +14,7 @@ namespace QuantSA.Primitives.Curves
     /// The curve parameterizes lambda as a function of T, the time in years since the anchor date and 
     /// survival is given by exp(-lambda(T)*T)
     /// </summary>
-    /// <seealso cref="ISurvivalProbabilitySource" />
+    /// <seealso cref="QuantSA.General.ISurvivalProbabilitySource" />
     [Serializable]
     public class HazardCurve : ISurvivalProbabilitySource
     {

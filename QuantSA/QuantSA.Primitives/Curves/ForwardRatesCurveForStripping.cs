@@ -1,25 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Accord.Math;
+﻿using Accord.Math;
 using MathNet.Numerics.Interpolation;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
+using QuantSA.General.Dates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Curves
+namespace QuantSA.General
 {
     /// <summary>
     /// A curve that can be used in bootstrapping a forward rate source.  The forward rates
     /// themselves are linearly interpolated and are not based on discount factors.  The curve 
     /// can be made to follow the shape of an underlying curve, <see cref="underlyingCurve"/>.
     /// </summary>
-    /// <seealso cref="ICurveForStripping" />
-    /// <seealso cref="IFloatingRateSource" />
+    /// <seealso cref="QuantSA.General.ICurveForStripping" />
+    /// <seealso cref="QuantSA.General.IFloatingRateSource" />
     public class ForwardRatesCurveForStripping : ICurveForStripping, IFloatingRateSource
     {
         /// <summary>
         /// An <see cref="IFloatingRateSource"/> that always returns zero.
         /// </summary>
-        /// <seealso cref="IFloatingRateSource" />
+        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
         private class ZeroFloatingRates : IFloatingRateSource
         {
             private FloatingIndex index;
@@ -33,7 +35,7 @@ namespace QuantSA.Primitives.Curves
         /// discount curve.  Takes a shortcut in calculating the forward rate from discount factors by adding
         /// 3 months with no date adjustments and assuming actual 365 and simple compounding for the implied rate.
         /// </summary>
-        /// <seealso cref="IFloatingRateSource" />
+        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
         private class DiscountBasedFloatingRates : IFloatingRateSource
         {
             private FloatingIndex index;

@@ -1,15 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.General;
+using QuantSA.General.Products.Rates;
 using QuantSA.Valuation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Products;
-using QuantSA.Primitives.Products.Rates;
-using QuantSA.Valuation.Models.Rates;
+using QuantSA.General.Dates;
 
 namespace ValuationTest
 {

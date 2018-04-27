@@ -1,6 +1,6 @@
-﻿using QuantSA.Primitives.Dates;
+﻿using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.Conventions.BusinessDay
+namespace QuantSA.General.Conventions.BusinessDay
 {
     /// <summary>
     /// </summary>
@@ -19,7 +19,7 @@ namespace QuantSA.Primitives.Conventions.BusinessDay
     /// <summary>
     /// Choose the first business day after the given holiday.
     /// </summary>
-    /// <seealso cref="BusinessDayConvention" />
+    /// <seealso cref="QuantSA.General.Conventions.BusinessDay.BusinessDayConvention" />
     public class Following : BusinessDayConvention
     {
         public static readonly Following Instance = new Following();
@@ -37,7 +37,7 @@ namespace QuantSA.Primitives.Conventions.BusinessDay
     /// Choose the first business day after the given holiday unless it belongs to a different month, in which 
     /// case choose the first business day before the holiday.
     /// </summary>
-    /// <seealso cref="BusinessDayConvention" />
+    /// <seealso cref="QuantSA.General.Conventions.BusinessDay.BusinessDayConvention" />
     public class ModifiedFollowing : BusinessDayConvention
     {
         public static readonly ModifiedFollowing Instance = new ModifiedFollowing();
@@ -58,7 +58,7 @@ namespace QuantSA.Primitives.Conventions.BusinessDay
     /// <summary>
     /// Choose the first business day beforeb the given holiday.
     /// </summary>
-    /// <seealso cref="BusinessDayConvention" />
+    /// <seealso cref="QuantSA.General.Conventions.BusinessDay.BusinessDayConvention" />
     public class Preceding : BusinessDayConvention
     {
         public static readonly Preceding Instance = new Preceding();
@@ -78,7 +78,7 @@ namespace QuantSA.Primitives.Conventions.BusinessDay
     /// Choose the first business day before the given holiday unless it belongs to a 
     /// different month, in which case choose the first business day after the holiday
     /// </summary>
-    /// <seealso cref="BusinessDayConvention" />
+    /// <seealso cref="QuantSA.General.Conventions.BusinessDay.BusinessDayConvention" />
     public class ModifiedPreceding : BusinessDayConvention
     {
         public static readonly ModifiedPreceding Instance = new ModifiedPreceding();
@@ -99,7 +99,7 @@ namespace QuantSA.Primitives.Conventions.BusinessDay
     /// <summary>
     /// Do not adjust.
     /// </summary>
-    /// <seealso cref="BusinessDayConvention" />
+    /// <seealso cref="QuantSA.General.Conventions.BusinessDay.BusinessDayConvention" />
     public class Unadjusted : BusinessDayConvention
     {
         public static readonly Unadjusted Instance = new Unadjusted();

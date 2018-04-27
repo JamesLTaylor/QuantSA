@@ -1,7 +1,11 @@
-﻿using System.Linq;
-using QuantSA.Primitives.Dates;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives
+namespace QuantSA.General
 {
     /// <summary>
     /// A curve is simply a function between dates and values.  

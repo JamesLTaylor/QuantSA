@@ -1,13 +1,12 @@
-using System;
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Dates;
+using QuantSA.General;
+using QuantSA.General.Dates;
 using QuantSA.Valuation;
-using QuantSA.Valuation.Models.Rates;
-using XU = QuantSA.Excel.Addin.ExcelUtilities;
+using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
-namespace QuantSA.Excel.Addin.Generated
+namespace QuantSA.Excel
 {
     public class XLFXGenerated
     {

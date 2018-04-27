@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.Products.Rates
+namespace QuantSA.General
 {
     /// <summary>
     /// A Floating rate loan with exactly the same structure as <see cref="FloatLeg"/> but with notional flows added.
     /// </summary>    
-    /// <seealso cref="FloatLeg" />
-    /// <seealso cref="IProvidesResultStore" />
+    /// <seealso cref="QuantSA.General.FloatLeg" />
+    /// <seealso cref="QuantSA.General.IProvidesResultStore" />
     [Serializable]
     public class LoanFloatingRate : FloatLeg, IProvidesResultStore
     {

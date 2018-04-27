@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.General;
 using QuantSA.General.Conventions;
+using QuantSA.General.Conventions.DayCount;
+using QuantSA.General.Dates;
 using System.Collections.Generic;
-using QuantSA.Primitives.Conventions.DayCount;
-using QuantSA.Primitives.Dates;
 
 namespace GeneralTest.Conventions.DayCount
 {

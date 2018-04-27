@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.Primitives.CurveTools;
-using QuantSA.Primitives.Dates;
+using QuantSA.General;
+using QuantSA.General.Dates;
 
 namespace GeneralTest
 {

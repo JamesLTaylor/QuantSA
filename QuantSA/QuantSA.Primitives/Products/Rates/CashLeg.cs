@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.Primitives.Dates;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.Products.Rates
+namespace QuantSA.General
 {
     /// <summary>
     /// A set of cashflows that can be valued like any other product.

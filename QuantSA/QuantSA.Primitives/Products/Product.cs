@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using QuantSA.Primitives.Dates;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.Products
+namespace QuantSA.General
 {
     /// <summary>
     /// The call sequence for getting the cashflows of any product must be:

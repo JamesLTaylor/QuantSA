@@ -1,15 +1,15 @@
-﻿using System;
-using ExcelDna.Integration;
+﻿using ExcelDna.Integration;
+using System;
+using System.Collections.Generic;
+using QuantSA.General;
 using QuantSA.Excel.Common;
+using QuantSA.General.Conventions.Compounding;
+using QuantSA.General.Dates;
 using QuantSA.ExcelFunctions;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Conventions.BusinessDay;
-using QuantSA.Primitives.Conventions.Compounding;
-using QuantSA.Primitives.Conventions.DayCount;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
+using QuantSA.General.Conventions.BusinessDay;
+using QuantSA.General.Conventions.DayCount;
 
-namespace QuantSA.Excel.Addin
+namespace QuantSA.Excel
 {
 
     /// <summary>

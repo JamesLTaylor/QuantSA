@@ -1,9 +1,13 @@
-﻿using System;
+﻿using MathNet.Numerics.Distributions;
 using Accord.Math;
-using QuantSA.Primitives.Curves;
-using QuantSA.Primitives.Dates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.CurveTools
+namespace QuantSA.General
 {
     [Serializable]
     public class PCACurveSimulator

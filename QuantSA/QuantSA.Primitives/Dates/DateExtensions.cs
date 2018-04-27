@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Dates
+namespace QuantSA.General.Dates
 {
     /// <summary>
     /// Extension methods for Dates and arrays of Dates

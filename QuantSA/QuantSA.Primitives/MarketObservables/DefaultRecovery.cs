@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.MarketObservables
+namespace QuantSA.General
 {
     /// <summary>
     /// The recovery rate in a default event.  It is undefined until there is a default.  When it is undefined 

@@ -1,7 +1,11 @@
-﻿using System;
-using MathNet.Numerics.Distributions;
+﻿using MathNet.Numerics.Distributions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Formulae
+namespace QuantSA.General.Formulae
 {
     public enum PutOrCall : int{Call = 1, Put = -1};
     public class BlackEtc

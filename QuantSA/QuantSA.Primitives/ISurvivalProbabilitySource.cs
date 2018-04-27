@@ -1,7 +1,11 @@
 ﻿using System;
-using QuantSA.Primitives.Dates;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives
+namespace QuantSA.General
 {
     /// <summary>
     /// A an object that can provide survival probabilites for a specific <see cref="ReferenceEntity"/>

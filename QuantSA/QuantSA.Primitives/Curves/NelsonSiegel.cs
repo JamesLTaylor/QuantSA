@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Accord.Math.Optimization;
+using QuantSA.General.Dates;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Accord.Math.Optimization;
-using QuantSA.Primitives.Dates;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Curves
+namespace QuantSA.General
 {
     /// <summary>
     /// 

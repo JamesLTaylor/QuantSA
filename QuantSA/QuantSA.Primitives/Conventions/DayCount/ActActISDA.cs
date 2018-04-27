@@ -1,7 +1,7 @@
-﻿using System;
-using QuantSA.Primitives.Dates;
+﻿using QuantSA.General.Dates;
+using System;
 
-namespace QuantSA.Primitives.Conventions.DayCount
+namespace QuantSA.General.Conventions.DayCount
 {
     public class ActActISDA : DayCountConvention
     {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuantSA.Primitives.Dates;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.Products.Rates
+namespace QuantSA.General
 {
     /// <summary>
     /// The cashflows on a product which exercises into another are of two type:
@@ -16,7 +18,7 @@ namespace QuantSA.Primitives.Products.Rates
     /// </summary>
     /// <remarks>
     /// </remarks>
-    /// <seealso cref="ProductWithEarlyExercise" />
+    /// <seealso cref="QuantSA.General.ProductWithEarlyExercise" />
     [Serializable]
     public class BermudanSwaption : ProductWithEarlyExercise
     {

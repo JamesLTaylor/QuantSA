@@ -1,9 +1,10 @@
-﻿using QuantSA.Excel.Common;
+﻿using QuantSA.General;
+using QuantSA.Excel.Common;
+using QuantSA.General.Conventions.Compounding;
 using System;
-using QuantSA.Primitives.Conventions.BusinessDay;
-using QuantSA.Primitives.Conventions.Compounding;
-using QuantSA.Primitives.Conventions.DayCount;
-using QuantSA.Primitives.Dates;
+using QuantSA.General.Conventions.BusinessDay;
+using QuantSA.General.Dates;
+using QuantSA.General.Conventions.DayCount;
 
 namespace QuantSA.ExcelFunctions
 {

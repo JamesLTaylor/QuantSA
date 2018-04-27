@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
 using ExcelDna.Integration;
+using XU = QuantSA.Excel.ExcelUtilities;
 using MathNet.Numerics.Interpolation;
+using QuantSA.General;
+using QuantSA.General.Dates;
 using QuantSA.Excel.Common;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Formulae;
-using QuantSA.Primitives.Products;
-using XU = QuantSA.Excel.Addin.ExcelUtilities;
+using System.Diagnostics;
+using QuantSA.General.Formulae;
 
-namespace QuantSA.Excel.Addin
+namespace QuantSA.Excel
 {
     public class XLGeneral
     {

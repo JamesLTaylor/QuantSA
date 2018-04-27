@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Accord.Math;
+using MathNet.Numerics.Interpolation;
+using QuantSA.General.Dates;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Accord.Math;
-using MathNet.Numerics.Interpolation;
-using QuantSA.Primitives.Dates;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Curves
+namespace QuantSA.General
 {
 
     /// <summary>
@@ -13,7 +15,7 @@ namespace QuantSA.Primitives.Curves
     /// composed as a spread over another discounting curve to ensure that the shape
     /// of the underlying curve is maintained.
     /// </summary>
-    /// <seealso cref="IDiscountingSource" />
+    /// <seealso cref="QuantSA.General.IDiscountingSource" />
     public class ZeroRatesCurveForStripping : ICurveForStripping, IDiscountingSource
     {
         private class TrivialCurve : IDiscountingSource

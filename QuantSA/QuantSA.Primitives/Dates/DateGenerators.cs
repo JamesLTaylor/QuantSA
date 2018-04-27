@@ -1,4 +1,10 @@
-﻿namespace QuantSA.Primitives.Dates
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuantSA.General.Dates
 {
     public static class DateGenerators
     {

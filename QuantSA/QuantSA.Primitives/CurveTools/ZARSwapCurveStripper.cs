@@ -1,6 +1,11 @@
-﻿using QuantSA.Primitives.Dates;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives.CurveTools
+namespace QuantSA.General
 {
     public class Swap
     {

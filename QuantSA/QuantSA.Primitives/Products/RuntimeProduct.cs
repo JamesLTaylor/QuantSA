@@ -1,11 +1,13 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Products
+namespace QuantSA.General
 {
     [Serializable]
     public class RuntimeProduct

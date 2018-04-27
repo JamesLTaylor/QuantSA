@@ -1,7 +1,11 @@
-﻿using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.MarketObservables;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using QuantSA.General.Dates;
 
-namespace QuantSA.Primitives
+namespace QuantSA.General
 {
     public interface IFloatingRateSource
     {

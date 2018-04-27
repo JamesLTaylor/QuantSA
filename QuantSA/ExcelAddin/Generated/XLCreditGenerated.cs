@@ -1,14 +1,12 @@
-using System;
 using QuantSA.Excel.Common;
 using QuantSA.ExcelFunctions;
-using QuantSA.Primitives;
-using QuantSA.Primitives.Curves;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Products.Credit;
-using QuantSA.Valuation.Models.CreditFX;
-using XU = QuantSA.Excel.Addin.ExcelUtilities;
+using QuantSA.General;
+using QuantSA.General.Dates;
+using QuantSA.Valuation;
+using System;
+using XU = QuantSA.Excel.ExcelUtilities;
 
-namespace QuantSA.Excel.Addin.Generated
+namespace QuantSA.Excel
 {
     public class XLCreditGenerated
     {

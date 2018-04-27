@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantSA.Primitives.Conventions.Compounding
+namespace QuantSA.General.Conventions.Compounding
 {
     /// <summary>
     /// A collection of the compounding conventions available in QuantSA.  They are all singleton instances.

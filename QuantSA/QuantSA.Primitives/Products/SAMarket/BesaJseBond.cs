@@ -1,8 +1,11 @@
-﻿using System;
+﻿using QuantSA.General.Dates;
+using System;
 using System.Collections.Generic;
-using QuantSA.Primitives.Dates;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace QuantSA.Primitives.Products.SAMarket
+namespace QuantSA.General.Products.SAMarket
 {
     /// <summary>
     /// The market standard bond traded on the JSE, formerly the BESA.
