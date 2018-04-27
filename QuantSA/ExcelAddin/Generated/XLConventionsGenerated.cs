@@ -3,8 +3,10 @@ using QuantSA.ExcelFunctions;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.Compounding;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using System;
+using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel

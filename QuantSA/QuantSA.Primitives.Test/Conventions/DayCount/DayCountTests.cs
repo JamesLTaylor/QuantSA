@@ -2,8 +2,10 @@
 using QuantSA.General;
 using QuantSA.General.Conventions;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using System.Collections.Generic;
+using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace GeneralTest.Conventions.DayCount
 {

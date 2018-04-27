@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.General.Conventions.BusinessDay;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using System.Collections.Generic;
+using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace GeneralTest.Conventions.BusinessDay
 {

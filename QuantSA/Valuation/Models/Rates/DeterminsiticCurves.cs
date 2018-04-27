@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System;
 using QuantSA.General;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation
 {

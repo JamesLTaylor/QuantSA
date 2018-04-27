@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using QuantSA.General;
 using Accord.Statistics.Models.Regression.Linear;
 using Accord.Statistics.Distributions.Univariate;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation
 {

@@ -1,11 +1,13 @@
 ﻿using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General.Products.Rates
 {

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation
 {

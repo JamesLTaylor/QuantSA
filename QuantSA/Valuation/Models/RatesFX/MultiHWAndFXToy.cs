@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using QuantSA.General;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 using QuantSA.General.Dates;
 
 namespace QuantSA.Valuation.Models

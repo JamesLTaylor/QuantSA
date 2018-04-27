@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {

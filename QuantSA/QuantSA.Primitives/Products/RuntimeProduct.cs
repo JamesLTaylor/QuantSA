@@ -127,7 +127,7 @@ namespace QuantSA.General
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("using QuantSA.Valuation;");
             sb.AppendLine("using QuantSA.General; ");
-            sb.AppendLine("using QuantSA.General.Dates; ");
+            sb.AppendLine("using QuantSA.Primitives.Dates; ");
             sb.AppendLine("using System; ");
             sb.AppendLine("using System.Collections.Generic; ");
             sb.AppendLine("public class " + productName + " : ProductWrapper");

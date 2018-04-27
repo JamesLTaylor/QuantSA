@@ -1,7 +1,8 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.General;
 using QuantSA.Excel.Common;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.ExcelFunctions
 {

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Accord.Math;
 using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {

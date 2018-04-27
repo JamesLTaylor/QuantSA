@@ -4,8 +4,9 @@ using System.Diagnostics;
 using QuantSA.General;
 using QuantSA.Valuation;
 using System;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using QuantSA.General.Formulae;
+using QuantSA.Primitives.Dates;
 
 namespace ValuationTest
 {

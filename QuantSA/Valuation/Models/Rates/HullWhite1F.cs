@@ -2,10 +2,12 @@
 using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuantSA.Primitives.Dates;
+using QuantSA.General.Dates;
 
 namespace QuantSA.Valuation
 {

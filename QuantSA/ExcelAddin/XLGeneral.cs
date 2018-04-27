@@ -4,10 +4,11 @@ using ExcelDna.Integration;
 using XU = QuantSA.Excel.ExcelUtilities;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using QuantSA.Excel.Common;
 using System.Diagnostics;
 using QuantSA.General.Formulae;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Excel
 {

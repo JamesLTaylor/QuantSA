@@ -4,7 +4,8 @@ using System.Linq;
 using QuantSA.General;
 using Accord.Statistics.Distributions.Univariate;
 using Accord.Math.Random;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation 
 {

@@ -8,7 +8,8 @@ using QuantSA.Valuation;
 using QuantSA.General;
 using Accord.Math;
 using Accord.Statistics;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace ValuationTest
 {

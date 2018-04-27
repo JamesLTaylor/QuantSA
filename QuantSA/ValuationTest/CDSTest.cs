@@ -5,6 +5,8 @@ using Accord.Math;
 using QuantSA.Valuation;
 using System.Collections.Generic;
 using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace ValuationTest
 {

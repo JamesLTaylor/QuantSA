@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Excel.Common;
 using QuantSA.General.Conventions.Compounding;
-using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 using QuantSA.ExcelFunctions;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
+using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Excel
 {
