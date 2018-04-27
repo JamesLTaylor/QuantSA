@@ -56,13 +56,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\General\General.csproj">
-      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>General</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProductExtensions\ProductExtensions.csproj">
       <Project>{f8101f09-3abd-472e-a9a6-d3d45e748e06}</Project>
       <Name>ProductExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
+      <Name>QuantSA.Primitives</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

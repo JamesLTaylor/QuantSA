@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="MarketData\" />
+    <Folder Include="Dates\" />
+    <Folder Include="Products\" />
+  </ItemGroup>
+
+</Project>

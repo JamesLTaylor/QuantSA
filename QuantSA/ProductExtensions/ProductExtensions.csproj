@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="QuantSA.General">
-      <HintPath>..\General\bin\Debug\QuantSA.General.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +42,12 @@
   <ItemGroup>
     <Compile Include="SAMarket\BesaJseBondEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
+      <Name>QuantSA.Primitives</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

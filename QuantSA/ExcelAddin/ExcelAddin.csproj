@@ -61,10 +61,6 @@
     <Reference Include="QuantSA.Excel.Common">
       <HintPath>..\ExcelCommon\bin\$(Configuration)\QuantSA.Excel.Common.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSA.General, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\General\bin\$(Configuration)\QuantSA.General.dll</HintPath>
-    </Reference>
     <Reference Include="QuantSA.Valuation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Valuation\bin\$(Configuration)\QuantSA.Valuation.dll</HintPath>
@@ -123,6 +119,10 @@
     <ProjectReference Include="..\ExcelFunctions\ExcelFunctions.csproj">
       <Project>{ce3f5531-09ee-4829-9374-866835521e22}</Project>
       <Name>ExcelFunctions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
+      <Name>QuantSA.Primitives</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
