@@ -116,8 +116,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExcelFunctions\QuantSA.Excel.Functions.csproj">
-      <Project>{ce3f5531-09ee-4829-9374-866835521e22}</Project>
+    <ProjectReference Include="..\QuantSA.Excel.Functions\QuantSA.Excel.Functions.csproj">
+      <Project>{0ee19fe5-6c46-40ae-9cce-1d43c9c29f57}</Project>
       <Name>QuantSA.Excel.Functions</Name>
     </ProjectReference>
     <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BACDDAF1-3C62-47B3-8D28-ADF47264FE48}</ProjectGuid>
+    <ProjectGuid>{D71DFB97-E341-4DC8-B263-B2E81E5AAA60}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QuantSA.Excel.Common</RootNamespace>

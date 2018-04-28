@@ -12,14 +12,14 @@ using QuantSA.Primitives.Dates;
 namespace QuantSA.Excel
 {
     /// <summary>
-    /// Functions that will be used in many places when gettting data ready to send to and from Excel
+    /// Functions that will be used in many places when getting data ready to send to and from Excel
     /// </summary>
     public class ExcelUtilities
     {
         /// <summary>
         /// Should the input of this type include a link to the help about that type?  For example
         /// if the input type is <see cref="FloatingIndex"/> then it is useful to link to the
-        /// page on FloatingIndex so that the user can see the permissable strings.
+        /// page on FloatingIndex so that the user can see the permissible strings.
         /// </summary>
         /// <remarks>
         /// This method is a copy of PrepareRelease.MarkdownGenerator.InputTypeShouldHaveHelpLink        /// 
@@ -66,7 +66,7 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
-        /// Convert an erorr message to an object for return to Excel.
+        /// Convert an error message to an object for return to Excel.
         /// </summary>
         /// <param name="e">The exception that has been thrown and needs to be displaced in the cell.</param>
         /// <returns></returns>
@@ -77,7 +77,7 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
-        /// Convert an erorr message to a 1d object array for return to Excel.
+        /// Convert an error message to a 1d object array for return to Excel.
         /// </summary>
         /// <param name="e">The exception that has been thrown and needs to be displaced in the cell.</param>
         /// <returns></returns>
@@ -88,7 +88,7 @@ namespace QuantSA.Excel
         }
 
         /// <summary>
-        /// Convert an erorr message to a 2d object array for return to Excel.
+        /// Convert an error message to a 2d object array for return to Excel.
         /// </summary>
         /// <param name="e">The exception that has been thrown and needs to be displaced in the cell.</param>
         /// <returns></returns>
@@ -336,10 +336,10 @@ namespace QuantSA.Excel
         public static T GetObject0D<T>(object[,] values, string inputName)
         {
             if (values.GetLength(0) != 1 || values.GetLength(1) != 1)
-                throw new ArgumentException(inputName + " must be a single string refering to an existing object.");
+                throw new ArgumentException($"{inputName} must be a single string referring to an existing object.");
             var name = values[0, 0] as string;
             if (name != null) return ObjectMap.Instance.GetObjectFromID<T>(name);
-            throw new ArgumentException(inputName + " must be a single string refering to an existing object.");
+            throw new ArgumentException($"{inputName} must be a single string referring to an existing object.");
         }
 
         /// <summary>
