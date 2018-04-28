@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -16,12 +11,12 @@ namespace QuantSA.General
     [Serializable]
     public class FXForecastCurve : IFXSource
     {
-        Currency baseCurrency;
-        Currency counterCurrency;
-        CurrencyPair currencyPair;
-        double fxRateAtAnchorDate;
-        IDiscountingSource baseCurrencyFXBasisCurve;
-        IDiscountingSource counterCurrencyFXBasisCurve;
+        private readonly Currency baseCurrency;
+        private readonly IDiscountingSource baseCurrencyFXBasisCurve;
+        private readonly Currency counterCurrency;
+        private readonly IDiscountingSource counterCurrencyFXBasisCurve;
+        private readonly CurrencyPair currencyPair;
+        private readonly double fxRateAtAnchorDate;
 
         /// <summary>
         /// Construct an FX source where the forwards are obtained from the discount factors on two basis curves.
@@ -31,20 +26,25 @@ namespace QuantSA.General
         /// <param name="fxRateAtAnchorDate"></param>
         /// <param name="baseCurrencyFXBasisCurve"></param>
         /// <param name="counterCurrencyFXBasisCurve"></param>
-        public FXForecastCurve(Currency baseCurrency, Currency counterCurrency, double fxRateAtAnchorDate, IDiscountingSource baseCurrencyFXBasisCurve, 
+        public FXForecastCurve(Currency baseCurrency, Currency counterCurrency, double fxRateAtAnchorDate,
+            IDiscountingSource baseCurrencyFXBasisCurve,
             IDiscountingSource counterCurrencyFXBasisCurve)
         {
-            if (baseCurrencyFXBasisCurve.GetAnchorDate() != counterCurrencyFXBasisCurve.GetAnchorDate()) throw new ArgumentException("The two basis curves must have the same anchor dates.");
-            if (baseCurrency != baseCurrencyFXBasisCurve.GetCurrency()) throw new ArgumentException("The currency of the baseCurrencyFXBasisCurve must the base currency.");
-            if (counterCurrency != counterCurrencyFXBasisCurve.GetCurrency()) throw new ArgumentException("The currency of the counterCurrencyFXBasisCurve must the counter currency.");
+            if (baseCurrencyFXBasisCurve.GetAnchorDate() != counterCurrencyFXBasisCurve.GetAnchorDate())
+                throw new ArgumentException("The two basis curves must have the same anchor dates.");
+            if (baseCurrency != baseCurrencyFXBasisCurve.GetCurrency())
+                throw new ArgumentException("The currency of the baseCurrencyFXBasisCurve must the base currency.");
+            if (counterCurrency != counterCurrencyFXBasisCurve.GetCurrency())
+                throw new ArgumentException(
+                    "The currency of the counterCurrencyFXBasisCurve must the counter currency.");
             this.baseCurrency = baseCurrency;
             this.counterCurrency = counterCurrency;
             this.fxRateAtAnchorDate = fxRateAtAnchorDate;
             this.baseCurrencyFXBasisCurve = baseCurrencyFXBasisCurve;
             this.counterCurrencyFXBasisCurve = counterCurrencyFXBasisCurve;
             currencyPair = new CurrencyPair(baseCurrency, counterCurrency);
-
         }
+
         public Currency GetBaseCurrency()
         {
             return baseCurrency;

@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
+﻿using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {
     public class Swap
     {
-        double[] notionals;
-        Date[] resetDates;
-        Date[] paymentDates;
-        Date[] accrualFractions;
-        int floatingTenorInMonths;
+        private Date[] accrualFractions;
+        private int floatingTenorInMonths;
+        private double[] notionals;
+        private Date[] paymentDates;
+        private Date[] resetDates;
 
-        public Swap(double[] notionals, Date[] resetDates, Date[] paymentDates, Date[] accrualFractions, int floatingTenorInMonths)
+        public Swap(double[] notionals, Date[] resetDates, Date[] paymentDates, Date[] accrualFractions,
+            int floatingTenorInMonths)
         {
             this.notionals = notionals;
             this.paymentDates = paymentDates;
@@ -33,13 +28,10 @@ namespace QuantSA.General
 
     public class Stripper
     {
-        public static void ZARSwapCurve(double jibar, string[] fraDescriptions, double[] fraRates, int[] swapTenors, double[] swapRates)
+        public static void ZARSwapCurve(double jibar, string[] fraDescriptions, double[] fraRates, int[] swapTenors,
+            double[] swapRates)
         {
             // Create FRAs and swaps
         }
-
-        
-
-
     }
 }

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -53,6 +49,5 @@ namespace QuantSA.General
         /// <param name="exDate">The exercise date.  Must be in the list of dates returned by <see cref="GetExerciseDates"/>.</param>
         /// <returns></returns>
         public abstract bool IsLongOptionality(Date exDate);
-
     }
 }

@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation
@@ -17,10 +16,10 @@ namespace QuantSA.Valuation
     [Serializable]
     public class DeterminsiticCurves : NumeraireSimulator
     {
-        private Currency numeraireCurrency;
-        private IDiscountingSource discountCurve;
-        private Dictionary<MarketObservable, IFloatingRateSource> forecastCurves;
-        private Dictionary<MarketObservable, IFXSource> fxCurves;
+        private readonly IDiscountingSource discountCurve;
+        private readonly Dictionary<MarketObservable, IFloatingRateSource> forecastCurves;
+        private readonly Dictionary<MarketObservable, IFXSource> fxCurves;
+        private readonly Currency numeraireCurrency;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterminsiticCurves"/> class with just a discounting curve.
@@ -47,7 +46,7 @@ namespace QuantSA.Valuation
             if (!forecastCurves.ContainsKey(forecastCurve.GetFloatingIndex()))
                 forecastCurves.Add(forecastCurve.GetFloatingIndex(), forecastCurve);
             else
-                throw new ArgumentException(forecastCurve.GetFloatingIndex().ToString() + " has already been added to the model.");            
+                throw new ArgumentException(forecastCurve.GetFloatingIndex() + " has already been added to the model.");
         }
 
         /// <summary>
@@ -57,24 +56,26 @@ namespace QuantSA.Valuation
         /// /// <seealso cref="AddFXForecast(IFXSource)"/>
         public void AddRateForecast(IFloatingRateSource[] forecastCurves)
         {
-            foreach (IFloatingRateSource forecastCurve in forecastCurves)
-                AddRateForecast(forecastCurve);                
+            foreach (var forecastCurve in forecastCurves)
+                AddRateForecast(forecastCurve);
         }
 
 
         public void AddFXForecast(IFXSource fxForecastCurve)
         {
             if (numeraireCurrency.GetHashCode() == Currency.ANY.GetHashCode())
-                throw new ArgumentException("If the model provides multiple currencies then the discounting currency cannot be 'ANY'.");
+                throw new ArgumentException(
+                    "If the model provides multiple currencies then the discounting currency cannot be 'ANY'.");
             if (!fxCurves.ContainsKey(fxForecastCurve.GetCurrencyPair()))
                 fxCurves.Add(fxForecastCurve.GetCurrencyPair(), fxForecastCurve);
             else
-                throw new ArgumentException(fxForecastCurve.GetCurrencyPair().ToString() + " has already been added to the model.");
+                throw new ArgumentException(fxForecastCurve.GetCurrencyPair() +
+                                            " has already been added to the model.");
         }
 
         public void AddFXForecast(IFXSource[] fxForecastCurves)
         {
-            foreach (IFXSource fxForecastCurve in fxForecastCurves)
+            foreach (var fxForecastCurve in fxForecastCurves)
                 AddFXForecast(fxForecastCurve);
         }
 
@@ -88,29 +89,26 @@ namespace QuantSA.Valuation
         /// <exception cref="System.ArgumentException">This model instance does not provide values for " + index.ToString()</exception>
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
         {
-            double[] result = new double[requiredDates.Count];
-            int i = 0;
-            foreach (Date date in requiredDates)
+            var result = new double[requiredDates.Count];
+            var i = 0;
+            foreach (var date in requiredDates)
             {
                 if (index is FloatingIndex)
-                {
                     result[i] = forecastCurves[index].GetForwardRate(date);
-                }
                 else if (index is CurrencyPair)
-                {
                     result[i] = fxCurves[index].GetRate(date);
-                }
-                else throw new ArgumentException("This model instance does not provide values for " + index.ToString());
+                else throw new ArgumentException("This model instance does not provide values for " + index);
                 i++;
             }
-            return result;            
+
+            return result;
         }
 
         public override bool ProvidesIndex(MarketObservable index)
         {
-            FloatingIndex floatIndex = index as FloatingIndex;
+            var floatIndex = index as FloatingIndex;
             if (floatIndex != null) return forecastCurves.ContainsKey(floatIndex);
-            CurrencyPair currencyPair = index as CurrencyPair;
+            var currencyPair = index as CurrencyPair;
             if (currencyPair != null) return fxCurves.ContainsKey(currencyPair);
             return false;
         }
@@ -142,7 +140,7 @@ namespace QuantSA.Valuation
 
         public override double Numeraire(Date valueDate)
         {
-            return 1/discountCurve.GetDF(valueDate);
+            return 1 / discountCurve.GetDF(valueDate);
         }
 
         public override void SetNumeraireDates(List<Date> requiredDates)
@@ -152,7 +150,7 @@ namespace QuantSA.Valuation
 
         public override double[] GetUnderlyingFactors(Date date)
         {
-            return new double[] { 1 };
+            return new double[] {1};
         }
     }
 }

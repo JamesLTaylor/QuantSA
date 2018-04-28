@@ -1,5 +1,4 @@
 ﻿using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General.Conventions.DayCount
 {
@@ -7,7 +6,9 @@ namespace QuantSA.General.Conventions.DayCount
     {
         public static readonly Actual360 Instance = new Actual360();
 
-        private Actual360() { }
+        private Actual360()
+        {
+        }
 
         public double YearFraction(Date date1, Date date2)
         {

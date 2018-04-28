@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -17,46 +13,42 @@ namespace QuantSA.General
         protected List<Cashflow> cfs;
         protected Date valueDate;
 
-        protected CashLeg() { }
+        protected CashLeg()
+        {
+        }
 
         public CashLeg(Date[] dates, double[] amounts, Currency[] currencies)
         {
             valueDate = null;
             cfs = new List<Cashflow>();
-            for (int i=0; i< amounts.Length; i++)
-            {
-                cfs.Add(new Cashflow(dates[i], amounts[i], currencies[i]));
-            }
+            for (var i = 0; i < amounts.Length; i++) cfs.Add(new Cashflow(dates[i], amounts[i], currencies[i]));
         }
 
         public override List<Currency> GetCashflowCurrencies()
         {
-            List<Currency> currencies = new List<Currency>();     
-            foreach (Cashflow cf in cfs)
-            {
-                if (!currencies.Contains(cf.currency)) currencies.Add(cf.currency);
-            }
-            return currencies;            
+            var currencies = new List<Currency>();
+            foreach (var cf in cfs)
+                if (!currencies.Contains(cf.currency))
+                    currencies.Add(cf.currency);
+            return currencies;
         }
 
         public override List<Date> GetCashflowDates(Currency ccy)
         {
-            List<Date> dates = new List<Date>();
-            foreach (Cashflow cf in cfs)
-            {
-                if (cf.date> valueDate) dates.Add(cf.date);
-            }
-            return dates;            
+            var dates = new List<Date>();
+            foreach (var cf in cfs)
+                if (cf.date > valueDate)
+                    dates.Add(cf.date);
+            return dates;
         }
-        
+
         public override List<Cashflow> GetCFs()
         {
-            List<Cashflow> futureCFs = new List<Cashflow>();
-            foreach (Cashflow cf in cfs)
-            {
-                if (cf.date > valueDate) futureCFs.Add(cf);
-            }
-            return futureCFs;            
+            var futureCFs = new List<Cashflow>();
+            foreach (var cf in cfs)
+                if (cf.date > valueDate)
+                    futureCFs.Add(cf);
+            return futureCFs;
         }
 
         public override List<Date> GetRequiredIndexDates(MarketObservable index)
@@ -81,7 +73,7 @@ namespace QuantSA.General
 
         public override void SetValueDate(Date valueDate)
         {
-            this.valueDate = valueDate;            
+            this.valueDate = valueDate;
         }
     }
 }

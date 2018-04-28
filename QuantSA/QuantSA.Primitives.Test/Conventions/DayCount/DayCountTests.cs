@@ -1,9 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General;
-using QuantSA.General.Conventions;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.Primitives.Dates;
-using System.Collections.Generic;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
 
@@ -15,8 +12,8 @@ namespace GeneralTest.Conventions.DayCount
         [TestMethod]
         public void TestDayCounts()
         {
-            Date date1 = new Date(2003, 11, 1);
-            Date date2 = new Date(2004, 5, 1);
+            var date1 = new Date(2003, 11, 1);
+            var date2 = new Date(2004, 5, 1);
 
             // Actual/365
             Assert.AreEqual(182.0 / 365, DayCountStore.Actual365Fixed.YearFraction(date1, date2), 1e-9);
@@ -31,16 +28,15 @@ namespace GeneralTest.Conventions.DayCount
             // 30/360
             date1 = new Date(2008, 2, 28);
             date2 = new Date(2008, 3, 31);
-            Assert.AreEqual(32.0/360, DayCountStore.Thirty360Euro.YearFraction(date1, date2), 1e-9); // QuantLib case
+            Assert.AreEqual(32.0 / 360, DayCountStore.Thirty360Euro.YearFraction(date1, date2), 1e-9); // QuantLib case
 
             // Business 252
-            Calendar weekendsOnly = new Calendar(new List<Date>());
-            Calendar weekendsAndOneHoliday = new Calendar(new List<Date>() { new Date(2008, 3, 21) } );
+            var weekendsOnly = new Calendar(new List<Date>());
+            var weekendsAndOneHoliday = new Calendar(new List<Date> {new Date(2008, 3, 21)});
             DayCountConvention business252Weekends = DayCountStore.Business252(weekendsOnly);
             DayCountConvention business252WeekendsAndHolday = DayCountStore.Business252(weekendsAndOneHoliday);
             Assert.AreEqual(22.0 / 252, business252Weekends.YearFraction(date1, date2), 1e-9);
             Assert.AreEqual(21.0 / 252, business252WeekendsAndHolday.YearFraction(date1, date2), 1e-9);
-
         }
     }
 }

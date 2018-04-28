@@ -1,9 +1,4 @@
-﻿using QuantSA.Primitives.Dates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -14,8 +9,8 @@ namespace QuantSA.General
     [Serializable]
     public class FloatingRateFixingCurve1Rate : IFloatingRateSource
     {
-        double rate;
-        FloatingIndex index;
+        private readonly FloatingIndex index;
+        private readonly double rate;
 
         public FloatingRateFixingCurve1Rate(double rate, FloatingIndex index)
         {

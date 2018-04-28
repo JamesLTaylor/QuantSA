@@ -1,61 +1,62 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
+using QuantSA.Primitives.Dates;
 using QuantSA.Valuation;
-using System.Collections.Generic;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace ValuationTest
 {
     [TestClass]
     public class EarlyExerciseTest
     {
-        Date valueDate;
-        HullWhite1F hullWiteSim;
-        IRSwap swapPay;
-        IRSwap swapRec;
-        List<Date> exDates;
+        private List<Date> exDates;
+        private HullWhite1F hullWiteSim;
+        private IRSwap swapPay;
+        private IRSwap swapRec;
+        private Date valueDate;
 
         [TestInitialize]
         public void Init()
         {
-
-
             // Set up the model
             valueDate = new Date(2016, 9, 17);
-            double a = 0.05;
-            double vol = 0.01;
-            double flatCurveRate = 0.07;
+            var a = 0.05;
+            var vol = 0.01;
+            var flatCurveRate = 0.07;
             hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
 
             // Make the underlying swap
-            double rate = 0.07;
-            bool payFixed = true;
+            var rate = 0.07;
+            var payFixed = true;
             double notional = 1000000;
-            Date startDate = new Date(2016, 9, 17);
-            Tenor tenor = Tenor.Years(5);
+            var startDate = new Date(2016, 9, 17);
+            var tenor = Tenor.Years(5);
             swapPay = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
             swapRec = IRSwap.CreateZARSwap(rate, !payFixed, notional, startDate, tenor);
 
             // Full set of exercise dates
-            exDates = new List<Date> { new Date(2017, 9, 17), new Date(2018, 9, 17),
-                new Date(2019, 9, 17), new Date(2020, 9, 17) };
+            exDates = new List<Date>
+            {
+                new Date(2017, 9, 17),
+                new Date(2018, 9, 17),
+                new Date(2019, 9, 17),
+                new Date(2020, 9, 17)
+            };
         }
 
         [TestMethod]
         public void TestBermudanSwaptionPV()
         {
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
+            var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
             BermudanSwaption bermudan;
             bermudan = new BermudanSwaption(swapPay, exDates.GetRange(0, 1), true);
-            double value1 = coordinator.Value(new Product[] { bermudan }, valueDate);
+            var value1 = coordinator.Value(new Product[] {bermudan}, valueDate);
             bermudan = new BermudanSwaption(swapPay, exDates.GetRange(0, 2), true);
-            double value2 = coordinator.Value(new Product[] { bermudan }, valueDate);
+            var value2 = coordinator.Value(new Product[] {bermudan}, valueDate);
             bermudan = new BermudanSwaption(swapPay, exDates.GetRange(0, 3), true);
-            double value3 = coordinator.Value(new Product[] { bermudan }, valueDate);
+            var value3 = coordinator.Value(new Product[] {bermudan}, valueDate);
 
             Assert.IsTrue(value1 < value2, "Bermudan with 1 exercise date must be worth less than one with 2.");
             Assert.IsTrue(value2 < value3, "Bermudan with 2 exercise dates must be worth less than one with 3.");
@@ -74,13 +75,13 @@ namespace ValuationTest
         [TestMethod]
         public void TestBermudanSwaptionPVLongAndShort()
         {
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
-            
-            BermudanSwaption bermudan1 = new BermudanSwaption(swapPay, exDates.GetRange(0, 1), true);
-            double value1 = coordinator.Value(new Product[] { bermudan1 }, valueDate);
-            BermudanSwaption bermudan2 = new BermudanSwaption(swapRec, exDates.GetRange(0, 1), false);
-            double value2 = coordinator.Value(new Product[] { bermudan2 }, valueDate);
-            double value3 = coordinator.Value(new Product[] { bermudan1, bermudan2 }, valueDate);
+            var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
+
+            var bermudan1 = new BermudanSwaption(swapPay, exDates.GetRange(0, 1), true);
+            var value1 = coordinator.Value(new Product[] {bermudan1}, valueDate);
+            var bermudan2 = new BermudanSwaption(swapRec, exDates.GetRange(0, 1), false);
+            var value2 = coordinator.Value(new Product[] {bermudan2}, valueDate);
+            var value3 = coordinator.Value(new Product[] {bermudan1, bermudan2}, valueDate);
 
             //Assert.IsTrue(value1 < value2, "Bermudan with 1 exercise date must be worth less than one with 2.");
             //            Assert.IsTrue(value2 < value3, "Bermudan with 2 exercise dates must be worth less than one with 3.");
@@ -89,20 +90,21 @@ namespace ValuationTest
         [TestMethod]
         public void TestPhysicalSwaptionEPE()
         {
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
-            List<Date> exDate = new List<Date> { new Date(2018, 9, 17) };
+            var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
+            var exDate = new List<Date> {new Date(2018, 9, 17)};
             // Couterparty has option to enter into a receive fixed swap
-            BermudanSwaption physicalSwaption = new BermudanSwaption(swapPay, exDate, false);
+            var physicalSwaption = new BermudanSwaption(swapPay, exDate, false);
 
-            Date date = valueDate;
-            Date endDate = valueDate.AddTenor(new Tenor(0,0,3,5));
-            List<Date> fwdValueDates = new List<Date>();
+            var date = valueDate;
+            var endDate = valueDate.AddTenor(new Tenor(0, 0, 3, 5));
+            var fwdValueDates = new List<Date>();
             while (date <= endDate)
             {
                 fwdValueDates.Add(date);
                 date = date.AddTenor(Tenor.Days(10));
             }
-            double[] epe = coordinator.EPE(new Product[] { physicalSwaption }, valueDate, fwdValueDates.ToArray());
+
+            var epe = coordinator.EPE(new Product[] {physicalSwaption}, valueDate, fwdValueDates.ToArray());
             //Debug.WriteToFile(@"c:\dev\temp\ene_physicalswaption_HW.csv", epe);
         }
     }

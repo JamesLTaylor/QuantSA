@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General.Conventions.BusinessDay;
-using QuantSA.Primitives.Dates;
-using System.Collections.Generic;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
 
@@ -14,24 +12,24 @@ namespace GeneralTest.Conventions.BusinessDay
         [TestMethod]
         public void TestAdjustments()
         {
-            Date dateEndOfMonth = new Date(2016, 12, 31); // Saturday
-            Calendar calendar = new Calendar(new List<Date>()); // No holidays
+            var dateEndOfMonth = new Date(2016, 12, 31); // Saturday
+            var calendar = new Calendar(new List<Date>()); // No holidays
 
-            Date testFollowing = BusinessDayStore.Following.Adjust(dateEndOfMonth, calendar);
+            var testFollowing = BusinessDayStore.Following.Adjust(dateEndOfMonth, calendar);
             Assert.AreEqual(new Date(2017, 1, 2), testFollowing);
 
-            Date testModFollowing = BusinessDayStore.ModifiedFollowing.Adjust(dateEndOfMonth, calendar);
+            var testModFollowing = BusinessDayStore.ModifiedFollowing.Adjust(dateEndOfMonth, calendar);
             Assert.AreEqual(new Date(2016, 12, 30), testModFollowing);
 
-            Date testNoAdjust = BusinessDayStore.Unadjusted.Adjust(dateEndOfMonth, calendar);
+            var testNoAdjust = BusinessDayStore.Unadjusted.Adjust(dateEndOfMonth, calendar);
             Assert.AreEqual(new Date(2016, 12, 31), testNoAdjust);
 
             // Preceding
-            Date dateStartOfMonth = new Date(2017, 1, 1); // Sunday
-            Date testPreceding = BusinessDayStore.Preceding.Adjust(dateStartOfMonth, calendar);
+            var dateStartOfMonth = new Date(2017, 1, 1); // Sunday
+            var testPreceding = BusinessDayStore.Preceding.Adjust(dateStartOfMonth, calendar);
             Assert.AreEqual(new Date(2016, 12, 30), testPreceding);
 
-            Date testModifiedPreceding = BusinessDayStore.ModifiedPreceding.Adjust(dateStartOfMonth, calendar);
+            var testModifiedPreceding = BusinessDayStore.ModifiedPreceding.Adjust(dateStartOfMonth, calendar);
             Assert.AreEqual(new Date(2017, 1, 2), testModifiedPreceding);
         }
     }

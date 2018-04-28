@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuantSA.General;
-using Accord.Statistics.Distributions.Univariate;
 using Accord.Math.Random;
-using QuantSA.Primitives.Dates;
+using Accord.Statistics.Distributions.Univariate;
+using QuantSA.General;
 using QuantSA.Primitives.Dates;
 
-namespace QuantSA.Valuation 
+namespace QuantSA.Valuation
 {
     /// <summary>
     /// Provides an FX process and the default event for a single name.
@@ -18,24 +17,23 @@ namespace QuantSA.Valuation
     [Serializable]
     public class DeterministicCreditWithFXJump : NumeraireSimulator
     {
-        MarketObservable defaultTime;
-        MarketObservable defaultRecovery;
-        MarketObservable currencyPair;
-
-        ISurvivalProbabilitySource survivalProbSource;
-        Currency valueCurrency;
-        IFXSource fxSource;
-        IDiscountingSource valueCurrencyDiscount;
-        Date anchorDate;
-        double spot;
-        double fxVol;
-        double relJumpSizeInDefault;
-
         // The simulations
         private List<Date> allRequiredDates; // the set of all dates that will be simulated.
-        private Dictionary<int, double> simulation; // stores the simulated share prices at each required date
+        private readonly Date anchorDate;
+        private readonly MarketObservable currencyPair;
+        private readonly MarketObservable defaultRecovery;
+        private readonly MarketObservable defaultTime;
+        private readonly IFXSource fxSource;
+        private readonly double fxVol;
+        private readonly double relJumpSizeInDefault;
         private double simDefaultTime;
-        private double simRecoveryRate;
+        private readonly double simRecoveryRate;
+        private Dictionary<int, double> simulation; // stores the simulated share prices at each required date
+        private readonly double spot;
+
+        private readonly ISurvivalProbabilitySource survivalProbSource;
+        private readonly Currency valueCurrency;
+        private readonly IDiscountingSource valueCurrencyDiscount;
 
 
         /// <summary>
@@ -53,19 +51,19 @@ namespace QuantSA.Valuation
         /// rate before default * (1 + relJumpSizeInDefault).</param>
         /// <param name="expectedRecoveryRate">The constant recovery rate that will be assumed to apply in default.</param>
         public DeterministicCreditWithFXJump(ISurvivalProbabilitySource survivalProbSource,
-            Currency otherCurrency, IFXSource fxSource, IDiscountingSource valueCurrencyDiscount, 
+            Currency otherCurrency, IFXSource fxSource, IDiscountingSource valueCurrencyDiscount,
             double fxVol, double relJumpSizeInDefault, double expectedRecoveryRate)
         {
             this.survivalProbSource = survivalProbSource;
             valueCurrency = valueCurrencyDiscount.GetCurrency();
             this.fxSource = fxSource;
-            this.valueCurrencyDiscount = valueCurrencyDiscount;            
+            this.valueCurrencyDiscount = valueCurrencyDiscount;
             this.fxVol = fxVol;
             this.relJumpSizeInDefault = relJumpSizeInDefault;
-            ReferenceEntity refEntity = survivalProbSource.GetReferenceEntity();
+            var refEntity = survivalProbSource.GetReferenceEntity();
             defaultTime = new DefaultTime(refEntity);
             defaultRecovery = new DefaultRecovery(refEntity);
-            currencyPair = new CurrencyPair(otherCurrency, valueCurrency);            
+            currencyPair = new CurrencyPair(otherCurrency, valueCurrency);
             anchorDate = valueCurrencyDiscount.GetAnchorDate();
             spot = fxSource.GetRate(anchorDate);
             simRecoveryRate = expectedRecoveryRate;
@@ -86,28 +84,31 @@ namespace QuantSA.Valuation
         public override double[] GetIndices(MarketObservable index, List<Date> requiredTimes)
         {
             if (index == currencyPair)
-            {                
-                double[] result = new double[requiredTimes.Count];
-                for (int i = 0; i < requiredTimes.Count; i++)
-                {
+            {
+                var result = new double[requiredTimes.Count];
+                for (var i = 0; i < requiredTimes.Count; i++)
                     if (requiredTimes[i] <= anchorDate)
                         result[i] = fxSource.GetRate(requiredTimes[i]);
                     else
                         result[i] = simulation[requiredTimes[i]];
-                }
                 return result;
             }
+
             if (index == defaultTime)
             {
-                if (requiredTimes.Count>1) throw new ArgumentException("defaultTime must only be queried with a single date.");
-                return new double[] { simDefaultTime };
+                if (requiredTimes.Count > 1)
+                    throw new ArgumentException("defaultTime must only be queried with a single date.");
+                return new[] {simDefaultTime};
             }
+
             if (index == defaultRecovery)
             {
-                if (requiredTimes.Count > 1) throw new ArgumentException("defaultRecovery must only be queried with a single date.");
-                return new double[] { simRecoveryRate };
+                if (requiredTimes.Count > 1)
+                    throw new ArgumentException("defaultRecovery must only be queried with a single date.");
+                return new[] {simRecoveryRate};
             }
-            throw new ArgumentException(index.ToString() + " is not simulated by this model.");
+
+            throw new ArgumentException(index + " is not simulated by this model.");
         }
 
         /// <summary>
@@ -150,31 +151,34 @@ namespace QuantSA.Valuation
         /// <param name="simNumber"></param>
         public override void RunSimulation(int simNumber)
         {
-            simulation = new Dictionary<int, double>();            
-            double simRate = spot;
-            double oldFxFwd = spot;
+            simulation = new Dictionary<int, double>();
+            var simRate = spot;
+            var oldFxFwd = spot;
             double newFXfwd;
 
             // Simulate the default
-            NormalDistribution normal = new NormalDistribution();
-            UniformContinuousDistribution uniform = new UniformContinuousDistribution();
-            double hazEst = survivalProbSource.GetSP(survivalProbSource.getAnchorDate().AddTenor(Tenor.Years(1)));
+            var normal = new NormalDistribution();
+            var uniform = new UniformContinuousDistribution();
+            var hazEst = survivalProbSource.GetSP(survivalProbSource.getAnchorDate().AddTenor(Tenor.Years(1)));
             hazEst = -Math.Log(hazEst);
-            Generator.Seed = -533776581 * simNumber; // This magic number is: "DeterministicCreditWithFXJump".GetHashCode();
-            double tau = uniform.Generate();
-            tau = Math.Log(tau) / (-hazEst);
+            Generator.Seed =
+                -533776581 * simNumber; // This magic number is: "DeterministicCreditWithFXJump".GetHashCode();
+            var tau = uniform.Generate();
+            tau = Math.Log(tau) / -hazEst;
             simDefaultTime = anchorDate.value + tau * 365;
 
-            for (int timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
+            for (var timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
             {
-                double dt = timeCounter > 0 ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1] : allRequiredDates[timeCounter] - anchorDate.value;
-                newFXfwd = fxSource.GetRate(new Date(anchorDate.value + dt));                
-                
+                double dt = timeCounter > 0
+                    ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1]
+                    : allRequiredDates[timeCounter] - anchorDate.value;
+                newFXfwd = fxSource.GetRate(new Date(anchorDate.value + dt));
+
                 dt = dt / 365.0;
-                double sdt = Math.Sqrt(dt);
-                double dW = normal.Generate();
+                var sdt = Math.Sqrt(dt);
+                var dW = normal.Generate();
                 // TODO: drift needs to be adjusted for default rate * jump size
-                simRate = simRate * newFXfwd/oldFxFwd * Math.Exp((- 0.5 * fxVol * fxVol) * dt + fxVol * sdt * dW);
+                simRate = simRate * newFXfwd / oldFxFwd * Math.Exp(-0.5 * fxVol * fxVol * dt + fxVol * sdt * dW);
                 if (simDefaultTime < allRequiredDates[timeCounter])
                     simulation[allRequiredDates[timeCounter]] = simRate * (1 + relJumpSizeInDefault);
                 else
@@ -204,10 +208,11 @@ namespace QuantSA.Valuation
 
         public override double[] GetUnderlyingFactors(Date date)
         {
-            double[] regressors = new double[3];
-            double fxRate = GetIndices(currencyPair, new List<Date> { date })[0];
-            double defaultIndicator = date < simDefaultTime ? 0.0 : 1.0;            
-            double fwdDefaultP = (1.0 - survivalProbSource.GetSP(date.AddTenor(Tenor.Years(1))) / survivalProbSource.GetSP(date));
+            var regressors = new double[3];
+            var fxRate = GetIndices(currencyPair, new List<Date> {date})[0];
+            var defaultIndicator = date < simDefaultTime ? 0.0 : 1.0;
+            var fwdDefaultP = 1.0 - survivalProbSource.GetSP(date.AddTenor(Tenor.Years(1))) /
+                              survivalProbSource.GetSP(date);
             regressors[0] = fxRate;
             regressors[1] = defaultIndicator;
             regressors[2] = fwdDefaultP;

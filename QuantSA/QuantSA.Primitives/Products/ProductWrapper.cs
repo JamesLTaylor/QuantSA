@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {
@@ -15,12 +14,10 @@ namespace QuantSA.General
     [Serializable]
     public abstract class ProductWrapper : Product
     {
-        delegate double GetIndexValueDelegate(MarketObservable index, Date date);
+        private List<Date> cfDates;
+        private Currency currency;
 
-        GetIndexValueDelegate getIndexValueToUse;
-        Currency currency;
-        protected Date valueDate;
-        List<Date> cfDates;
+        private GetIndexValueDelegate getIndexValueToUse;
 
         /// <summary>
         /// For each index, store the dates that are required and during a valuation
@@ -33,11 +30,13 @@ namespace QuantSA.General
         /// to be nulled which allows the code to check if they have been set before they 
         /// are used.
         /// </summary>
-        Dictionary<MarketObservable, List<Date>> indexAndDates;
-        Dictionary<MarketObservable, List<double>> indexAndValues;
+        private Dictionary<MarketObservable, List<Date>> indexAndDates;
+
+        private Dictionary<MarketObservable, List<double>> indexAndValues;
+        protected Date valueDate;
 
         protected ProductWrapper()
-        {            
+        {
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace QuantSA.General
             this.currency = currency;
             indexAndDates = new Dictionary<MarketObservable, List<Date>>();
             indexAndValues = new Dictionary<MarketObservable, List<double>>();
-            getIndexValueToUse = new GetIndexValueDelegate(GetNormal);
+            getIndexValueToUse = GetNormal;
         }
 
         /// <summary>
@@ -71,7 +70,7 @@ namespace QuantSA.General
         /// <returns></returns>
         private double GetNormal(MarketObservable index, Date date)
         {
-            int location = indexAndDates[index].FindIndex(d => d.Equals(date));
+            var location = indexAndDates[index].FindIndex(d => d.Equals(date));
             if (indexAndValues == null) throw new Exception("Index values can not be used before they have been set.");
             return indexAndValues[index][location];
         }
@@ -102,11 +101,11 @@ namespace QuantSA.General
         {
             indexAndDates = new Dictionary<MarketObservable, List<Date>>();
             indexAndValues = new Dictionary<MarketObservable, List<double>>();
-            getIndexValueToUse = new GetIndexValueDelegate(GetNormal);
-            getIndexValueToUse = new GetIndexValueDelegate(GetWithLogging);
-            List<Cashflow> cfs = GetCFs();
+            getIndexValueToUse = GetNormal;
+            getIndexValueToUse = GetWithLogging;
+            var cfs = GetCFs();
             SetCashflowDates(cfs.GetDates());
-            getIndexValueToUse = new GetIndexValueDelegate(GetNormal);
+            getIndexValueToUse = GetNormal;
             currency = cfs[0].currency;
         }
 
@@ -122,12 +121,12 @@ namespace QuantSA.General
             if (indexAndDates.ContainsKey(index))
             {
                 if (!indexAndDates[index].Contains(date))
-                    indexAndDates[index].Add(date);                
+                    indexAndDates[index].Add(date);
                 // Leave index values unset so that there will be errors if they are used before they are set.
             }
             else
             {
-                indexAndDates[index] = new List<Date> { date };
+                indexAndDates[index] = new List<Date> {date};
                 indexAndValues[index] = null;
             }
         }
@@ -142,16 +141,19 @@ namespace QuantSA.General
             this.cfDates = cfDates;
         }
 
+        private delegate double GetIndexValueDelegate(MarketObservable index, Date date);
+
         #region Product Implementation
+
         public override List<Date> GetCashflowDates(Currency ccy)
         {
             if (ccy == currency) return cfDates;
-            else return new List<Date>();
+            return new List<Date>();
         }
 
         public sealed override List<Currency> GetCashflowCurrencies()
         {
-            return new List<Currency> { currency };
+            return new List<Currency> {currency};
         }
 
         public override List<Date> GetRequiredIndexDates(MarketObservable index)
@@ -166,10 +168,7 @@ namespace QuantSA.General
 
         public override void Reset()
         {
-            foreach (MarketObservable index in indexAndDates.Keys)
-            {
-                indexAndValues[index] = null;
-            }
+            foreach (var index in indexAndDates.Keys) indexAndValues[index] = null;
         }
 
         public override void SetIndexValues(MarketObservable index, double[] indexValues)
@@ -181,6 +180,7 @@ namespace QuantSA.General
         {
             this.valueDate = valueDate;
         }
+
         #endregion
     }
 }

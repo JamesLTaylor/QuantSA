@@ -1,10 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
+using QuantSA.Primitives.Dates;
 using QuantSA.Valuation;
-using System.Collections.Generic;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace ValuationTest
 {
@@ -15,37 +13,37 @@ namespace ValuationTest
         public void TestCoordinatorEPESwap()
         {
             // Make the swap
-            double rate = 0.07;
-            bool payFixed = true;
+            var rate = 0.07;
+            var payFixed = true;
             double notional = 1000000;
-            Date startDate = new Date(2016, 9, 17);
-            Tenor tenor = Tenor.Years(5);
-            IRSwap swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
+            var startDate = new Date(2016, 9, 17);
+            var tenor = Tenor.Years(5);
+            var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
 
             // Set up the model
-            Date valueDate = new Date(2016, 9, 17);
-            double a = 0.05;
-            double vol = 0.005;
-            double flatCurveRate = 0.07;
-            HullWhite1F hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
+            var valueDate = new Date(2016, 9, 17);
+            var a = 0.05;
+            var vol = 0.005;
+            var flatCurveRate = 0.07;
+            var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
             hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
-            Coordinator coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
+            var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
-            Date date = valueDate;
-            Date endDate = valueDate.AddTenor(tenor);
-            List<Date> fwdValueDates = new List<Date>();
-            while (date< endDate)
+            var date = valueDate;
+            var endDate = valueDate.AddTenor(tenor);
+            var fwdValueDates = new List<Date>();
+            while (date < endDate)
             {
                 fwdValueDates.Add(date);
                 date = date.AddTenor(Tenor.Days(10));
             }
-            double[] epe = coordinator.EPE(new Product[] { swap }, valueDate, fwdValueDates.ToArray());
+
+            var epe = coordinator.EPE(new Product[] {swap}, valueDate, fwdValueDates.ToArray());
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
             Assert.AreEqual(2560, epe[0], 100.0);
             Assert.AreEqual(6630, epe[90], 100.0);
             Assert.AreEqual(734, epe[182], 30);
-
         }
     }
 }

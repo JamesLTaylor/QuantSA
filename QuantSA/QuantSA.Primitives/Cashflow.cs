@@ -1,5 +1,4 @@
-﻿using QuantSA.Primitives.Dates;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
 
@@ -8,21 +7,21 @@ namespace QuantSA.General
     [Serializable]
     public class Cashflow
     {
-        public double amount { get; private set; }
-        public Currency currency { get; private set; }
-        public Date date { get; private set; }
-
         public Cashflow(Date date, double amount, Currency currency)
         {
             this.date = date;
             this.amount = amount;
             this.currency = currency;
         }
+
+        public double amount { get; }
+        public Currency currency { get; }
+        public Date date { get; }
     }
 
     /// <summary>
     /// Instead of a Cashflows class that contains multiple <see cref="Cashflow"/>s, rather use
-    /// a <see cref="List{Cashflow}"/> and these extension methods.
+    /// a <see cref="List{T}"/> and these extension methods.
     /// </summary>
     public static class CashflowExtensions
     {
@@ -33,11 +32,8 @@ namespace QuantSA.General
         /// <returns></returns>
         public static List<Date> GetDates(this List<Cashflow> cfs)
         {
-            List<Date> dates = new List<Date>();
-            foreach (Cashflow cf in cfs)
-            {
-                dates.Add(new Date(cf.date));
-            }
+            var dates = new List<Date>();
+            foreach (var cf in cfs) dates.Add(new Date(cf.date));
             return dates;
         }
     }

@@ -1,9 +1,5 @@
-﻿using QuantSA.Primitives.Dates;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
 
@@ -12,19 +8,22 @@ namespace QuantSA.General.Products.SAMarket
     /// <summary>
     /// The market standard bond traded on the JSE, formerly the BESA.
     /// </summary>
-    public partial class BesaJseBond : ProductWrapper, IProvidesResultStore
+    public class BesaJseBond : ProductWrapper, IProvidesResultStore
     {
-
-        public Date maturityDate;
-        public double notional;
         public double annualCouponRate;
-        public int couponMonth1, couponMonth2;
-        public int couponDay1, couponDay2;
 
         /// <summary>
         /// The number of days before a coupon date that the bond starts trading ex.
         /// </summary>
         public int booksCloseDateDays;
+
+        private readonly List<Cashflow> cfs;
+        public int couponDay1, couponDay2;
+        public int couponMonth1, couponMonth2;
+
+        public Date maturityDate;
+        public double notional;
+
         /// <summary>
         /// The settlement date for this bond.  It could affect the cashflows if it is after the
         /// next ex date.
@@ -35,11 +34,9 @@ namespace QuantSA.General.Products.SAMarket
         /// </remarks>
         public Date settleDate;
 
-        List<Cashflow> cfs;
 
-
-        public BesaJseBond(Date maturityDate, double notional,  double annualCouponRate, 
-            int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, Calendar zaCalendar)        
+        public BesaJseBond(Date maturityDate, double notional, double annualCouponRate,
+            int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, Calendar zaCalendar)
         {
             if (couponMonth1 > couponMonth2)
                 throw new ArgumentException("couponMonth1 must relate to the first coupon in the year.");
@@ -56,17 +53,17 @@ namespace QuantSA.General.Products.SAMarket
             Init();
         }
 
-        public override List<Cashflow> GetCFs()
-        {
-            return cfs;
-        }
-
         public ResultStore GetResultStore()
         {
-            ResultStore result = new ResultStore();
+            var result = new ResultStore();
             result.Add("maturityDate", maturityDate);
             result.Add("annualCouponRate", annualCouponRate);
             return result;
+        }
+
+        public override List<Cashflow> GetCFs()
+        {
+            return cfs;
         }
     }
 }

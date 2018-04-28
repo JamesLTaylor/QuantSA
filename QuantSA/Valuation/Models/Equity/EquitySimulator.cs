@@ -1,12 +1,9 @@
-﻿using Accord.Statistics.Distributions.Multivariate;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Accord.Math;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Accord.Math;
+using Accord.Statistics.Distributions.Multivariate;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation
@@ -17,17 +14,17 @@ namespace QuantSA.Valuation
     [Serializable]
     public class EquitySimulator : NumeraireSimulator
     {
-        MultivariateNormalDistribution normal;
-        private double[] vols;
-        private MarketObservable[] shares;
-        private double[] divYields;
-        private IDiscountingSource discountCurve;
-        private Dictionary<MarketObservable, IFloatingRateSource> rateForecastCurves;
-        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
-        private Dictionary<int, double[]> simulation; // stores the simulated share prices at each required date
         private Dictionary<int, double[]> acculatedDivi; // stores the accumlated dividend on at each required date
-        private Date anchorDate;
-        private double[] prices;
+        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
+        private readonly Date anchorDate;
+        private readonly IDiscountingSource discountCurve;
+        private readonly double[] divYields;
+        private readonly MultivariateNormalDistribution normal;
+        private readonly double[] prices;
+        private readonly Dictionary<MarketObservable, IFloatingRateSource> rateForecastCurves;
+        private readonly MarketObservable[] shares;
+        private Dictionary<int, double[]> simulation; // stores the simulated share prices at each required date
+        private readonly double[] vols;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EquitySimulator"/> class.
@@ -51,29 +48,25 @@ namespace QuantSA.Valuation
             anchorDate = discountCurve.GetAnchorDate();
             normal = new MultivariateNormalDistribution(Vector.Zeros(prices.Length), correlations);
             this.rateForecastCurves = new Dictionary<MarketObservable, IFloatingRateSource>();
-            foreach (IFloatingRateSource floatingRateSource in rateForecastCurves)
-            {
+            foreach (var floatingRateSource in rateForecastCurves)
                 this.rateForecastCurves.Add(floatingRateSource.GetFloatingIndex(), floatingRateSource);
-            }
-                
         }
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredTimes)
         {
             if (index is FloatingIndex)
             {
-                double[] result = new double[requiredTimes.Count];
-                for (int i = 0; i < requiredTimes.Count; i++)
-                {
+                var result = new double[requiredTimes.Count];
+                for (var i = 0; i < requiredTimes.Count; i++)
                     result[i] = rateForecastCurves[index].GetForwardRate(requiredTimes[i]);
-                }
                 return result;
             }
+
             if (index is Dividend)
             {
-                double[] result = Vector.Zeros(requiredTimes.Count);
-                int shareIndex = shares.IndexOf(((Dividend)index).underlying);
-                int divCounter = 0;
+                var result = Vector.Zeros(requiredTimes.Count);
+                var shareIndex = shares.IndexOf(((Dividend) index).underlying);
+                var divCounter = 0;
                 foreach (int dateInt in allRequiredDates)
                 {
                     if (dateInt > requiredTimes[divCounter])
@@ -82,21 +75,21 @@ namespace QuantSA.Valuation
                         if (divCounter >= requiredTimes.Count)
                             break;
                     }
+
                     result[divCounter] += acculatedDivi[dateInt][shareIndex];
                 }
+
                 return result;
             }
             else
             {
-                int shareIndex = shares.IndexOf(index);
-                double[] result = new double[requiredTimes.Count];
-                for (int i = 0; i < requiredTimes.Count; i++)
-                {
+                var shareIndex = shares.IndexOf(index);
+                var result = new double[requiredTimes.Count];
+                for (var i = 0; i < requiredTimes.Count; i++)
                     if (requiredTimes[i] == anchorDate)
                         result[i] = prices[shareIndex];
                     else
                         result[i] = simulation[requiredTimes[i]][shareIndex];
-                }
                 return result;
             }
         }
@@ -108,18 +101,14 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         public override bool ProvidesIndex(MarketObservable index)
         {
-            if (shares.Contains(index))
-                return true;
-            else if (rateForecastCurves.ContainsKey(index))
-                return true;
-            else
-            {
-                Dividend divIndex = index as Dividend;
-                if (divIndex != null)
-                    return shares.Contains(divIndex.underlying);
-                else
-                    return false;
-            }
+            if (shares.Contains(index)) return true;
+
+            if (rateForecastCurves.ContainsKey(index)) return true;
+
+            var divIndex = index as Dividend;
+            if (divIndex != null)
+                return shares.Contains(divIndex.underlying);
+            return false;
         }
 
         /// <summary>
@@ -148,27 +137,30 @@ namespace QuantSA.Valuation
         {
             simulation = new Dictionary<int, double[]>();
             acculatedDivi = new Dictionary<int, double[]>();
-            double[] simPrices = prices.Copy();
+            var simPrices = prices.Copy();
             double oldDF = 1;
-            double newDF;          
+            double newDF;
 
-            for (int timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
+            for (var timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
             {
-                double dt = timeCounter > 0 ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1] : allRequiredDates[timeCounter] - anchorDate.value;
+                double dt = timeCounter > 0
+                    ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1]
+                    : allRequiredDates[timeCounter] - anchorDate.value;
                 newDF = discountCurve.GetDF(allRequiredDates[timeCounter]);
-                double rateDrift = oldDF / newDF;
+                var rateDrift = oldDF / newDF;
                 oldDF = newDF;
                 dt = dt / 365.0;
-                double sdt = Math.Sqrt(dt);
-                double[] dW = normal.Generate();
+                var sdt = Math.Sqrt(dt);
+                var dW = normal.Generate();
                 acculatedDivi[allRequiredDates[timeCounter]] = Vector.Zeros(shares.Length);
-                for (int s = 0; s < shares.Length; s++)
+                for (var s = 0; s < shares.Length; s++)
                 {
                     acculatedDivi[allRequiredDates[timeCounter]][s] = simPrices[s] * divYields[s] * dt;
                     simPrices[s] = simPrices[s] * rateDrift *
-                        Math.Exp((-divYields[s] - 0.5 * vols[s] * vols[s]) * dt + vols[s] * sdt * dW[s]);                    
+                                   Math.Exp((-divYields[s] - 0.5 * vols[s] * vols[s]) * dt + vols[s] * sdt * dW[s]);
                 }
-                simulation[allRequiredDates[timeCounter]] = simPrices.Copy();                
+
+                simulation[allRequiredDates[timeCounter]] = simPrices.Copy();
             }
         }
 
@@ -194,11 +186,8 @@ namespace QuantSA.Valuation
 
         public override double[] GetUnderlyingFactors(Date date)
         {
-            double[] sharePrices = new double[shares.Length];
-            for (int i = 0; i< shares.Length; i++)
-            {
-                sharePrices[i] = GetIndices(shares[i], new List<Date> { date })[0];
-            }
+            var sharePrices = new double[shares.Length];
+            for (var i = 0; i < shares.Length; i++) sharePrices[i] = GetIndices(shares[i], new List<Date> {date})[0];
             return sharePrices;
         }
     }

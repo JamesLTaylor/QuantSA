@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -11,18 +6,13 @@ namespace QuantSA.General
     [Serializable]
     public class SingleRate : IDiscountingSource
     {
-        private Date anchorDate;
-        private double rate;
+        private readonly Date anchorDate;
+        private readonly double rate;
 
         private SingleRate(double rate, Date anchorDate)
         {
             this.rate = rate;
             this.anchorDate = anchorDate;
-        }
-
-        public static SingleRate Continuous(double rate, Date anchorDate)
-        {
-            return new SingleRate(rate, anchorDate);
         }
 
         public Date GetAnchorDate()
@@ -37,8 +27,15 @@ namespace QuantSA.General
 
         public double GetDF(Date date)
         {
-            if (date < anchorDate) throw new IndexOutOfRangeException("Discount factors are only defined at dates on or after the anchor date");
+            if (date < anchorDate)
+                throw new IndexOutOfRangeException(
+                    "Discount factors are only defined at dates on or after the anchor date");
             return Math.Exp(-rate * (date - anchorDate) / 365.0);
+        }
+
+        public static SingleRate Continuous(double rate, Date anchorDate)
+        {
+            return new SingleRate(rate, anchorDate);
         }
     }
 }

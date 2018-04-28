@@ -1,19 +1,16 @@
-﻿using ExcelDna.Integration;
-using System;
-using System.Collections.Generic;
-using QuantSA.General;
+﻿using System;
+using ExcelDna.Integration;
 using QuantSA.Excel.Common;
-using QuantSA.General.Conventions.Compounding;
-using QuantSA.Primitives.Dates;
 using QuantSA.ExcelFunctions;
+using QuantSA.General;
 using QuantSA.General.Conventions.BusinessDay;
+using QuantSA.General.Conventions.Compounding;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Excel
 {
-
     /// <summary>
     /// Functions that will be used in many places when gettting data ready to send to and from Excel
     /// </summary>
@@ -32,7 +29,7 @@ namespace QuantSA.Excel
         internal static bool InputTypeShouldHaveHelpLink(Type inputType)
         {
             //TODO: This method should be replaced with checking if the type is in documentedTypes.  That would mean one less thing to maintain.
-            Type type = inputType.IsArray ? inputType.GetElementType() : inputType;
+            var type = inputType.IsArray ? inputType.GetElementType() : inputType;
             if (type == typeof(bool)) return true;
             if (type.Name == "Date") return true;
             if (type.Name == "Currency") return true;
@@ -60,7 +57,8 @@ namespace QuantSA.Excel
         }
 
         #region handling errors
-        public static Exception latestException = null;
+
+        public static Exception latestException;
 
         public static void SetLatestException(Exception e)
         {
@@ -74,7 +72,7 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object Error0D(Exception e)
         {
-            ExcelUtilities.SetLatestException(e);
+            SetLatestException(e);
             return "ERROR: " + e.Message;
         }
 
@@ -85,8 +83,8 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[] Error1D(Exception e)
         {
-            ExcelUtilities.SetLatestException(e);
-            return new object[] { "ERROR: " + e.Message };
+            SetLatestException(e);
+            return new object[] {"ERROR: " + e.Message};
         }
 
         /// <summary>
@@ -96,9 +94,10 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] Error2D(Exception e)
         {
-            ExcelUtilities.SetLatestException(e);
-            return new object[,] { { "ERROR: " + e.Message } };
+            SetLatestException(e);
+            return new object[,] {{"ERROR: " + e.Message}};
         }
+
         #endregion
 
         #region converting return data
@@ -113,9 +112,9 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] ConvertToObjects(double result)
         {
-            object[,] resultObj = new object[1, 1];
+            var resultObj = new object[1, 1];
             resultObj[0, 0] = result;
-            return resultObj;            
+            return resultObj;
         }
 
         /// <summary>
@@ -130,22 +129,16 @@ namespace QuantSA.Excel
         {
             if (asColumn)
             {
-                object[,] resultObj = new object[result.Length, 1];
-                for (int i = 0; i < result.Length; i++)
-                {
-                    resultObj[i, 0] = result[i];
-                }
+                var resultObj = new object[result.Length, 1];
+                for (var i = 0; i < result.Length; i++) resultObj[i, 0] = result[i];
                 return resultObj;
             }
             else
             {
-                object[,] resultObj = new object[1, result.Length];
-                for (int i = 0; i < result.Length; i++)
-                {
-                    resultObj[0, i] = result[i];
-                }
+                var resultObj = new object[1, result.Length];
+                for (var i = 0; i < result.Length; i++) resultObj[0, i] = result[i];
                 return resultObj;
-            }            
+            }
         }
 
         /// <summary>
@@ -172,14 +165,10 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] ConvertToObjects(double[,] result)
         {
-            object[,] resultObj = new object[result.GetLength(0), result.GetLength(1)];
-            for (int i = 0; i < result.GetLength(0); i++)
-            {
-                for (int j = 0; j < result.GetLength(1); j++)
-                {
-                    resultObj[i, j] = result[i, j];
-                }
-            }
+            var resultObj = new object[result.GetLength(0), result.GetLength(1)];
+            for (var i = 0; i < result.GetLength(0); i++)
+            for (var j = 0; j < result.GetLength(1); j++)
+                resultObj[i, j] = result[i, j];
             return resultObj;
         }
 
@@ -190,7 +179,7 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] ConvertToObjects(Date date)
         {
-            return ConvertToObjects(new Date[,] { { date } });            
+            return ConvertToObjects(new[,] {{date}});
         }
 
         /// <summary>
@@ -200,14 +189,10 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] ConvertToObjects(Date[,] dates)
         {
-            object[,] result = new object[dates.GetLength(0), dates.GetLength(1)];
-            for (int i = 0; i < dates.GetLength(0); i++)
-            {
-                for (int j = 0; j < dates.GetLength(1); j++)
-                {
-                    result[i, j] = dates[i, j].ToOADate();
-                }
-            }
+            var result = new object[dates.GetLength(0), dates.GetLength(1)];
+            for (var i = 0; i < dates.GetLength(0); i++)
+            for (var j = 0; j < dates.GetLength(1); j++)
+                result[i, j] = dates[i, j].ToOADate();
             return result;
         }
 
@@ -218,8 +203,8 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] ConvertToObjects(string strValue)
         {
-            object[,] result = new object[1,1];
-            result[0, 0] = strValue;            
+            var result = new object[1, 1];
+            result[0, 0] = strValue;
             return result;
         }
 
@@ -231,14 +216,10 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static object[,] ConvertToObjects(string[,] strValues)
         {
-            object[,] result = new object[strValues.GetLength(0), strValues.GetLength(1)];
-            for (int i = 0; i < strValues.GetLength(0); i++)
-            {
-                for (int j = 0; j < strValues.GetLength(1); j++)
-                {
-                    result[i, j] = strValues[i, j];
-                }
-            }
+            var result = new object[strValues.GetLength(0), strValues.GetLength(1)];
+            for (var i = 0; i < strValues.GetLength(0); i++)
+            for (var j = 0; j < strValues.GetLength(1); j++)
+                result[i, j] = strValues[i, j];
             return result;
         }
 
@@ -257,12 +238,11 @@ namespace QuantSA.Excel
             if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " cannot be empty.");
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
-                if (values[0, 0] is double)
-                {
-                    return new Date(DateTime.FromOADate((double)values[0, 0]));
-                }
-                throw new ArgumentException(inputName + " must be a single cell with a value representing an Excel Date.");
+                if (values[0, 0] is double) return new Date(DateTime.FromOADate((double) values[0, 0]));
+                throw new ArgumentException(
+                    inputName + " must be a single cell with a value representing an Excel Date.");
             }
+
             throw new ArgumentException(inputName + " must be a single cell with a value representing an Excel Date.");
         }
 
@@ -275,7 +255,7 @@ namespace QuantSA.Excel
         public static Date GetDate0D(object[,] values, string inputName, Date defaultValue)
         {
             if (values[0, 0] is ExcelMissing) return defaultValue;
-            else return GetDate0D(values, inputName);            
+            return GetDate0D(values, inputName);
         }
 
         /// <summary>
@@ -288,33 +268,29 @@ namespace QuantSA.Excel
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
-                Date[] result = new Date[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                {
-                    if (values[0, i] is double)                         
-                        result[i] = new Date(DateTime.FromOADate((double)values[0, i]));
+                var result = new Date[values.GetLength(1)];
+                for (var i = 0; i < values.GetLength(1); i++)
+                    if (values[0, i] is double)
+                        result[i] = new Date(DateTime.FromOADate((double) values[0, i]));
                     else
-                        throw new ArgumentException(inputName + " all cells must be values representing a Excel Dates.");
-                }
+                        throw new ArgumentException(
+                            inputName + " all cells must be values representing a Excel Dates.");
                 return result;
+            }
 
-            }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
             {
-                Date[] result = new Date[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                {
+                var result = new Date[values.GetLength(0)];
+                for (var i = 0; i < values.GetLength(0); i++)
                     if (values[i, 0] is double)
-                        result[i] = new Date(DateTime.FromOADate((double)values[i, 0]));
+                        result[i] = new Date(DateTime.FromOADate((double) values[i, 0]));
                     else
-                        throw new ArgumentException(inputName + " all cells must be values representing a Excel Dates.");
-                }
+                        throw new ArgumentException(
+                            inputName + " all cells must be values representing a Excel Dates.");
                 return result;
             }
-            else
-            {
-                throw new ArgumentException(inputName + " must be a single row or column of Excel dates.");
-            }
+
+            throw new ArgumentException(inputName + " must be a single row or column of Excel dates.");
         }
 
         /// <summary>
@@ -325,17 +301,13 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static Date[,] GetDate2D(object[,] values, string inputName)
         {
-            Date[,] result = new Date[values.GetLength(0), values.GetLength(1)];
-            for (int i = 0; i<values.GetLength(0); i++)
-            {
-                for (int j =0; j<values.GetLength(1); j++)
-                {
-                    if (values[i, j] is double)
-                        result[i, j] = new Date(DateTime.FromOADate((double)values[i, j]));
-                    else
-                        throw new ArgumentException(inputName + " all cells must be values representing a Excel Dates.");
-                }
-            }
+            var result = new Date[values.GetLength(0), values.GetLength(1)];
+            for (var i = 0; i < values.GetLength(0); i++)
+            for (var j = 0; j < values.GetLength(1); j++)
+                if (values[i, j] is double)
+                    result[i, j] = new Date(DateTime.FromOADate((double) values[i, j]));
+                else
+                    throw new ArgumentException(inputName + " all cells must be values representing a Excel Dates.");
             return result;
         }
 
@@ -350,9 +322,8 @@ namespace QuantSA.Excel
         public static T GetObject0D<T>(object[,] values, string inputName, object defaultValue)
         {
             if (values[0, 0] is ExcelMissing)
-                return (T)defaultValue;
-            else
-                return GetObject0D<T>(values, inputName);
+                return (T) defaultValue;
+            return GetObject0D<T>(values, inputName);
         }
 
         /// <summary>
@@ -364,8 +335,9 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static T GetObject0D<T>(object[,] values, string inputName)
         {
-            if (values.GetLength(0) != 1 || values.GetLength(1) != 1) throw new ArgumentException(inputName + " must be a single string refering to an existing object.");
-            String name = values[0, 0] as String;
+            if (values.GetLength(0) != 1 || values.GetLength(1) != 1)
+                throw new ArgumentException(inputName + " must be a single string refering to an existing object.");
+            var name = values[0, 0] as string;
             if (name != null) return ObjectMap.Instance.GetObjectFromID<T>(name);
             throw new ArgumentException(inputName + " must be a single string refering to an existing object.");
         }
@@ -378,44 +350,43 @@ namespace QuantSA.Excel
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
         public static T[] GetObject1D<T>(object[,] values, string inputName)
-        {            
+        {
             if (values[0, 0] is ExcelMissing) return new T[0]; // Empty input
             if (values.GetLength(0) > 1 && values.GetLength(1) > 1) // matrix input
-            {
-                throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
-            }
+                throw new ArgumentException(
+                    inputName + " must be single row or column of strings referring to existing objects");
             if (values.GetLength(0) == 1) // row input
             {
-                T[] result = new T[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
+                var result = new T[values.GetLength(1)];
+                for (var i = 0; i < values.GetLength(1); i++)
                 {
-                    String name = values[0, i] as String;
+                    var name = values[0, i] as string;
                     if (name == null)
-                    {
-                        throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
-                    }
+                        throw new ArgumentException(
+                            inputName + " must be single row or column of strings referring to existing objects");
                     result[i] = ObjectMap.Instance.GetObjectFromID<T>(name);
                 }
+
                 return result;
             }
-            else if (values.GetLength(1) == 1) // column input
+
+            if (values.GetLength(1) == 1) // column input
             {
-                T[] result = new T[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
+                var result = new T[values.GetLength(0)];
+                for (var i = 0; i < values.GetLength(0); i++)
                 {
-                    String name = values[i, 0] as String;
+                    var name = values[i, 0] as string;
                     if (name == null)
-                    {
-                        throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
-                    }
+                        throw new ArgumentException(
+                            inputName + " must be single row or column of strings referring to existing objects");
                     result[i] = ObjectMap.Instance.GetObjectFromID<T>(name);
                 }
+
                 return result;
             }
-            else
-            {
-                throw new ArgumentException(inputName + " must be single row or column of strings referring to existing objects");
-            }            
+
+            throw new ArgumentException(
+                inputName + " must be single row or column of strings referring to existing objects");
         }
 
         /// <summary>
@@ -425,21 +396,19 @@ namespace QuantSA.Excel
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
         public static double GetDouble0D(object[,] values, string inputName)
-        {            
+        {
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
-                if (values[0, 0] is double)
-                {
-                    return (double)values[0, 0];
-                }
+                if (values[0, 0] is double) return (double) values[0, 0];
                 throw new ArgumentException(inputName + " must be a single cell with a value.");
             }
+
             throw new ArgumentException(inputName + " must be a single cell with a value.");
         }
 
         public static double GetDouble0D(object[,] values, string inputName, double defaultValue)
         {
-            if (values[0,0] is ExcelMissing) return defaultValue;
+            if (values[0, 0] is ExcelMissing) return defaultValue;
             return GetDouble0D(values, inputName);
         }
 
@@ -451,35 +420,29 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static double[] GetDouble1D(object[,] values, string inputName)
         {
-
-            if (values.GetLength(0)==1 && values.GetLength(1)>=1) // row of inputs
+            if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
-                double[] result = new double[values.GetLength(1)];
-                for (int i = 0; i< values.GetLength(1); i++)
-                {
+                var result = new double[values.GetLength(1)];
+                for (var i = 0; i < values.GetLength(1); i++)
                     if (values[0, i] is double)
-                        result[i] = (double)values[0, i];
+                        result[i] = (double) values[0, i];
                     else
                         throw new ArgumentException(inputName + " must only contain numbers.");
-                }
                 return result;
-                
-            } else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
-            {
-                double[] result = new double[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                {
-                    if (values[i, 0] is double)
-                        result[i] = (double)values[i, 0];
-                    else
-                        throw new ArgumentException(inputName + " must only contain numbers.");
-                }
-                return result;
-
-            } else
-            {
-                throw new ArgumentException(inputName + " must be a single row or column of values.");
             }
+
+            if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+            {
+                var result = new double[values.GetLength(0)];
+                for (var i = 0; i < values.GetLength(0); i++)
+                    if (values[i, 0] is double)
+                        result[i] = (double) values[i, 0];
+                    else
+                        throw new ArgumentException(inputName + " must only contain numbers.");
+                return result;
+            }
+
+            throw new ArgumentException(inputName + " must be a single row or column of values.");
         }
 
         /// <summary>
@@ -491,22 +454,18 @@ namespace QuantSA.Excel
         public static double[,] GetDouble2D(object[,] values, string inputName)
         {
             if (values[0, 0] is ExcelMissing) throw new ArgumentException(inputName + " + cannot be empty.");
-            double[,] result = new double[values.GetLength(0), values.GetLength(1)];
-            for (int i = 0; i < values.GetLength(0); i++)
-            {
-                for (int j = 0; j < values.GetLength(1); j++)
-                {
-                    if (values[i, j] is double)
-                        result[i, j] = (double)values[i, j];
-                    else
-                        throw new ArgumentException(inputName + " all cells must be numbers.");
-                }
-            }
+            var result = new double[values.GetLength(0), values.GetLength(1)];
+            for (var i = 0; i < values.GetLength(0); i++)
+            for (var j = 0; j < values.GetLength(1); j++)
+                if (values[i, j] is double)
+                    result[i, j] = (double) values[i, j];
+                else
+                    throw new ArgumentException(inputName + " all cells must be numbers.");
             return result;
         }
 
 
-        public static String GetStringFromString(string strValue, string inputName)
+        public static string GetStringFromString(string strValue, string inputName)
         {
             return strValue;
         }
@@ -520,9 +479,10 @@ namespace QuantSA.Excel
         /// <exception cref="System.ArgumentException"></exception>
         private static Share GetShareFromString(string strValue, string inputName)
         {
-            string[] parts = strValue.Split(':');
-            if (parts.Length != 2) throw new ArgumentException(strValue + " in " + inputName + " does not correspond to a share.");
-            Currency ccy = GetCurrencyFromString(parts[0], inputName);
+            var parts = strValue.Split(':');
+            if (parts.Length != 2)
+                throw new ArgumentException(strValue + " in " + inputName + " does not correspond to a share.");
+            var ccy = GetCurrencyFromString(parts[0], inputName);
             return new Share(parts[1].ToUpper(), ccy);
         }
 
@@ -536,12 +496,12 @@ namespace QuantSA.Excel
                 default: throw new ArgumentException(strValue + " is not a known currency in input: " + inputName);
             }
         }
-        
+
 
         public static CompoundingConvention GetCompoundingConventionFromString(string strValue, string inputName)
         {
             switch (strValue.ToUpper())
-            {                
+            {
                 case "SIMPLE": return CompoundingStore.Simple;
                 case "DISCOUNT": return CompoundingStore.Discount;
                 case "C":
@@ -563,25 +523,26 @@ namespace QuantSA.Excel
                 case "NACA":
                 case "ANNUAL": return CompoundingStore.Annual;
 
-                default: throw new ArgumentException(strValue + " is not a known compounding convention in input: " + inputName);
+                default:
+                    throw new ArgumentException(strValue + " is not a known compounding convention in input: " +
+                                                inputName);
             }
         }
 
 
         public static Calendar GetCalendarFromString(string strValue, string inputName)
         {
-            return StaticData.GetCalendar(strValue.ToUpper());            
+            return StaticData.GetCalendar(strValue.ToUpper());
         }
 
         public static BusinessDayConvention GetBusinessDayConventionFromString(string strValue, string inputName)
         {
-
             switch (strValue.ToUpper())
             {
                 case "F":
                 case "FOLLOWING": return BusinessDayStore.Following;
                 case "MF":
-                case "MODFOLLOW": 
+                case "MODFOLLOW":
                 case "MODIFIEDFOLLOWING": return BusinessDayStore.ModifiedFollowing;
                 case "P":
                 case "PRECEDING": return BusinessDayStore.Preceding;
@@ -589,8 +550,10 @@ namespace QuantSA.Excel
                 case "MODIFIEDPRECEDING": return BusinessDayStore.ModifiedPreceding;
                 case "U":
                 case "UNADJUSTED": return BusinessDayStore.Unadjusted;
-                    
-                default: throw new ArgumentException(strValue + " is not a known business day convention convention in input: " + inputName);
+
+                default:
+                    throw new ArgumentException(
+                        strValue + " is not a known business day convention convention in input: " + inputName);
             }
         }
 
@@ -603,7 +566,7 @@ namespace QuantSA.Excel
                 case "ACT360": return DayCountStore.Actual360;
                 case "ACT365F":
                 case "ACT365": return DayCountStore.Actual365Fixed;
-                case "30360EU": return DayCountStore.Thirty360Euro;                
+                case "30360EU": return DayCountStore.Thirty360Euro;
 
                 default: throw new ArgumentException(strValue + " is not a known day count convention: " + inputName);
             }
@@ -624,48 +587,48 @@ namespace QuantSA.Excel
                 case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
                 case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
                 default:
-                    throw new ArgumentException(strValue + " is not a known floating rate index in input: " + inputName);
+                    throw new ArgumentException(strValue + " is not a known floating rate index in input: " +
+                                                inputName);
             }
         }
 
         private static Tenor GetTenorFromString(string strValue, string inputName)
         {
-            string numberStr = "";
-            int years = 0;
-            int months = 0;
-            int weeks = 0;
-            int days = 0;
-            foreach (char c in strValue.ToUpper())
-            {
+            var numberStr = "";
+            var years = 0;
+            var months = 0;
+            var weeks = 0;
+            var days = 0;
+            foreach (var c in strValue.ToUpper())
                 if (c >= 48 && c <= 57)
                 {
                     numberStr += c;
                 }
                 else if (c == 'Y')
                 {
-                    years = Int32.Parse(numberStr);
+                    years = int.Parse(numberStr);
                     numberStr = "";
                 }
                 else if (c == 'M')
                 {
-                    months = Int32.Parse(numberStr);
+                    months = int.Parse(numberStr);
                     numberStr = "";
                 }
                 else if (c == 'W')
                 {
-                    weeks = Int32.Parse(numberStr);
+                    weeks = int.Parse(numberStr);
                     numberStr = "";
                 }
                 else if (c == 'D')
                 {
-                    days = Int32.Parse(numberStr);
+                    days = int.Parse(numberStr);
                     numberStr = "";
                 }
                 else
                 {
                     throw new ArgumentException(strValue + " is not a valid tenor String.");
                 }
-            }
+
             return new Tenor(days, weeks, months, years);
         }
 
@@ -696,68 +659,66 @@ namespace QuantSA.Excel
                     throw new ArgumentException(inputName + " cannot be empty.");
             if (obj is string)
             {
-                string strValue = (string)obj;
-                if (strValue.IndexOf('.')>0) // If the string looks like a reference to an object then get that object off the map
-                {
-                    //TODO: Make a function that checks if a string looks like an object reference.
+                var strValue = (string) obj;
+                if (strValue.IndexOf('.') > 0
+                ) // If the string looks like a reference to an object then get that object off the map
                     return ObjectMap.Instance.GetObjectFromID<T>(strValue);
-                }
                 switch (typeof(T).Name)
                 {
-                    case ("Currency"):
-                        {
-                            Currency temp = GetCurrencyFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
-                    case ("FloatingIndex"):
-                        {
-                            FloatingIndex temp = GetFloatingIndexFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
-                    case ("Tenor"):
-                        {                            
-                            Tenor temp = GetTenorFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
-                    case ("ReferenceEntity"):
-                        {
-                            ReferenceEntity temp = GetReferenceEntityFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
-                    case ("Share"):
-                        {
-                            Share temp = GetShareFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
-                    case ("String"):
-                        {
-                            string temp = GetStringFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
-                    case ("CompoundingConvention"):
-                        return (T)GetCompoundingConventionFromString((string)obj, inputName);
-                    case ("DayCountConvention"):
-                        return (T)GetDayCountConventionFromString((string)obj, inputName);
-                    case ("BusinessDayConvention"):
-                        return (T)GetBusinessDayConventionFromString((string)obj, inputName);
-                    case ("Calendar"):
-                        {
-                            Calendar temp = GetCalendarFromString((string)obj, inputName);
-                            T returnVal = temp as T;
-                            return returnVal;
-                        }
+                    case "Currency":
+                    {
+                        var temp = GetCurrencyFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
+                    case "FloatingIndex":
+                    {
+                        var temp = GetFloatingIndexFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
+                    case "Tenor":
+                    {
+                        var temp = GetTenorFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
+                    case "ReferenceEntity":
+                    {
+                        var temp = GetReferenceEntityFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
+                    case "Share":
+                    {
+                        var temp = GetShareFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
+                    case "String":
+                    {
+                        var temp = GetStringFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
+                    case "CompoundingConvention":
+                        return (T) GetCompoundingConventionFromString((string) obj, inputName);
+                    case "DayCountConvention":
+                        return (T) GetDayCountConventionFromString((string) obj, inputName);
+                    case "BusinessDayConvention":
+                        return (T) GetBusinessDayConventionFromString((string) obj, inputName);
+                    case "Calendar":
+                    {
+                        var temp = GetCalendarFromString((string) obj, inputName);
+                        var returnVal = temp as T;
+                        return returnVal;
+                    }
                     default:
-                        throw new ArgumentException("No conversion exists from string to " + typeof(T).Name);                        
+                        throw new ArgumentException("No conversion exists from string to " + typeof(T).Name);
                 }
             }
-            else
-                throw new ArgumentException(inputName + " : " + typeof(T).Name + " can only be created from a string.");
+
+            throw new ArgumentException(inputName + " : " + typeof(T).Name + " can only be created from a string.");
         }
 
 
@@ -770,13 +731,12 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static T GetSpecialType0D<T>(object[,] values, string inputName, T defaultValue = null)  where T : class
-        {            
+        public static T GetSpecialType0D<T>(object[,] values, string inputName, T defaultValue = null) where T : class
+        {
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                return GetSpecialType<T>(values[0, 0], inputName, defaultValue);
-            }
-            throw new ArgumentException(inputName + " must be a single cell with a string representing a " + typeof(T).Name + ".");
+                return GetSpecialType(values[0, 0], inputName, defaultValue);
+            throw new ArgumentException(inputName + " must be a single cell with a string representing a " +
+                                        typeof(T).Name + ".");
         }
 
 
@@ -790,20 +750,22 @@ namespace QuantSA.Excel
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
-                T[] result = new T[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
+                var result = new T[values.GetLength(1)];
+                for (var i = 0; i < values.GetLength(1); i++)
                     result[i] = GetSpecialType<T>(values[0, i], inputName, null);
                 return result;
             }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+
+            if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
             {
-                T[] result = new T[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
+                var result = new T[values.GetLength(0)];
+                for (var i = 0; i < values.GetLength(0); i++)
                     result[i] = GetSpecialType<T>(values[i, 0], inputName, null);
                 return result;
             }
-            else
-                throw new ArgumentException(inputName + " must be a single row or column of strings, each representing a " + typeof(T).Name + ".");
+
+            throw new ArgumentException(inputName + " must be a single row or column of strings, each representing a " +
+                                        typeof(T).Name + ".");
         }
 
         /// <summary>
@@ -814,14 +776,10 @@ namespace QuantSA.Excel
         /// <returns></returns>
         public static T[,] GetSpecialType2D<T>(object[,] values, string inputName) where T : class
         {
-            T[,] result = new T[values.GetLength(0), values.GetLength(1)];
-            for (int i = 0; i < values.GetLength(0); i++)
-            {
-                for (int j = 0; j < values.GetLength(1); j++)
-                {
-                    result[i, j] = GetSpecialType<T>(values[0, i], inputName, null);
-                }
-            }
+            var result = new T[values.GetLength(0), values.GetLength(1)];
+            for (var i = 0; i < values.GetLength(0); i++)
+            for (var j = 0; j < values.GetLength(1); j++)
+                result[i, j] = GetSpecialType<T>(values[0, i], inputName, null);
             return result;
         }
 
@@ -840,11 +798,13 @@ namespace QuantSA.Excel
                 throw new ArgumentException(inputName + " cannot be empty.");
             if (obj is double)
             {
-                double doubleValue = (double)obj;
-                double intValue = Math.Round(doubleValue);
-                if (Math.Abs(doubleValue - intValue) > 1e-10) { throw new ArgumentException(inputName + " cannot contain fractions."); }
-                return (int)intValue;
+                var doubleValue = (double) obj;
+                var intValue = Math.Round(doubleValue);
+                if (Math.Abs(doubleValue - intValue) > 1e-10)
+                    throw new ArgumentException(inputName + " cannot contain fractions.");
+                return (int) intValue;
             }
+
             throw new ArgumentException(inputName + " must have numbers.");
         }
 
@@ -855,18 +815,16 @@ namespace QuantSA.Excel
         /// <param name="values"></param>
         /// <param name="inputName">The name of the input in the Excel function so that sensible errors can be returned.</param>
         /// <returns></returns>
-        public static int GetInt320D(object[,] values, string inputName, int? defaultValue=null)
+        public static int GetInt320D(object[,] values, string inputName, int? defaultValue = null)
         {
-            if (values[0, 0] is ExcelMissing){
+            if (values[0, 0] is ExcelMissing)
+            {
                 if (defaultValue == null)
                     throw new ArgumentException("input: '" + inputName + "' is left out and is not optional");
-                else
-                    return (int)defaultValue;
+                return (int) defaultValue;
             }
-            if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
-            {
-                return GetInt(values[0, 0], inputName);
-            }
+
+            if (values.GetLength(0) == 1 && values.GetLength(1) == 1) return GetInt(values[0, 0], inputName);
             throw new ArgumentException(inputName + " must be a single cell with a whole number");
         }
 
@@ -880,26 +838,19 @@ namespace QuantSA.Excel
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) >= 1) // row of inputs
             {
-                int[] result = new int[values.GetLength(1)];
-                for (int i = 0; i < values.GetLength(1); i++)
-                {
-                    result[i] = GetInt(values[0, i], inputName);
-                }
+                var result = new int[values.GetLength(1)];
+                for (var i = 0; i < values.GetLength(1); i++) result[i] = GetInt(values[0, i], inputName);
                 return result;
             }
-            else if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
+
+            if (values.GetLength(0) >= 1 && values.GetLength(1) == 1) // column of inputs
             {
-                int[] result = new int[values.GetLength(0)];
-                for (int i = 0; i < values.GetLength(0); i++)
-                {                 
-                    result[i] = GetInt(values[i, 0], inputName);
-                }
+                var result = new int[values.GetLength(0)];
+                for (var i = 0; i < values.GetLength(0); i++) result[i] = GetInt(values[i, 0], inputName);
                 return result;
             }
-            else
-            {
-                throw new ArgumentException(inputName + " must be a single row or column of whole numbers.");
-            }
+
+            throw new ArgumentException(inputName + " must be a single row or column of whole numbers.");
         }
 
         /// <summary>
@@ -911,20 +862,14 @@ namespace QuantSA.Excel
         {
             if (values.GetLength(0) == 1 && values.GetLength(1) == 1)
             {
-                if (values[0,0].ToString().ToUpper().Equals("TRUE"))
-                {
-                    return true;
-                }
-                if (values[0,0].ToString().ToUpper().Equals("FALSE"))
-                {
-                    return false;
-                }
+                if (values[0, 0].ToString().ToUpper().Equals("TRUE")) return true;
+                if (values[0, 0].ToString().ToUpper().Equals("FALSE")) return false;
                 throw new ArgumentException("Boolean arguments must be passed as 'TRUE' and 'FALSE'.");
             }
+
             throw new ArgumentException(inputName + " must be a single cell with a whole number");
-            
         }
     }
 
-    #endregion 
+    #endregion
 }

@@ -1,26 +1,13 @@
-﻿using ExcelDna.Integration;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace QuantSA.Excel.Common
 {
     public class ObjectMap
     {
-        private struct ObjectEntry
-        {
-            public string uniqueID;
-            public object obj;
-            public string bookName;
-            public string sheetName;
-            public string cellName;
-        }
-
-        private static Object thisLock = new Object();
+        private static readonly object thisLock = new object();
         private static ObjectMap instance;
-        private Dictionary<string, ObjectEntry> namesAndObjects;
+        private readonly Dictionary<string, ObjectEntry> namesAndObjects;
         private long objectCounter;
 
 
@@ -31,6 +18,22 @@ namespace QuantSA.Excel.Common
         {
             objectCounter = 0;
             namesAndObjects = new Dictionary<string, ObjectEntry>();
+        }
+
+
+        /// <summary>
+        /// The singleton instance of the object map
+        /// </summary>
+        public static ObjectMap Instance
+        {
+            get
+            {
+                lock (thisLock)
+                {
+                    if (instance == null) instance = new ObjectMap();
+                    return instance;
+                }
+            }
         }
 
         /// <summary>
@@ -54,16 +57,19 @@ namespace QuantSA.Excel.Common
                 {
                     //TODO: Make sure this is the same object.  If not throw an error
                 }
-                namesAndObjects[name] = new ObjectEntry { obj = obj, uniqueID = uniqueID };
+
+                namesAndObjects[name] = new ObjectEntry {obj = obj, uniqueID = uniqueID};
             }
+
             return uniqueID;
         }
 
         public T GetObjectFromID<T>(string objectName)
         {
-            object obj = ObjectMap.Instance.GetObjectFromID(objectName);
-            if (obj is T) { return (T)obj; }
-            else throw new ArgumentException(objectName + " is not of required type: " + typeof(T).ToString());            
+            var obj = Instance.GetObjectFromID(objectName);
+            if (obj is T)
+                return (T) obj;
+            throw new ArgumentException(objectName + " is not of required type: " + typeof(T));
         }
 
         /// <summary>
@@ -73,7 +79,7 @@ namespace QuantSA.Excel.Common
         /// <returns></returns>
         private object GetObjectFromID(string uniqueID)
         {
-            string[] nameParts = uniqueID.Split('.');            
+            var nameParts = uniqueID.Split('.');
             return GetObjectFromName(nameParts[0]);
         }
 
@@ -85,31 +91,18 @@ namespace QuantSA.Excel.Common
         private object GetObjectFromName(string name)
         {
             if (!namesAndObjects.ContainsKey(name))
-            {
                 throw new IndexOutOfRangeException("Object map does not contain an object with id: " + name);
-            }
             return namesAndObjects[name].obj;
         }
 
-
-        /// <summary>
-        /// The singleton instance of the object map
-        /// </summary>
-        public static ObjectMap Instance
+        private struct ObjectEntry
         {
-            get
-            {
-                lock (thisLock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new ObjectMap();
-                    }
-                    return instance;
-                }
-            }
+            public string uniqueID;
+
+            public object obj;
+            //public string bookName;
+            //public string sheetName;
+            //public string cellName;
         }
-
-
     }
 }

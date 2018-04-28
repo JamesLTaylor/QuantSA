@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Accord.Math;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -20,8 +15,8 @@ namespace QuantSA.General
     [Serializable]
     public class HazardCurve : ISurvivalProbabilitySource
     {
-        double[] dateValues;
-        double[] hazardRates;
+        private readonly double[] dateValues;
+        private readonly double[] hazardRates;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HazardCurve"/> class.
@@ -39,12 +34,12 @@ namespace QuantSA.General
             base(referenceEntity, anchorDate)
         {
             if (dates[0] < anchorDate) throw new ArgumentException("dates must be on or after the anchor date.");
-            for (int i  = 0; i < dates.Length - 1; i++)
-            {
-                if (dates[i] > dates[i + 1]) throw new ArgumentException("dates must be increasing.");                
-            }
+            for (var i = 0; i < dates.Length - 1; i++)
+                if (dates[i] > dates[i + 1])
+                    throw new ArgumentException("dates must be increasing.");
             dateValues = dates.GetValues();
-            if (dateValues.Length != hazardRates.Length) throw new ArgumentException("dates and rates must have the same length.");
+            if (dateValues.Length != hazardRates.Length)
+                throw new ArgumentException("dates and rates must have the same length.");
             this.hazardRates = hazardRates;
         }
 
@@ -56,9 +51,12 @@ namespace QuantSA.General
         /// <exception cref="System.ArgumentException">Survival probabilities are only defined from the anchor date of the curve.</exception>
         public override double GetSP(Date date)
         {
-            if (date < anchorDate) throw new ArgumentException("Survival probabilities are only defined from the anchor date of the curve.");
-            double rate = Tools.Interpolate1D(date.value, dateValues, hazardRates, hazardRates[0], hazardRates[hazardRates.Length() - 1]);
-            return Math.Exp(-rate * (date - anchorDate)/365.0);
+            if (date < anchorDate)
+                throw new ArgumentException(
+                    "Survival probabilities are only defined from the anchor date of the curve.");
+            var rate = Tools.Interpolate1D(date.value, dateValues, hazardRates, hazardRates[0],
+                hazardRates[hazardRates.Length() - 1]);
+            return Math.Exp(-rate * (date - anchorDate) / 365.0);
         }
     }
 }

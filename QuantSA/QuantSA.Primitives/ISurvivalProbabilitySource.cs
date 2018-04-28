@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -18,7 +13,7 @@ namespace QuantSA.General
         protected ReferenceEntity referenceEntity;
 
         public ISurvivalProbabilitySource(ReferenceEntity referenceEntity, Date anchorDate)
-        {            
+        {
             this.referenceEntity = referenceEntity;
             this.anchorDate = anchorDate;
         }
@@ -27,7 +22,10 @@ namespace QuantSA.General
         /// The earliest date after which survival probabilities can be obtained.
         /// </summary>
         /// <returns></returns>
-        public virtual Date getAnchorDate() { return anchorDate; }
+        public virtual Date getAnchorDate()
+        {
+            return anchorDate;
+        }
 
         /// <summary>
         /// Gets the survival probability between the anchor date and the date provided.
@@ -43,7 +41,8 @@ namespace QuantSA.General
         /// <param name="endDate">The end date.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentException">startDate must be before endDate.</exception>
-        public virtual double GetSP(Date startDate, Date endDate) {
+        public virtual double GetSP(Date startDate, Date endDate)
+        {
             if (startDate > endDate) throw new ArgumentException("startDate must be before endDate.");
             return GetSP(endDate) / GetSP(startDate);
         }

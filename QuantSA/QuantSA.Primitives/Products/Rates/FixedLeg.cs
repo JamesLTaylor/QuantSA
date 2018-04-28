@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -11,20 +7,24 @@ namespace QuantSA.General
     [Serializable]
     public class FixedLeg : Product
     {
-        Date[] paymentDates;
+        private readonly double[] accrualFractions;
+        private readonly Currency ccy;
+        private readonly double[] notionals;
+        private readonly Date[] paymentDates;
+
         /// <summary>
         /// The simple rates used to calculate cashflows.
         /// </summary>
-        double[] rates;
-        double[] notionals;
-        double[] accrualFractions;
-        Currency ccy;
+        private readonly double[] rates;
 
-        Date valueDate;
+        private Date valueDate;
 
-        public FixedLeg() { }
+        public FixedLeg()
+        {
+        }
 
-        public FixedLeg(Currency ccy, Date[] paymentDates, double[] notionals, double[] rates, double[] accrualFractions)
+        public FixedLeg(Currency ccy, Date[] paymentDates, double[] notionals, double[] rates,
+            double[] accrualFractions)
         {
             this.ccy = ccy;
             this.paymentDates = paymentDates;
@@ -35,11 +35,10 @@ namespace QuantSA.General
 
         public override List<Cashflow> GetCFs()
         {
-            List<Cashflow> cfs = new List<Cashflow>();
-            for (int i = 0; i< paymentDates.Length; i++)
-            {
-                if (paymentDates[i] > valueDate) cfs.Add(new Cashflow(paymentDates[i], notionals[i] * accrualFractions[i] * rates[i], ccy));
-            }
+            var cfs = new List<Cashflow>();
+            for (var i = 0; i < paymentDates.Length; i++)
+                if (paymentDates[i] > valueDate)
+                    cfs.Add(new Cashflow(paymentDates[i], notionals[i] * accrualFractions[i] * rates[i], ccy));
             return cfs;
         }
 
@@ -70,16 +69,15 @@ namespace QuantSA.General
 
         public override List<Currency> GetCashflowCurrencies()
         {
-            return new List<Currency> { ccy };
+            return new List<Currency> {ccy};
         }
 
         public override List<Date> GetCashflowDates(Currency ccy)
         {
-            List<Date> dates = new List<Date>();
-            for (int i = 0; i < paymentDates.Length; i++)
-            {
-                if (paymentDates[i] > valueDate) dates.Add(paymentDates[i]);
-            }
+            var dates = new List<Date>();
+            for (var i = 0; i < paymentDates.Length; i++)
+                if (paymentDates[i] > valueDate)
+                    dates.Add(paymentDates[i]);
             return dates;
         }
     }

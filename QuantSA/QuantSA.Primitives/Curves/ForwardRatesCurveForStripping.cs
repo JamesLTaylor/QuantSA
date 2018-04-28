@@ -1,11 +1,6 @@
-﻿using Accord.Math;
+﻿using System.Linq;
+using Accord.Math;
 using MathNet.Numerics.Interpolation;
-using QuantSA.Primitives.Dates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
 
@@ -20,57 +15,14 @@ namespace QuantSA.General
     /// <seealso cref="QuantSA.General.IFloatingRateSource" />
     public class ForwardRatesCurveForStripping : ICurveForStripping, IFloatingRateSource
     {
-        /// <summary>
-        /// An <see cref="IFloatingRateSource"/> that always returns zero.
-        /// </summary>
-        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
-        private class ZeroFloatingRates : IFloatingRateSource
-        {
-            private FloatingIndex index;
-            public ZeroFloatingRates(FloatingIndex index) { this.index = index; }
-            public FloatingIndex GetFloatingIndex() { return index; }
-            public double GetForwardRate(Date date) { return 0.0; }
-        }
-
-        /// <summary>
-        /// An <see cref="IFloatingRateSource"/> that always returns the forward rates implied by a
-        /// discount curve.  Takes a shortcut in calculating the forward rate from discount factors by adding
-        /// 3 months with no date adjustments and assuming actual 365 and simple compounding for the implied rate.
-        /// </summary>
-        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
-        private class DiscountBasedFloatingRates : IFloatingRateSource
-        {
-            private FloatingIndex index;
-            private IDiscountingSource discountingSource;
-            public DiscountBasedFloatingRates(FloatingIndex index, IDiscountingSource discountingSource)
-            {
-                this.index = index;
-                this.discountingSource = discountingSource;
-            }
-
-            public FloatingIndex GetFloatingIndex()
-            {
-                return index;
-            }
-
-            public double GetForwardRate(Date date)
-            {
-                Date endDate = date.AddTenor(index.tenor);
-                double df1 = discountingSource.GetDF(date);
-                double df2 = discountingSource.GetDF(endDate);
-                double yearFrac = (endDate - date) / 365.0;
-                return (df1 / df2 - 1) / yearFrac;
-            }
-        }
-
-        FloatingIndex index;
-        Date anchorDate;
+        private readonly Date anchorDate;
+        private int dateOffset;
         private Date[] dates;
         private double[] dateValues;
+
+        private readonly FloatingIndex index;
         private LinearSpline spline;
-        public double[] rates { get; set; }
-        IFloatingRateSource underlyingCurve;
-        int dateOffset = 0;
+        private readonly IFloatingRateSource underlyingCurve;
 
         public ForwardRatesCurveForStripping(Date anchorDate, FloatingIndex index)
         {
@@ -93,22 +45,13 @@ namespace QuantSA.General
             this.underlyingCurve = underlyingCurve;
         }
 
-        public FloatingIndex GetFloatingIndex()
-        {
-            return index;
-        }
-
-        public double GetForwardRate(Date date)
-        {
-            double rate = spline.Interpolate(date);            
-            return underlyingCurve.GetForwardRate(date) + rate;
-        }
+        public double[] rates { get; set; }
 
         public void SetDates(Date[] dates)
         {
             if (dates[0] > anchorDate)
             {
-                List<Date> dateList = dates.ToList();
+                var dateList = dates.ToList();
                 dateList.Insert(0, anchorDate);
                 this.dates = dateList.ToArray();
                 dateOffset = 1;
@@ -117,6 +60,7 @@ namespace QuantSA.General
             {
                 this.dates = dates;
             }
+
             dateValues = this.dates.GetValues();
             rates = Vector.Ones(this.dates.Length).Multiply(0.02);
             spline = LinearSpline.InterpolateSorted(dateValues, rates);
@@ -124,21 +68,82 @@ namespace QuantSA.General
 
         public double[] GetRates()
         {
-            if (dateOffset == 0)
-            {
-                return rates;
-            }
+            if (dateOffset == 0) return rates;
             return rates.Get(1, rates.Length);
         }
 
         public void SetRate(int index, double rate)
         {
-            if (dateOffset == 1 && index == 0)
-            {
-                rates[0] = rate;
-            }
+            if (dateOffset == 1 && index == 0) rates[0] = rate;
             rates[index + dateOffset] = rate;
             spline = LinearSpline.InterpolateSorted(dateValues, rates);
+        }
+
+        public FloatingIndex GetFloatingIndex()
+        {
+            return index;
+        }
+
+        public double GetForwardRate(Date date)
+        {
+            var rate = spline.Interpolate(date);
+            return underlyingCurve.GetForwardRate(date) + rate;
+        }
+
+        /// <summary>
+        /// An <see cref="IFloatingRateSource"/> that always returns zero.
+        /// </summary>
+        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
+        private class ZeroFloatingRates : IFloatingRateSource
+        {
+            private readonly FloatingIndex index;
+
+            public ZeroFloatingRates(FloatingIndex index)
+            {
+                this.index = index;
+            }
+
+            public FloatingIndex GetFloatingIndex()
+            {
+                return index;
+            }
+
+            public double GetForwardRate(Date date)
+            {
+                return 0.0;
+            }
+        }
+
+        /// <summary>
+        /// An <see cref="IFloatingRateSource"/> that always returns the forward rates implied by a
+        /// discount curve.  Takes a shortcut in calculating the forward rate from discount factors by adding
+        /// 3 months with no date adjustments and assuming actual 365 and simple compounding for the implied rate.
+        /// </summary>
+        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
+        private class DiscountBasedFloatingRates : IFloatingRateSource
+        {
+            private readonly IDiscountingSource discountingSource;
+            private readonly FloatingIndex index;
+
+            public DiscountBasedFloatingRates(FloatingIndex index, IDiscountingSource discountingSource)
+            {
+                this.index = index;
+                this.discountingSource = discountingSource;
+            }
+
+            public FloatingIndex GetFloatingIndex()
+            {
+                return index;
+            }
+
+            public double GetForwardRate(Date date)
+            {
+                var endDate = date.AddTenor(index.tenor);
+                var df1 = discountingSource.GetDF(date);
+                var df2 = discountingSource.GetDF(endDate);
+                var yearFrac = (endDate - date) / 365.0;
+                return (df1 / df2 - 1) / yearFrac;
+            }
         }
     }
 }

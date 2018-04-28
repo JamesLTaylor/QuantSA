@@ -1,10 +1,6 @@
-﻿using Accord.Math.Optimization;
-using QuantSA.Primitives.Dates;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Accord.Math.Optimization;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -14,11 +10,7 @@ namespace QuantSA.General
     /// </summary>
     public class NelsonSiegel : ICurve
     {
-        private Date anchorDate;
-        public double beta0 { get; private set; }
-        public double beta1 { get; private set; }
-        public double beta2 { get; private set; }
-        public double tau { get; private set; }
+        private readonly Date anchorDate;
 
         private NelsonSiegel(Date anchorDate, double beta0, double beta1, double beta2, double tau)
         {
@@ -29,6 +21,11 @@ namespace QuantSA.General
             this.tau = tau;
         }
 
+        public double beta0 { get; }
+        public double beta1 { get; }
+        public double beta2 { get; }
+        public double tau { get; }
+
         /// <summary>
         ///  Interpolate the rate at required date.        
         /// </summary>
@@ -36,7 +33,7 @@ namespace QuantSA.General
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
-            return Interp(beta0, beta1, beta2, tau, date-anchorDate);            
+            return Interp(beta0, beta1, beta2, tau, date - anchorDate);
         }
 
 
@@ -50,19 +47,16 @@ namespace QuantSA.General
         /// <returns></returns>
         public static NelsonSiegel Fit(Date anchorDate, Date[] dates, double[] rates)
         {
-            double[] times = new double[dates.Length];
-            for (int i=0; i<dates.Length; i++)
-            {
-                times[i] = dates[i] - anchorDate;
-            }
+            var times = new double[dates.Length];
+            for (var i = 0; i < dates.Length; i++) times[i] = dates[i] - anchorDate;
 
-            Func<double[], double> f = (x) => ErrorFunction(x, times, rates);
+            Func<double[], double> f = x => ErrorFunction(x, times, rates);
 
-            var nm = new NelderMead(numberOfVariables: 4, function: f);
-            bool success = nm.Minimize(new double[] { rates[0], rates[0], rates[0], times.Last() / 5.0 });
-            double minValue = nm.Value;
-            double[] solution = nm.Solution;
-            NelsonSiegel curve = new NelsonSiegel(anchorDate, solution[0], solution[1], solution[2], solution[3]);
+            var nm = new NelderMead(4, f);
+            var success = nm.Minimize(new[] {rates[0], rates[0], rates[0], times.Last() / 5.0});
+            var minValue = nm.Value;
+            var solution = nm.Solution;
+            var curve = new NelsonSiegel(anchorDate, solution[0], solution[1], solution[2], solution[3]);
 
             return curve;
         }
@@ -70,11 +64,12 @@ namespace QuantSA.General
         private static double ErrorFunction(double[] parameters, double[] t, double[] r)
         {
             double error = 0;
-            for (int i = 0; i < t.Length; i++)
+            for (var i = 0; i < t.Length; i++)
             {
-                double diff = Interp(parameters[0], parameters[1], parameters[2], parameters[3], t[i]) - r[i];
+                var diff = Interp(parameters[0], parameters[1], parameters[2], parameters[3], t[i]) - r[i];
                 error += diff * diff;
             }
+
             return error;
         }
 
@@ -90,10 +85,10 @@ namespace QuantSA.General
         /// <returns></returns>
         private static double Interp(double beta0, double beta1, double beta2, double tau, double t)
         {
-            double rate = beta0 +
-                (beta1 + beta2) * (1 - Math.Exp(-t / tau)) * tau / t -
-                beta2 * Math.Exp(-t / tau);
-            
+            var rate = beta0 +
+                       (beta1 + beta2) * (1 - Math.Exp(-t / tau)) * tau / t -
+                       beta2 * Math.Exp(-t / tau);
+
             return rate;
         }
 

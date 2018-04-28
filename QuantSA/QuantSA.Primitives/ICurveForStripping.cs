@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
+﻿using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {
@@ -17,8 +11,10 @@ namespace QuantSA.General
         /// </summary>
         /// <param name="dates">The dates.</param>
         void SetDates(Date[] dates);
+
         double[] GetRates();
-        void SetRate(int index, double rate);        
+
+        void SetRate(int index, double rate);
         //double GetSmoothness();
     }
 }

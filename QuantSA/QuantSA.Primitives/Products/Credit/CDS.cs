@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -17,25 +14,28 @@ namespace QuantSA.General
     [Serializable]
     public class CDS : Product
     {
-        // Contract definition
-        Date[] paymentDates;
-        double[] rates;
-        double[] notionals;
-        double[] accrualFractions;
-        Currency ccy;
+        private readonly double[] accrualFractions;
+        private readonly Currency ccy;
+
         /// <summary>
         /// 1 when we have sold protection.  -1 when we have bought protection.
         /// </summary>
-        double cfMultiplier;
+        private readonly double cfMultiplier;
 
         // Market observables
-        DefaultRecovery defaultRecovery;
-        DefaultTime defaultTime;
+        private readonly DefaultRecovery defaultRecovery;
+        private readonly DefaultTime defaultTime;
+        private Date defaultTimeValue;
+
+        private readonly double[] notionals;
+
+        // Contract definition
+        private readonly Date[] paymentDates;
+        private readonly double[] rates;
+        private double recoveryRate;
 
         // Simulation values        
-        Date valueDate;
-        Date defaultTimeValue;
-        double recoveryRate;
+        private Date valueDate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CDS"/> class.
@@ -47,7 +47,7 @@ namespace QuantSA.General
         /// <param name="rates">The simple rates that apply until the default time.  Used to calculate the premium flows.</param>
         /// <param name="accrualFractions">The accrual fractions used to calculate the premiums paid on the <paramref name="paymentDates"/>.</param>
         /// <param name="boughtProtection">If set to <c>true</c> then protection has been bought and the premium will be paid.</param>
-        public CDS(ReferenceEntity refEntity, Currency ccy, Date[] paymentDates, double[] notionals, 
+        public CDS(ReferenceEntity refEntity, Currency ccy, Date[] paymentDates, double[] notionals,
             double[] rates, double[] accrualFractions, bool boughtProtection)
         {
             defaultRecovery = new DefaultRecovery(refEntity);
@@ -70,15 +70,15 @@ namespace QuantSA.General
         /// </returns>
         public override List<Cashflow> GetCFs()
         {
-            List<Cashflow> cfs = new List<Cashflow>();
-            Date previousDate = new Date(valueDate);
-            for (int i = 0; i < paymentDates.Length; i++)
-            {
+            var cfs = new List<Cashflow>();
+            var previousDate = new Date(valueDate);
+            for (var i = 0; i < paymentDates.Length; i++)
                 if (paymentDates[i] > valueDate)
                 {
                     if (paymentDates[i] < defaultTimeValue)
                     {
-                        cfs.Add(new Cashflow(paymentDates[i], cfMultiplier * notionals[i] * accrualFractions[i] * rates[i], ccy));
+                        cfs.Add(new Cashflow(paymentDates[i],
+                            cfMultiplier * notionals[i] * accrualFractions[i] * rates[i], ccy));
                     }
                     else
                     {
@@ -86,19 +86,19 @@ namespace QuantSA.General
                         break;
                     }
                 }
-            }            
+
             return cfs;
         }
 
         public override List<Date> GetRequiredIndexDates(MarketObservable index)
         {
             // Going to trust that this will not be called for an irrelevant index.
-            return new List<Date> { paymentDates.Last() }; 
+            return new List<Date> {paymentDates.Last()};
         }
 
         public override List<MarketObservable> GetRequiredIndices()
         {
-            return new List<MarketObservable>() { defaultTime, defaultRecovery };
+            return new List<MarketObservable> {defaultTime, defaultRecovery};
         }
 
         public override void Reset()
@@ -114,7 +114,7 @@ namespace QuantSA.General
             else if (index == defaultRecovery)
                 recoveryRate = indexValues[0];
             else
-                throw new ArgumentException("Unknown index: " + index.ToString());
+                throw new ArgumentException("Unknown index: " + index);
         }
 
         public override void SetValueDate(Date valueDate)
@@ -124,17 +124,16 @@ namespace QuantSA.General
 
         public override List<Currency> GetCashflowCurrencies()
         {
-            return new List<Currency> { ccy };
+            return new List<Currency> {ccy};
         }
 
         public override List<Date> GetCashflowDates(Currency ccy)
         {
-            List<Date> dates = new List<Date>();
-            for (int i = 0; i < paymentDates.Length; i++)
-            {
-                if (paymentDates[i] > valueDate && (defaultTimeValue==null || paymentDates[i]<defaultTimeValue)) dates.Add(paymentDates[i]);
-            }
-            if (defaultTimeValue!=null && defaultTimeValue <= paymentDates.Last())
+            var dates = new List<Date>();
+            for (var i = 0; i < paymentDates.Length; i++)
+                if (paymentDates[i] > valueDate && (defaultTimeValue == null || paymentDates[i] < defaultTimeValue))
+                    dates.Add(paymentDates[i]);
+            if (defaultTimeValue != null && defaultTimeValue <= paymentDates.Last())
                 dates.Add(defaultTimeValue);
             return dates;
         }

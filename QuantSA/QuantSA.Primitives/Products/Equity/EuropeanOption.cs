@@ -1,47 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {
     [Serializable]
     public class EuropeanOption : Product
     {
-        private Date exerciseDate;
+        private readonly Date exerciseDate;
         private double fwdPrice;
-        private Share share;
-        private double strike;
+        private readonly Share share;
+        private readonly double strike;
         private Date valueDate;
 
         public EuropeanOption(Share share, double strike, Date exerciseDate)
         {
-            this.share = share; 
+            this.share = share;
             this.strike = strike;
             this.exerciseDate = exerciseDate;
         }
 
         public override List<Cashflow> GetCFs()
         {
-            double amount = Math.Max(0, fwdPrice - strike);
-            return new List<Cashflow>() {new Cashflow(exerciseDate, amount, share.currency) };
+            var amount = Math.Max(0, fwdPrice - strike);
+            return new List<Cashflow> {new Cashflow(exerciseDate, amount, share.currency)};
         }
 
         public override List<MarketObservable> GetRequiredIndices()
         {
-            return new List<MarketObservable> { share };
+            return new List<MarketObservable> {share};
         }
 
         public override List<Date> GetRequiredIndexDates(MarketObservable index)
         {
             if (valueDate <= exerciseDate)
-            {
-                return new List<Date> {exerciseDate };
-            }
-            else
-            {
-                return new List<Date>();
-            }
+                return new List<Date> {exerciseDate};
+            return new List<Date>();
         }
 
         public override void SetIndexValues(MarketObservable index, double[] indices)
@@ -61,12 +55,12 @@ namespace QuantSA.General
 
         public override List<Currency> GetCashflowCurrencies()
         {
-            return new List<Currency> { share.currency };
+            return new List<Currency> {share.currency};
         }
 
         public override List<Date> GetCashflowDates(Currency ccy)
         {
-            return new List<Date> { exerciseDate };
+            return new List<Date> {exerciseDate};
         }
     }
 }

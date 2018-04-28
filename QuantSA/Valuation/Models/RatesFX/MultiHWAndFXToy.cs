@@ -1,39 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.General;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
-using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.General;
 using QuantSA.General.Dates;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Valuation.Models
 {
     public class HWParams
     {
-        public double vol;
         public double meanReversionSpeed;
+        public double vol;
     }
 
     public class MultiHWAndFXToy : NumeraireSimulator
     {
-        private MultivariateNormalDistribution normal;
-        private Currency numeraireCcy;
-        private HullWhite1F numeraireSimulator;
-        private HullWhite1F[] rateSimulators;
-        private CurrencyPair[] currencyPairs;
-        private double[] spots;
-        private double[] vols;
-        private Date anchorDate;
-        private double[,] correlations;
-
-        private Dictionary<Currency, HullWhite1F> ccySimMap;
-
         private List<Date> allRequiredDates; // the set of all dates that will be simulated.
+        private readonly Date anchorDate;
+
+        private readonly Dictionary<Currency, HullWhite1F> ccySimMap;
+        private readonly double[,] correlations;
+        private readonly CurrencyPair[] currencyPairs;
+        private readonly MultivariateNormalDistribution normal;
+        private readonly Currency numeraireCcy;
+        private readonly HullWhite1F numeraireSimulator;
+        private readonly HullWhite1F[] rateSimulators;
         private Dictionary<int, double[]> simulation; // stores the simulated spot rates at each required date
+        private readonly double[] spots;
+        private readonly double[] vols;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiHWAndFXToy"/> class.
@@ -48,32 +44,32 @@ namespace QuantSA.Valuation.Models
         /// <param name="otherCcyHwParams"></param>
         /// <param name="correlations">The correlation matrix ordered by: numeraireRate, otherCcy1Rate, ..., otherCcyFX1, ...</param>
         /// <exception cref="System.ArgumentException">A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString()</exception>
-        public MultiHWAndFXToy(Date anchorDate, IDiscountingSource numeraireCurve, 
-            List<FloatingIndex> numeraireCcyRequiredIndices,  HWParams numeraireHWParams,
+        public MultiHWAndFXToy(Date anchorDate, IDiscountingSource numeraireCurve,
+            List<FloatingIndex> numeraireCcyRequiredIndices, HWParams numeraireHWParams,
             List<Currency> otherCcys, List<double> otherCcySpots, List<double> otherCcyVols,
-            List<IDiscountingSource> otherCcyCurves, List<List<FloatingIndex>> otherCcyRequiredIndices, 
+            List<IDiscountingSource> otherCcyCurves, List<List<FloatingIndex>> otherCcyRequiredIndices,
             List<HWParams> otherCcyHwParams,
             double[,] correlations)
         {
             this.anchorDate = anchorDate;
             numeraireCcy = numeraireCurve.GetCurrency();
 
-            List<HullWhite1F> rateSimulatorsList = new List<HullWhite1F>();
+            var rateSimulatorsList = new List<HullWhite1F>();
             ccySimMap = new Dictionary<Currency, HullWhite1F>();
-            double rate = -Math.Log(numeraireCurve.GetDF(anchorDate.AddMonths(12)));
+            var rate = -Math.Log(numeraireCurve.GetDF(anchorDate.AddMonths(12)));
             numeraireSimulator = new HullWhite1F(numeraireCcy, numeraireHWParams.meanReversionSpeed,
                 numeraireHWParams.vol, rate, rate, anchorDate);
-            foreach (FloatingIndex index in numeraireCcyRequiredIndices)
+            foreach (var index in numeraireCcyRequiredIndices)
                 numeraireSimulator.AddForecast(index);
 
             rateSimulatorsList.Add(numeraireSimulator);
             ccySimMap[numeraireCcy] = numeraireSimulator;
-            for (int i = 0; i<otherCcys.Count; i++)
+            for (var i = 0; i < otherCcys.Count; i++)
             {
                 rate = -Math.Log(otherCcyCurves[i].GetDF(anchorDate.AddMonths(12)));
-                HullWhite1F thisSim = new HullWhite1F(otherCcys[i], otherCcyHwParams[i].meanReversionSpeed,
+                var thisSim = new HullWhite1F(otherCcys[i], otherCcyHwParams[i].meanReversionSpeed,
                     otherCcyHwParams[i].vol, rate, rate, anchorDate);
-                foreach (FloatingIndex index in otherCcyRequiredIndices[i])
+                foreach (var index in otherCcyRequiredIndices[i])
                     thisSim.AddForecast(index);
                 rateSimulatorsList.Add(thisSim);
                 ccySimMap[otherCcys[i]] = thisSim;
@@ -98,7 +94,8 @@ namespace QuantSA.Valuation.Models
         /// <param name="vols"></param>
         /// <param name="correlations"></param>
         /// <exception cref="System.ArgumentException">A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString()</exception>
-        public MultiHWAndFXToy(Date anchorDate, Currency numeraireCcy, HullWhite1F[] rateSimulators, CurrencyPair[] currencyPairs, 
+        public MultiHWAndFXToy(Date anchorDate, Currency numeraireCcy, HullWhite1F[] rateSimulators,
+            CurrencyPair[] currencyPairs,
             double[] spots, double[] vols, double[,] correlations)
         {
             this.anchorDate = anchorDate;
@@ -111,23 +108,22 @@ namespace QuantSA.Valuation.Models
             normal = new MultivariateNormalDistribution(Vector.Zeros(currencyPairs.Length), correlations);
             numeraireSimulator = null;
             ccySimMap = new Dictionary<Currency, HullWhite1F>();
-            foreach (HullWhite1F simulator in rateSimulators)
+            foreach (var simulator in rateSimulators)
             {
-                if (simulator.GetNumeraireCurrency() == numeraireCcy)
-                {
-                    numeraireSimulator = simulator;
-                }
+                if (simulator.GetNumeraireCurrency() == numeraireCcy) numeraireSimulator = simulator;
                 ccySimMap[simulator.GetNumeraireCurrency()] = simulator;
             }
-            if (numeraireSimulator == null) throw new ArgumentException("A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString());
 
+            if (numeraireSimulator == null)
+                throw new ArgumentException("A rate simulator must be provided for the numeraire currency: " +
+                                            numeraireCcy);
         }
 
         public override Simulator Clone()
         {
-            HullWhite1F[] rateSimulatorsCopy = rateSimulators.Select(sim => (HullWhite1F)sim.Clone()).ToArray();
-            MultiHWAndFXToy model = new MultiHWAndFXToy(new Date(anchorDate), numeraireCcy, rateSimulatorsCopy, currencyPairs,
-                                                        spots, vols, correlations);
+            var rateSimulatorsCopy = rateSimulators.Select(sim => (HullWhite1F) sim.Clone()).ToArray();
+            var model = new MultiHWAndFXToy(new Date(anchorDate), numeraireCcy, rateSimulatorsCopy, currencyPairs,
+                spots, vols, correlations);
             model.allRequiredDates = allRequiredDates.Clone();
             return model;
         }
@@ -137,26 +133,25 @@ namespace QuantSA.Valuation.Models
         {
             if (index is FloatingIndex)
             {
-                foreach (HullWhite1F rateSimulator in rateSimulators)
-                {
-                    if (rateSimulator.ProvidesIndex(index)) return rateSimulator.GetIndices(index, requiredDates);
-                }
-                throw new ArgumentException(index.ToString() + " is not provided by any of the simulators.");
+                foreach (var rateSimulator in rateSimulators)
+                    if (rateSimulator.ProvidesIndex(index))
+                        return rateSimulator.GetIndices(index, requiredDates);
+                throw new ArgumentException(index + " is not provided by any of the simulators.");
             }
+
             if (index is CurrencyPair)
             {
-                int currencyPairIndex = currencyPairs.IndexOf(index);
-                double[] result = new double[requiredDates.Count];
-                for (int i = 0; i < requiredDates.Count; i++)
-                {
+                var currencyPairIndex = currencyPairs.IndexOf(index);
+                var result = new double[requiredDates.Count];
+                for (var i = 0; i < requiredDates.Count; i++)
                     if (requiredDates[i] == anchorDate)
                         result[i] = spots[currencyPairIndex];
                     else
                         result[i] = simulation[requiredDates[i]][currencyPairIndex];
-                }
                 return result;
             }
-            throw new ArgumentException(index.ToString() + " is not provided by this model.");
+
+            throw new ArgumentException(index + " is not provided by this model.");
         }
 
         public override Currency GetNumeraireCurrency()
@@ -166,19 +161,14 @@ namespace QuantSA.Valuation.Models
 
         public override double[] GetUnderlyingFactors(Date date)
         {
-            double[] factors = new double[currencyPairs.Length + rateSimulators.Length];
-            for (int i = 0; i < currencyPairs.Length; i++)
-            {
-                factors[i] = GetIndices(currencyPairs[i], new List<Date> { date })[0];
-            }
-            for (int i = 0; i < rateSimulators.Length; i++)
-            {
+            var factors = new double[currencyPairs.Length + rateSimulators.Length];
+            for (var i = 0; i < currencyPairs.Length; i++)
+                factors[i] = GetIndices(currencyPairs[i], new List<Date> {date})[0];
+            for (var i = 0; i < rateSimulators.Length; i++)
                 factors[i + currencyPairs.Length] = rateSimulators[i].GetUnderlyingFactors(date)[0];
-            }
             return factors;
         }
-        
-    
+
 
         public override double Numeraire(Date valueDate)
         {
@@ -187,7 +177,7 @@ namespace QuantSA.Valuation.Models
 
         public override void Prepare()
         {
-            foreach (HullWhite1F simulator in rateSimulators)
+            foreach (var simulator in rateSimulators)
                 simulator.Prepare();
             allRequiredDates = allRequiredDates.Distinct().ToList();
             allRequiredDates.Sort();
@@ -195,11 +185,9 @@ namespace QuantSA.Valuation.Models
 
         public override bool ProvidesIndex(MarketObservable index)
         {
-            foreach (HullWhite1F simulator in rateSimulators)
-            {
+            foreach (var simulator in rateSimulators)
                 if (simulator.ProvidesIndex(index))
                     return true;
-            }
             if (currencyPairs.Contains(index))
                 return true;
             return false;
@@ -207,53 +195,54 @@ namespace QuantSA.Valuation.Models
 
         public override void Reset()
         {
-            foreach (HullWhite1F simulator in rateSimulators)
+            foreach (var simulator in rateSimulators)
                 simulator.Reset();
             allRequiredDates = new List<Date>();
         }
 
         public override void RunSimulation(int simNumber)
         {
-            foreach (HullWhite1F simulator in rateSimulators)
+            foreach (var simulator in rateSimulators)
                 simulator.RunSimulation(simNumber);
             simulation = new Dictionary<int, double[]>();
-            double[] simPrices = spots.Copy();
-            double[] oldDrifts = Vector.Ones(simPrices.Length);
+            var simPrices = spots.Copy();
+            var oldDrifts = Vector.Ones(simPrices.Length);
 
-            for (int timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
+            for (var timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
             {
-                double dt = timeCounter > 0 ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1] : allRequiredDates[timeCounter] - anchorDate.value;
+                double dt = timeCounter > 0
+                    ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1]
+                    : allRequiredDates[timeCounter] - anchorDate.value;
                 dt = dt / 365.0;
-                double sdt = Math.Sqrt(dt);
-                double[] dW = normal.Generate();
+                var sdt = Math.Sqrt(dt);
+                var dW = normal.Generate();
 
-                for (int s = 0; s < currencyPairs.Length; s++)
+                for (var s = 0; s < currencyPairs.Length; s++)
                 {
-                    double drift = ccySimMap[currencyPairs[s].counterCurrency].Numeraire(allRequiredDates[timeCounter]) /
-                        ccySimMap[currencyPairs[s].baseCurrency].Numeraire(allRequiredDates[timeCounter]);
-                    
+                    var drift = ccySimMap[currencyPairs[s].counterCurrency].Numeraire(allRequiredDates[timeCounter]) /
+                                ccySimMap[currencyPairs[s].baseCurrency].Numeraire(allRequiredDates[timeCounter]);
+
                     simPrices[s] = simPrices[s] * drift / oldDrifts[s] *
-                        Math.Exp(( - 0.5 * vols[s] * vols[s]) * dt + vols[s] * sdt * dW[s]);
+                                   Math.Exp(-0.5 * vols[s] * vols[s] * dt + vols[s] * sdt * dW[s]);
                     oldDrifts[s] = drift;
                 }
+
                 simulation[allRequiredDates[timeCounter]] = simPrices.Copy();
             }
-
         }
 
         public override void SetNumeraireDates(List<Date> requiredDates)
         {
-            foreach (HullWhite1F simulator in rateSimulators)
+            foreach (var simulator in rateSimulators)
                 simulator.SetNumeraireDates(requiredDates);
             allRequiredDates.AddRange(requiredDates);
         }
 
         public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
         {
-            foreach (HullWhite1F simulator in rateSimulators)
-            {
-                if (simulator.ProvidesIndex(index)) simulator.SetRequiredDates(index, requiredDates);              
-            }
+            foreach (var simulator in rateSimulators)
+                if (simulator.ProvidesIndex(index))
+                    simulator.SetRequiredDates(index, requiredDates);
             allRequiredDates.AddRange(requiredDates);
             //if (index is CurrencyPair)
             //    allRequiredDates.AddRange(requiredDates);

@@ -1,6 +1,5 @@
 ﻿using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General.Conventions.BusinessDay
 {
@@ -25,10 +24,14 @@ namespace QuantSA.General.Conventions.BusinessDay
     public class Following : BusinessDayConvention
     {
         public static readonly Following Instance = new Following();
-        private Following() { }
+
+        private Following()
+        {
+        }
+
         public Date Adjust(Date date, Calendar calendar)
         {
-            Date newDate = new Date(date);
+            var newDate = new Date(date);
             while (!calendar.isBusinessDay(newDate))
                 newDate = newDate.AddDays(1);
             return newDate;
@@ -43,16 +46,21 @@ namespace QuantSA.General.Conventions.BusinessDay
     public class ModifiedFollowing : BusinessDayConvention
     {
         public static readonly ModifiedFollowing Instance = new ModifiedFollowing();
-        private ModifiedFollowing() { }
+
+        private ModifiedFollowing()
+        {
+        }
+
         public Date Adjust(Date date, Calendar calendar)
         {
-            Date newDate = new Date(date);
+            var newDate = new Date(date);
             while (!calendar.isBusinessDay(newDate))
             {
                 newDate = newDate.AddDays(1);
                 if (newDate.Month != date.Month)
                     return BusinessDayStore.Preceding.Adjust(date, calendar);
             }
+
             return newDate;
         }
     }
@@ -64,14 +72,15 @@ namespace QuantSA.General.Conventions.BusinessDay
     public class Preceding : BusinessDayConvention
     {
         public static readonly Preceding Instance = new Preceding();
-        private Preceding() { }
+
+        private Preceding()
+        {
+        }
+
         public Date Adjust(Date date, Calendar calendar)
         {
-            Date newDate = new Date(date);
-            while (!calendar.isBusinessDay(newDate))
-            {
-                newDate = newDate.AddDays(-1);
-            }
+            var newDate = new Date(date);
+            while (!calendar.isBusinessDay(newDate)) newDate = newDate.AddDays(-1);
             return newDate;
         }
     }
@@ -84,16 +93,21 @@ namespace QuantSA.General.Conventions.BusinessDay
     public class ModifiedPreceding : BusinessDayConvention
     {
         public static readonly ModifiedPreceding Instance = new ModifiedPreceding();
-        private ModifiedPreceding() { }
+
+        private ModifiedPreceding()
+        {
+        }
+
         public Date Adjust(Date date, Calendar calendar)
         {
-            Date newDate = new Date(date);
+            var newDate = new Date(date);
             while (!calendar.isBusinessDay(newDate))
             {
                 newDate = newDate.AddDays(-1);
                 if (newDate.Month != date.Month)
                     return BusinessDayStore.Following.Adjust(date, calendar);
             }
+
             return newDate;
         }
     }
@@ -105,7 +119,11 @@ namespace QuantSA.General.Conventions.BusinessDay
     public class Unadjusted : BusinessDayConvention
     {
         public static readonly Unadjusted Instance = new Unadjusted();
-        private Unadjusted() { }
+
+        private Unadjusted()
+        {
+        }
+
         public Date Adjust(Date date, Calendar calendar)
         {
             return new Date(date);

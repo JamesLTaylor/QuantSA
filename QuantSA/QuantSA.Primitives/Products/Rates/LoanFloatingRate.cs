@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
@@ -16,12 +12,30 @@ namespace QuantSA.General
     [Serializable]
     public class LoanFloatingRate : FloatLeg, IProvidesResultStore
     {
-        //TODO: Move float leg to a component rather than a base class.  See https://en.wikipedia.org/wiki/Composition_over_inheritance
-        private double spread;
         private FloatingIndex index;
+
         private List<Cashflow> notionalFlows;
 
-        public LoanFloatingRate() : base() { }
+        //TODO: Move float leg to a component rather than a base class.  See https://en.wikipedia.org/wiki/Composition_over_inheritance
+        private double spread;
+
+
+        /// <summary>
+        /// Some useful information for a user who has an instance of this class.
+        /// </summary>
+        /// <returns></returns>
+        public ResultStore GetResultStore()
+        {
+            var results = new ResultStore();
+            results.Add("id", id);
+            results.Add("type", type);
+            results.Add("ccy", ccy.ToString());
+            results.Add("floatIndex", index.ToString());
+            results.Add("spread", spread);
+            results.Add("loanDates", resetDates);
+            results.Add("loanBalances", notionals);
+            return results;
+        }
 
         /// <summary>
         /// Create a floating rate loan from a loan profile.  The first date in the profile is the disbursment date and 
@@ -35,10 +49,10 @@ namespace QuantSA.General
         /// even if the balances remain constant.</param>
         /// <param name="simpleFixedRate">Interest will be calculated simple </param>
         /// <returns></returns>
-        public static LoanFloatingRate CreateSimple(Date[] balanceDates, double[] balances, FloatingIndex index,  
+        public static LoanFloatingRate CreateSimple(Date[] balanceDates, double[] balances, FloatingIndex index,
             double spread, Currency ccy)
         {
-            LoanFloatingRate loan = new LoanFloatingRate();
+            var loan = new LoanFloatingRate();
             loan.valueDate = null;
             loan.ccy = ccy;
             loan.spread = spread;
@@ -50,19 +64,19 @@ namespace QuantSA.General
             loan.resetDates = new Date[balanceDates.Length - 1];
             loan.floatingIndices = new FloatingIndex[balanceDates.Length - 1];
             loan.spreads = new double[balanceDates.Length - 1];
-            loan.notionals = new double[balanceDates.Length - 1]; 
+            loan.notionals = new double[balanceDates.Length - 1];
             loan.accrualFractions = new double[balanceDates.Length - 1];
 
-            for (int i = 1; i < balances.Length; i++)
+            for (var i = 1; i < balances.Length; i++)
             {
                 loan.paymentDates[i - 1] = balanceDates[i];
-                loan.resetDates[i - 1] = balanceDates[i-1];
+                loan.resetDates[i - 1] = balanceDates[i - 1];
                 loan.floatingIndices[i - 1] = index;
                 loan.spreads[i - 1] = spread;
-                loan.notionals[i - 1] = balances[i-1];
+                loan.notionals[i - 1] = balances[i - 1];
                 loan.accrualFractions[i - 1] = (balanceDates[i] - balanceDates[i - 1]) / 365.0;
 
-                double notionalFlow = balances[i - 1] - balances[i];
+                var notionalFlow = balances[i - 1] - balances[i];
                 loan.notionalFlows.Add(new Cashflow(balanceDates[i], notionalFlow, ccy));
             }
 
@@ -77,33 +91,11 @@ namespace QuantSA.General
         /// <returns></returns>
         public override List<Cashflow> GetCFs()
         {
-            List<Cashflow> cfs = base.GetCFs();
-            foreach (Cashflow flow in notionalFlows)
-            {
+            var cfs = base.GetCFs();
+            foreach (var flow in notionalFlows)
                 if (flow.date > valueDate)
-                {
                     cfs.Add(flow);
-                }
-            }      
             return cfs;
-        }
-
-
-        /// <summary>
-        /// Some useful information for a user who has an instance of this class.
-        /// </summary>
-        /// <returns></returns>
-        public ResultStore GetResultStore()
-        {
-            ResultStore results = new ResultStore();
-            results.Add("id", id);
-            results.Add("type", type);
-            results.Add("ccy", ccy.ToString());
-            results.Add("floatIndex", index.ToString());
-            results.Add("spread", spread);
-            results.Add("loanDates", resetDates);
-            results.Add("loanBalances", notionals);
-            return results;
         }
     }
 }

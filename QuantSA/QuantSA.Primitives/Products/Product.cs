@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using QuantSA.Primitives.Dates;
-using QuantSA.Primitives.Dates;
 
 namespace QuantSA.General
 {
@@ -42,6 +41,7 @@ namespace QuantSA.General
         /// The identifier of the product instance.  
         /// </summary>
         public string id { get; protected set; } = "Not Set";
+
         public string type { get; protected set; } = "Not Set";
 
         /// <summary>
@@ -49,12 +49,12 @@ namespace QuantSA.General
         /// </summary>
         public virtual Product Clone()
         {
-            MemoryStream stream = new MemoryStream();
+            var stream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
             formatter.Serialize(stream, this);
             stream.Seek(0, SeekOrigin.Begin);
-            object o = formatter.Deserialize(stream);
-            return (Product)o;
+            var o = formatter.Deserialize(stream);
+            return (Product) o;
         }
 
 
@@ -117,10 +117,10 @@ namespace QuantSA.General
         /// <returns>A List of cashflows.  Under some circumstances it may be faster if these are ordered by 
         /// increasing time.</returns>
         public abstract List<Cashflow> GetCFs();
-
     }
 
-    public static class ProductExtensions {
+    public static class ProductExtensions
+    {
         /// <summary>
         /// Makes a deep copy of the List of <see cref="Product"/>s
         /// </summary>
@@ -128,13 +128,9 @@ namespace QuantSA.General
         /// <returns></returns>
         public static List<Product> Clone(this List<Product> originalPortfolio)
         {
-            List<Product> newPortfolio = new List<Product>();
-            foreach (Product p in originalPortfolio)
-            {
-                newPortfolio.Add(p.Clone());
-            }
+            var newPortfolio = new List<Product>();
+            foreach (var p in originalPortfolio) newPortfolio.Add(p.Clone());
             return newPortfolio;
         }
     }
-
 }
