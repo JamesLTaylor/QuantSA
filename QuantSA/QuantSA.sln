@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Core", "QuantSA.Cor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Excel", "Excel", "{BEE5AF9F-8D60-48A6-B938-6E07995ABDEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Core.Tests", "QuantSA.Core.Tests\QuantSA.Core.Tests.csproj", "{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,18 @@ Global
 		{65DA30BB-96AD-40A3-BB56-FEB27738C75A}.Release|x64.Build.0 = Release|Any CPU
 		{65DA30BB-96AD-40A3-BB56-FEB27738C75A}.Release|x86.ActiveCfg = Release|Any CPU
 		{65DA30BB-96AD-40A3-BB56-FEB27738C75A}.Release|x86.Build.0 = Release|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Debug|x64.Build.0 = Debug|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Release|x64.Build.0 = Release|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

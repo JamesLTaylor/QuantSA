@@ -1,11 +1,9 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
@@ -20,24 +18,20 @@ namespace QuantSA.General
         /// <exception cref="System.Exception">The defined type must derive from QuantSA.General.Product</exception>
         public static Product CreateFromSourceFile(string filename)
         {
-            CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            CompilerParameters parameters = new CompilerParameters();
-            parameters.GenerateInMemory = true;
-            string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.General.dll"));
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Valuation.dll"));
+            var codeProvider = CodeDomProvider.CreateProvider("CSharp");
+            var parameters = new CompilerParameters {GenerateInMemory = true};
+            var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            UpdateReferencedAssemblies(parameters, folder);
 
-            CompilerResults results = codeProvider.CompileAssemblyFromFile(parameters, new string[] { filename });
+            var results = codeProvider.CompileAssemblyFromFile(parameters, filename);
             ProcessErrors(results);
 
-            string typeName = results.CompiledAssembly.DefinedTypes.First().Name;
-            Type productType = results.CompiledAssembly.GetType(typeName);
+            var typeName = results.CompiledAssembly.DefinedTypes.First().Name;
+            var productType = results.CompiledAssembly.GetType(typeName);
             if (!typeof(Product).IsAssignableFrom(productType))
-            {
                 throw new Exception("The defined type must derive from QuantSA.General.Product");
-            }
 
-            return (Product)Activator.CreateInstance(productType);
+            return (Product) Activator.CreateInstance(productType);
         }
 
         /// <summary>
@@ -51,20 +45,18 @@ namespace QuantSA.General
         {
             if (results.Errors.Count > 0)
             {
-                StringBuilder errorMessage = new StringBuilder();
-                foreach (CompilerError CompErr in results.Errors)
-                {
-                    errorMessage.Append("Line number " + CompErr.Line +
-                                ", Error Number: " + CompErr.ErrorNumber +
-                                ", '" + CompErr.ErrorText + ";" +
-                                Environment.NewLine + Environment.NewLine);
-                }
+                var errorMessage = new StringBuilder();
+                foreach (CompilerError compErr in results.Errors)
+                    errorMessage.Append("Line number " + compErr.Line +
+                                        ", Error Number: " + compErr.ErrorNumber +
+                                        ", '" + compErr.ErrorText + ";" +
+                                        Environment.NewLine + Environment.NewLine);
                 throw new Exception(errorMessage.ToString());
             }
+
             if (results.CompiledAssembly.DefinedTypes.Count() > 1)
-            {
-                throw new Exception("Assembly must only define one type : A Class that extends QuantSA.General.Product.");
-            }
+                throw new Exception(
+                    "Assembly must only define one type : A Class that extends QuantSA.General.Product.");
         }
 
         /// <summary>
@@ -76,8 +68,8 @@ namespace QuantSA.General
         /// <returns></returns>        
         public static Product CreateFromScript(string filename)
         {
-            string sourceCode = File.ReadAllText(filename);
-            string productName = Path.GetFileNameWithoutExtension(filename);
+            var sourceCode = File.ReadAllText(filename);
+            var productName = Path.GetFileNameWithoutExtension(filename);
 
             return CreateFromString(productName, sourceCode);
         }
@@ -93,26 +85,30 @@ namespace QuantSA.General
         /// <exception cref="System.Exception">The defined type must derive from QuantSA.General.Product</exception>
         public static Product CreateFromString(string productName, string sourceCode)
         {
-            CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            CompilerParameters parameters = new CompilerParameters();
+            var codeProvider = CodeDomProvider.CreateProvider("CSharp");
+            var parameters = new CompilerParameters();
             parameters.GenerateInMemory = true;
-            string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.General.dll"));
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Valuation.dll"));
+            var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            UpdateReferencedAssemblies(parameters, folder);
 
-            string expandedSourceCode = Expand(productName, sourceCode);
+            var expandedSourceCode = Expand(productName, sourceCode);
 
-            CompilerResults results = codeProvider.CompileAssemblyFromSource(parameters, new string[] { expandedSourceCode });
+            var results = codeProvider.CompileAssemblyFromSource(parameters, expandedSourceCode);
             ProcessErrors(results);
 
-            string typeName = results.CompiledAssembly.DefinedTypes.First().Name;
-            Type productType = results.CompiledAssembly.GetType(typeName);
+            var typeName = results.CompiledAssembly.DefinedTypes.First().Name;
+            var productType = results.CompiledAssembly.GetType(typeName);
             if (!typeof(Product).IsAssignableFrom(productType))
-            {
                 throw new Exception("The defined type must derive from QuantSA.General.Product");
-            }
 
-            return (Product)Activator.CreateInstance(productType);
+            return (Product) Activator.CreateInstance(productType);
+        }
+
+        private static void UpdateReferencedAssemblies(CompilerParameters parameters, string folder)
+        {
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Primitives.dll"));
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Core.dll"));
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Valuation.dll"));
         }
 
         /// <summary>
@@ -124,7 +120,7 @@ namespace QuantSA.General
         /// <returns></returns>
         private static string Expand(string productName, string sourceCode)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine("using QuantSA.Valuation;");
             sb.AppendLine("using QuantSA.General; ");
             sb.AppendLine("using QuantSA.Primitives.Dates; ");

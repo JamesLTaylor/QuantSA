@@ -79,7 +79,6 @@
     <Compile Include="Conventions\Compounding\CompoundingTests.cs" />
     <Compile Include="Conventions\DayCount\DayCountTests.cs" />
     <Compile Include="Dates\CalendarTest.cs" />
-    <Compile Include="NelsonSiegelTest.cs" />
     <Compile Include="RatesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

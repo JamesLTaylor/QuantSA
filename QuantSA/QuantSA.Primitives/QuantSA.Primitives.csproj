@@ -89,7 +89,6 @@
     <Compile Include="Curves\ForecastCurveFromDiscount.cs" />
     <Compile Include="Curves\FXForecastCurve.cs" />
     <Compile Include="Curves\HazardCurve.cs" />
-    <Compile Include="Curves\NelsonSiegel.cs" />
     <Compile Include="Curves\SingleRate.cs" />
     <Compile Include="CurveTools\PCACurveSimulator.cs" />
     <Compile Include="CurveTools\ZARSwapCurveStripper.cs" />
