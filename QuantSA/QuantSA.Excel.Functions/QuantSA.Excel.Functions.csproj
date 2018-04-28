@@ -37,13 +37,6 @@
     <Reference Include="ExcelDna.Integration">
       <HintPath>..\packages\ExcelDna.Integration.0.33.9\lib\ExcelDna.Integration.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSA.Excel.Common">
-      <HintPath>..\ExcelCommon\bin\$(Configuration)\QuantSA.Excel.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="QuantSA.Valuation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Valuation\bin\$(Configuration)\QuantSA.Valuation.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -71,13 +64,25 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QuantSA.CoreExtensions\QuantSA.CoreExtensions.csproj">
+      <Project>{f8101f09-3abd-472e-a9a6-d3d45e748e06}</Project>
+      <Name>QuantSA.CoreExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuantSA.Core\QuantSA.Core.csproj">
       <Project>{65da30bb-96ad-40a3-bb56-feb27738c75a}</Project>
       <Name>QuantSA.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Excel.Shared\QuantSA.Excel.Shared.csproj">
+      <Project>{d71dfb97-e341-4dc8-b263-b2e81e5aaa60}</Project>
+      <Name>QuantSA.Excel.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>QuantSA.Primitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Valuation\QuantSA.Valuation.csproj">
+      <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
+      <Name>QuantSA.Valuation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
