@@ -3,26 +3,26 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuation", "Valuation\Valuation.csproj", "{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Valuation", "Valuation\QuantSA.Valuation.csproj", "{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValuationTest", "ValuationTest\ValuationTest.csproj", "{EC7E0D08-677B-41F0-82B6-20215FD6E395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Valuation.Test", "ValuationTest\QuantSA.Valuation.Test.csproj", "{EC7E0D08-677B-41F0-82B6-20215FD6E395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelFunctions", "ExcelFunctions\ExcelFunctions.csproj", "{CE3F5531-09EE-4829-9374-866835521E22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Excel.Functions", "ExcelFunctions\QuantSA.Excel.Functions.csproj", "{CE3F5531-09EE-4829-9374-866835521E22}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9} = {29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}
 		{BACDDAF1-3C62-47B3-8D28-ADF47264FE48} = {BACDDAF1-3C62-47B3-8D28-ADF47264FE48}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelAddin", "ExcelAddin\ExcelAddin.csproj", "{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Excel.Addin", "ExcelAddin\QuantSA.Excel.Addin.csproj", "{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}"
 	ProjectSection(ProjectDependencies) = postProject
 		{BACDDAF1-3C62-47B3-8D28-ADF47264FE48} = {BACDDAF1-3C62-47B3-8D28-ADF47264FE48}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelCommon", "ExcelCommon\ExcelCommon.csproj", "{BACDDAF1-3C62-47B3-8D28-ADF47264FE48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Excel.Shared", "ExcelCommon\QuantSA.Excel.Shared.csproj", "{BACDDAF1-3C62-47B3-8D28-ADF47264FE48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductExtensions", "ProductExtensions\ProductExtensions.csproj", "{F8101F09-3ABD-472E-A9A6-D3D45E748E06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.CoreExtensions", "ProductExtensions\QuantSA.CoreExtensions.csproj", "{F8101F09-3ABD-472E-A9A6-D3D45E748E06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductExtensionsTest", "ProductExtensionsTest\ProductExtensionsTest.csproj", "{553515B7-E5D5-46EB-8B25-94020EBDCEC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.CoreExtensions.Test", "ProductExtensionsTest\QuantSA.CoreExtensions.Test.csproj", "{553515B7-E5D5-46EB-8B25-94020EBDCEC1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F8101F09-3ABD-472E-A9A6-D3D45E748E06} = {F8101F09-3ABD-472E-A9A6-D3D45E748E06}
 	EndProjectSection
@@ -36,6 +36,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Excel", "Excel", "{BEE5AF9F-8D60-48A6-B938-6E07995ABDEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Core.Tests", "QuantSA.Core.Tests\QuantSA.Core.Tests.csproj", "{0DB3F8D5-1AFB-4FB5-8D90-E2F0F1B6BC64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{F6A3BD41-BDB4-4D06-8D85-39CA1C5E8ECD}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.md = ReadMe.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

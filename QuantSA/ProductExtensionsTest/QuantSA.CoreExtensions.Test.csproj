@@ -56,9 +56,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProductExtensions\ProductExtensions.csproj">
+    <ProjectReference Include="..\ProductExtensions\QuantSA.CoreExtensions.csproj">
       <Project>{f8101f09-3abd-472e-a9a6-d3d45e748e06}</Project>
-      <Name>ProductExtensions</Name>
+      <Name>QuantSA.CoreExtensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
