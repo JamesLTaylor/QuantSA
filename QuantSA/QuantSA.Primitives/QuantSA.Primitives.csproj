@@ -97,6 +97,7 @@
     <Compile Include="Dates\DateExtensions.cs" />
     <Compile Include="Dates\Date.cs" />
     <Compile Include="Dates\DateGenerators.cs" />
+    <Compile Include="Dates\Tenor.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Formulae\BlackEtc.cs" />
     <Compile Include="Formulae\JSEBondPrice.cs" />
@@ -107,6 +108,9 @@
     <Compile Include="IFXSource.cs" />
     <Compile Include="ISurvivalProbabilitySource.cs" />
     <Compile Include="IProvidesResultStore.cs" />
+    <Compile Include="MarketData\IDiscountingDescription.cs" />
+    <Compile Include="MarketData\IMarketDataContainer.cs" />
+    <Compile Include="MarketData\IMarketDataSource.cs" />
     <Compile Include="MarketObservable.cs" />
     <Compile Include="MarketObservables\CurrencyPair.cs" />
     <Compile Include="MarketObservables\DefaultRecovery.cs" />
@@ -136,10 +140,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceEntity.cs" />
     <Compile Include="ResultStore.cs" />
-    <Compile Include="Tenor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
