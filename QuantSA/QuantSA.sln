@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Core.Tests", "Quant
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{F6A3BD41-BDB4-4D06-8D85-39CA1C5E8ECD}"
 	ProjectSection(SolutionItems) = preProject
-		ReadMe.md = ReadMe.md
+		QuantSA.sln.readme.md = QuantSA.sln.readme.md
 	EndProjectSection
 EndProject
 Global

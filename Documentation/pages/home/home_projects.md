@@ -13,7 +13,7 @@ The sections below are ordered according to the order in which you would compile
 
 ## QuantSACore.sln
 
-The main library and tests.  No depedencies to the rest of QuantSA.
+The main library and tests.  No dependencies to the rest of QuantSA.
 
 ## QuantSAExcelCommon.sln
 

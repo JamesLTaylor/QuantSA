@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{72CE0E67-4D38-4F53-91A1-299F9E155558}"
+	ProjectSection(SolutionItems) = preProject
+		QuantSA.Main.sln.readme.md = QuantSA.Main.sln.readme.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuation", "Valuation\Valuation.csproj", "{29E7CAAC-BB40-44EE-ABAC-4C3812AA1AD9}"
 EndProject
