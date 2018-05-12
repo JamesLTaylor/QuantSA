@@ -1,6 +1,6 @@
 # Prepare the QuantSA library to be ready to make an Excel installer.
 
-This performs several custom steps.  (for now not all of them hacve been implemented which is why this is a checklist)
+This performs several custom steps.  (for now not all of them have been implemented which is why this is a checklist)
 
  - [x] Check that none of the Excel example sheets contain errors
  - [ ] Check that all scripts that get published run without error (the correctness of the output should be checked in the unit tests)

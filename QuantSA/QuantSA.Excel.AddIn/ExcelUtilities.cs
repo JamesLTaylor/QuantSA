@@ -337,8 +337,7 @@ namespace QuantSA.Excel
         {
             if (values.GetLength(0) != 1 || values.GetLength(1) != 1)
                 throw new ArgumentException($"{inputName} must be a single string referring to an existing object.");
-            var name = values[0, 0] as string;
-            if (name != null) return ObjectMap.Instance.GetObjectFromID<T>(name);
+            if (values[0, 0] is string name) return ObjectMap.Instance.GetObjectFromID<T>(name);
             throw new ArgumentException($"{inputName} must be a single string referring to an existing object.");
         }
 
@@ -553,7 +552,7 @@ namespace QuantSA.Excel
 
                 default:
                     throw new ArgumentException(
-                        strValue + " is not a known business day convention convention in input: " + inputName);
+                        strValue + " is not a known business day convention in input: " + inputName);
             }
         }
 

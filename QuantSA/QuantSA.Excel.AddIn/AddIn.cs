@@ -37,7 +37,7 @@ public class MyAddIn : IExcelAddIn
             //TODO: Check if newer version of addin exists.
 
             //Check if functions_all.csv is newer than functions_user.csv.  If it is then
-            //merge the new functions in and use that to hide or show inividual functions.
+            //merge the new functions in and use that to hide or show individual functions.
             UpdateUserFunctionFile();
 
             //Expose only those functions that appear in FunctionsFilenameUser with a true.  The
@@ -60,7 +60,7 @@ public class MyAddIn : IExcelAddIn
             string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
             string fileName = Path.Combine(pathString, "QuantSAError.txt");
             File.WriteAllText(fileName, e.ToString());
-            throw new Exception("An error occured while opening the QuantSA addin.  Check the error log file for details.");
+            throw new Exception("An error occurred while opening the QuantSA addin.  Check the error log file for details.");
         }
     }
 
@@ -92,7 +92,7 @@ public class MyAddIn : IExcelAddIn
 
             if (!quantsaAttribute.HasGeneratedVersion) // Make delegates for all but the methods that have generated versions of themselves
             {
-                //Create the delgate, Taken from: http://stackoverflow.com/a/16364220
+                //Create the delegate, Taken from: http://stackoverflow.com/a/16364220
                 Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
                         (from parameter in method.GetParameters() select parameter.ParameterType)
                         .Concat(new[] { method.ReturnType })
@@ -324,7 +324,7 @@ public class MyAddIn : IExcelAddIn
                 QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
                 if (attribute != null)
                 {
-                    if (attribute.HasGeneratedVersion) // if there is generated version then that will be used to constuct the delgate and this one will be used to get the help.
+                    if (attribute.HasGeneratedVersion) // if there is generated version then that will be used to construct the delgate and this one will be used to get the help.
                         quantSAFunctions["_" + attribute.Name] = member;
                     else
                         quantSAFunctions[attribute.Name] = member;
@@ -418,7 +418,7 @@ public class MyAddIn : IExcelAddIn
     /// </summary>
     private void UpdateDelgatesAndAtribs(MethodInfo method)
     {
-        //Create the delgate, Taken from: http://stackoverflow.com/a/16364220
+        //Create the delegate, Taken from: http://stackoverflow.com/a/16364220
         Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
                 (from parameter in method.GetParameters() select parameter.ParameterType)
                 .Concat(new[] { method.ReturnType })
