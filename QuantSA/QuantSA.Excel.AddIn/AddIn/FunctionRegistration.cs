@@ -46,7 +46,11 @@ namespace QuantSA.Excel.Addin.AddIn
                             }
                             else
                             {
+                                if (argAttrib.Name == null) argAttrib.Name = param.Name;
+                                argAttrib.Description = "(" + param.ParameterType.Name + ")" + argAttrib.Description;
                                 aAttr.Add(argAttrib);
+                                if (argAttrib.Default != string.Empty)
+                                    argAttrib.Description = "*" + argAttrib.Description + $"(Default value = {argAttrib.Default})";
                                 defaults.Add(argAttrib.Default);
                             }
                         }
