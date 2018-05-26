@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ExcelDna.Integration;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
@@ -10,11 +11,13 @@ namespace QuantSA.Excel.Addin.AddIn
     /// </summary>
     public class ExcelFunction
     {
+        private readonly int _argOffset;
         private readonly List<string> _defaultValues;
         private readonly MethodInfo _methodInfo;
 
-        public ExcelFunction(MethodInfo methodInfo, List<string> defaultValues)
+        public ExcelFunction(MethodInfo methodInfo, List<string> defaultValues, bool putOnMap)
         {
+            _argOffset = putOnMap ? 1 : 0;
             if (defaultValues.Count != methodInfo.GetParameters().Length)
                 throw new Exception("defaults must have the same length.");
             _methodInfo = methodInfo;
@@ -26,12 +29,29 @@ namespace QuantSA.Excel.Addin.AddIn
             try
             {
                 var convertedInputs = new List<object>();
-                for (var i = 0; i < inputs.Length; i++)
+                for (var i = 0; i < inputs.Length - _argOffset; i++)
+                {
+                    var paramName = _methodInfo.GetParameters()[i].Name;
+                    var inputAsMatrix = inputs[i + _argOffset] as object[,];
+                    if (inputAsMatrix[0, 0] is ExcelMissing && _defaultValues[i] == string.Empty)
+                        throw new ArgumentException($"{paramName}: Is left blank but is not optional.");
                     convertedInputs.Add(ExcelTypeConverter.ConvertInput(_methodInfo.GetParameters()[i].ParameterType,
-                        inputs[i] as object[,],
-                        _methodInfo.GetParameters()[i].Name, _defaultValues[i]));
+                        inputAsMatrix,
+                        paramName, _defaultValues[i]));
+                }
+
                 var output = _methodInfo.Invoke(null, convertedInputs.ToArray());
-                return ExcelTypeConverter.ConvertOuput(_methodInfo.ReturnType, output);
+                var outputName = GetOutputName(inputs[0]);
+                return ExcelTypeConverter.ConvertOuput(_methodInfo.ReturnType, output, outputName);
+            }
+            catch (TargetInvocationException e)
+            {
+                var result = new object[1, 1];
+                if (e.InnerException != null)
+                    result[0, 0] = "ERROR: " + e.InnerException.Message;
+                else
+                    result[0, 0] = "ERROR: " + e.Message;
+                return result;
             }
             catch (Exception e)
             {
@@ -39,12 +59,20 @@ namespace QuantSA.Excel.Addin.AddIn
                 result[0, 0] = "ERROR: " + e.Message;
                 return result;
             }
+        }
 
+        private string GetOutputName(object input)
+        {
+            if (_argOffset == 0) return null;
+            var inputAsMatrix = input as object[,];
+            if (inputAsMatrix.GetLength(0) > 1 || inputAsMatrix.GetLength(1) > 1)
+                throw new ArgumentException("Object name must be a single cell or value typed into the formula.");
+            return inputAsMatrix[0, 0] as string;
         }
 
         public Delegate GetDelegate()
         {
-            switch (_methodInfo.GetParameters().Length)
+            switch (_methodInfo.GetParameters().Length + _argOffset)
             {
                 case 0:
                     return new XLDelegate00(() => Eval());

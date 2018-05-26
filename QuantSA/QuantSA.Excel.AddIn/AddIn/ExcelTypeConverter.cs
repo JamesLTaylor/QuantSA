@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ExcelDna.Integration;
+using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 
 namespace QuantSA.Excel.Addin.AddIn
@@ -39,20 +40,27 @@ namespace QuantSA.Excel.Addin.AddIn
             }
         }
 
-        public static bool CanConvert(Type requiredType)
+        /// <summary>
+        /// Does a converter for inputs of this type exist?
+        /// </summary>
+        /// <param name="requiredType"></param>
+        /// <returns></returns>
+        public static bool CanConvertInputOfType(Type requiredType)
         {
-            if (requiredType.IsArray 
-                && InputConverters.ContainsKey(requiredType.GetElementType()))
+            var typeToCheck = requiredType;
+            if (requiredType.IsArray)
+                typeToCheck = requiredType.GetElementType();
+            else if (typeof(IEnumerable).IsAssignableFrom(requiredType)
+                     && !typeof(string).IsAssignableFrom(requiredType))
+                typeToCheck = requiredType.GetGenericArguments()[0];
+            if (typeToCheck==null)
+                throw new ArgumentException($"{requiredType.FullName} seems to be an array or enumerable but I can not find the element type.");
+
+            if (InputConverters.ContainsKey(typeToCheck))
                 return true;
-            if (typeof(IEnumerable).IsAssignableFrom(requiredType)
-                && !typeof(string).IsAssignableFrom(requiredType)
-                && InputConverters.ContainsKey(requiredType.GetGenericArguments()[0]))
+            if (typeToCheck.IsPrimitive)
                 return true;
-            if (InputConverters.ContainsKey(requiredType))
-                return true;
-            if (requiredType.IsPrimitive)
-                return true;
-            if (IsNullablePrimitive(requiredType))
+            if (IsNullablePrimitive(typeToCheck))
                 return true;
             return false;
         }
@@ -134,12 +142,18 @@ namespace QuantSA.Excel.Addin.AddIn
         private static object ConvertInputScalar(Type requiredType, object input, string inputName,
             string defaultValue)
         {
-            if (input is ExcelMissing) input = null;
+            if (input is ExcelMissing || input is ExcelEmpty) input = null;
             if (IsNullablePrimitive(requiredType)) return input;
-            if (requiredType.IsPrimitive) return input;
+            if (requiredType.IsPrimitive && input != null) return input;
+            if (requiredType.IsPrimitive && input == null) return Activator.CreateInstance(requiredType);
             if (InputConverters.ContainsKey(requiredType))
                 return InputConverters[requiredType].Convert(input, inputName, defaultValue);
-            // TODO : get from object map
+            if (!CanConvertInputOfType(requiredType))
+            {
+                if (input is string objName)
+                    return ObjectMap.Instance.GetObjectFromID<object>(objName);
+            }
+
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
         }
 
@@ -150,7 +164,7 @@ namespace QuantSA.Excel.Addin.AddIn
                    && requiredType.GetGenericArguments().Any(t => t.IsPrimitive);
         }
 
-        public static object[,] ConvertOuput(Type suppliedType, object output)
+        public static object[,] ConvertOuput(Type suppliedType, object output, string outputName)
         {
             if (suppliedType.IsArray && suppliedType.GetArrayRank() == 1)
                 return ConvertOutputArray1D(suppliedType, output);
@@ -158,21 +172,23 @@ namespace QuantSA.Excel.Addin.AddIn
                 return ConvertOutputMatrix(suppliedType, output);
             if (typeof(IEnumerable).IsAssignableFrom(suppliedType) && !typeof(string).IsAssignableFrom(suppliedType))
                 return ConverOutputIEnumerable(suppliedType, output);
-            return ConvertOutputScalarTo2D(suppliedType, output);
+            return ConvertOutputScalarTo2D(suppliedType, output, outputName);
         }
 
-        private static object ConvertOutputScalar(Type suppliedType, object output)
+        private static object ConvertOutputScalar(Type suppliedType, object output, string outputName)
         {
+            if (!CanConvertInputOfType(suppliedType))
+                return ObjectMap.Instance.AddObject(outputName, output);
             if (suppliedType.IsPrimitive) return output;
             if (OutputConverters.ContainsKey(suppliedType))
                 return OutputConverters[suppliedType].Convert(output);
             throw new ArgumentException($"No converter for type: {suppliedType.Name}.");
         }
 
-        private static object[,] ConvertOutputScalarTo2D(Type suppliedType, object output)
+        private static object[,] ConvertOutputScalarTo2D(Type suppliedType, object output, string outputName)
         {
             var result = new object[1, 1];
-            result[0, 0] = ConvertOutputScalar(suppliedType, output);
+            result[0, 0] = ConvertOutputScalar(suppliedType, output, outputName);
             return result;
         }
 

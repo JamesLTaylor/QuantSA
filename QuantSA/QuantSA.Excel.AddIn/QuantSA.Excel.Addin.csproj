@@ -90,6 +90,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Ribbon.cs" />
+    <Compile Include="TypeConverters\Primitives.cs" />
     <Compile Include="TypeConverters\Conventions.cs" />
     <Compile Include="XLGeneral.cs" />
   </ItemGroup>

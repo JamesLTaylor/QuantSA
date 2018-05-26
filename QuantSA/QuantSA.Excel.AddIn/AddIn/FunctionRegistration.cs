@@ -32,6 +32,13 @@ namespace QuantSA.Excel.Addin.AddIn
                         if (method == null)
                             throw new ArgumentException(
                                 $"{excelFuncAttr.Name} is marked with a QuantSAExcelFunctionAttribute but is not a method");
+                        var putOnMap = !ExcelTypeConverter.CanConvertInputOfType(method.ReturnType);
+                        if (putOnMap)
+                            aAttr.Add(new ExcelArgumentAttribute
+                            {
+                                Name = "objectName",
+                                Description = "The name that this object will be assigned on the map.  Should be unique."
+                            });
                         foreach (var param in method.GetParameters())
                         {
                             var argAttrib = param.GetCustomAttribute<QuantSAExcelArgumentAttribute>();
@@ -42,7 +49,7 @@ namespace QuantSA.Excel.Addin.AddIn
                                     Name = param.Name,
                                     Description = param.ParameterType.Name
                                 });
-                                defaults.Add(null);
+                                defaults.Add(string.Empty);
                             }
                             else
                             {
@@ -57,13 +64,14 @@ namespace QuantSA.Excel.Addin.AddIn
 
                         var dnaFuncAttr = excelFuncAttr.CreateExcelFunctionAttribute();
                         if (dnaFuncAttr.Name == null) dnaFuncAttr.Name = method.Name;
-                        var excelFunction = new ExcelFunction(method, defaults);
+                        var excelFunction = new ExcelFunction(method, defaults, putOnMap);
                         delegates.Add(excelFunction.GetDelegate());
                         functionAttributes.Add(dnaFuncAttr);
                         functionArgumentAttributes.Add(aAttr);
                     }
                 }
             }
+
             ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
     }

@@ -63,7 +63,7 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(
                 Description =
                     "Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency.",
-                Default = "Currency.ANY")]
+                Default = "ANY")]
             Currency currency)
         {
             return new DatesAndRates(currency, dates[0], dates, rates);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuantSA.Excel.Shared;
 
 namespace QuantSA.Excel.Common
 {
@@ -64,11 +65,12 @@ namespace QuantSA.Excel.Common
             return uniqueID;
         }
 
-        public T GetObjectFromID<T>(string objectName)
+        public T GetObjectFromID<T>([NotNull]string objectName)
         {
+            if (objectName == null) throw new ArgumentNullException(nameof(objectName));
             var obj = Instance.GetObjectFromID(objectName);
-            if (obj is T)
-                return (T) obj;
+            if (obj is T variable)
+                return variable;
             throw new ArgumentException(objectName + " is not of required type: " + typeof(T));
         }
 
