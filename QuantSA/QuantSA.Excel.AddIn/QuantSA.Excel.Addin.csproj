@@ -76,6 +76,8 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="AddIn.cs" />
+    <Compile Include="AddIn\ExcelFunction.cs" />
+    <Compile Include="AddIn\ExcelTypeConverter.cs" />
     <Compile Include="ExcelUtilities.cs" />
     <Compile Include="ExcelMessage.xaml.cs">
       <DependentUpon>ExcelMessage.xaml</DependentUpon>
@@ -102,7 +104,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="QuantSA.dna">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="QuantSA.xll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

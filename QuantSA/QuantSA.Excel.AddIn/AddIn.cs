@@ -15,7 +15,7 @@ using System.Drawing;
 /// 
 /// </summary>
 /// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
-public class MyAddIn : IExcelAddIn
+public class AddIn : IExcelAddIn
 {
     string FunctionsFilenameAll = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_all.csv"; // updated in build to include all functions and default visibility
     string FunctionsFilenameUser = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_user.csv"; // user editable to control which function appear
@@ -60,7 +60,9 @@ public class MyAddIn : IExcelAddIn
             string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
             string fileName = Path.Combine(pathString, "QuantSAError.txt");
             File.WriteAllText(fileName, e.ToString());
-            throw new Exception("An error occurred while opening the QuantSA addin.  Check the error log file for details.");
+            throw new Exception("An error occurred while opening the QuantSA addin.\n" +
+                                "Check the error log file for details.\n\n" +
+                                $"{fileName}");
         }
     }
 
@@ -376,7 +378,7 @@ public class MyAddIn : IExcelAddIn
             {
                 IQuantSAPlugin plugin = Activator.CreateInstance(type) as IQuantSAPlugin;
                 shortName = plugin.GetShortName();
-                MyAddIn.plugins.Add(plugin);
+                AddIn.plugins.Add(plugin);
             }
         }
         if (shortName == null)

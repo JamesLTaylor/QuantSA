@@ -555,7 +555,7 @@ namespace QuantSA.Excel
                         strValue + " is not a known business day convention in input: " + inputName);
             }
         }
-
+        
 
         public static DayCountConvention GetDayCountConventionFromString(string strValue, string inputName)
         {
