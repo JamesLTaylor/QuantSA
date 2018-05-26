@@ -131,21 +131,6 @@ xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEve
   -->
   <Import Project="$(SolutionDir)\packages\MSBuildTasks.1.5.0.214\tools\MSBuild.Community.Tasks.Targets" />
   <ItemGroup>
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.Math.Core.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.Math.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.Statistics.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\ExcelDna.Integration.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\MathNet.Numerics.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Core.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Excel.Addin.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Excel.Common.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.ExcelFunctions.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Primitives.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.ProductExtensions.dll" />
-    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Valuation.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

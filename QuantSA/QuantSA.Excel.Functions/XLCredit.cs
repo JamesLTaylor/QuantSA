@@ -1,6 +1,7 @@
 ﻿using QuantSA.General;
 using QuantSA.Valuation;
 using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.ExcelFunctions

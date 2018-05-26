@@ -1,33 +1,36 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using QuantSA.Excel.Common;
+using System.Linq;
+using ExcelDna.Integration;
+using QuantSA.Excel.Shared;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
+    /// <summary>
+    /// The top level input and output converter.  It is populated via reflection over the
+    /// QuantSA assemblies to find all the specific type converters that implement
+    /// <see cref="IInputConverter"/> and <see cref="IOutputConverter"/>.
+    /// </summary>
     public static class ExcelTypeConverter
     {
+        private static readonly Dictionary<Type, IInputConverter> InputConverters =
+            new Dictionary<Type, IInputConverter>();
 
-        private static readonly Dictionary<Type, ConverterDelegates.InputConverter0> InputConverters0 =
-            new Dictionary<Type, ConverterDelegates.InputConverter0>();
+        private static readonly Dictionary<Type, IOutputConverter> OutputConverters =
+            new Dictionary<Type, IOutputConverter>();
 
-        private static readonly Dictionary<Type, ConverterDelegates.InputConverterFull> InputConvertersFull =
-            new Dictionary<Type, ConverterDelegates.InputConverterFull>();
-
-        private static readonly Dictionary<Type, ConverterDelegates.OutputConverter0> OutputConverters0 =
-            new Dictionary<Type, ConverterDelegates.OutputConverter0>();
-
-        public static void AddInputConverter(Type requiredType, MethodInfo converterMethodInfo)
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void AddInputConverter(IInputConverter converter)
         {
-            var converter = Delegate.CreateDelegate(typeof(ConverterDelegates.InputConverter0), converterMethodInfo) as ConverterDelegates.InputConverter0;
-            InputConverters0[requiredType] = converter;
+            InputConverters[converter.RequiredType] = converter;
         }
 
-        public static void AddOutputConverter(Type suppliedType, MethodInfo converterMethodInfo)
+        public static void AddOutputConverter(IOutputConverter converter)
         {
-            var converter = Delegate.CreateDelegate(typeof(ConverterDelegates.OutputConverter0), converterMethodInfo) as ConverterDelegates.OutputConverter0;
-            OutputConverters0[suppliedType] = converter;
+            OutputConverters[converter.SuppliedType] = converter;
         }
 
         public static object ConvertInput(Type requiredType, object[,] input, string inputName,
@@ -47,7 +50,7 @@ namespace QuantSA.Excel.Addin.AddIn
         {
             var elementType = requiredType.GetGenericArguments()[0];
             var genericListType = typeof(List<>).MakeGenericType(elementType);
-            var newList = (IList)Activator.CreateInstance(genericListType);
+            var newList = (IList) Activator.CreateInstance(genericListType);
             for (var i = 0; i < input.GetLength(0); i++)
                 newList.Add(ConvertInputScalar(elementType, input[i, 0], inputName, defaultValue));
             return newList;
@@ -57,11 +60,11 @@ namespace QuantSA.Excel.Addin.AddIn
             string defaultValue)
         {
             var elementType = requiredType.GetElementType();
-            var size = new[] { input.GetLength(0), input.GetLength(1) };
+            var size = new[] {input.GetLength(0), input.GetLength(1)};
             var matrix = Array.CreateInstance(elementType, size);
             for (var i = 0; i < input.GetLength(0); i++)
-                for (var j = 0; i < input.GetLength(1); j++)
-                    matrix.SetValue(ConvertInputScalar(elementType, input[i, 0], inputName, defaultValue), new[] { i, j });
+            for (var j = 0; i < input.GetLength(1); j++)
+                matrix.SetValue(ConvertInputScalar(elementType, input[i, 0], inputName, defaultValue), new[] {i, j});
             return matrix;
         }
 
@@ -96,13 +99,34 @@ namespace QuantSA.Excel.Addin.AddIn
             return ConvertInputScalar(requiredType, input[0, 0], inputName, defaultValue);
         }
 
+        /// <summary>
+        /// All input conversions ultimately come through this point.
+        /// </summary>
+        /// <param name="requiredType"></param>
+        /// <param name="input"></param>
+        /// <param name="inputName"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
         private static object ConvertInputScalar(Type requiredType, object input, string inputName,
             string defaultValue)
         {
+            if (input is ExcelMissing) input = null;
+            if (requiredType.IsGenericType
+                && requiredType.GetGenericTypeDefinition() == typeof(Nullable<>)
+                && requiredType.GetGenericArguments().Any(t => t.IsPrimitive))
+            {
+                return input;
+            }
             if (requiredType.IsPrimitive) return input;
-            if (InputConverters0.ContainsKey(requiredType))
-                return InputConverters0[requiredType](input, inputName, defaultValue);
+            if (InputConverters.ContainsKey(requiredType))
+                return InputConverters[requiredType].Convert(input, inputName, defaultValue);
+            // TODO : get from object map
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
+        }
+
+        private static object ConvertPrimitive(Type requiredType, object input, string inputName, string defaultValue)
+        {
+            return input;
         }
 
 
@@ -120,8 +144,8 @@ namespace QuantSA.Excel.Addin.AddIn
         private static object ConvertOutputScalar(Type suppliedType, object output)
         {
             if (suppliedType.IsPrimitive) return output;
-            if (OutputConverters0.ContainsKey(suppliedType))
-                return OutputConverters0[suppliedType](output);
+            if (OutputConverters.ContainsKey(suppliedType))
+                return OutputConverters[suppliedType].Convert(output);
             throw new ArgumentException($"No converter for type: {suppliedType.Name}.");
         }
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{D71DFB97-E341-4DC8-B263-B2E81E5AAA60}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantSA.Excel.Common</RootNamespace>
-    <AssemblyName>QuantSA.Excel.Common</AssemblyName>
+    <RootNamespace>QuantSA.Excel.Shared</RootNamespace>
+    <AssemblyName>QuantSA.Excel.Shared</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -47,8 +47,10 @@
     <Compile Include="..\AssemblyInfoAll.cs">
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
-    <Compile Include="ConverterDelegates.cs" />
-    <Compile Include="ExcelAttributes.cs" />
+    <Compile Include="IOutputConverter.cs" />
+    <Compile Include="IInputConverter.cs" />
+    <Compile Include="QuantSAExcelArgumentAttribute.cs" />
+    <Compile Include="QuantSAExcelFunctionAttribute.cs" />
     <Compile Include="IQuantSAPlugin.cs" />
     <Compile Include="ObjectMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

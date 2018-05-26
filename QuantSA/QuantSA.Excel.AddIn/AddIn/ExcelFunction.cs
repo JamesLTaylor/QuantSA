@@ -4,39 +4,10 @@ using System.Reflection;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
-    public delegate object[,] XLDelegate00();
-
-    public delegate object[,] XLDelegate01(object[,] arg1);
-
-    public delegate object[,] XLDelegate02(object[,] arg1, object[,] arg2);
-
-    public delegate object[,] XLDelegate03(object[,] arg1, object[,] arg2, object[,] arg3);
-
-    public delegate object[,] XLDelegate04(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4);
-
-    public delegate object[,] XLDelegate05(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5);
-
-    public delegate object[,] XLDelegate06(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5, object[,] arg6);
-
-    public delegate object[,] XLDelegate07(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5, object[,] arg6, object[,] arg7);
-
-    public delegate object[,] XLDelegate08(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8);
-
-    public delegate object[,] XLDelegate09(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9);
-
-    public delegate object[,] XLDelegate10(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9, object[,] arg10);
-
-    public delegate object[,] XLDelegate11(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
-        object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9, object[,] arg10,
-        object[,] arg11);
-
-
+    /// <summary>
+    /// A general Excel function that wraps QuantSA functions and handles the conversion of input
+    /// and output types to Excel primitives.
+    /// </summary>
     public class ExcelFunction
     {
         private readonly List<string> _defaultValues;
@@ -111,9 +82,40 @@ namespace QuantSA.Excel.Addin.AddIn
                     return new XLDelegate11((in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11)
                         => Eval(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11));
                 default:
-                    throw new ArgumentOutOfRangeException(
-                        "QuantSA can only handle Excel functions with up to 11 inputs.");
+                    throw new ArgumentException("QuantSA can only handle Excel functions with up to 11 inputs.");
             }
         }
+
+        private delegate object[,] XLDelegate00();
+
+        private delegate object[,] XLDelegate01(object[,] arg1);
+
+        private delegate object[,] XLDelegate02(object[,] arg1, object[,] arg2);
+
+        private delegate object[,] XLDelegate03(object[,] arg1, object[,] arg2, object[,] arg3);
+
+        private delegate object[,] XLDelegate04(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4);
+
+        private delegate object[,] XLDelegate05(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5);
+
+        private delegate object[,] XLDelegate06(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5, object[,] arg6);
+
+        private delegate object[,] XLDelegate07(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5, object[,] arg6, object[,] arg7);
+
+        private delegate object[,] XLDelegate08(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8);
+
+        private delegate object[,] XLDelegate09(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9);
+
+        private delegate object[,] XLDelegate10(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9, object[,] arg10);
+
+        private delegate object[,] XLDelegate11(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+            object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9, object[,] arg10,
+            object[,] arg11);
     }
 }

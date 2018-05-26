@@ -1,5 +1,6 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.Primitives.Dates;
 

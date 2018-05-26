@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using ExcelDna.Integration;
 using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
     /// <summary>
     /// An object that can collect all the functions with the <see cref="ExcelFunctionAttribute"/> and
-    /// converters with the Excel input and output converter attributes: <see cref="ExcelInputConverter0Attribute"/>,
-    /// <see cref="ExcelOutputConverter0Attribute"/>.
+    /// converters that implement <see cref="IInputConverter"/> or <see cref="IOutputConverter"/>.
     /// </summary>
     public class Registration
     {
@@ -24,14 +24,25 @@ namespace QuantSA.Excel.Addin.AddIn
             _functionArgumentAttributes = new List<List<object>>();
         }
 
-        public void AddFunctionsAndConverters(Assembly assembly)
+        public void RegisterTypeConverters(Assembly assembly)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
+                if (typeof(IInputConverter).IsAssignableFrom(type))
+                {
+                    var converter = Activator.CreateInstance(type) as IInputConverter;
+                        ExcelTypeConverter.AddInputConverter(converter);
+                }
+            }
+        }
+
+        public void CollectFunctions(Assembly assembly)
         {
             var types = assembly.GetTypes();
             foreach (var type in types)
             {
                 if (!type.IsPublic) continue;
-                var members = type.GetMembers();
-                foreach (var member in members)
+                foreach (var member in type.GetMembers())
                 {
                     var excelFuncAttr = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
                     if (excelFuncAttr != null)
@@ -68,18 +79,11 @@ namespace QuantSA.Excel.Addin.AddIn
                         _functionAttributes.Add(dnaFuncAttr);
                         _functionArgumentAttributes.Add(aAttr);
                     }
-
-                    var inputConverterAttr = member.GetCustomAttribute<ExcelInputConverter0Attribute>();
-                    if (inputConverterAttr != null)
-                        ExcelTypeConverter.AddInputConverter(inputConverterAttr.RequiredType, member as MethodInfo);
-                    var outputConverterAttr = member.GetCustomAttribute<ExcelOutputConverter0Attribute>();
-                    if (outputConverterAttr != null)
-                        ExcelTypeConverter.AddOutputConverter(outputConverterAttr.SuppliedType, member as MethodInfo);
                 }
             }
         }
 
-        public void Register()
+        public void RegisterFunctions()
         {
             ExcelIntegration.RegisterDelegates(_delegates, _functionAttributes, _functionArgumentAttributes);
         }

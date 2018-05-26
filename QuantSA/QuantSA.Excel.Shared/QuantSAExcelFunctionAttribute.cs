@@ -1,27 +1,8 @@
 ﻿using System;
 using ExcelDna.Integration;
 
-namespace QuantSA.Excel.Common
+namespace QuantSA.Excel.Shared
 {
-    /// <summary>
-    /// Marks a method that converts an object coming from excel to one of
-    /// type <see cref="RequiredType"/>.  The method must have a signature that matches
-    /// <see cref="ConverterDelegates.InputConverter0"/>.
-    /// </summary>
-    public class ExcelInputConverter0Attribute : Attribute
-    {
-        public Type RequiredType;
-    }
-
-    /// <summary>
-    /// Marks a method that converts an object coming from QuantSA or a plug in to a type that
-    /// Excel can handle.
-    /// </summary>
-    public class ExcelOutputConverter0Attribute : Attribute
-    {
-        public Type SuppliedType;
-    }
-
     /// <summary>
     /// This Attribute is a replica of <see cref="ExcelFunctionAttribute"/> but the functions in 
     /// QuantSA have this attribute so that the ExcelDNA does not automatically expose them.  The
@@ -80,16 +61,5 @@ namespace QuantSA.Excel.Common
                 ExplicitRegistration = ExplicitRegistration
             };
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public class QuantSAExcelArgumentAttribute : ExcelArgumentAttribute
-    {
-        /// <summary>
-        /// The default value of this parameter.  It will be passed verbatim to the Excelutilities 
-        /// conversion method and so its form must depend on what the conversions method for this
-        /// type of parameter expects.
-        /// </summary>
-        public string Default = null;
     }
 }

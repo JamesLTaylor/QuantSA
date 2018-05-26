@@ -1,5 +1,6 @@
 ﻿using System;
 using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.Compounding;
 using QuantSA.General.Conventions.DayCount;

@@ -4,6 +4,7 @@ using QuantSA.Excel.Common;
 using QuantSA.Valuation.Models;
 using QuantSA.Valuation;
 using System.Linq;
+using QuantSA.Excel.Shared;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.ExcelFunctions

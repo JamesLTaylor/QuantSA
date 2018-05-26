@@ -10,6 +10,7 @@ using ExcelDna.Integration;
 using QuantSA.Excel;
 using QuantSA.Excel.Addin.AddIn;
 using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.ExcelFunctions;
 
 /// <summary>
@@ -61,9 +62,17 @@ public class AddIn : IExcelAddIn
                 plugin.SetInstance(plugin);
             }
             var registration = new Registration();
-            registration.AddFunctionsAndConverters(Assembly.GetAssembly(typeof(XLEquities)));
-            registration.AddFunctionsAndConverters(Assembly.GetAssembly(typeof(AddIn)));
-            registration.Register();
+            var assemblies = new[]
+            {
+                Assembly.GetAssembly(typeof(XLEquities)),
+                Assembly.GetAssembly(typeof(AddIn))
+            };
+            foreach (var assembly in assemblies)
+            {
+                registration.CollectFunctions(assembly);
+                registration.RegisterTypeConverters(assembly);
+            }
+            registration.RegisterFunctions();
             //ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
         catch (Exception e)

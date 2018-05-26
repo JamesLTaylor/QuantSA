@@ -5,6 +5,7 @@ using System.Linq;
 using QuantSA.General;
 using QuantSA.Valuation;
 using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.General.Dates;
 using QuantSA.General.Products.Rates;
 using QuantSA.Primitives.Dates;

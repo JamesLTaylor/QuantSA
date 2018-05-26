@@ -1,5 +1,5 @@
 ﻿using System;
-using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.General.Conventions.Compounding;
 
 namespace QuantSA.ExcelFunctions
@@ -21,26 +21,28 @@ namespace QuantSA.ExcelFunctions
             CompoundingConvention compoundingTo,
             [QuantSAExcelArgument(
                 Description =
-                    "(Optional) The yearfraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'",
-                Default = "double.NaN")]
-            double yearFraction)
+                    "The year fraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'",
+                Default = "null")]
+            double? yearFraction)
         {
-            if (compoundingFrom == CompoundingStore.Simple && double.IsNaN(yearFraction))
+            if (compoundingFrom == CompoundingStore.Simple && yearFraction == null)
                 throw new ArgumentException(
                     "Cannot convert from a 'Simple' convention without the year fraction being specified.");
-            if (compoundingFrom == CompoundingStore.Discount && double.IsNaN(yearFraction))
+            if (compoundingFrom == CompoundingStore.Discount && yearFraction == null)
                 throw new ArgumentException(
                     "Cannot convert from a 'Discount' convention without the year fraction being specified.");
-            if (compoundingTo == CompoundingStore.Simple && double.IsNaN(yearFraction))
+            if (compoundingTo == CompoundingStore.Simple && yearFraction == null)
                 throw new ArgumentException(
                     "Cannot convert from a 'Simple' convention without the year fraction being specified.");
-            if (compoundingTo == CompoundingStore.Discount && double.IsNaN(yearFraction))
+            if (compoundingTo == CompoundingStore.Discount && yearFraction == null)
                 throw new ArgumentException(
                     "Cannot convert to a 'Discount' convention without the year fraction being specified.");
 
-            if (double.IsNaN(yearFraction)) yearFraction = 1.0;
-            var df = compoundingFrom.DF(rate, yearFraction);
-            var resultRate = compoundingTo.rateFromDF(df, yearFraction);
+            var dyf = yearFraction ?? 1.0;
+            if (yearFraction < 1e-12)
+                throw new ArgumentException("The provided year fraction must not be negative or zero.");
+            var df = compoundingFrom.DF(rate, dyf);
+            var resultRate = compoundingTo.rateFromDF(df, dyf);
             return resultRate;
         }
     }
