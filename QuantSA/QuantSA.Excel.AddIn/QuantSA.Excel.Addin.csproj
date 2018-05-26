@@ -83,13 +83,6 @@
     <Compile Include="ExcelMessage.xaml.cs">
       <DependentUpon>ExcelMessage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Generated\XLConventionsGenerated.cs" />
-    <Compile Include="Generated\XLCreditGenerated.cs" />
-    <Compile Include="Generated\XLCurvesGenerated.cs" />
-    <Compile Include="Generated\XLEquitiesGenerated.cs" />
-    <Compile Include="Generated\XLFXGenerated.cs" />
-    <Compile Include="Generated\XLRatesGenerated.cs" />
-    <Compile Include="Generated\XLValuationGenerated.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
