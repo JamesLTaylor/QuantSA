@@ -1,6 +1,9 @@
 ﻿using System;
+using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
+using QuantSA.General;
 using QuantSA.General.Conventions.Compounding;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -44,6 +47,38 @@ namespace QuantSA.ExcelFunctions
             var df = compoundingFrom.DF(rate, dyf);
             var resultRate = compoundingTo.rateFromDF(df, dyf);
             return resultRate;
+        }
+
+        [QuantSAExcelFunction(Description = "Create a curve of dates and rates.",
+            Name = "QSA2.CreateDatesAndRatesCurve",
+            ExampleSheet = "GeneralSwap.xlsx",
+            Category = "QSA.Curves",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateDatesAndRatesCurve.html")]
+        public static IDiscountingSource CreateDatesAndRatesCurve(
+            [ExcelArgument(Description = "The dates at which the rates apply.")]
+            Date[] dates,
+            [ExcelArgument(Description = "The rates.")]
+            double[] rates,
+            [QuantSAExcelArgument(
+                Description =
+                    "Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency.",
+                Default = "Currency.ANY")]
+            Currency currency)
+        {
+            return new DatesAndRates(currency, dates[0], dates, rates);
+        }
+
+        [QuantSAExcelFunction(Description = "Get the discount factor from a curve object.  The DF will be from the anchor date until the supplied date.",
+            Name = "QSA2.GetDF",
+            Category = "QSA.Rates",
+            ExampleSheet = "Introduction.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetDF.html")]
+        public static double GetDF([ExcelArgument(Description = "The curve from which the DF is required.")]IDiscountingSource curve,
+            [ExcelArgument(Description = "The date on which the discount factor is required.  Cannot be before the anchor date of the curve.")]Date date)
+        {
+            return curve.GetDF(date);
         }
     }
 }

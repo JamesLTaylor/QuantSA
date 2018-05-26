@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
 
@@ -20,17 +21,40 @@ namespace QuantSA.Excel.Addin.AddIn
         private static readonly Dictionary<Type, IOutputConverter> OutputConverters =
             new Dictionary<Type, IOutputConverter>();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void AddInputConverter(IInputConverter converter)
+        public static void AddConvertersFrom(Assembly assembly)
         {
-            InputConverters[converter.RequiredType] = converter;
+            foreach (var type in assembly.GetTypes())
+            {
+                if (typeof(IInputConverter).IsAssignableFrom(type))
+                {
+                    var converter = Activator.CreateInstance(type) as IInputConverter;
+                    InputConverters[converter.RequiredType] = converter;
+                }
+
+                if (typeof(IOutputConverter).IsAssignableFrom(type))
+                {
+                    var converter = Activator.CreateInstance(type) as IOutputConverter;
+                    OutputConverters[converter.SuppliedType] = converter;
+                }
+            }
         }
 
-        public static void AddOutputConverter(IOutputConverter converter)
+        public static bool CanConvert(Type requiredType)
         {
-            OutputConverters[converter.SuppliedType] = converter;
+            if (requiredType.IsArray 
+                && InputConverters.ContainsKey(requiredType.GetElementType()))
+                return true;
+            if (typeof(IEnumerable).IsAssignableFrom(requiredType)
+                && !typeof(string).IsAssignableFrom(requiredType)
+                && InputConverters.ContainsKey(requiredType.GetGenericArguments()[0]))
+                return true;
+            if (InputConverters.ContainsKey(requiredType))
+                return true;
+            if (requiredType.IsPrimitive)
+                return true;
+            if (IsNullablePrimitive(requiredType))
+                return true;
+            return false;
         }
 
         public static object ConvertInput(Type requiredType, object[,] input, string inputName,
@@ -111,12 +135,7 @@ namespace QuantSA.Excel.Addin.AddIn
             string defaultValue)
         {
             if (input is ExcelMissing) input = null;
-            if (requiredType.IsGenericType
-                && requiredType.GetGenericTypeDefinition() == typeof(Nullable<>)
-                && requiredType.GetGenericArguments().Any(t => t.IsPrimitive))
-            {
-                return input;
-            }
+            if (IsNullablePrimitive(requiredType)) return input;
             if (requiredType.IsPrimitive) return input;
             if (InputConverters.ContainsKey(requiredType))
                 return InputConverters[requiredType].Convert(input, inputName, defaultValue);
@@ -124,11 +143,12 @@ namespace QuantSA.Excel.Addin.AddIn
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
         }
 
-        private static object ConvertPrimitive(Type requiredType, object input, string inputName, string defaultValue)
+        private static bool IsNullablePrimitive(Type requiredType)
         {
-            return input;
+            return requiredType.IsGenericType
+                   && requiredType.GetGenericTypeDefinition() == typeof(Nullable<>)
+                   && requiredType.GetGenericArguments().Any(t => t.IsPrimitive);
         }
-
 
         public static object[,] ConvertOuput(Type suppliedType, object output)
         {

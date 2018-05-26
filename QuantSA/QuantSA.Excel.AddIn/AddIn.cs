@@ -61,18 +61,17 @@ public class AddIn : IExcelAddIn
                 plugin.SetObjectMap(ObjectMap.Instance);
                 plugin.SetInstance(plugin);
             }
-            var registration = new Registration();
             var assemblies = new[]
             {
                 Assembly.GetAssembly(typeof(XLEquities)),
                 Assembly.GetAssembly(typeof(AddIn))
             };
             foreach (var assembly in assemblies)
-            {
-                registration.CollectFunctions(assembly);
-                registration.RegisterTypeConverters(assembly);
-            }
-            registration.RegisterFunctions();
+                ExcelTypeConverter.AddConvertersFrom(assembly);
+
+            foreach (var assembly in assemblies)
+                FunctionRegistration.RegisterFrom(assembly);
+            
             //ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
         catch (Exception e)
