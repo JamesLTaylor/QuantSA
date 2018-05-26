@@ -2,54 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using QuantSA.Excel.Common;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
     public static class ExcelTypeConverter
     {
-        /// <summary>
-        /// The form of a function that converts the input from excel to an object that can be cast
-        /// to a known type.  Implement this when you want to have QuantSA handle the scalar, array and
-        /// matrix versions of the same type.
-        /// </summary>
-        public delegate object InputConverter0(object input, string inputName, string defaultValue = null);
 
-        /// <summary>
-        /// The form of a function that converts the input from excel to an object that can be cast to a
-        /// known type.  Implement this when you want to handle the direct object[,] from excel.
-        /// </summary>
-        public delegate object InputConverterFull(object[,] input, string inputName, string defaultValue = null);
+        private static readonly Dictionary<Type, ConverterDelegates.InputConverter0> InputConverters0 =
+            new Dictionary<Type, ConverterDelegates.InputConverter0>();
 
-        /// <summary>
-        /// Converts the output from a function from a known type to an object[,] that can be rendered in
-        /// Excel.
-        /// </summary>
-        public delegate object OutputConverter0(object output);
+        private static readonly Dictionary<Type, ConverterDelegates.InputConverterFull> InputConvertersFull =
+            new Dictionary<Type, ConverterDelegates.InputConverterFull>();
 
-        /// <summary>
-        /// Converts the output from a function from a known type to an object[,] that can be rendered in
-        /// Excel.
-        /// </summary>
-        public delegate object[,] OutputConverterFull(object output);
-
-        private static readonly Dictionary<Type, InputConverter0> InputConverters0 =
-            new Dictionary<Type, InputConverter0>();
-
-        private static readonly Dictionary<Type, InputConverterFull> InputConvertersFull =
-            new Dictionary<Type, InputConverterFull>();
-
-        private static readonly Dictionary<Type, OutputConverter0> OutputConverters0 =
-            new Dictionary<Type, OutputConverter0>();
+        private static readonly Dictionary<Type, ConverterDelegates.OutputConverter0> OutputConverters0 =
+            new Dictionary<Type, ConverterDelegates.OutputConverter0>();
 
         public static void AddInputConverter(Type requiredType, MethodInfo converterMethodInfo)
         {
-            var converter = Delegate.CreateDelegate(typeof(InputConverter0), converterMethodInfo) as InputConverter0;
+            var converter = Delegate.CreateDelegate(typeof(ConverterDelegates.InputConverter0), converterMethodInfo) as ConverterDelegates.InputConverter0;
             InputConverters0[requiredType] = converter;
         }
 
         public static void AddOutputConverter(Type suppliedType, MethodInfo converterMethodInfo)
         {
-            var converter = Delegate.CreateDelegate(typeof(OutputConverter0), converterMethodInfo) as OutputConverter0;
+            var converter = Delegate.CreateDelegate(typeof(ConverterDelegates.OutputConverter0), converterMethodInfo) as ConverterDelegates.OutputConverter0;
             OutputConverters0[suppliedType] = converter;
         }
 

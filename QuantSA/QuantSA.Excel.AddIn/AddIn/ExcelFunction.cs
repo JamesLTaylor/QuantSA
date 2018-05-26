@@ -4,6 +4,8 @@ using System.Reflection;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
+    public delegate object[,] XLDelegate00();
+
     public delegate object[,] XLDelegate01(object[,] arg1);
 
     public delegate object[,] XLDelegate02(object[,] arg1, object[,] arg2);
@@ -73,6 +75,8 @@ namespace QuantSA.Excel.Addin.AddIn
         {
             switch (_methodInfo.GetParameters().Length)
             {
+                case 0:
+                    return new XLDelegate00(() => Eval());
                 case 1:
                     return new XLDelegate01(in1
                         => Eval(in1));

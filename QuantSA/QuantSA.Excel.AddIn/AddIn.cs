@@ -1,15 +1,16 @@
-﻿using QuantSA.Excel.Common;
-using QuantSA.Excel;
-using ExcelDna.Integration;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Resources;
-using System.Drawing;
+using ExcelDna.Integration;
+using QuantSA.Excel;
+using QuantSA.Excel.Addin.AddIn;
+using QuantSA.Excel.Common;
+using QuantSA.ExcelFunctions;
 
 /// <summary>
 /// 
@@ -17,21 +18,27 @@ using System.Drawing;
 /// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
 public class AddIn : IExcelAddIn
 {
-    string FunctionsFilenameAll = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_all.csv"; // updated in build to include all functions and default visibility
-    string FunctionsFilenameUser = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\functions_user.csv"; // user editable to control which function appear
-
     public static List<IQuantSAPlugin> plugins;
     public static Dictionary<string, Bitmap> assemblyImageResources;
-    List<Delegate> delegates;
-    List<object> functionAttributes;
-    List<List<object>> functionArgumentAttributes;
+    private List<Delegate> delegates;
+    private List<List<object>> functionArgumentAttributes;
+    private List<object> functionAttributes;
+
+    private readonly string FunctionsFilenameAll =
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+        "\\functions_all.csv"; // updated in build to include all functions and default visibility
+
+    private readonly string FunctionsFilenameUser =
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+        "\\functions_user.csv"; // user editable to control which function appear
 
     // Called when addin opens
     public void AutoOpen()
     {
         try
         {
-            string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
+            var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "QuantSA");
             if (!Directory.Exists(pathString))
                 Directory.CreateDirectory(pathString);
             //TODO: Check if newer version of addin exists.
@@ -48,17 +55,22 @@ public class AddIn : IExcelAddIn
             plugins = new List<IQuantSAPlugin>();
             assemblyImageResources = new Dictionary<string, Bitmap>();
             ExposePlugins();
-            foreach (IQuantSAPlugin plugin in plugins)
+            foreach (var plugin in plugins)
             {
                 plugin.SetObjectMap(ObjectMap.Instance);
                 plugin.SetInstance(plugin);
             }
-            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
+            var registration = new Registration();
+            registration.AddFunctionsAndConverters(Assembly.GetAssembly(typeof(XLEquities)));
+            registration.AddFunctionsAndConverters(Assembly.GetAssembly(typeof(AddIn)));
+            registration.Register();
+            //ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
         catch (Exception e)
         {
-            string pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuantSA");
-            string fileName = Path.Combine(pathString, "QuantSAError.txt");
+            var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "QuantSA");
+            var fileName = Path.Combine(pathString, "QuantSAError.txt");
             File.WriteAllText(fileName, e.ToString());
             throw new Exception("An error occurred while opening the QuantSA addin.\n" +
                                 "Check the error log file for details.\n\n" +
@@ -75,35 +87,34 @@ public class AddIn : IExcelAddIn
     /// </summary>
     public void ExposeUserSelectedFunctions()
     {
-        Dictionary<string, bool> funcsAndVisibility = GetFunctionVisibility(FunctionsFilenameUser);
-        Dictionary<string, MemberInfo> functions = GetQuantSAFunctions();
+        var funcsAndVisibility = GetFunctionVisibility(FunctionsFilenameUser);
+        var functions = GetQuantSAFunctions();
         delegates = new List<Delegate>();
         functionAttributes = new List<object>();
         functionArgumentAttributes = new List<List<object>>();
 
-        foreach (KeyValuePair<string, MemberInfo> entry in functions)
+        foreach (var entry in functions)
         {
-            MethodInfo method = ((MethodInfo)entry.Value);
-            QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+            var method = (MethodInfo) entry.Value;
+            var quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
             // If the function appears in the user function list use the isHidden value from there.  Otherwise use the default behaviour.
             bool? isHidden = null;
             if (funcsAndVisibility.ContainsKey(quantsaAttribute.Name))
-            {
                 isHidden = !funcsAndVisibility[quantsaAttribute.Name];
-            }
 
-            if (!quantsaAttribute.HasGeneratedVersion) // Make delegates for all but the methods that have generated versions of themselves
+            if (!quantsaAttribute.HasGeneratedVersion
+            ) // Make delegates for all but the methods that have generated versions of themselves
             {
                 //Create the delegate, Taken from: http://stackoverflow.com/a/16364220
-                Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
-                        (from parameter in method.GetParameters() select parameter.ParameterType)
-                        .Concat(new[] { method.ReturnType })
-                        .ToArray()));
+                var thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
+                    (from parameter in method.GetParameters() select parameter.ParameterType)
+                    .Concat(new[] {method.ReturnType})
+                    .ToArray()));
                 delegates.Add(thisDelegate);
 
                 if (quantsaAttribute.IsGeneratedVersion)
                 {
-                    MethodInfo manualMethod = (MethodInfo)functions["_" + entry.Key];
+                    var manualMethod = (MethodInfo) functions["_" + entry.Key];
                     AddSingleAutoFunction(method, manualMethod, isHidden);
                 }
                 else
@@ -111,7 +122,7 @@ public class AddIn : IExcelAddIn
                     AddSingleManualFunction(method, isHidden);
                 }
             }
-        }        
+        }
     }
 
 
@@ -121,21 +132,19 @@ public class AddIn : IExcelAddIn
     private void AddSingleManualFunction(MethodInfo method, bool? isHidden)
     {
         //Create the function attribute
-        QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+        var quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
         if (isHidden != null) quantsaAttribute.IsHidden = isHidden.Value;
         functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
 
         // Create the function argument attributes
-        List<object> thisArgumentAttributes = new List<object>();
-        foreach (ParameterInfo param in method.GetParameters())
+        var thisArgumentAttributes = new List<object>();
+        foreach (var param in method.GetParameters())
         {
             var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
-            if (argAttrib != null)
-            {
-                argAttrib.Name = param.Name;
-            }
+            if (argAttrib != null) argAttrib.Name = param.Name;
             thisArgumentAttributes.Add(argAttrib);
         }
+
         functionArgumentAttributes.Add(thisArgumentAttributes);
     }
 
@@ -149,38 +158,38 @@ public class AddIn : IExcelAddIn
     private void AddSingleAutoFunction(MethodInfo method, MethodInfo manualMethod, bool? isHidden)
     {
         //Create the function attribute
-        QuantSAExcelFunctionAttribute quantsaAttribute = manualMethod.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+        var quantsaAttribute = manualMethod.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
         if (isHidden != null) quantsaAttribute.IsHidden = isHidden.Value;
         functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
 
         // Create the function argument attributes
-        List<object> thisArgumentAttributes = new List<object>();
-        if (manualMethod.GetParameters().Length<method.GetParameters().Length)
+        var thisArgumentAttributes = new List<object>();
+        if (manualMethod.GetParameters().Length < method.GetParameters().Length)
         {
-            ExcelArgumentAttribute argAttrib = new ExcelArgumentAttribute();
+            var argAttrib = new ExcelArgumentAttribute();
             argAttrib.Name = "objectName";
             argAttrib.Description = "The name of the object to be created.";
             //Note that the above 2 strings are the same as those added in GenerateDocs, if they are changed here they should be changed there too.
             thisArgumentAttributes.Add(argAttrib);
         }
-        foreach (ParameterInfo param in manualMethod.GetParameters())
+
+        foreach (var param in manualMethod.GetParameters())
         {
             var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
-            if (argAttrib != null)
-            {
-                argAttrib.Name = param.Name;
-            }
+            if (argAttrib != null) argAttrib.Name = param.Name;
             if (ExcelUtilities.InputTypeShouldHaveHelpLink(param.ParameterType))
             {
-                string typeName = param.ParameterType.IsArray ? param.ParameterType.GetElementType().Name : param.ParameterType.Name;
+                var typeName = param.ParameterType.IsArray
+                    ? param.ParameterType.GetElementType().Name
+                    : param.ParameterType.Name;
                 argAttrib.Description += "(" + typeName + ")";
             }
+
             thisArgumentAttributes.Add(argAttrib);
         }
+
         functionArgumentAttributes.Add(thisArgumentAttributes);
     }
-
-
 
 
     /// <summary>
@@ -188,24 +197,17 @@ public class AddIn : IExcelAddIn
     /// </summary>
     private void UpdateUserFunctionFile()
     {
-        Dictionary<string, bool> funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);
-        Dictionary<string, bool> funcsInAllFile = GetFunctionVisibility(FunctionsFilenameAll);
+        var funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);
+        var funcsInAllFile = GetFunctionVisibility(FunctionsFilenameAll);
 
-        foreach (KeyValuePair<string, bool> entry in funcsInAllFile)
-        {
+        foreach (var entry in funcsInAllFile)
             if (!funcsInUserFile.ContainsKey(entry.Key))
-            {
                 funcsInUserFile[entry.Key] = entry.Value;
-            }
-        }
-        List<string> list = funcsInUserFile.Keys.ToList();
+        var list = funcsInUserFile.Keys.ToList();
         list.Sort();
-        using (StreamWriter file = new StreamWriter(FunctionsFilenameUser))
+        using (var file = new StreamWriter(FunctionsFilenameUser))
         {
-            foreach (string key in list)
-            {
-                file.WriteLine(key + "," + (funcsInUserFile[key] ? "yes" : "no"));
-            }
+            foreach (var key in list) file.WriteLine(key + "," + (funcsInUserFile[key] ? "yes" : "no"));
         }
     }
 
@@ -216,7 +218,7 @@ public class AddIn : IExcelAddIn
     /// <returns></returns>
     private Dictionary<string, bool> GetFunctionVisibility(string functionFilename)
     {
-        Dictionary<string, bool> funcsAndVisibility = new Dictionary<string, bool>();
+        var funcsAndVisibility = new Dictionary<string, bool>();
         StreamReader reader;
         try
         {
@@ -226,20 +228,22 @@ public class AddIn : IExcelAddIn
         {
             return funcsAndVisibility;
         }
+
         while (!reader.EndOfStream)
         {
-            string line = reader.ReadLine();
-            string[] cols = line.Split(',');
+            var line = reader.ReadLine();
+            var cols = line.Split(',');
             bool visible;
             if (cols[1].Trim().ToLower().Equals("yes"))
-            { visible = true; }
+                visible = true;
             else if (cols[1].Trim().ToLower().Equals("no"))
-            { visible = false; }
+                visible = false;
             else
-            { throw new ArgumentException("file must contain only 'yes' or 'no' in the second column"); }
+                throw new ArgumentException("file must contain only 'yes' or 'no' in the second column");
 
             funcsAndVisibility[cols[0].Trim()] = visible;
         }
+
         reader.Close();
         return funcsAndVisibility;
     }
@@ -251,12 +255,10 @@ public class AddIn : IExcelAddIn
     /// <returns></returns>
     public static Dictionary<string, bool> GetQuantSAFunctionVisibility()
     {
-        Dictionary<string, MemberInfo> functions = GetQuantSAFunctions();
-        Dictionary<string, bool> funtionVisibility = new Dictionary<string, bool>();
-        foreach (KeyValuePair<string, MemberInfo> entry in functions)
-        {
+        var functions = GetQuantSAFunctions();
+        var funtionVisibility = new Dictionary<string, bool>();
+        foreach (var entry in functions)
             funtionVisibility[entry.Key] = !entry.Value.GetCustomAttribute<QuantSAExcelFunctionAttribute>().IsHidden;
-        }
         return funtionVisibility;
     }
 
@@ -268,11 +270,11 @@ public class AddIn : IExcelAddIn
     /// <returns></returns>
     public static Dictionary<string, MemberInfo> GetQuantSAFunctions()
     {
-        Dictionary<string, MemberInfo> quantSAFunctions = new Dictionary<string, MemberInfo>();
+        var quantSAFunctions = new Dictionary<string, MemberInfo>();
 
-        Assembly assembly1 = Assembly.GetAssembly(typeof(XLGeneral));
+        var assembly1 = Assembly.GetAssembly(typeof(XLGeneral));
         UpdateFunctionsFromAssembly(assembly1, quantSAFunctions);
-        Assembly assembly2 = Assembly.GetAssembly(typeof(QuantSA.ExcelFunctions.XLEquities));
+        var assembly2 = Assembly.GetAssembly(typeof(XLEquities));
         UpdateFunctionsFromAssembly(assembly2, quantSAFunctions);
 
         return quantSAFunctions;
@@ -284,8 +286,7 @@ public class AddIn : IExcelAddIn
     /// <param name="assembly">The assembly.</param>
     /// <param name="quantSAFunctions">The quant sa functions.</param>
     private static void UpdateFunctionsFromAssembly(Assembly assembly, Dictionary<string, MemberInfo> quantSAFunctions)
-    {    
-
+    {
         Type[] types = null;
         try
         {
@@ -294,46 +295,44 @@ public class AddIn : IExcelAddIn
         catch (ReflectionTypeLoadException ex)
         {
             //TODO: This is for troubleshooting when the assembly does not load.  Should be written to some more general log.
-            StringBuilder sb = new StringBuilder();
-            foreach (Exception exSub in ex.LoaderExceptions)
+            var sb = new StringBuilder();
+            foreach (var exSub in ex.LoaderExceptions)
             {
                 sb.AppendLine(exSub.Message);
-                FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
+                var exFileNotFound = exSub as FileNotFoundException;
                 if (exFileNotFound != null)
-                {
                     if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
                     {
                         sb.AppendLine("Fusion Log:");
                         sb.AppendLine(exFileNotFound.FusionLog);
                     }
-                }
+
                 sb.AppendLine();
             }
-            string errorMessage = sb.ToString();
+
+            var errorMessage = sb.ToString();
             Console.WriteLine(errorMessage);
         }
-        foreach (Type type in types)
+
+        foreach (var type in types)
         {
-            if (!type.IsPublic)
-            {
-                continue;
-            }
+            if (!type.IsPublic) continue;
 
-            MemberInfo[] members = type.GetMembers();
+            var members = type.GetMembers();
 
-            foreach (MemberInfo member in members)
+            foreach (var member in members)
             {
-                QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+                var attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
                 if (attribute != null)
                 {
-                    if (attribute.HasGeneratedVersion) // if there is generated version then that will be used to construct the delgate and this one will be used to get the help.
+                    if (attribute.HasGeneratedVersion
+                    ) // if there is generated version then that will be used to construct the delgate and this one will be used to get the help.
                         quantSAFunctions["_" + attribute.Name] = member;
                     else
                         quantSAFunctions[attribute.Name] = member;
                 }
             }
         }
-        
     }
 
 
@@ -342,24 +341,20 @@ public class AddIn : IExcelAddIn
     /// </summary>
     private void ExposePlugins()
     {
-        string dllDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\Plugins";
+        var dllDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\Plugins";
         if (!Directory.Exists(dllDirectory)) return; // No plugin folder, return without doing anything.
-        string[] fileEntries = Directory.GetFiles(dllDirectory);
-        foreach (string file in fileEntries)
-        {
+        var fileEntries = Directory.GetFiles(dllDirectory);
+        foreach (var file in fileEntries)
             if (Path.GetExtension(file).ToLower().Equals(".dll"))
-            {
                 try
                 {
                     ExposePlugin(file);
                 }
                 catch (Exception e)
                 {
-                    ExcelMessage le = new ExcelMessage(e);
+                    var le = new ExcelMessage(e);
                     le.ShowDialog();
                 }
-            }
-        }
     }
 
     /// <summary>
@@ -367,52 +362,48 @@ public class AddIn : IExcelAddIn
     /// </summary>
     private void ExposePlugin(string filename)
     {
-        Assembly DLL = Assembly.LoadFile(filename);
-        string[] names = DLL.GetManifestResourceNames();
+        var DLL = Assembly.LoadFile(filename);
+        var names = DLL.GetManifestResourceNames();
         //ResourceSet set = new ResourceSet(names[0]);
 
         string shortName = null;
-        foreach (Type type in DLL.GetExportedTypes())
-        {
+        foreach (var type in DLL.GetExportedTypes())
             if (typeof(IQuantSAPlugin).IsAssignableFrom(type)) // This class is a QuantSA plugin
             {
-                IQuantSAPlugin plugin = Activator.CreateInstance(type) as IQuantSAPlugin;
+                var plugin = Activator.CreateInstance(type) as IQuantSAPlugin;
                 shortName = plugin.GetShortName();
-                AddIn.plugins.Add(plugin);
+                plugins.Add(plugin);
             }
-        }
+
         if (shortName == null)
-        {
             throw new Exception(Path.GetFileName(filename) + " is in the Plugins directory but is not a valid plugin.");
-        }
 
-        foreach (Type type in DLL.GetExportedTypes())
+        foreach (var type in DLL.GetExportedTypes())
+        foreach (var member in type.GetMembers())
         {
-            foreach (MemberInfo member in type.GetMembers())
+            var attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+            if (attribute != null) // We have found an excel exposed function.
             {
-                QuantSAExcelFunctionAttribute attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-                if (attribute != null) // We have found an excel exposed function.
-                {
-                    if (!attribute.Category.Equals(shortName)) throw new Exception(attribute.Name + " in plugin " + shortName + " is not in the excel category " + shortName);
-                    string[] parts = attribute.Name.Split('.');
-                    if (!(parts.Length == 2 && parts[0].Equals(shortName))) throw new Exception(attribute.Name + " in plugin " + shortName + "does not following the naming convention: " + shortName + ".FunctionName");
+                if (!attribute.Category.Equals(shortName))
+                    throw new Exception(attribute.Name + " in plugin " + shortName + " is not in the excel category " +
+                                        shortName);
+                var parts = attribute.Name.Split('.');
+                if (!(parts.Length == 2 && parts[0].Equals(shortName)))
+                    throw new Exception(attribute.Name + " in plugin " + shortName +
+                                        "does not following the naming convention: " + shortName + ".FunctionName");
 
-                    // TODO: Check that the category and naming are all acceptable
-                    UpdateDelgatesAndAtribs((MethodInfo)member);
-                }
-                if (member.MemberType.Equals(MemberTypes.Method))
-                    if (((MethodInfo)member).ReturnType.Equals(typeof(System.Drawing.Bitmap)))
-                    {
-                        Bitmap image = ((MethodInfo)member).Invoke(null, null) as Bitmap;
-                        assemblyImageResources.Add(member.Name.Substring(4), image);
-                    }
+                // TODO: Check that the category and naming are all acceptable
+                UpdateDelgatesAndAtribs((MethodInfo) member);
             }
 
+            if (member.MemberType.Equals(MemberTypes.Method))
+                if (((MethodInfo) member).ReturnType.Equals(typeof(Bitmap)))
+                {
+                    var image = ((MethodInfo) member).Invoke(null, null) as Bitmap;
+                    assemblyImageResources.Add(member.Name.Substring(4), image);
+                }
         }
     }
-
-
-
 
 
     /// <summary>
@@ -421,28 +412,25 @@ public class AddIn : IExcelAddIn
     private void UpdateDelgatesAndAtribs(MethodInfo method)
     {
         //Create the delegate, Taken from: http://stackoverflow.com/a/16364220
-        Delegate thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
-                (from parameter in method.GetParameters() select parameter.ParameterType)
-                .Concat(new[] { method.ReturnType })
-                .ToArray()));
+        var thisDelegate = method.CreateDelegate(Expression.GetDelegateType(
+            (from parameter in method.GetParameters() select parameter.ParameterType)
+            .Concat(new[] {method.ReturnType})
+            .ToArray()));
         delegates.Add(thisDelegate);
 
         //Create the function attribute
-        QuantSAExcelFunctionAttribute quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+        var quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
         functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
 
         // Create the function argument attributes
-        List<object> thisArgumentAttributes = new List<object>();
-        foreach (ParameterInfo param in method.GetParameters())
+        var thisArgumentAttributes = new List<object>();
+        foreach (var param in method.GetParameters())
         {
             var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
-            if (argAttrib != null)
-            {
-                argAttrib.Name = param.Name;
-            }
+            if (argAttrib != null) argAttrib.Name = param.Name;
             thisArgumentAttributes.Add(argAttrib);
         }
+
         functionArgumentAttributes.Add(thisArgumentAttributes);
     }
-
 }

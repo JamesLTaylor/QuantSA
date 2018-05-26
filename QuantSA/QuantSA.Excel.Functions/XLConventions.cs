@@ -10,7 +10,7 @@ namespace QuantSA.ExcelFunctions
 {
     public class XLConventions
     {
-        [QuantSAExcelFunction(Description = "Convert an interest rate from one compoundin convention to another.",
+        [QuantSAExcelFunction(Description = "Convert an interest rate from one compounding convention to another.",
             Name = "QSA.RateConvert",
             HasGeneratedVersion = true,
             Category = "QSA.Conventions",
@@ -26,7 +26,7 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(
                 Description =
                     "(Optional) The yearfraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'",
-                Default = "double.NaN")]
+                Default = null)]
             double yearFraction)
 
         {

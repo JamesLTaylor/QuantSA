@@ -180,7 +180,7 @@ namespace QuantSA.Excel
             object[,] valueDate,
             [ExcelArgument(Description = "The exercise date of the option.  Must be greater than the value date.")]
             object[,] exerciseDate,
-            [ExcelArgument(Description = "The spot proce of the underlying at the value date.")]
+            [ExcelArgument(Description = "The spot price of the underlying at the value date.")]
             object[,] spotPrice,
             [ExcelArgument(Description = "Annualized volatility.")]
             object[,] vol,

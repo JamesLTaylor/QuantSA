@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="AddIn.cs" />
     <Compile Include="AddIn\ExcelFunction.cs" />
+    <Compile Include="AddIn\Registration.cs" />
     <Compile Include="AddIn\ExcelTypeConverter.cs" />
     <Compile Include="ExcelUtilities.cs" />
     <Compile Include="ExcelMessage.xaml.cs">
@@ -96,6 +97,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Ribbon.cs" />
+    <Compile Include="TypeConverters\Conventions.cs" />
     <Compile Include="XLGeneral.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -136,7 +138,19 @@ xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEve
   -->
   <Import Project="$(SolutionDir)\packages\MSBuildTasks.1.5.0.214\tools\MSBuild.Community.Tasks.Targets" />
   <ItemGroup>
-    <AllDlls Include="$(TargetDir)\*.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.Math.Core.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.Math.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\Accord.Statistics.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\ExcelDna.Integration.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\MathNet.Numerics.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Core.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Excel.Addin.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Excel.Common.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.ExcelFunctions.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Primitives.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.ProductExtensions.dll" />
+    <AllDlls Include="C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Valuation.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

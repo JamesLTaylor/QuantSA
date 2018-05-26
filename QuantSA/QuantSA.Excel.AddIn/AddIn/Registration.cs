@@ -6,13 +6,26 @@ using QuantSA.Excel.Common;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
-    public static class ExcelFunctionRegistration
+    /// <summary>
+    /// An object that can collect all the functions with the <see cref="ExcelFunctionAttribute"/> and
+    /// converters with the Excel input and output converter attributes: <see cref="ExcelInputConverter0Attribute"/>,
+    /// <see cref="ExcelOutputConverter0Attribute"/>.
+    /// </summary>
+    public class Registration
     {
-        public static void Register(Assembly assembly)
+        private readonly List<Delegate> _delegates;
+        private readonly List<object> _functionAttributes;
+        private readonly List<List<object>> _functionArgumentAttributes;
+
+        public Registration()
         {
-            var delegates = new List<Delegate>();
-            var functionAttributes = new List<object>();
-            var functionArgumentAttributes = new List<List<object>>();
+            _delegates = new List<Delegate>();
+            _functionAttributes = new List<object>();
+            _functionArgumentAttributes = new List<List<object>>();
+        }
+
+        public void AddFunctionsAndConverters(Assembly assembly)
+        {
             var types = assembly.GetTypes();
             foreach (var type in types)
             {
@@ -26,6 +39,9 @@ namespace QuantSA.Excel.Addin.AddIn
                         var method = member as MethodInfo;
                         var aAttr = new List<object>();
                         var defaults = new List<string>();
+                        if (method == null)
+                            throw new ArgumentException(
+                                $"{excelFuncAttr.Name} is marked with a QuantSAExcelFunctionAttribute but is not a method");
                         foreach (var param in method.GetParameters())
                         {
                             var argAttrib = param.GetCustomAttribute<QuantSAExcelArgumentAttribute>();
@@ -48,9 +64,9 @@ namespace QuantSA.Excel.Addin.AddIn
                         var dnaFuncAttr = excelFuncAttr.CreateExcelFunctionAttribute();
                         if (dnaFuncAttr.Name == null) dnaFuncAttr.Name = method.Name;
                         var excelFunction = new ExcelFunction(method, defaults);
-                        delegates.Add(excelFunction.GetDelegate());
-                        functionAttributes.Add(dnaFuncAttr);
-                        functionArgumentAttributes.Add(aAttr);
+                        _delegates.Add(excelFunction.GetDelegate());
+                        _functionAttributes.Add(dnaFuncAttr);
+                        _functionArgumentAttributes.Add(aAttr);
                     }
 
                     var inputConverterAttr = member.GetCustomAttribute<ExcelInputConverter0Attribute>();
@@ -61,8 +77,11 @@ namespace QuantSA.Excel.Addin.AddIn
                         ExcelTypeConverter.AddOutputConverter(outputConverterAttr.SuppliedType, member as MethodInfo);
                 }
             }
+        }
 
-            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
+        public void Register()
+        {
+            ExcelIntegration.RegisterDelegates(_delegates, _functionAttributes, _functionArgumentAttributes);
         }
     }
 }
