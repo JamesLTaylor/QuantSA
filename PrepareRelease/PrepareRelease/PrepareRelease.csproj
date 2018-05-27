@@ -41,8 +41,8 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 10.0\Visual Studio Tools for Office\PIA\Office14\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSA.Excel.Common">
-      <HintPath>..\..\QuantSA\QuantSA.Excel.Shared\bin\Debug\QuantSA.Excel.Common.dll</HintPath>
+    <Reference Include="QuantSA.Excel.Shared">
+      <HintPath>..\..\QuantSA\QuantSA.Excel.Shared\bin\Debug\QuantSA.Excel.Shared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

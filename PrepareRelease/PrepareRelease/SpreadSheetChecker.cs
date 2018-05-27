@@ -96,6 +96,8 @@ namespace PrepareRelease
                     sheetAndFuncsContent.Add(sheetname + "," + funcName);
                 }
             }
+
+            Directory.CreateDirectory(tempOutputPath);
             File.WriteAllLines(Path.Combine(tempOutputPath, SHEET_AND_FUNCS_FILE), sheetAndFuncsContent.ToArray());
             File.WriteAllLines(Path.Combine(tempOutputPath, ERROR_OUTPUT_FILE), sheetErrorInfo.ToArray());
 

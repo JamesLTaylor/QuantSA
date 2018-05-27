@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ExcelDna.Integration;
-using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 
 namespace PrepareRelease
 {
@@ -89,7 +89,7 @@ namespace PrepareRelease
 
         public string Description
         {
-            get => description;
+            get { return description; }
 
             set
             {
