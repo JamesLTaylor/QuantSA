@@ -199,7 +199,7 @@ namespace QuantSA.Excel.Addin.AddIn
             if (suppliedType.IsArray && suppliedType.GetArrayRank() == 1)
                 return ConvertOutputArray1D(suppliedType, output);
             if (suppliedType.IsArray && suppliedType.GetArrayRank() == 2)
-                return ConvertOutputMatrix(suppliedType, output);
+                return ConvertOutputMatrix(suppliedType, output as object[,]);
             if (typeof(IEnumerable).IsAssignableFrom(suppliedType) && !typeof(string).IsAssignableFrom(suppliedType))
                 return ConverOutputIEnumerable(suppliedType, output);
             return ConvertOutputScalarTo2D(suppliedType, output, outputName);
@@ -227,9 +227,9 @@ namespace QuantSA.Excel.Addin.AddIn
             throw new NotImplementedException();
         }
 
-        private static object[,] ConvertOutputMatrix(Type suppliedType, object output)
+        private static object[,] ConvertOutputMatrix(Type suppliedType, object[,] output)
         {
-            throw new NotImplementedException();
+            return output;
         }
 
         private static object[,] ConvertOutputArray1D(Type suppliedType, object output)
