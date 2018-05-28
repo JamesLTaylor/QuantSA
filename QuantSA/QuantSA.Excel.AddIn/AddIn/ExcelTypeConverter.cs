@@ -62,6 +62,9 @@ namespace QuantSA.Excel.Addin.AddIn
                 return true;
             if (IsNullablePrimitive(typeToCheck))
                 return true;
+            //TODO: JT: remove this.  Only here for old functions that still return objects, everything should return a well defined type.
+            if (typeToCheck == typeof(object))
+                return true;
             return false;
         }
 
@@ -143,9 +146,22 @@ namespace QuantSA.Excel.Addin.AddIn
             string defaultValue)
         {
             if (input is ExcelMissing || input is ExcelEmpty) input = null;
-            if (IsNullablePrimitive(requiredType)) return input;
-            if (requiredType.IsPrimitive && input != null) return input;
-            if (requiredType.IsPrimitive && input == null) return Activator.CreateInstance(requiredType);
+            if (IsNullablePrimitive(requiredType))
+            {
+                if (input != null || defaultValue == string.Empty)
+                    return input;
+                if (defaultValue == null) return null;
+                return GetPrimitiveFromDefault(Nullable.GetUnderlyingType(requiredType), input, defaultValue);
+            }
+            if (requiredType.IsPrimitive)
+            {
+                if (input != null || defaultValue == string.Empty)
+                    return input;
+                if (defaultValue == null) throw new ArgumentException($"{inputName} is not an optional input.  Please provide a value.");
+                return GetPrimitiveFromDefault(requiredType, input, defaultValue);                
+            }
+            if (requiredType.IsAssignableFrom(typeof(string)))
+                return input ?? defaultValue;
             if (InputConverters.ContainsKey(requiredType))
                 return InputConverters[requiredType].Convert(input, inputName, defaultValue);
             if (!CanConvertInputOfType(requiredType))
@@ -153,8 +169,22 @@ namespace QuantSA.Excel.Addin.AddIn
                 if (input is string objName)
                     return ObjectMap.Instance.GetObjectFromID<object>(objName);
             }
-
+            if (defaultValue != string.Empty) return defaultValue;
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
+        }
+
+        private static object GetPrimitiveFromDefault(Type requiredType, object input, string defaultValue)
+        {
+            if (defaultValue == null) return null;
+            if (requiredType.IsAssignableFrom(typeof(bool)))
+                return Boolean.Parse(defaultValue);
+            if (requiredType.IsAssignableFrom(typeof(double)))
+                return Double.Parse(defaultValue);
+            if (requiredType.IsAssignableFrom(typeof(int)))
+                return Int32.Parse(defaultValue);
+            if (requiredType.IsAssignableFrom(typeof(string)))
+                return defaultValue;
+            throw new ArgumentException($"Unable to create a type: {requiredType.Name} from {defaultValue}");
         }
 
         private static bool IsNullablePrimitive(Type requiredType)

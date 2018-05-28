@@ -145,7 +145,7 @@ namespace QuantSA.Excel
                 "The name of the results object as returned by a call to another QuantSA function")]
             string objectName,
             [ExcelArgument(Description =
-                "The name of the result required.  Use QSA.GetAvailableResults to get a list of all availabale results in this object.")]
+                "The name of the result required.  Use QSA.GetAvailableResults to get a list of all available results in this object.")]
             string resultName)
         {
             try

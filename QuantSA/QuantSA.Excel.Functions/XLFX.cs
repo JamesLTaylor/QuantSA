@@ -1,6 +1,5 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.General;
-using QuantSA.Excel.Common;
 using QuantSA.Valuation.Models;
 using QuantSA.Valuation;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace QuantSA.ExcelFunctions
             ExampleSheet = "GeneralSwap.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateFXForecastCurve.html")]
-        public static object CreateFXForecastCurve([ExcelArgument(Description = "The base currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency baseCurrency,
+        public static FXForecastCurve CreateFXForecastCurve([ExcelArgument(Description = "The base currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency baseCurrency,
             [ExcelArgument(Description = "The counter currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency counterCurrency,
             [ExcelArgument(Description = "The rate at the anchor date of the two curves.")]double fxRateAtAnchorDate,
             [ExcelArgument(Description = "A curve that will be used to obatin forward rates.")]IDiscountingSource baseCurrencyFXBasisCurve,

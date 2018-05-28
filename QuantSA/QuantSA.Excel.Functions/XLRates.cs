@@ -162,7 +162,7 @@ namespace QuantSA.ExcelFunctions
             HelpTopic = "http://www.quantsa.org/CreateRateForecastCurveFromDiscount.html")]
         public static IFloatingRateSource CreateRateForecastCurveFromDiscount([ExcelArgument(Description = "The floating rate that this curve will be used to forecast.")]FloatingIndex floatingRateIndex,
             [ExcelArgument(Description = "The name of the discount curve that will be used to obtain the forward rates.")]IDiscountingSource discountCurve,
-            [QuantSAExcelArgument(Description = "Optional: The name of the fixing curve for providing floating rates at dates before the anchor date of the discount curve.  If it is left out then the first floating rate implied by the discount curve will be used for all historical fixes.", Default="null")]IFloatingRateSource fixingCurve)
+            [QuantSAExcelArgument(Description = "Optional: The name of the fixing curve for providing floating rates at dates before the anchor date of the discount curve.  If it is left out then the first floating rate implied by the discount curve will be used for all historical fixes.", Default=null)]IFloatingRateSource fixingCurve)
         {
             if (fixingCurve == null) {
                 // Calculate the first fixing off the curve to use at all past dates.

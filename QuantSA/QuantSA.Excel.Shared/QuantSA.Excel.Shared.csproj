@@ -47,7 +47,6 @@
     <Compile Include="..\AssemblyInfoAll.cs">
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
-    <Compile Include="NotNullAttribute.cs" />
     <Compile Include="IOutputConverter.cs" />
     <Compile Include="IInputConverter.cs" />
     <Compile Include="QuantSAExcelArgumentAttribute.cs" />

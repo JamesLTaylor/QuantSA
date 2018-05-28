@@ -65,7 +65,7 @@ namespace QuantSA.Excel.Common
             return uniqueID;
         }
 
-        public T GetObjectFromID<T>([NotNull]string objectName)
+        public T GetObjectFromID<T>(string objectName)
         {
             if (objectName == null) throw new ArgumentNullException(nameof(objectName));
             var obj = Instance.GetObjectFromID(objectName);
