@@ -51,13 +51,25 @@ namespace QuantSA.Excel.Addin.AddIn
                             var argAttrib = param.GetCustomAttribute<QuantSAExcelArgumentAttribute>();
                             if (argAttrib == null)
                             {
-                                aAttr.Add(new ExcelArgumentAttribute
+                                var dnaAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
+                                if (dnaAttrib != null)
                                 {
-                                    Name = param.Name,
-                                    Description = param.ParameterType.Name
-                                });
+                                    if (dnaAttrib.Name == null) dnaAttrib.Name = param.Name;
+                                    dnaAttrib.Description = "(" + param.ParameterType.Name + ")" + dnaAttrib.Description;
+                                    aAttr.Add(dnaAttrib);
+                                }
+                                else
+                                {
+                                    aAttr.Add(new ExcelArgumentAttribute
+                                    {
+                                        Name = param.Name,
+                                        Description = param.ParameterType.Name
+                                    });
+                                }
+
                                 defaults.Add(string.Empty);
                             }
+
                             else
                             {
                                 if (argAttrib.Name == null) argAttrib.Name = param.Name;
@@ -69,7 +81,7 @@ namespace QuantSA.Excel.Addin.AddIn
                             }
                         }
 
-                        var dnaFuncAttr = excelFuncAttr.CreateExcelFunctionAttribute();
+                        var dnaFuncAttr = excelFuncAttr;
                         if (dnaFuncAttr.Name == null) dnaFuncAttr.Name = method.Name;
                         var excelFunction = new ExcelFunction(method, defaults, putOnMap);
                         delegates.Add(excelFunction.GetDelegate());
@@ -79,7 +91,5 @@ namespace QuantSA.Excel.Addin.AddIn
                 }
             }
         }
-
-
     }
 }

@@ -43,14 +43,6 @@ namespace QuantSA.Excel
         }
 
         [ExcelFunction(Description = "",
-    Name = "QSA.Test",
-    Category = "QSA.Test")]
-        public static object[,] Test()
-        {
-            return new object[,] { { 1.0, 1, "hi", new Date(2018, 1, 1).ToOADate() } };
-        }
-
-        [ExcelFunction(Description = "",
             Name = "QSA.OpenExampleSheetsDir",
             Category = "QSA.General",
             IsMacroType = true,
@@ -101,7 +93,7 @@ namespace QuantSA.Excel
         }
 
         //var dir = AppDomain.CurrentDomain.BaseDirectory;
-        [QuantSAExcelFunction(Description = "Get a string representing the path in which QuantSA is intalled.",
+        [QuantSAExcelFunction(Description = "Get a string representing the path in which QuantSA is installed.",
             Name = "QSA.GetInstallPath",
             Category = "QSA.General",
             ExampleSheet = "CreateProductFromFile.xlsx",

@@ -19,6 +19,7 @@ using QuantSA.ExcelFunctions;
 /// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
 public class AddIn : IExcelAddIn
 {
+    public static bool Alreadyloaded = false;
     public static List<IQuantSAPlugin> plugins;
     public static Dictionary<string, Bitmap> assemblyImageResources;
     private List<Delegate> delegates;
@@ -68,11 +69,9 @@ public class AddIn : IExcelAddIn
             };
             foreach (var assembly in assemblies)
                 ExcelTypeConverter.AddConvertersFrom(assembly);
-
             foreach (var assembly in assemblies)
                 FunctionRegistration.RegisterFrom(assembly);
             
-            //ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
         catch (Exception e)
         {
@@ -142,7 +141,7 @@ public class AddIn : IExcelAddIn
         //Create the function attribute
         var quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
         if (isHidden != null) quantsaAttribute.IsHidden = isHidden.Value;
-        functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
+        functionAttributes.Add(quantsaAttribute);
 
         // Create the function argument attributes
         var thisArgumentAttributes = new List<object>();
@@ -168,7 +167,7 @@ public class AddIn : IExcelAddIn
         //Create the function attribute
         var quantsaAttribute = manualMethod.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
         if (isHidden != null) quantsaAttribute.IsHidden = isHidden.Value;
-        functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
+        functionAttributes.Add(quantsaAttribute);
 
         // Create the function argument attributes
         var thisArgumentAttributes = new List<object>();
@@ -428,7 +427,7 @@ public class AddIn : IExcelAddIn
 
         //Create the function attribute
         var quantsaAttribute = method.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-        functionAttributes.Add(quantsaAttribute.CreateExcelFunctionAttribute());
+        functionAttributes.Add(quantsaAttribute);
 
         // Create the function argument attributes
         var thisArgumentAttributes = new List<object>();

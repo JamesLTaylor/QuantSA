@@ -6,6 +6,7 @@ using System.Reflection;
 using ExcelDna.Integration;
 using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
+using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Excel.Addin.AddIn
 {
@@ -53,8 +54,9 @@ namespace QuantSA.Excel.Addin.AddIn
             else if (typeof(IEnumerable).IsAssignableFrom(requiredType)
                      && !typeof(string).IsAssignableFrom(requiredType))
                 typeToCheck = requiredType.GetGenericArguments()[0];
-            if (typeToCheck==null)
-                throw new ArgumentException($"{requiredType.FullName} seems to be an array or enumerable but I can not find the element type.");
+            if (typeToCheck == null)
+                throw new ArgumentException(
+                    $"{requiredType.FullName} seems to be an array or enumerable but I can not find the element type.");
 
             if (InputConverters.ContainsKey(typeToCheck))
                 return false;
@@ -62,7 +64,7 @@ namespace QuantSA.Excel.Addin.AddIn
                 return false;
             if (IsNullablePrimitive(typeToCheck))
                 return false;
-            
+
             if (typeToCheck == typeof(object))
                 return false;
             return true;
@@ -148,40 +150,52 @@ namespace QuantSA.Excel.Addin.AddIn
             if (input is ExcelMissing || input is ExcelEmpty) input = null;
             if (IsNullablePrimitive(requiredType))
             {
-                if (input != null || defaultValue == string.Empty)
-                    return input;
-                if (defaultValue == null) return null;
-                return GetPrimitiveFromDefault(Nullable.GetUnderlyingType(requiredType), input, defaultValue);
+                if (input != null)
+                    return GetPrimitive(requiredType, input);
+                if (defaultValue == string.Empty || defaultValue == string.Empty) return null;
+                return GetPrimitiveFromDefault(Nullable.GetUnderlyingType(requiredType), defaultValue);
             }
+
             if (requiredType.IsPrimitive)
             {
-                if (input != null || defaultValue == string.Empty)
-                    return input;
-                if (defaultValue == null) throw new ArgumentException($"{inputName} is not an optional input.  Please provide a value.");
-                return GetPrimitiveFromDefault(requiredType, input, defaultValue);                
+                if (input != null)
+                    return GetPrimitive(requiredType, input);
+                if (defaultValue == string.Empty)
+                    throw new ArgumentException($"{inputName} is not an optional input.  Please provide a value.");
+                if (defaultValue == null)
+                    throw new ArgumentException(
+                        $"{inputName} is not a nullable type.  Default can not be null."); // TODO: JT: This should be checked in a unit test
+                return GetPrimitiveFromDefault(requiredType, defaultValue);
             }
+
             if (requiredType.IsAssignableFrom(typeof(string)))
                 return input ?? defaultValue;
             if (InputConverters.ContainsKey(requiredType))
                 return InputConverters[requiredType].Convert(input, inputName, defaultValue);
             if (ShouldUseReference(requiredType))
-            {
                 if (input is string objName)
                     return ObjectMap.Instance.GetObjectFromID<object>(objName);
-            }
+
             if (defaultValue != string.Empty) return defaultValue;
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
         }
 
-        private static object GetPrimitiveFromDefault(Type requiredType, object input, string defaultValue)
+        private static object GetPrimitive(Type requiredType, object input)
+        {
+            if (requiredType.IsAssignableFrom(typeof(int)))
+                return (int) Math.Round((double) input);
+            return input;
+        }
+
+        private static object GetPrimitiveFromDefault(Type requiredType, string defaultValue)
         {
             if (defaultValue == null) return null;
             if (requiredType.IsAssignableFrom(typeof(bool)))
-                return Boolean.Parse(defaultValue);
+                return bool.Parse(defaultValue);
             if (requiredType.IsAssignableFrom(typeof(double)))
-                return Double.Parse(defaultValue);
+                return double.Parse(defaultValue);
             if (requiredType.IsAssignableFrom(typeof(int)))
-                return Int32.Parse(defaultValue);
+                return int.Parse(defaultValue);
             if (requiredType.IsAssignableFrom(typeof(string)))
                 return defaultValue;
             throw new ArgumentException($"Unable to create a type: {requiredType.Name} from {defaultValue}");
@@ -197,9 +211,9 @@ namespace QuantSA.Excel.Addin.AddIn
         public static object[,] ConvertOuput(Type suppliedType, object output, string outputName)
         {
             if (suppliedType.IsArray && suppliedType.GetArrayRank() == 1)
-                return ConvertOutputArray1D(suppliedType, output);
+                return ConvertOutputArray1D(suppliedType, output, outputName);
             if (suppliedType.IsArray && suppliedType.GetArrayRank() == 2)
-                return ConvertOutputMatrix(suppliedType, output as object[,]);
+                return ConvertOutputMatrix(suppliedType, output, outputName);
             if (typeof(IEnumerable).IsAssignableFrom(suppliedType) && !typeof(string).IsAssignableFrom(suppliedType))
                 return ConverOutputIEnumerable(suppliedType, output);
             return ConvertOutputScalarTo2D(suppliedType, output, outputName);
@@ -212,6 +226,14 @@ namespace QuantSA.Excel.Addin.AddIn
             if (suppliedType.IsPrimitive) return output;
             if (OutputConverters.ContainsKey(suppliedType))
                 return OutputConverters[suppliedType].Convert(output);
+            if (suppliedType == typeof(object))
+            {
+                var outputDate = output as Date;
+                if (outputDate != null)
+                    return outputDate.ToOADate();
+                return output;
+            }
+
             throw new ArgumentException($"No converter for type: {suppliedType.Name}.");
         }
 
@@ -227,14 +249,26 @@ namespace QuantSA.Excel.Addin.AddIn
             throw new NotImplementedException();
         }
 
-        private static object[,] ConvertOutputMatrix(Type suppliedType, object[,] output)
+        private static object[,] ConvertOutputMatrix(Type suppliedType, object output, string outputName)
         {
-            return output;
+            var elementType = suppliedType.GetElementType();
+            var arr2D = output as Array;
+            var output2D = new object[arr2D.GetLength(0), arr2D.GetLength(1)];
+            for (var i = 0; i < arr2D.GetLength(0); i++)
+            for (var j = 0; i < arr2D.GetLength(1); i++)
+                output2D[i, j] =
+                    ConvertOutputScalar(elementType, arr2D.GetValue(new[] {i, j}), $"{outputName}_{i}_{j}");
+            return output2D;
         }
 
-        private static object[,] ConvertOutputArray1D(Type suppliedType, object output)
+        private static object[,] ConvertOutputArray1D(Type suppliedType, object output, string outputName)
         {
-            throw new NotImplementedException();
+            var elementType = suppliedType.GetElementType();
+            var arr1D = output as Array;
+            var output2D = new object[arr1D.Length, 1];
+            for (var i = 0; i < arr1D.Length; i++)
+                output2D[i, 0] = ConvertOutputScalar(elementType, arr1D.GetValue(i), outputName + "_" + i);
+            return output2D;
         }
     }
 }
