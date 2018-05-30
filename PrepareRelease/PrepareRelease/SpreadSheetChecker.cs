@@ -105,7 +105,7 @@ namespace PrepareRelease
         }
 
         /// <summary>
-        /// Check if a workbook runs without any errors.  #N/A erros are ignored.
+        /// Check if a workbook runs without any errors.  #N/A errors are ignored.
         /// </summary>
         /// <param name="wb">the workbook to be checked.</param>
         /// <returns>True if the sheet runs OK</returns>
