@@ -45,7 +45,7 @@ namespace QuantSA.Excel.Addin.AddIn
         /// </summary>
         /// <param name="requiredType"></param>
         /// <returns></returns>
-        public static bool CanConvertInputOfType(Type requiredType)
+        public static bool ShouldUseReference(Type requiredType)
         {
             var typeToCheck = requiredType;
             if (requiredType.IsArray)
@@ -57,15 +57,15 @@ namespace QuantSA.Excel.Addin.AddIn
                 throw new ArgumentException($"{requiredType.FullName} seems to be an array or enumerable but I can not find the element type.");
 
             if (InputConverters.ContainsKey(typeToCheck))
-                return true;
+                return false;
             if (typeToCheck.IsPrimitive)
-                return true;
+                return false;
             if (IsNullablePrimitive(typeToCheck))
-                return true;
-            //TODO: JT: remove this.  Only here for old functions that still return objects, everything should return a well defined type.
+                return false;
+            
             if (typeToCheck == typeof(object))
-                return true;
-            return false;
+                return false;
+            return true;
         }
 
         public static object ConvertInput(Type requiredType, object[,] input, string inputName,
@@ -164,7 +164,7 @@ namespace QuantSA.Excel.Addin.AddIn
                 return input ?? defaultValue;
             if (InputConverters.ContainsKey(requiredType))
                 return InputConverters[requiredType].Convert(input, inputName, defaultValue);
-            if (!CanConvertInputOfType(requiredType))
+            if (ShouldUseReference(requiredType))
             {
                 if (input is string objName)
                     return ObjectMap.Instance.GetObjectFromID<object>(objName);
@@ -207,7 +207,7 @@ namespace QuantSA.Excel.Addin.AddIn
 
         private static object ConvertOutputScalar(Type suppliedType, object output, string outputName)
         {
-            if (!CanConvertInputOfType(suppliedType))
+            if (ShouldUseReference(suppliedType))
                 return ObjectMap.Instance.AddObject(outputName, output);
             if (suppliedType.IsPrimitive) return output;
             if (OutputConverters.ContainsKey(suppliedType))

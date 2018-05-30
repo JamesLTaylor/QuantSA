@@ -17,6 +17,13 @@ namespace QuantSA.Excel.Addin.AddIn
             var delegates = new List<Delegate>();
             var functionAttributes = new List<object>();
             var functionArgumentAttributes = new List<List<object>>();
+            UpdateDelegatesAndAttributes(assembly, ref delegates, ref functionAttributes, ref functionArgumentAttributes);
+            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
+        }
+
+        public static void UpdateDelegatesAndAttributes(Assembly assembly, ref List<Delegate> delegates, 
+            ref List<object> functionAttributes, ref List<List<object>> functionArgumentAttributes)
+        {
             var types = assembly.GetTypes();
             foreach (var type in types)
             {
@@ -32,7 +39,7 @@ namespace QuantSA.Excel.Addin.AddIn
                         if (method == null)
                             throw new ArgumentException(
                                 $"{excelFuncAttr.Name} is marked with a QuantSAExcelFunctionAttribute but is not a method");
-                        var putOnMap = !ExcelTypeConverter.CanConvertInputOfType(method.ReturnType);
+                        var putOnMap = ExcelTypeConverter.ShouldUseReference(method.ReturnType);
                         if (putOnMap)
                             aAttr.Add(new ExcelArgumentAttribute
                             {
@@ -71,8 +78,8 @@ namespace QuantSA.Excel.Addin.AddIn
                     }
                 }
             }
-
-            ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
+
+
     }
 }

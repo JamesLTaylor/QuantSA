@@ -7,6 +7,7 @@ using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Formulae;
+using QuantSA.Primitives.Dates;
 using XU = QuantSA.Excel.ExcelUtilities;
 
 namespace QuantSA.Excel
@@ -24,7 +25,7 @@ namespace QuantSA.Excel
             {
                 if (ExcelUtilities.latestException == null)
                 {
-                    var latestError = new ExcelMessage("No errors have occured.");
+                    var latestError = new ExcelMessage("No errors have occurred.");
                     latestError.ShowDialog();
                 }
                 else
@@ -39,6 +40,14 @@ namespace QuantSA.Excel
             {
                 return ExcelUtilities.Error0D(e);
             }
+        }
+
+        [ExcelFunction(Description = "",
+    Name = "QSA.Test",
+    Category = "QSA.Test")]
+        public static object[,] Test()
+        {
+            return new object[,] { { 1.0, 1, "hi", new Date(2018, 1, 1).ToOADate() } };
         }
 
         [ExcelFunction(Description = "",
