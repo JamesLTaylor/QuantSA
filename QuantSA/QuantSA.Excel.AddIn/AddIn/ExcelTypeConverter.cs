@@ -109,6 +109,14 @@ namespace QuantSA.Excel.Addin.AddIn
         private static object ConvertInputArray1D(Type requiredType, object[,] input, string inputName,
             string defaultValue)
         {
+            if (input.GetLength(0) == 1 && input.GetLength(1) == 1 &&
+                (input[0, 0] is ExcelMissing || input[0, 0] is ExcelEmpty))
+            {
+                if (defaultValue != string.Empty)
+                    return defaultValue;
+                throw new ArgumentException($"{inputName} is not an optional input.  Please provide a value.");
+            }
+
             if (input.GetLength(0) > 1 && input.GetLength(1) > 1)
                 throw new ArgumentException(
                     $"{inputName}: Expected a 1 dimensional input but 2 dimensional range is being passed.");

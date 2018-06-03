@@ -22,12 +22,14 @@ namespace QuantSA.ExcelFunctions
                 "The floating rate forecast curves for all the rates that the products in the portfolio will need.")]
             IFloatingRateSource[] rateForecastCurves,
             [QuantSAExcelArgument(Description =
-                "The FX rate forecast curves for all the cashflow currencies other than the discounting currency.", Default = null)]
+                    "The FX rate forecast curves for all the cashflow currencies other than the discounting currency.",
+                Default = null)]
             IFXSource[] fxForecastCurves)
         {
             var model = new DeterminsiticCurves(discountCurve);
             model.AddRateForecast(rateForecastCurves);
-            model.AddFXForecast(fxForecastCurves);
+            if (fxForecastCurves != null)
+                model.AddFXForecast(fxForecastCurves);
             return model;
         }
 

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Text;
 using ExcelDna.Integration;
 using MathNet.Numerics.Interpolation;
-using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Conventions.DayCount;
@@ -119,22 +118,13 @@ namespace QuantSA.Excel
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/GetAvailableResults.html")]
         public static object[,] GetAvailableResults(
-            [ExcelArgument(Description =
-                "The name of the results object as returned by call to another QuantSA function")]
-            string objectName)
+            [ExcelArgument(Description = "The results object as returned by call to another QuantSA function")]
+            IProvidesResultStore resultStore)
         {
-            try
-            {
-                var resultStore = ObjectMap.Instance.GetObjectFromID<IProvidesResultStore>(objectName);
-                var temp = resultStore.GetResultStore().GetNames();
-                var column = new object[temp.Length, 1];
-                for (var i = 0; i < temp.Length; i++) column[i, 0] = temp[i];
-                return column;
-            }
-            catch (Exception e)
-            {
-                return new object[,] {{e.Message}};
-            }
+            var temp = resultStore.GetResultStore().GetNames();
+            var column = new object[temp.Length, 1];
+            for (var i = 0; i < temp.Length; i++) column[i, 0] = temp[i];
+            return column;
         }
 
         [QuantSAExcelFunction(Description = "Get the stored results of a calculation from a results object.",
@@ -179,7 +169,8 @@ namespace QuantSA.Excel
             [QuantSAExcelArgument(Description = "Continuously compounded dividend yield.", Default = "0.0")]
             double divYield)
         {
-            return BlackEtc.BlackScholes(PutOrCall.Call, strike, Actual365Fixed.Instance.YearFraction(valueDate, exerciseDate), 
+            return BlackEtc.BlackScholes(PutOrCall.Call, strike,
+                Actual365Fixed.Instance.YearFraction(valueDate, exerciseDate),
                 spotPrice, vol, riskfreeRate, divYield);
         }
 
