@@ -5,10 +5,10 @@ namespace QuantSA.Excel.Common
 {
     public class ObjectMap
     {
-        private static readonly object thisLock = new object();
-        private static ObjectMap instance;
-        private readonly Dictionary<string, ObjectEntry> namesAndObjects;
-        private long objectCounter;
+        private static readonly object ThisLock = new object();
+        private static ObjectMap _instance;
+        private readonly Dictionary<string, ObjectEntry> _namesAndObjects;
+        private long _objectCounter;
 
 
         /// <summary>
@@ -16,8 +16,8 @@ namespace QuantSA.Excel.Common
         /// </summary>
         private ObjectMap()
         {
-            objectCounter = 0;
-            namesAndObjects = new Dictionary<string, ObjectEntry>();
+            _objectCounter = 0;
+            _namesAndObjects = new Dictionary<string, ObjectEntry>();
         }
 
 
@@ -28,10 +28,9 @@ namespace QuantSA.Excel.Common
         {
             get
             {
-                lock (thisLock)
+                lock (ThisLock)
                 {
-                    if (instance == null) instance = new ObjectMap();
-                    return instance;
+                    return _instance ?? (_instance = new ObjectMap());
                 }
             }
         }
@@ -49,16 +48,16 @@ namespace QuantSA.Excel.Common
             if (name.IndexOf('.') > 0) throw new Exception("Specified name cannot have a '.'");
             if (name.IndexOf(' ') > 0) throw new Exception("Specified name cannot have a space");
             string uniqueID;
-            lock (thisLock)
+            lock (ThisLock)
             {
-                objectCounter++;
-                uniqueID = name + "." + DateTime.Now.ToString("HH:mm:ss") + "-" + objectCounter;
-                if (namesAndObjects.ContainsKey(name))
+                _objectCounter++;
+                uniqueID = name + "." + DateTime.Now.ToString("HH:mm:ss") + "-" + _objectCounter;
+                if (_namesAndObjects.ContainsKey(name))
                 {
                     //TODO: Make sure this is the same object.  If not throw an error
                 }
 
-                namesAndObjects[name] = new ObjectEntry {obj = obj, uniqueID = uniqueID};
+                _namesAndObjects[name] = new ObjectEntry {Obj = obj, UniqueID = uniqueID};
             }
 
             return uniqueID;
@@ -67,40 +66,33 @@ namespace QuantSA.Excel.Common
         public T GetObjectFromID<T>(string objectName)
         {
             if (objectName == null) throw new ArgumentNullException(nameof(objectName));
-            var obj = Instance.GetObjectFromID(objectName);
-            if (obj is T variable)
-                return variable;
+            if (!Instance.TryGetObjectFromID(objectName, out var element))
+                throw new IndexOutOfRangeException("Object map does not contain an object with id: " + objectName.Split('.')[0]);
+            if (element is T tElement)
+                return tElement;
             throw new ArgumentException(objectName + " is not of required type: " + typeof(T));
         }
 
-        /// <summary>
-        /// Get the object given the full id.  Strips everything to right of first dot and uses remaining as short name.
-        /// </summary>
-        /// <param name="uniqueID">Full id as returned by a call to <see cref="AddObject"/></param>
-        /// <returns></returns>
-        private object GetObjectFromID(string uniqueID)
+        public bool TryGetObjectFromID(string objectName, out object element)
         {
-            var nameParts = uniqueID.Split('.');
-            return GetObjectFromName(nameParts[0]);
-        }
+            element = null;
+            if (objectName == null) throw new ArgumentNullException(nameof(objectName));
+            var nameParts = objectName.Split('.');
+            var name = nameParts[0];
+            if (_namesAndObjects.TryGetValue(name, out var entry))
+            {
+                element = entry.Obj;
+                return true;
+            }
 
-        /// <summary>
-        /// Get the object on the map with the name provided.
-        /// </summary>
-        /// <param name="name">The name used to add the object to the map.</param>
-        /// <returns></returns>
-        private object GetObjectFromName(string name)
-        {
-            if (!namesAndObjects.ContainsKey(name))
-                throw new IndexOutOfRangeException("Object map does not contain an object with id: " + name);
-            return namesAndObjects[name].obj;
+            return false;
         }
 
         private struct ObjectEntry
         {
-            public string uniqueID;
+            public string UniqueID;
 
-            public object obj;
+            public object Obj;
             //public string bookName;
             //public string sheetName;
             //public string cellName;

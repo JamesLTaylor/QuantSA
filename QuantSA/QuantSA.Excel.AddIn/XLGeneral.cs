@@ -6,6 +6,7 @@ using MathNet.Numerics.Interpolation;
 using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
+using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Formulae;
 using QuantSA.Primitives.Dates;
 using XU = QuantSA.Excel.ExcelUtilities;
@@ -143,30 +144,17 @@ namespace QuantSA.Excel
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/GetResults.html")]
         public static object[,] GetResults([ExcelArgument(Description =
-                "The name of the results object as returned by a call to another QuantSA function")]
-            string objectName,
+                "The results object as returned by a call to another QuantSA function")]
+            IProvidesResultStore resultStore,
             [ExcelArgument(Description =
                 "The name of the result required.  Use QSA.GetAvailableResults to get a list of all available results in this object.")]
             string resultName)
         {
-            try
-            {
-                var resultStore = ObjectMap.Instance.GetObjectFromID<IProvidesResultStore>(objectName);
-                if (resultStore == null) throw new ArgumentException("The provided object is not a results object.");
-                if (resultStore.GetResultStore().IsDate(resultName))
-                {
-                    var dates = resultStore.GetResultStore().GetDates(resultName);
-                    return ExcelUtilities.ConvertToObjects(dates);
-                }
-
-                if (resultStore.GetResultStore().IsString(resultName))
-                    return ExcelUtilities.ConvertToObjects(resultStore.GetResultStore().GetStrings(resultName));
-                return ExcelUtilities.ConvertToObjects(resultStore.GetResultStore().Get(resultName));
-            }
-            catch (Exception e)
-            {
-                return ExcelUtilities.Error2D(e);
-            }
+            if (resultStore.GetResultStore().IsDate(resultName))
+                return resultStore.GetResultStore().GetDates(resultName);
+            if (resultStore.GetResultStore().IsString(resultName))
+                return resultStore.GetResultStore().GetStrings(resultName);
+            return resultStore.GetResultStore().Get(resultName);
         }
 
 
@@ -176,32 +164,23 @@ namespace QuantSA.Excel
             ExampleSheet = "EquityValuation.xlsx",
             Category = "QSA.General",
             HelpTopic = "http://www.quantsa.org/FormulaBlackScholes.html")]
-        public static object FormulaBlackScholes([ExcelArgument(Description = "Strike")]
-            object[,] strike,
+        public static double FormulaBlackScholes([ExcelArgument(Description = "Strike")]
+            double strike,
             [ExcelArgument(Description = "The value date as and Excel date.")]
-            object[,] valueDate,
+            Date valueDate,
             [ExcelArgument(Description = "The exercise date of the option.  Must be greater than the value date.")]
-            object[,] exerciseDate,
+            Date exerciseDate,
             [ExcelArgument(Description = "The spot price of the underlying at the value date.")]
-            object[,] spotPrice,
+            double spotPrice,
             [ExcelArgument(Description = "Annualized volatility.")]
-            object[,] vol,
+            double vol,
             [ExcelArgument(Description = "Continuously compounded risk free rate.")]
-            object[,] riskfreeRate,
-            [ExcelArgument(Description = "Continuously compounded dividend yield.")]
-            object[,] divYield)
+            double riskfreeRate,
+            [QuantSAExcelArgument(Description = "Continuously compounded dividend yield.", Default = "0.0")]
+            double divYield)
         {
-            try
-            {
-                return BlackEtc.BlackScholes(PutOrCall.Call, XU.GetDouble0D(strike, "strike"),
-                    (XU.GetDate0D(exerciseDate, "exerciseDate") - XU.GetDate0D(valueDate, "valueDate")) / 365.0,
-                    XU.GetDouble0D(spotPrice, "spotPrice"), XU.GetDouble0D(vol, "vol"),
-                    XU.GetDouble0D(riskfreeRate, "riskfreeRate"), XU.GetDouble0D(divYield, "divYield"));
-            }
-            catch (Exception e)
-            {
-                return XU.Error0D(e);
-            }
+            return BlackEtc.BlackScholes(PutOrCall.Call, strike, Actual365Fixed.Instance.YearFraction(valueDate, exerciseDate), 
+                spotPrice, vol, riskfreeRate, divYield);
         }
 
 
@@ -211,20 +190,10 @@ namespace QuantSA.Excel
             Category = "QSA.General",
             ExampleSheet = "CreateProductFromFile.xlsx",
             HelpTopic = "http://www.quantsa.org/CreateProductFromFile.html")]
-        public static object CreateProductFromFile([ExcelArgument(Description = "Name of product")]
-            string name,
-            [ExcelArgument(Description = "Full path to the file.")]
+        public static Product CreateProductFromFile([ExcelArgument(Description = "Full path to the file.")]
             string filename)
         {
-            try
-            {
-                var runtimeProduct = RuntimeProduct.CreateFromScript(filename);
-                return XU.AddObject(name, runtimeProduct);
-            }
-            catch (Exception e)
-            {
-                return XU.Error0D(e);
-            }
+            return RuntimeProduct.CreateFromScript(filename);
         }
 
 
@@ -234,7 +203,7 @@ namespace QuantSA.Excel
             ExampleSheet = "InterpLinear.xlsx",
             Category = "QSA.General",
             HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
-        public static object[,] InterpLinear(
+        public static double[,] InterpLinear(
             [ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]
             double[] knownX,
             [ExcelArgument(Description = "A vector of y values.  Must be the same length as knownX")]
@@ -243,7 +212,7 @@ namespace QuantSA.Excel
             double[,] requiredX)
         {
             var spline = LinearSpline.InterpolateSorted(knownX, knownY);
-            var result = new object[requiredX.GetLength(0), requiredX.GetLength(1)];
+            var result = new double[requiredX.GetLength(0), requiredX.GetLength(1)];
 
             for (var x = 0; x < requiredX.GetLength(0); x += 1)
             for (var y = 0; y < requiredX.GetLength(1); y += 1)

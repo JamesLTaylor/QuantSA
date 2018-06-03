@@ -48,6 +48,7 @@ namespace QuantSA.Excel.Addin.AddIn
         /// <returns></returns>
         public static bool ShouldUseReference(Type requiredType)
         {
+            // Get the type from inside the array or matrix if applicable
             var typeToCheck = requiredType;
             if (requiredType.IsArray)
                 typeToCheck = requiredType.GetElementType();
@@ -58,7 +59,7 @@ namespace QuantSA.Excel.Addin.AddIn
                 throw new ArgumentException(
                     $"{requiredType.FullName} seems to be an array or enumerable but I can not find the element type.");
 
-            if (InputConverters.ContainsKey(typeToCheck))
+            if (OutputConverters.ContainsKey(typeToCheck))
                 return false;
             if (typeToCheck.IsPrimitive)
                 return false;
@@ -100,8 +101,8 @@ namespace QuantSA.Excel.Addin.AddIn
             var size = new[] {input.GetLength(0), input.GetLength(1)};
             var matrix = Array.CreateInstance(elementType, size);
             for (var i = 0; i < input.GetLength(0); i++)
-            for (var j = 0; i < input.GetLength(1); j++)
-                matrix.SetValue(ConvertInputScalar(elementType, input[i, 0], inputName, defaultValue), new[] {i, j});
+            for (var j = 0; j < input.GetLength(1); j++)
+                matrix.SetValue(ConvertInputScalar(elementType, input[i, j], inputName, defaultValue), new[] {i, j});
             return matrix;
         }
 
@@ -147,6 +148,9 @@ namespace QuantSA.Excel.Addin.AddIn
         private static object ConvertInputScalar(Type requiredType, object input, string inputName,
             string defaultValue)
         {
+            if (input is string objName && ObjectMap.Instance.TryGetObjectFromID(objName, out var element))
+                return element;
+
             if (input is ExcelMissing || input is ExcelEmpty) input = null;
             if (IsNullablePrimitive(requiredType))
             {
@@ -172,11 +176,11 @@ namespace QuantSA.Excel.Addin.AddIn
                 return input ?? defaultValue;
             if (InputConverters.ContainsKey(requiredType))
                 return InputConverters[requiredType].Convert(input, inputName, defaultValue);
-            if (ShouldUseReference(requiredType))
-                if (input is string objName)
-                    return ObjectMap.Instance.GetObjectFromID<object>(objName);
 
             if (defaultValue != string.Empty) return defaultValue;
+
+            if (input is string objNameAgain)
+                throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name} and no object named {objNameAgain} on the map.");
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
         }
 
@@ -255,7 +259,7 @@ namespace QuantSA.Excel.Addin.AddIn
             var arr2D = output as Array;
             var output2D = new object[arr2D.GetLength(0), arr2D.GetLength(1)];
             for (var i = 0; i < arr2D.GetLength(0); i++)
-            for (var j = 0; i < arr2D.GetLength(1); i++)
+            for (var j = 0; j < arr2D.GetLength(1); j++)
                 output2D[i, j] =
                     ConvertOutputScalar(elementType, arr2D.GetValue(new[] {i, j}), $"{outputName}_{i}_{j}");
             return output2D;

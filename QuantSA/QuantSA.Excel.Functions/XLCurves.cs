@@ -1,5 +1,4 @@
 ﻿using ExcelDna.Integration;
-using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.Primitives.Dates;
@@ -57,7 +56,7 @@ namespace QuantSA.ExcelFunctions
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreatePCACurveSimulator.html")]
-        public static object CreatePCACurveSimulator(
+        public static PCACurveSimulator CreatePCACurveSimulator(
             [ExcelArgument(Description = "The date from which the curve dates will be calculated.")]
             Date anchorDate,
             [ExcelArgument(Description =
@@ -67,7 +66,7 @@ namespace QuantSA.ExcelFunctions
                 "An array of times at which each rate applies.  Each value must be valid tenor description.  The length must be the same as each component and 'initialRates'")]
             Tenor[] tenors,
             [ExcelArgument(Description =
-                "The componenents.  Stack the components in columns side by side or rows one underneath each other.")]
+                "The components.  Stack the components in columns side by side or rows one underneath each other.")]
             double[,] components,
             [ExcelArgument(Description =
                 "The volatility for each component.  Must be the same length as the number of components.")]

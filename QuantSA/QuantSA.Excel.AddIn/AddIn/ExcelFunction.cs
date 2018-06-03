@@ -41,7 +41,7 @@ namespace QuantSA.Excel.Addin.AddIn
                 }
 
                 var output = _methodInfo.Invoke(null, convertedInputs.ToArray());
-                var outputName = GetOutputName(inputs[0]);
+                var outputName = _argOffset == 0 ? null : GetOutputName(inputs[0]);
                 return ExcelTypeConverter.ConvertOuput(_methodInfo.ReturnType, output, outputName);
             }
             catch (TargetInvocationException e)
@@ -63,7 +63,6 @@ namespace QuantSA.Excel.Addin.AddIn
 
         private string GetOutputName(object input)
         {
-            if (_argOffset == 0) return null;
             var inputAsMatrix = input as object[,];
             if (inputAsMatrix.GetLength(0) > 1 || inputAsMatrix.GetLength(1) > 1)
                 throw new ArgumentException("Object name must be a single cell or value typed into the formula.");

@@ -18,13 +18,25 @@ namespace QuantSA.Excel.Addin.TypeConverters
 
         public object Convert(object input, string inputName, string defaultValue)
         {
+            if (input == null && defaultValue == null)
+                return null;
             var strValue = input == null ? defaultValue : input as string;
             if (strValue != null)
                 if (strValue.ToUpper() == "TODAY")
                     return new Date(DateTime.Today);
-
-            if (!(input is double value)) throw new ArgumentException($"{inputName} must have a value representing an Excel Date.");
+            if (!(input is double value))
+                throw new ArgumentException($"{inputName} must have a value representing an Excel Date.");
             return new Date(DateTime.FromOADate(value));
+        }
+    }
+
+    public class DateOutputConverter : IOutputConverter
+    {
+        public Type SuppliedType => typeof(Date);
+
+        public object Convert(object input)
+        {
+            return ((Date) input).ToOADate();
         }
     }
 
@@ -35,7 +47,8 @@ namespace QuantSA.Excel.Addin.TypeConverters
         public object Convert(object input, string inputName, string defaultValue)
         {
             var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null) throw new ArgumentException($"{inputName} must have a string value representing a Currency.");
+            if (strValue is null)
+                throw new ArgumentException($"{inputName} must have a string value representing a Currency.");
             return new Currency(strValue);
         }
     }
@@ -59,7 +72,9 @@ namespace QuantSA.Excel.Addin.TypeConverters
         public object Convert(object input, string inputName, string defaultValue)
         {
             var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null) throw new ArgumentException($"{inputName} must be one of the strings representing a BusinessDayConvention.");
+            if (strValue is null)
+                throw new ArgumentException(
+                    $"{inputName} must be one of the strings representing a BusinessDayConvention.");
             switch (strValue.ToUpper())
             {
                 case "F":
@@ -88,7 +103,9 @@ namespace QuantSA.Excel.Addin.TypeConverters
         public object Convert(object input, string inputName, string defaultValue)
         {
             var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null) throw new ArgumentException($"{inputName} must be one of the strings representing a DayCountConvention.");
+            if (strValue is null)
+                throw new ArgumentException(
+                    $"{inputName} must be one of the strings representing a DayCountConvention.");
             switch (strValue.ToUpper())
             {
                 case "ACTACT": return DayCountStore.ActActISDA;
@@ -109,7 +126,8 @@ namespace QuantSA.Excel.Addin.TypeConverters
         public object Convert(object input, string inputName, string defaultValue)
         {
             var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null) throw new ArgumentException($"{inputName} must be one of the strings representing a FloatingIndex.");
+            if (strValue is null)
+                throw new ArgumentException($"{inputName} must be one of the strings representing a FloatingIndex.");
             switch (strValue.ToUpper())
             {
                 case "JIBAR1M": return FloatingIndex.JIBAR1M;
@@ -182,7 +200,8 @@ namespace QuantSA.Excel.Addin.TypeConverters
         public object Convert(object input, string inputName, string defaultValue)
         {
             var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null) throw new ArgumentException($"{inputName} must be a string representing a ReferenceEntity.");
+            if (strValue is null)
+                throw new ArgumentException($"{inputName} must be a string representing a ReferenceEntity.");
             return new ReferenceEntity(strValue);
         }
     }
