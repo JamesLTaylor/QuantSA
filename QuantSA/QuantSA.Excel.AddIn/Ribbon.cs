@@ -16,12 +16,12 @@ public class Ribbon : ExcelRibbon
         // One can find the standard available button iamges at http://soltechs.net/customui/imageMso01.asp?gal=1&count=no
    
         StringBuilder pluginSubmenu = new StringBuilder("");
-        if (AddIn.plugins.Count > 0)
+        if (AddIn.Plugins.Count > 0)
         {
             pluginSubmenu.Append(@"<splitButton id='splitButton' size='large' >
                 <button id = 'button' label = 'Plugins' />
                     <menu id = 'menu' >");
-            foreach (IQuantSAPlugin plugin in AddIn.plugins)
+            foreach (IQuantSAPlugin plugin in AddIn.Plugins)
             {
                 pluginSubmenu.Append("<button id = 'btn" + plugin.GetShortName() + "' label = '" + plugin.GetName() + "'" +
                     " onAction='RunTagMacro' tag='" + plugin.GetAboutMacro() + "'/>");
@@ -50,7 +50,7 @@ public class Ribbon : ExcelRibbon
         string customUI = customUIStart;
         customUI += commonGroup;
 
-        foreach (IQuantSAPlugin plugin in AddIn.plugins)
+        foreach (IQuantSAPlugin plugin in AddIn.Plugins)
         {
             customUI += plugin.GetRibbonGroup();
         }
@@ -66,8 +66,8 @@ public class Ribbon : ExcelRibbon
     /// <returns></returns>
     public override object LoadImage(string imageId)
     {
-        if (AddIn.assemblyImageResources.ContainsKey(imageId))
-            return (AddIn.assemblyImageResources[imageId]);
+        if (AddIn.AssemblyImageResources.ContainsKey(imageId))
+            return (AddIn.AssemblyImageResources[imageId]);
 
         try
         {

@@ -3,14 +3,14 @@ using System.Diagnostics;
 using System.Text;
 using ExcelDna.Integration;
 using MathNet.Numerics.Interpolation;
+using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Formulae;
 using QuantSA.Primitives.Dates;
-using XU = QuantSA.Excel.ExcelUtilities;
 
-namespace QuantSA.Excel
+namespace QuantSA.Excel.Addin
 {
     public class XLGeneral
     {
@@ -19,27 +19,20 @@ namespace QuantSA.Excel
             Category = "QSA.General",
             IsMacroType = true,
             IsHidden = true)]
-        public static object LatestError()
+        public static string LatestError()
         {
-            try
+            if (ObjectMap.Instance.LatestException == null)
             {
-                if (ExcelUtilities.latestException == null)
-                {
-                    var latestError = new ExcelMessage("No errors have occurred.");
-                    latestError.ShowDialog();
-                }
-                else
-                {
-                    var latestError = new ExcelMessage(ExcelUtilities.latestException);
-                    latestError.ShowDialog();
-                }
+                var latestError = new ExcelMessage("No errors have occurred.");
+                latestError.ShowDialog();
+            }
+            else
+            {
+                var latestError = new ExcelMessage(ObjectMap.Instance.LatestException);
+                latestError.ShowDialog();
+            }
 
-                return "";
-            }
-            catch (Exception e)
-            {
-                return ExcelUtilities.Error0D(e);
-            }
+            return "";
         }
 
         [ExcelFunction(Description = "",
@@ -59,37 +52,29 @@ namespace QuantSA.Excel
             ExampleSheet = "Introduction.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/GetCSArray.html")]
-        public static object[,] GetCSArray([ExcelArgument(Description = "The block of values you want to use in C#.")]
+        public static string[] GetCSArray([ExcelArgument(Description = "The block of values you want to use in C#.")]
             object[,] data,
             [ExcelArgument(Description = "The number of decimal places each value must have in the string.")]
             double decimalPlaces)
         {
-            try
+            var iDecimalPlaces = (int) decimalPlaces;
+            var result = new string[data.GetLength(0)];
+            StringBuilder sb;
+            for (var i = 0; i < data.GetLength(0); i++)
             {
-                var iDecimalPlaces = (int) decimalPlaces;
-                var result = new object[data.GetLength(0), 1];
-                StringBuilder sb;
-                for (var i = 0; i < data.GetLength(0); i++)
+                sb = new StringBuilder();
+                sb.Append(i == 0 ? "{{" : "{");
+                for (var j = 0; j < data.GetLength(1); j++)
                 {
-                    sb = new StringBuilder();
-                    sb.Append(i == 0 ? "{{" : "{");
-                    for (var j = 0; j < data.GetLength(1); j++)
-                    {
-                        if (j > 0) sb.Append(",");
-                        var value = (double) data[i, j];
-                        sb.Append(value.ToString($"F{iDecimalPlaces}"));
-                    }
-
-                    sb.Append(i == data.GetLength(0) - 1 ? "}}" : "},");
-                    result[i, 0] = sb.ToString();
+                    if (j > 0) sb.Append(",");
+                    var value = (double) data[i, j];
+                    sb.Append(value.ToString($"F{iDecimalPlaces}"));
                 }
 
-                return result;
+                sb.Append(i == data.GetLength(0) - 1 ? "}}" : "},");
+                result[i] = sb.ToString();
             }
-            catch (Exception e)
-            {
-                return new object[,] {{e.Message}};
-            }
+            return result;
         }
 
         //var dir = AppDomain.CurrentDomain.BaseDirectory;
@@ -99,16 +84,9 @@ namespace QuantSA.Excel
             ExampleSheet = "CreateProductFromFile.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/GetInstallPath.html")]
-        public static object[,] GetInstallPath()
+        public static string GetInstallPath()
         {
-            try
-            {
-                return XU.ConvertToObjects(AppDomain.CurrentDomain.BaseDirectory);
-            }
-            catch (Exception e)
-            {
-                return XU.Error2D(e);
-            }
+            return AppDomain.CurrentDomain.BaseDirectory;
         }
 
         [QuantSAExcelFunction(Description = "Get a list of available results in the results object.",

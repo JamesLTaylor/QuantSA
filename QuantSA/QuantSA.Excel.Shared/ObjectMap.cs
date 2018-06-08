@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuantSA.Excel.Common
+namespace QuantSA.Excel.Shared
 {
     public class ObjectMap
     {
@@ -34,6 +34,8 @@ namespace QuantSA.Excel.Common
                 }
             }
         }
+
+        public string LatestException;
 
         /// <summary>
         /// Add an object onto the map.  Objects with the same name will overwrite each other.

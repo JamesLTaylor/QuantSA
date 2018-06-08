@@ -76,10 +76,10 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="AddIn.cs" />
+    <Compile Include="AddIn\ExcelErrors.cs" />
     <Compile Include="AddIn\ExcelFunction.cs" />
     <Compile Include="AddIn\FunctionRegistration.cs" />
     <Compile Include="AddIn\ExcelTypeConverter.cs" />
-    <Compile Include="ExcelUtilities.cs" />
     <Compile Include="ExcelMessage.xaml.cs">
       <DependentUpon>ExcelMessage.xaml</DependentUpon>
     </Compile>
