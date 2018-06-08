@@ -24,14 +24,14 @@ Create a par style CDS.  Protection will always apply from the value date until 
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **refEntity** The reference entity whose default is covered by this CDS.(ReferenceEntity)
-* **ccy** The currency of the cashflows of the premium and default legs.([Currency](Currency.html))
-* **paymentDates** The payment dates on which the premium is paid.([Date](Date.html))
-* **notionals** The notionals that define the protection amount in the period until each payment date and the basis on which the premiums are calculated.
-* **rates** The simple rates that apply until the default time.  Used to calculate the premium flows.
-* **accrualFractions** The accrual fractions used to calculate the premiums paid on the paymentDates.
-* **boughtProtection** If set to TRUE then protection has been bought and the premium will be paid.([Boolean](Boolean.html))
+* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **refEntity** (ReferenceEntity)The reference entity whose default is covered by this CDS.
+* **ccy** ([Currency](Currency.html))The currency of the cashflows of the premium and default legs.
+* **paymentDates** ([Date](Date.html)[])The payment dates on which the premium is paid.
+* **notionals** (Double[])The notionals that define the protection amount in the period until each payment date and the basis on which the premiums are calculated.
+* **rates** (Double[])The simple rates that apply until the default time.  Used to calculate the premium flows.
+* **accrualFractions** (Double[])The accrual fractions used to calculate the premiums paid on the paymentDates.
+* **boughtProtection** ([Boolean](Boolean.html))If set to TRUE then protection has been bought and the premium will be paid.
 
 <!--HUMAN EDIT START-->
 

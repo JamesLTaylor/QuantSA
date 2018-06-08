@@ -24,9 +24,9 @@ Basic swap valuation.  Uses the same curve for forecasting and discounting and u
 
 ## Arguments
 
-* **swap** The name of the swap.
-* **valueDate** The date on which valuation is required.  Cannot be before the anchor date of the curve.([Date](Date.html))
-* **curve** The discounting curve.  Will also be used for forecasting Jibar and providing the most recent required Jibar fix.
+* **swap** (IRSwap)The name of the swap.
+* **valueDate** ([Date](Date.html))The date on which valuation is required.  Cannot be before the anchor date of the curve.
+* **curve** (IDiscountingSource)The discounting curve.  Will also be used for forecasting Jibar and providing the most recent required Jibar fix.
 
 <!--HUMAN EDIT START-->
 

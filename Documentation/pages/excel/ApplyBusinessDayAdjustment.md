@@ -24,9 +24,10 @@ Adjust the provided date according to the given business day convention and cale
 
 ## Arguments
 
-* **date** The date to be adjusted([Date](Date.html))
-* **convention** The business day rule to apply to the date.([BusinessDayConvention](BusinessDayConvention.html))
-* **calendar** The calendar to use in the adjustment.([Calendar](Calendar.html))
+* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **date** ([Date](Date.html))The date to be adjusted
+* **convention** ([BusinessDayConvention](BusinessDayConvention.html))The business day rule to apply to the date.
+* **calendar** ([Calendar](Calendar.html))The calendar to use in the adjustment.
 
 <!--HUMAN EDIT START-->
 

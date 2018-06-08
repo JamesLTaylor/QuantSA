@@ -24,8 +24,8 @@ Create a C# representation of data in a spreadsheet.
 
 ## Arguments
 
-* **data** The block of values you want to use in C#.
-* **decimalPlaces** The number of decimal places each value must have in the string.
+* **data** (Object[,])The block of values you want to use in C#.
+* **decimalPlaces** (Double)The number of decimal places each value must have in the string.
 
 <!--HUMAN EDIT START-->
 

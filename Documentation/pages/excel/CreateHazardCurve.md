@@ -24,11 +24,11 @@ Create hazard rate curve that can be used to provide survival probabilities for 
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **referenceEntity** The reference entity for whom these hazard rates apply.(ReferenceEntity)
-* **anchorDate** The anchor date.  Survival probabilites can only be calculated up to dates after this date.([Date](Date.html))
-* **dates** The dates on which the hazard rates apply.([Date](Date.html))
-* **hazardRates** The hazard rates.
+* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **referenceEntity** (ReferenceEntity)The reference entity for whom these hazard rates apply.
+* **anchorDate** ([Date](Date.html))The anchor date.  Survival probabilities can only be calculated up to dates after this date.
+* **dates** ([Date](Date.html)[])The dates on which the hazard rates apply.
+* **hazardRates** (Double[])The hazard rates.
 
 <!--HUMAN EDIT START-->
 

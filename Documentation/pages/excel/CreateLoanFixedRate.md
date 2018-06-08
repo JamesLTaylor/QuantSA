@@ -24,11 +24,11 @@ Create fixed rate loan.
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **currency** The currency of the cashflows.([Currency](Currency.html))
-* **balanceDates** The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.([Date](Date.html))
-* **balanceAmounts** The notionals on which the payments are based.
-* **fixedRate** The simple rates that are paid at each payment date.
+* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **currency** ([Currency](Currency.html))The currency of the cashflows.
+* **balanceDates** ([Date](Date.html)[])The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.
+* **balanceAmounts** (Double[])The notionals on which the payments are based.
+* **fixedRate** (Double)The simple rates that are paid at each payment date.
 
 <!--HUMAN EDIT START-->
 

@@ -24,8 +24,8 @@ Get the FX rate at a date.  There is no spot settlement adjustment.
 
 ## Arguments
 
-* **fxCurve** Name of FX curve
-* **date** Date on which FX rate is required.(Date)
+* **fxCurve** (IFXSource)Name of FX curve
+* **date** ([Date](Date.html))Date on which FX rate is required.
 
 <!--HUMAN EDIT START-->
 

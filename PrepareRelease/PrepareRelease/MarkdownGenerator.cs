@@ -74,10 +74,10 @@ namespace PrepareRelease
     /// </summary>
     internal class FileContents
     {
+        private string _description;
         public List<string> ArgDescriptions;
         public List<string> ArgNames;
         public string Category;
-        private string _description;
         public string ExampleSheet;
         public string Name;
         public string Summary;
@@ -371,7 +371,7 @@ namespace PrepareRelease
                 if (input.Contains(typeName))
                 {
                     var idx = input.IndexOf(typeName);
-                    if (idx > 1 && input[idx - 1] == '(' && input[idx + typeName.Length] == ')')
+                    if (idx >= 1 && input[idx - 1] == '(')
                         input = input.Substring(0, idx) + "[" + typeName + "](" + typeName + ".html)" +
                                 input.Substring(idx + typeName.Length);
                 }
@@ -381,7 +381,7 @@ namespace PrepareRelease
 
 
         /// <summary>
-        /// Turns the attributes on all functions exposed as excel functions in <paramref name="filename" /> into
+        /// Turns the attributes on all functions exposed as excel functions in <see cref="_dllsWithExposedFunctions"/> into
         /// contents for help files.
         /// Check the local variable errorList for a list of consistency issues that should be fixed.
         /// </summary>
@@ -416,7 +416,7 @@ namespace PrepareRelease
                     _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Does not have a help topic.");
                 else if (!attribute.HelpTopic.Equals(_helpUrl + nameParts[1] + ".html"))
                     _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Help topic should be," + _helpUrl +
-                                  nameParts[1] + ".html");
+                                   nameParts[1] + ".html");
                 if (attribute.ExampleSheet == null)
                 {
                     _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Example sheet has not been set.");
@@ -441,7 +441,7 @@ namespace PrepareRelease
                     contents.ArgDescriptions.Add(argAttrib.Description);
                     if (argAttrib.Description.Length < 5)
                         _errorInfo.Add(attribute.Category + "," + attribute.Name + "," + argAttrib.Name +
-                                      ",No argument description");
+                                       ",No argument description");
                 }
 
                 _contentCollection.AddFile(contents);

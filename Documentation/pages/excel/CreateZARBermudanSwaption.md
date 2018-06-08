@@ -24,14 +24,14 @@ Create a ZAR Bermudan swaption based a ZAR quarterly, fixed for float Jibar swap
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **exerciseDates** The exercise dates.  The dates on which the person who is long optionality can exercise.([Date](Date.html))
-* **longOptionality** if set to TRUE then the person valuing this product owns the optionality.([Boolean](Boolean.html))
-* **startDate** First reset date of the underlying swap.([Date](Date.html))
-* **tenor** Tenor of underlying swap, must be a whole number of years.  Example '5Y'.(Tenor)
-* **rate** The fixed rate paid or received on the underlying swap.
-* **payFixed** Is the fixed rate paid? Enter 'TRUE' for yes.([Boolean](Boolean.html))
-* **notional** Flat notional for all dates.
+* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **exerciseDates** ([Date](Date.html)[])The exercise dates.  The dates on which the person who is long optionality can exercise.
+* **longOptionality** ([Boolean](Boolean.html))if set to TRUE then the person valuing this product owns the optionality.
+* **startDate** ([Date](Date.html))First reset date of the underlying swap.
+* **tenor** ([Tenor](Tenor.html))Tenor of underlying swap, must be a whole number of years.  Example '5Y'.
+* **rate** (Double)The fixed rate paid or received on the underlying swap.
+* **payFixed** ([Boolean](Boolean.html))Is the fixed rate paid? Enter 'TRUE' for yes.
+* **notional** (Double)Flat notional for all dates.
 
 <!--HUMAN EDIT START-->
 

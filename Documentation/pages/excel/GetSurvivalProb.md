@@ -24,9 +24,9 @@ Get the survival probability from the anchor date until a date or between two da
 
 ## Arguments
 
-* **survivalProbabilitySource** The hazard rate curve or other source of default probabilities.
-* **date1** If date2 is ommitted the date until which survival is calculated.  If date2 is provided the date from which survival is calculated.([Date](Date.html))
-* **date2** Optional: If provided then the survival probability is calculated from date1 until date2.([Date](Date.html))
+* **survivalProbabilitySource** (ISurvivalProbabilitySource)The hazard rate curve or other source of default probabilities.
+* **date1** ([Date](Date.html))If date2 is omitted the date until which survival is calculated.  If date2 is provided the date from which survival is calculated.
+* **date2** *([Date](Date.html))Optional: If provided then the survival probability is calculated from date1 until date2.(Default value = )
 
 <!--HUMAN EDIT START-->
 

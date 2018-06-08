@@ -24,8 +24,8 @@ Check if the provided date is a holiday in the selected calendar.  Does not chec
 
 ## Arguments
 
-* **date** The date to check([Date](Date.html))
-* **calendar** The calendar to use.([Calendar](Calendar.html))
+* **date** ([Date](Date.html))The date to check
+* **calendar** ([Calendar](Calendar.html))The calendar to use.
 
 <!--HUMAN EDIT START-->
 

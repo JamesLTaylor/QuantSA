@@ -41,7 +41,7 @@ $$ M_{result}(i,j) = Cov\left( M_{return}(,i),M_{return}(,j) \right) $$
 
 ## Arguments
 
-* **curves** Blob of curves, each row is a curve of the same length.
+* **curves** (Double[,])Blob of curves, each row is a curve of the same length.
 
 <!--HUMAN EDIT START-->
 

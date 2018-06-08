@@ -44,8 +44,8 @@ Where the original blob is a matrix <span>\\( M_{rate} \\)</span> where element 
 
 ## Arguments
 
-* **curves** Blob of curves, each row is a curve of the same length.
-* **useRelative** Indicates if the PCA is to be done on relative moves.  If not then it will be done on absolute moves.([Boolean](Boolean.html))
+* **curves** (Double[,])Blob of curves, each row is a curve of the same length.
+* **useRelative** ([Boolean](Boolean.html))Indicates if the PCA is to be done on relative moves.  If not then it will be done on absolute moves.
 
 <!--HUMAN EDIT START-->
 

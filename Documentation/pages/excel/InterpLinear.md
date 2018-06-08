@@ -24,9 +24,9 @@ A linear interpolator.
 
 ## Arguments
 
-* **knownX** A vector of x values.  Must be in increasing order
-* **knownY** A vector of y values.  Must be the same length as knownX
-* **requiredX** x values at which interpolation is required.
+* **knownX** (Double[])A vector of x values.  Must be in increasing order
+* **knownY** (Double[])A vector of y values.  Must be the same length as knownX
+* **requiredX** (Double[,])x values at which interpolation is required.
 
 <!--HUMAN EDIT START-->
 
