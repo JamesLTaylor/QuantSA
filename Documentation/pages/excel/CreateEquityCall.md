@@ -24,7 +24,7 @@ Create a model that simulates multiple equities in one currency.  Assumes lognor
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **share** ([Share](Share.html))A share.  This needs to match a share in the model that will be used to value this.
 * **exerciseDate** ([Date](Date.html))Exercise date.
 * **strike** (Double)Strike

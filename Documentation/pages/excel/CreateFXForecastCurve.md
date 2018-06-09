@@ -24,11 +24,11 @@ Create a curve to be used for FX rate forecasting.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **baseCurrency** ([Currency](Currency.html))The base currency.  Values are measured in units of counter currency per one base currency.(Currency)
 * **counterCurrency** ([Currency](Currency.html))The counter currency.  Values are measured in units of counter currency per one base currency.(Currency)
 * **fxRateAtAnchorDate** (Double)The rate at the anchor date of the two curves.
-* **baseCurrencyFXBasisCurve** (IDiscountingSource)A curve that will be used to obatin forward rates.
+* **baseCurrencyFXBasisCurve** (IDiscountingSource)A curve that will be used to obtain forward rates.
 * **counterCurrencyFXBasisCurve** (IDiscountingSource)A curve that will be used to obtain forward rates.
 
 <!--HUMAN EDIT START-->

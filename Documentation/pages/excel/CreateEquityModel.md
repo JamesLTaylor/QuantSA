@@ -3,14 +3,14 @@ title: CreateEquityModel
 keywords:
 last_updated: October 09, 2016
 tags:
-summary: Create a model that simulates multiple equites in one currency.
+summary: Create a model that simulates multiple equities in one currency.
 sidebar: excel_sidebar
 permalink: CreateEquityModel.html
 folder: excel
 ---
 
 ## Description
-Create a model that simulates multiple equites in one currency.  Assumes lognormal dynamics.
+Create a model that simulates multiple equities in one currency.  Assumes lognormal dynamics.
 
 <!--HUMAN EDIT START-->
 
@@ -24,7 +24,7 @@ Create a model that simulates multiple equites in one currency.  Assumes lognorm
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **discountCurve** (IDiscountingSource)The discounting curve.  Will be used for discounting and as the drift rate for the equities.
 * **shares** ([Share](Share.html)[])Share codes.  A list of strings to identify the shares.  These need to match those used in the product that will be valued.
 * **spotPrices** (Double[])The values of all the shares on the anchor date of the discounting curve. 

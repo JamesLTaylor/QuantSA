@@ -24,7 +24,7 @@ Create a curve based valuation model.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **discountCurve** (IDiscountingSource)The discounting curve
 * **rateForecastCurves** (IFloatingRateSource[])The floating rate forecast curves for all the rates that the products in the portfolio will need.
 * **fxForecastCurves** *(IFXSource[])The FX rate forecast curves for all the cashflow currencies other than the discounting currency.(Default value = )

@@ -76,7 +76,8 @@ namespace QuantSA.Excel.Addin.Functions
             return result;
         }
 
-        [QuantSAExcelFunction(Description = "Get a string representing the path in which QuantSA is installed.",
+        [QuantSAExcelFunction(Description = "Get a string representing the path in which QuantSA is " +
+                                            "installed.",
             Name = "QSA.GetInstallPath",
             Category = "QSA.General",
             ExampleSheet = "CreateProductFromFile.xlsx",

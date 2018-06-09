@@ -24,12 +24,12 @@ Create a general fixed leg of a swap.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **currency** ([Currency](Currency.html))The currency of the cashflows.
 * **paymentDates** ([Date](Date.html)[])The dates on which the payments are made.
 * **notionals** (Double[])The notionals on which the payments are based.
 * **rates** (Double[])The simple rates that are paid at each payment date.
-* **accrualFractions** (Double[])The accrual fraction to be used in calulating the fixed flow.  Will depend on the daycount convention agreed in the contract.
+* **accrualFractions** (Double[])The accrual fraction to be used in calculating the fixed flow.  Will depend on the daycount convention agreed in the contract.
 
 <!--HUMAN EDIT START-->
 

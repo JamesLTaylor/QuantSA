@@ -24,7 +24,7 @@ Create a par style CDS.  Protection will always apply from the value date until 
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **refEntity** (ReferenceEntity)The reference entity whose default is covered by this CDS.
 * **ccy** ([Currency](Currency.html))The currency of the cashflows of the premium and default legs.
 * **paymentDates** ([Date](Date.html)[])The payment dates on which the premium is paid.

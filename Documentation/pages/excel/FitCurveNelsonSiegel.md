@@ -24,7 +24,7 @@ Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve. (Curve)
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **anchorDate** ([Date](Date.html))The date at which the resultant curve will be anchored.  Can be set to zero.
 * **dates** ([Date](Date.html)[])The dates at which rates apply.
 * **rates** (Double[])The rates to be fitted

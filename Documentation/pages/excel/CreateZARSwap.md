@@ -24,7 +24,7 @@ Create a ZAR quarterly, fixed for float Jibar swap.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **startDate** ([Date](Date.html))First reset date of the swap
 * **tenor** ([Tenor](Tenor.html))Tenor of swap, must be a whole number of years.  Example '5Y'.
 * **rate** (Double)The fixed rate paid or received

@@ -56,13 +56,13 @@ namespace QuantSA.ExcelFunctions
             ExampleSheet = "InterpLinear.xlsx",
             Category = "QSA.General",
             HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
-        public static double InterpLinear(
+        public static double[,] InterpLinear(
             [ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]
             double[] knownX,
             [ExcelArgument(Description = "A vector of y values.  Must be the same length as knownX")]
             double[] knownY,
             [ExcelArgument(Description = "x values at which interpolation is required.")]
-            double requiredX)
+            double[,] requiredX)
         {
             var curve = new InterpolatedCurve(knownX, knownY);
             return curve.Interp(requiredX);

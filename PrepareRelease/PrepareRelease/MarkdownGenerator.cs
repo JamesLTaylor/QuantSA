@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ExcelDna.Integration;
-using QuantSA.Excel.Addin.AddIn;
+using QuantSA.Excel.Addin.Functions;
 using QuantSA.Excel.Shared;
 
 namespace PrepareRelease
@@ -400,7 +400,7 @@ namespace PrepareRelease
             var delegates = new List<Delegate>();
             var functionAttributes = new List<object>();
             var functionArgumentAttributes = new List<List<object>>();
-            FunctionRegistration.UpdateDelegatesAndAttributes(assembly, ref delegates, ref functionAttributes,
+            FunctionRegistration.GetDelegatesAndAttributes(assembly, "QSA", ref delegates, ref functionAttributes,
                 ref functionArgumentAttributes);
             for (var i = 0; i < delegates.Count; i++)
             {

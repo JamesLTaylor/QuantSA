@@ -24,7 +24,7 @@ Create a curve of dates and rates.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **dates** ([Date](Date.html)[])The dates at which the rates apply.
 * **rates** (Double[])The rates.
 * **currency** *([Currency](Currency.html))Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency.(Default value = Currency.ANY)

@@ -24,7 +24,7 @@ Perform a general valuation.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **products** (Product[])A list of products.
 * **valueDate** ([Date](Date.html))The value date.
 * **model** (NumeraireSimulator)A model able to handle all the market observables required to calculate the cashflows in the portfolio.

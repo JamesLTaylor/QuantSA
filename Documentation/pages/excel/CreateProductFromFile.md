@@ -24,7 +24,7 @@ Create a product defined in a script file.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **filename** (String)Full path to the file.
 
 <!--HUMAN EDIT START-->

@@ -60,6 +60,8 @@ namespace QuantSA.Excel.Addin.Functions
 
             if (OutputConverters.ContainsKey(typeToCheck))
                 return false;
+            if (typeof(string).IsAssignableFrom(typeToCheck))
+                return false;
             if (typeToCheck.IsPrimitive)
                 return false;
             if (IsNullablePrimitive(typeToCheck))
@@ -187,7 +189,8 @@ namespace QuantSA.Excel.Addin.Functions
             if (defaultValue != string.Empty) return defaultValue;
 
             if (input is string objNameAgain)
-                throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name} and no object named {objNameAgain} on the map.");
+                throw new ArgumentException(
+                    $"{inputName}: No converter for type: {requiredType.Name} and no object named {objNameAgain} on the map.");
             throw new ArgumentException($"{inputName}: No converter for type: {requiredType.Name}.");
         }
 
@@ -234,7 +237,7 @@ namespace QuantSA.Excel.Addin.Functions
         {
             if (ShouldUseReference(suppliedType))
                 return ObjectMap.Instance.AddObject(outputName, output);
-            if (suppliedType.IsPrimitive) return output;
+            if (suppliedType.IsPrimitive || typeof(string).IsAssignableFrom(suppliedType)) return output;
             if (OutputConverters.ContainsKey(suppliedType))
                 return OutputConverters[suppliedType].Convert(output);
             if (suppliedType == typeof(object))

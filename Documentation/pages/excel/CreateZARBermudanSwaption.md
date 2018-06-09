@@ -24,7 +24,7 @@ Create a ZAR Bermudan swaption based a ZAR quarterly, fixed for float Jibar swap
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **exerciseDates** ([Date](Date.html)[])The exercise dates.  The dates on which the person who is long optionality can exercise.
 * **longOptionality** ([Boolean](Boolean.html))if set to TRUE then the person valuing this product owns the optionality.
 * **startDate** ([Date](Date.html))First reset date of the underlying swap.

@@ -24,7 +24,7 @@ Create a curve simulator based on principle components.
 
 ## Arguments
 
-* **objectName** The name that this object will be assigned on the map.  Should be unique.
+* **objectName** The name that this object will be assigned on the map. Should be unique.
 * **anchorDate** ([Date](Date.html))The date from which the curve dates will be calculated.
 * **initialRates** (Double[])The starting rates.  Must be the same length as the elements in the component vectors.
 * **tenors** ([Tenor](Tenor.html)[])An array of times at which each rate applies.  Each value must be valid tenor description.  The length must be the same as each component and 'initialRates'
