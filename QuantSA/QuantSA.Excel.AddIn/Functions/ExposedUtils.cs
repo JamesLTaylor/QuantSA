@@ -5,12 +5,12 @@ using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 
-namespace QuantSA.Excel.Addin
+namespace QuantSA.Excel.Addin.Functions
 {
     /// <summary>
     /// Non financial utility functions.
     /// </summary>
-    public class Functions
+    public class ExposedUtils
     {
         [ExcelFunction(Description = "",
             Name = "QSA.LatestError",

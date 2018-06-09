@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ExcelDna.Integration;
 
-namespace QuantSA.Excel.Addin.AddIn
+namespace QuantSA.Excel.Addin.Functions
 {
     /// <summary>
     /// A general Excel function that wraps QuantSA functions and handles the conversion of input

@@ -76,12 +76,13 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="AddIn.cs" />
-    <Compile Include="AddIn\ExcelFunction.cs" />
-    <Compile Include="AddIn\FunctionRegistration.cs" />
-    <Compile Include="AddIn\ExcelTypeConverter.cs" />
+    <Compile Include="Functions\ExcelFunction.cs" />
+    <Compile Include="Functions\FunctionRegistration.cs" />
+    <Compile Include="Functions\ExcelTypeConverter.cs" />
     <Compile Include="ExcelMessage.xaml.cs">
       <DependentUpon>ExcelMessage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ObjectMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -91,7 +92,7 @@
     <Compile Include="Ribbon.cs" />
     <Compile Include="TypeConverters\Primitives.cs" />
     <Compile Include="TypeConverters\Conventions.cs" />
-    <Compile Include="Functions.cs" />
+    <Compile Include="Functions\ExposedUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuantSA.Excel.Shared
+namespace QuantSA.Excel.Addin
 {
     public class ObjectMap
     {

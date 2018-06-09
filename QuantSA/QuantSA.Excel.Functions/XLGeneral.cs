@@ -6,7 +6,7 @@ using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Formulae;
 using QuantSA.Primitives.Dates;
 
-namespace QuantSA.Excel.Addin
+namespace QuantSA.ExcelFunctions
 {
     public class XLGeneral
     {

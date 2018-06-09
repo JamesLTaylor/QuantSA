@@ -20,7 +20,7 @@ namespace QuantSA.ExcelFunctions
         public static FXForecastCurve CreateFXForecastCurve([ExcelArgument(Description = "The base currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency baseCurrency,
             [ExcelArgument(Description = "The counter currency.  Values are measured in units of counter currency per one base currency.(Currency)")]Currency counterCurrency,
             [ExcelArgument(Description = "The rate at the anchor date of the two curves.")]double fxRateAtAnchorDate,
-            [ExcelArgument(Description = "A curve that will be used to obatin forward rates.")]IDiscountingSource baseCurrencyFXBasisCurve,
+            [ExcelArgument(Description = "A curve that will be used to obtain forward rates.")]IDiscountingSource baseCurrencyFXBasisCurve,
             [ExcelArgument(Description = "A curve that will be used to obtain forward rates.")]IDiscountingSource counterCurrencyFXBasisCurve)
         {
             return new FXForecastCurve(baseCurrency, counterCurrency, fxRateAtAnchorDate, baseCurrencyFXBasisCurve,
@@ -41,13 +41,13 @@ namespace QuantSA.ExcelFunctions
         }
 
 
-        [QuantSAExcelFunction(Description = "A sample model that simulates FX processes according to geometric brownian motion and short rates according to Hull White.",
-                Name = "QSA.CreateMultiHWAndFXToy",
-                HasGeneratedVersion = true,
-                ExampleSheet = "PFE.xlsx",
-                Category = "QSA.FX",
-                IsHidden = false,
-                HelpTopic = "http://www.quantsa.org/CreateMultiHWAndFXToy.html")]
+        [QuantSAExcelFunction(Description = "A sample model that simulates FX processes according to geometric Brownian motion and short rates according to Hull White.",
+            Name = "QSA.CreateMultiHWAndFXToy",
+            HasGeneratedVersion = true,
+            ExampleSheet = "PFE.xlsx",
+            Category = "QSA.FX",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateMultiHWAndFXToy.html")]
         public static NumeraireSimulator CreateMultiHWAndFXToy([ExcelArgument(Description = "The date from which the model applies")]Date anchorDate,
             [QuantSAExcelArgument(Description = "The currency into which all valuations will be converted.")]Currency numeraireCcy,
             [QuantSAExcelArgument(Description = "Hull White simulators for each of the currencies")]HullWhite1F[] rateSimulators,

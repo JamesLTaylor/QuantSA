@@ -4,7 +4,7 @@ using System.Reflection;
 using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
 
-namespace QuantSA.Excel.Addin.AddIn
+namespace QuantSA.Excel.Addin.Functions
 {
     /// <summary>
     /// An object that can collect all the functions with the <see cref="ExcelFunctionAttribute"/> and

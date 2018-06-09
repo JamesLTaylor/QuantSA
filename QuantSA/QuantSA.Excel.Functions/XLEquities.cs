@@ -7,7 +7,7 @@ namespace QuantSA.ExcelFunctions
 {
     public class XLEquities
     {
-        [QuantSAExcelFunction(Description = "Create a model that simulates multiple equites in one currency.  Assumes lognormal dynamics.",
+        [QuantSAExcelFunction(Description = "Create a model that simulates multiple equities in one currency.  Assumes lognormal dynamics.",
             Name = "QSA.CreateEquityModel",
             HasGeneratedVersion = true,
             Category = "QSA.Equities",

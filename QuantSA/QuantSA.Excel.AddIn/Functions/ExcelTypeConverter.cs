@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ExcelDna.Integration;
-using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.Primitives.Dates;
 
-namespace QuantSA.Excel.Addin.AddIn
+namespace QuantSA.Excel.Addin.Functions
 {
     /// <summary>
     /// The top level input and output converter.  It is populated via reflection over the

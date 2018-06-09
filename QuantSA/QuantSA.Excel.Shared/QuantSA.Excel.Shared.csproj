@@ -52,7 +52,6 @@
     <Compile Include="QuantSAExcelArgumentAttribute.cs" />
     <Compile Include="QuantSAExcelFunctionAttribute.cs" />
     <Compile Include="IQuantSAPlugin.cs" />
-    <Compile Include="ObjectMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

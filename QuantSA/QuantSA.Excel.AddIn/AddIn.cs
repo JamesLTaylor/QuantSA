@@ -8,8 +8,7 @@ using System.Reflection;
 using System.Text;
 using ExcelDna.Integration;
 using QuantSA.Excel;
-using QuantSA.Excel.Addin.AddIn;
-using QuantSA.Excel.Common;
+using QuantSA.Excel.Addin.Functions;
 using QuantSA.Excel.Shared;
 using QuantSA.ExcelFunctions;
 
@@ -55,7 +54,6 @@ public class AddIn : IExcelAddIn
             ExposePlugins();
             foreach (var plugin in Plugins)
             {
-                plugin.SetObjectMap(ObjectMap.Instance);
                 plugin.SetInstance(plugin);
             }
 

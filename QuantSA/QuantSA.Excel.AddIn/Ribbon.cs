@@ -1,19 +1,16 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using ExcelDna.Integration.CustomUI;
-using System.Windows.Forms;
 using ExcelDna.Integration;
 using System.Text;
 using QuantSA.Excel;
-using QuantSA.Excel.Common;
-using System.Drawing;
+using QuantSA.Excel.Shared;
 
 [ComVisible(true)]
 public class Ribbon : ExcelRibbon
 {
     public override string GetCustomUI(string uiName)
     {
-        // One can find the standard available button iamges at http://soltechs.net/customui/imageMso01.asp?gal=1&count=no
+        // One can find the standard available button images at http://soltechs.net/customui/imageMso01.asp?gal=1&count=no
    
         StringBuilder pluginSubmenu = new StringBuilder("");
         if (AddIn.Plugins.Count > 0)

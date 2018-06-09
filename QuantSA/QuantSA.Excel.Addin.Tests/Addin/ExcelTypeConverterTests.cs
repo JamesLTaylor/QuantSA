@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.Excel.Addin.AddIn;
+using QuantSA.Excel.Addin.Functions;
 
 namespace QuantSA.Excel.Addin.Tests.Addin
 {
