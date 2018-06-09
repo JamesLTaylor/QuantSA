@@ -76,7 +76,6 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="AddIn.cs" />
-    <Compile Include="AddIn\ExcelErrors.cs" />
     <Compile Include="AddIn\ExcelFunction.cs" />
     <Compile Include="AddIn\FunctionRegistration.cs" />
     <Compile Include="AddIn\ExcelTypeConverter.cs" />
@@ -92,7 +91,7 @@
     <Compile Include="Ribbon.cs" />
     <Compile Include="TypeConverters\Primitives.cs" />
     <Compile Include="TypeConverters\Conventions.cs" />
-    <Compile Include="XLGeneral.cs" />
+    <Compile Include="Functions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

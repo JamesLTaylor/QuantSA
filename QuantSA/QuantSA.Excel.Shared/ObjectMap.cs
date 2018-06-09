@@ -65,16 +65,6 @@ namespace QuantSA.Excel.Shared
             return uniqueID;
         }
 
-        public T GetObjectFromID<T>(string objectName)
-        {
-            if (objectName == null) throw new ArgumentNullException(nameof(objectName));
-            if (!Instance.TryGetObjectFromID(objectName, out var element))
-                throw new IndexOutOfRangeException("Object map does not contain an object with id: " + objectName.Split('.')[0]);
-            if (element is T tElement)
-                return tElement;
-            throw new ArgumentException(objectName + " is not of required type: " + typeof(T));
-        }
-
         public bool TryGetObjectFromID(string objectName, out object element)
         {
             element = null;

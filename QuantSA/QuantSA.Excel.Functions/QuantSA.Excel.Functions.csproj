@@ -57,6 +57,7 @@
     <Compile Include="XLCurves.cs" />
     <Compile Include="XLEquities.cs" />
     <Compile Include="XLFX.cs" />
+    <Compile Include="XLGeneral.cs" />
     <Compile Include="XLRates.cs" />
     <Compile Include="XLValuation.cs" />
   </ItemGroup>

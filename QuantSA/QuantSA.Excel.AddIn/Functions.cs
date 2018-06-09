@@ -2,17 +2,15 @@
 using System.Diagnostics;
 using System.Text;
 using ExcelDna.Integration;
-using MathNet.Numerics.Interpolation;
-using QuantSA.Excel.Common;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
-using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Formulae;
-using QuantSA.Primitives.Dates;
 
 namespace QuantSA.Excel.Addin
 {
-    public class XLGeneral
+    /// <summary>
+    /// Non financial utility functions.
+    /// </summary>
+    public class Functions
     {
         [ExcelFunction(Description = "",
             Name = "QSA.LatestError",
@@ -74,10 +72,10 @@ namespace QuantSA.Excel.Addin
                 sb.Append(i == data.GetLength(0) - 1 ? "}}" : "},");
                 result[i] = sb.ToString();
             }
+
             return result;
         }
 
-        //var dir = AppDomain.CurrentDomain.BaseDirectory;
         [QuantSAExcelFunction(Description = "Get a string representing the path in which QuantSA is installed.",
             Name = "QSA.GetInstallPath",
             Category = "QSA.General",
@@ -123,70 +121,6 @@ namespace QuantSA.Excel.Addin
             if (resultStore.GetResultStore().IsString(resultName))
                 return resultStore.GetResultStore().GetStrings(resultName);
             return resultStore.GetResultStore().Get(resultName);
-        }
-
-
-        [QuantSAExcelFunction(Description = "The Black Scholes formula for a call.",
-            IsHidden = false,
-            Name = "QSA.FormulaBlackScholes",
-            ExampleSheet = "EquityValuation.xlsx",
-            Category = "QSA.General",
-            HelpTopic = "http://www.quantsa.org/FormulaBlackScholes.html")]
-        public static double FormulaBlackScholes([ExcelArgument(Description = "Strike")]
-            double strike,
-            [ExcelArgument(Description = "The value date as and Excel date.")]
-            Date valueDate,
-            [ExcelArgument(Description = "The exercise date of the option.  Must be greater than the value date.")]
-            Date exerciseDate,
-            [ExcelArgument(Description = "The spot price of the underlying at the value date.")]
-            double spotPrice,
-            [ExcelArgument(Description = "Annualized volatility.")]
-            double vol,
-            [ExcelArgument(Description = "Continuously compounded risk free rate.")]
-            double riskfreeRate,
-            [QuantSAExcelArgument(Description = "Continuously compounded dividend yield.", Default = "0.0")]
-            double divYield)
-        {
-            return BlackEtc.BlackScholes(PutOrCall.Call, strike,
-                Actual365Fixed.Instance.YearFraction(valueDate, exerciseDate),
-                spotPrice, vol, riskfreeRate, divYield);
-        }
-
-
-        [QuantSAExcelFunction(Description = "Create a product defined in a script file.",
-            IsHidden = false,
-            Name = "QSA.CreateProductFromFile",
-            Category = "QSA.General",
-            ExampleSheet = "CreateProductFromFile.xlsx",
-            HelpTopic = "http://www.quantsa.org/CreateProductFromFile.html")]
-        public static Product CreateProductFromFile([ExcelArgument(Description = "Full path to the file.")]
-            string filename)
-        {
-            return RuntimeProduct.CreateFromScript(filename);
-        }
-
-
-        [QuantSAExcelFunction(Description = "A linear interpolator.",
-            IsHidden = false,
-            Name = "QSA.InterpLinear",
-            ExampleSheet = "InterpLinear.xlsx",
-            Category = "QSA.General",
-            HelpTopic = "http://www.quantsa.org/InterpLinear.html")]
-        public static double[,] InterpLinear(
-            [ExcelArgument(Description = "A vector of x values.  Must be in increasing order")]
-            double[] knownX,
-            [ExcelArgument(Description = "A vector of y values.  Must be the same length as knownX")]
-            double[] knownY,
-            [ExcelArgument(Description = "x values at which interpolation is required.")]
-            double[,] requiredX)
-        {
-            var spline = LinearSpline.InterpolateSorted(knownX, knownY);
-            var result = new double[requiredX.GetLength(0), requiredX.GetLength(1)];
-
-            for (var x = 0; x < requiredX.GetLength(0); x += 1)
-            for (var y = 0; y < requiredX.GetLength(1); y += 1)
-                result[x, y] = spline.Interpolate(requiredX[x, y]);
-            return result;
         }
     }
 }
