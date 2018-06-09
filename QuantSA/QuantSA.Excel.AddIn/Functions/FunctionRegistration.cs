@@ -13,17 +13,52 @@ namespace QuantSA.Excel.Addin.Functions
     {
         public static List<string> FunctionNames = new List<string>();
 
-        public static void RegisterFrom(Assembly assembly, string addInName)
+        /// <summary>
+        /// Register all eligible functions in <paramref name="assembly"/>.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="addInName">This will be used to ensure that all functions start with the
+        /// '[<paramref name="addInName"/>].' That means the QuantSA functions need to start with
+        /// 'QSA' and plugin function need to start with <see cref="IQuantSAPlugin.GetShortName"/>.</param>
+        /// <param name="funcsInUserFile"></param>
+        public static void RegisterFrom(Assembly assembly, string addInName, Dictionary<string, bool> funcsInUserFile)
         {
             var delegates = new List<Delegate>();
             var functionAttributes = new List<object>();
             var functionArgumentAttributes = new List<List<object>>();
-            GetDelegatesAndAttributes(assembly, addInName, ref delegates, ref functionAttributes, ref functionArgumentAttributes);
+            GetDelegatesAndAttributes(assembly, addInName, funcsInUserFile, ref delegates, ref functionAttributes, ref functionArgumentAttributes);
             ExcelIntegration.RegisterDelegates(delegates, functionAttributes, functionArgumentAttributes);
         }
 
+        /// <summary>
+        /// Get all QuantSA delegates and attributes present in the assembly.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="addInName"></param>
+        /// <param name="delegates"></param>
+        /// <param name="functionAttributes"></param>
+        /// <param name="functionArgumentAttributes"></param>
         public static void GetDelegatesAndAttributes(Assembly assembly, string addInName,
             ref List<Delegate> delegates,
+            ref List<object> functionAttributes, ref List<List<object>> functionArgumentAttributes)
+        {
+            GetDelegatesAndAttributes(assembly, addInName, new Dictionary<string, bool>(),
+                ref delegates, ref functionAttributes, ref functionArgumentAttributes);
+        }
+
+        /// <summary>
+        /// Get all the functions that appear in the assembly.  If the function name appears in
+        /// <paramref name="funcsInUserFile"/> then use the value there to override the default
+        /// visibility.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="addInName"></param>
+        /// <param name="funcsInUserFile"></param>
+        /// <param name="delegates"></param>
+        /// <param name="functionAttributes"></param>
+        /// <param name="functionArgumentAttributes"></param>
+        public static void GetDelegatesAndAttributes(Assembly assembly, string addInName, 
+            Dictionary<string, bool> funcsInUserFile, ref List<Delegate> delegates,
             ref List<object> functionAttributes, ref List<List<object>> functionArgumentAttributes)
         {
             var types = assembly.GetTypes();
@@ -34,6 +69,9 @@ namespace QuantSA.Excel.Addin.Functions
                 {
                     var excelFuncAttr = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
                     if (excelFuncAttr == null) continue;
+                    if (funcsInUserFile.ContainsKey(excelFuncAttr.Name))
+                        excelFuncAttr.IsHidden = !funcsInUserFile[excelFuncAttr.Name];
+
                     var parts = excelFuncAttr.Name.Split('.');
                     if (!(parts.Length == 2 && parts[0].Equals(addInName)))
                         throw new AddInException($"{excelFuncAttr.Name} does not following the naming " +

@@ -19,13 +19,9 @@ public class AddIn : IExcelAddIn
     public static List<Tuple<IQuantSAPlugin, Assembly>> Plugins = new List<Tuple<IQuantSAPlugin, Assembly>>();
     public static Dictionary<string, Bitmap> AssemblyImageResources;
 
-    private static readonly string FunctionsFilenameAll =
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-        "\\functions_all.csv"; // updated in build to include all functions and default visibility
-
     private static readonly string FunctionsFilenameUser =
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-        "\\functions_user.csv"; // user editable to control which function appear
+        "\\QuantSA\\functions_user.csv"; // user editable to control which function appear
 
     // Called when addin opens
     public void AutoOpen()
@@ -37,14 +33,9 @@ public class AddIn : IExcelAddIn
             if (!Directory.Exists(pathString)) Directory.CreateDirectory(pathString);
             //TODO: Check if newer version of addin exists.
 
-            //Check if functions_all.csv is newer than functions_user.csv.  If it is then
-            //merge the new functions in and use that to hide or show individual functions.
-            UpdateUserFunctionFile();
-
-            //Expose only those functions that appear in FunctionsFilenameUser with a true.  The
-            //rest will still be there but as hidden.  So that users can share sheets.
-            ExposeUserSelectedFunctions();
-
+            // Get the functions that are set for the user.
+            var funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);
+            
             //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
             AssemblyImageResources = new Dictionary<string, Bitmap>();
             GetPlugins();
@@ -58,9 +49,10 @@ public class AddIn : IExcelAddIn
             foreach (var assembly in assemblies)
                 ExcelTypeConverter.AddConvertersFrom(assembly);
             foreach (var tuple in Plugins)
-                FunctionRegistration.RegisterFrom(tuple.Item2, tuple.Item1.GetShortName());
+                FunctionRegistration.RegisterFrom(tuple.Item2, tuple.Item1.GetShortName(), funcsInUserFile);
             foreach (var assembly in assemblies)
-                FunctionRegistration.RegisterFrom(assembly, "QSA");
+                FunctionRegistration.RegisterFrom(assembly, "QSA", funcsInUserFile);
+            UpdateUserFunctionFile(funcsInUserFile, FunctionRegistration.FunctionNames);
         }
         catch (Exception e)
         {
@@ -78,26 +70,14 @@ public class AddIn : IExcelAddIn
     {
     }
 
-
-    /// <summary>
-    /// Hides or shows Excel function based on the contents of functions_user.csv
-    /// </summary>
-    public void ExposeUserSelectedFunctions()
-    {
-        var funcsAndVisibility = GetFunctionVisibility(FunctionsFilenameUser);
-    }
-
     /// <summary>
     /// If there is a new version of all functions then add the new functions into the user file.
     /// </summary>
-    private void UpdateUserFunctionFile()
+    private void UpdateUserFunctionFile(Dictionary<string, bool> funcsInUserFile, List<string> functionNames)
     {
-        var funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);
-        var funcsInAllFile = GetFunctionVisibility(FunctionsFilenameAll);
-
-        foreach (var entry in funcsInAllFile)
-            if (!funcsInUserFile.ContainsKey(entry.Key))
-                funcsInUserFile[entry.Key] = entry.Value;
+        foreach (var name in functionNames)
+            if (!funcsInUserFile.ContainsKey(name))
+                funcsInUserFile[name] = true;
         var list = funcsInUserFile.Keys.ToList();
         list.Sort();
         using (var file = new StreamWriter(FunctionsFilenameUser))
@@ -111,7 +91,7 @@ public class AddIn : IExcelAddIn
     /// Gets the list of available functions and checks if they should be exposed to this user.
     /// </summary>
     /// <returns></returns>
-    private Dictionary<string, bool> GetFunctionVisibility(string functionFilename)
+    private static Dictionary<string, bool> GetFunctionVisibility(string functionFilename)
     {
         var funcsAndVisibility = new Dictionary<string, bool>();
         StreamReader reader;

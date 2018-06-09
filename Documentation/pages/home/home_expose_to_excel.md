@@ -20,8 +20,8 @@ When exposing a function to Excel it must have the `QuantSAExcelFunctionAttribut
 
  * Description
  * Name - must start with QSA in the main library
- * Category - should match the name of the `public static` class in whihc the function is contained, which should in turn match the location of the underlying function in the main libary
- * ExampleSheet - a sheet that shows a user how to create the neccessary inputs for the function and call it.
+ * Category - should match the name of the `public static` class in whihc the function is contained, which should in turn match the location of the underlying function in the main library
+ * ExampleSheet - a sheet that shows a user how to create the necessary inputs for the function and call it.
  * IsHidden - The default hidden state of the function.  This can be overridden at runtime.  Most functions should be `false`.  If the function is sufficiently obscure that it should be hidden from most users then consider putting it in an add-in.  In future if we need to deprecate a function it will make sense to hide it so that new users don't start using it.
 
 

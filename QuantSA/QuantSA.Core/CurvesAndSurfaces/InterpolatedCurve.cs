@@ -8,13 +8,9 @@ namespace QuantSA.Core.CurvesAndSurfaces
     public class InterpolatedCurve : ICurve
     {
         private readonly LinearSpline _spline;
-        private readonly double[] _xVals;
-        private readonly double[] _yVals;
 
         public InterpolatedCurve(double[] xVals, double[] yVals)
         {
-            _xVals = xVals;
-            _yVals = yVals;
             _spline = LinearSpline.InterpolateSorted(xVals, yVals);
         }
 
@@ -33,7 +29,7 @@ namespace QuantSA.Core.CurvesAndSurfaces
             var result = new double[requiredX.GetLength(0), requiredX.GetLength(1)];
             for (var i = 0; i < requiredX.GetLength(0); i++)
             for (var j = 0; j < requiredX.GetLength(1); j++)
-                result[i,j] = _spline.Interpolate(requiredX[i, j]);
+                result[i, j] = _spline.Interpolate(requiredX[i, j]);
             return result;
         }
     }
