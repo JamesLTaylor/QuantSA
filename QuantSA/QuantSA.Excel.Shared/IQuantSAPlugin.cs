@@ -9,7 +9,5 @@
 
         string GetRibbonGroup();
         string GetAboutMacro();
-
-        void SetInstance(IQuantSAPlugin itself);
     }
 }

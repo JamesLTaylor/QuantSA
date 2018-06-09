@@ -19,7 +19,7 @@ namespace QuantSA.Excel.Addin.Functions
         {
             _argOffset = putOnMap ? 1 : 0;
             if (defaultValues.Count != methodInfo.GetParameters().Length)
-                throw new Exception("defaults must have the same length.");
+                throw new ArgumentException("defaults must have the same length.");
             _methodInfo = methodInfo;
             _defaultValues = defaultValues;
         }

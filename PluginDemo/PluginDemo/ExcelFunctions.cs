@@ -1,16 +1,12 @@
-﻿using ExcelDna.Integration;
+﻿using QuantSA.Excel.Shared;
 using QuantSA.General;
-using QuantSA.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using QuantSA.Primitives.Dates;
 
 namespace PluginDemo
 {
     public class ExcelFunctions
     {
+        /*
         [QuantSAExcelFunction(Description = "",
         Name = "QSDEMO.ShowAbout",
         Category = "QSDEMO",
@@ -21,43 +17,30 @@ namespace PluginDemo
             ExcelMessage message = new ExcelMessage("QuantSA Plugin demo.", PluginConnection.instance.GetAboutString());
             message.ShowDialog();
             return null;
-        }
+        }*/
 
         [QuantSAExcelFunction(Description = "",
             Name = "QSDEMO.CreateDiscount",
             Category = "QSDEMO",
             IsHidden = false)]
-        public static object CreateDiscount([ExcelArgument(Description = "Name of object")]String name,
-            [ExcelArgument(Description = "")]object[,] anchorDate,
-            [ExcelArgument(Description = "")]double rate)
+        public static IDiscountingSource CreateDiscount([QuantSAExcelArgument(Description = "")]
+            Date anchorDate,
+            [QuantSAExcelArgument(Description = "")]
+            double rate)
         {
-            try
-            {
-                PluginDiscount discount = new PluginDiscount(ExcelUtilities.GetDate0D(anchorDate, "anchorDate"), rate);                
-                return PluginConnection.objectMap.AddObject(name, discount);                
-            }
-            catch (Exception e)
-            {
-                return ExcelUtilities.Error0D(e);
-            }
+            return new PluginDiscount(anchorDate, rate);
         }
 
         [QuantSAExcelFunction(Description = "",
-        Name = "QSDEMO.GetSpecialDF",
-        Category = "QSDEMO",
-        IsHidden = false)]
-        public static object GetSpecialDF([ExcelArgument(Description = "Name of discounting curve.")]String name,
-        [ExcelArgument(Description = "date")]object[,] date)
+            Name = "QSDEMO.GetSpecialDF",
+            Category = "QSDEMO",
+            IsHidden = false)]
+        public static object GetSpecialDF([QuantSAExcelArgument(Description = "The discounting curve.")]
+            IDiscountingSource discountingSource,
+            [QuantSAExcelArgument(Description = "date")]
+            Date date)
         {
-            try
-            {
-                IDiscountingSource discountCurve = PluginConnection.objectMap.GetObjectFromID<IDiscountingSource>(name);
-                return discountCurve.GetDF(ExcelUtilities.GetDate0D(date, "date"));
-            }
-            catch (Exception e)
-            {
-                return ExcelUtilities.Error0D(e);                
-            }
+            return discountingSource.GetDF(date);
         }
     }
 }

@@ -14,10 +14,5 @@ namespace QuantSA.Excel.Shared
         /// generated version but get all the help descriptions from this version.
         /// </summary>
         public bool HasGeneratedVersion = false;
-
-        /// <summary>
-        /// Is this excel function the generated version of another one?
-        /// </summary>
-        public bool IsGeneratedVersion = false;
     }
 }

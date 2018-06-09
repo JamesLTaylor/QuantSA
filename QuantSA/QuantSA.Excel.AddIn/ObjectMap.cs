@@ -45,10 +45,9 @@ namespace QuantSA.Excel.Addin
         /// <returns></returns>
         public string AddObject(string name, object obj)
         {
-            if (obj == null) throw new Exception("Cannot add a null object");
-            if (name.Length < 2) throw new Exception("Specified name must be at least two characters");
-            if (name.IndexOf('.') > 0) throw new Exception("Specified name cannot have a '.'");
-            if (name.IndexOf(' ') > 0) throw new Exception("Specified name cannot have a space");
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (name.Length < 2) throw new ArgumentException("Specified name cannot have a '.'");
+            if (name.IndexOf(' ') > 0) throw new ArgumentException("Specified name cannot have a space");
             string uniqueID;
             lock (ThisLock)
             {

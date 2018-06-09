@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using ExcelDna.Integration;
 using QuantSA.Excel;
 using QuantSA.Excel.Addin.Functions;
@@ -18,7 +16,7 @@ using QuantSA.ExcelFunctions;
 /// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
 public class AddIn : IExcelAddIn
 {
-    public static List<IQuantSAPlugin> Plugins;
+    public static List<Tuple<IQuantSAPlugin, Assembly>> Plugins = new List<Tuple<IQuantSAPlugin, Assembly>>();
     public static Dictionary<string, Bitmap> AssemblyImageResources;
 
     private static readonly string FunctionsFilenameAll =
@@ -36,8 +34,7 @@ public class AddIn : IExcelAddIn
         {
             var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "QuantSA");
-            if (!Directory.Exists(pathString))
-                Directory.CreateDirectory(pathString);
+            if (!Directory.Exists(pathString)) Directory.CreateDirectory(pathString);
             //TODO: Check if newer version of addin exists.
 
             //Check if functions_all.csv is newer than functions_user.csv.  If it is then
@@ -49,23 +46,21 @@ public class AddIn : IExcelAddIn
             ExposeUserSelectedFunctions();
 
             //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
-            Plugins = new List<IQuantSAPlugin>();
             AssemblyImageResources = new Dictionary<string, Bitmap>();
-            ExposePlugins();
-            foreach (var plugin in Plugins)
-            {
-                plugin.SetInstance(plugin);
-            }
-
+            GetPlugins();
             var assemblies = new[]
             {
                 Assembly.GetAssembly(typeof(XLEquities)),
                 Assembly.GetAssembly(typeof(AddIn))
             };
+            foreach (var tuple in Plugins)
+                ExcelTypeConverter.AddConvertersFrom(tuple.Item2);
             foreach (var assembly in assemblies)
                 ExcelTypeConverter.AddConvertersFrom(assembly);
+            foreach (var tuple in Plugins)
+                FunctionRegistration.RegisterFrom(tuple.Item2, tuple.Item1.GetShortName());
             foreach (var assembly in assemblies)
-                FunctionRegistration.RegisterFrom(assembly);
+                FunctionRegistration.RegisterFrom(assembly, "QSA");
         }
         catch (Exception e)
         {
@@ -73,10 +68,14 @@ public class AddIn : IExcelAddIn
                 "QuantSA");
             var fileName = Path.Combine(pathString, "QuantSAError.txt");
             File.WriteAllText(fileName, e.ToString());
-            throw new Exception("An error occurred while opening the QuantSA addin.\n" +
-                                "Check the error log file for details.\n\n" +
-                                $"{fileName}");
+            throw new AddInException("An error occurred while opening the QuantSA addin.\n" +
+                                     "Check the error log file for details.\n\n" +
+                                     $"{fileName}");
         }
+    }
+
+    public void AutoClose()
+    {
     }
 
 
@@ -86,10 +85,6 @@ public class AddIn : IExcelAddIn
     public void ExposeUserSelectedFunctions()
     {
         var funcsAndVisibility = GetFunctionVisibility(FunctionsFilenameUser);
-    }
-
-    public void AutoClose()
-    {
     }
 
     /// <summary>
@@ -139,7 +134,7 @@ public class AddIn : IExcelAddIn
             else if (cols[1].Trim().ToLower().Equals("no"))
                 visible = false;
             else
-                throw new ArgumentException("file must contain only 'yes' or 'no' in the second column");
+                throw new AddInException("file must contain only 'yes' or 'no' in the second column");
 
             funcsAndVisibility[cols[0].Trim()] = visible;
         }
@@ -151,7 +146,7 @@ public class AddIn : IExcelAddIn
     /// <summary>
     /// Expose all plugins in the Plugins folder
     /// </summary>
-    private void ExposePlugins()
+    private void GetPlugins()
     {
         var dllDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\Plugins";
         if (!Directory.Exists(dllDirectory)) return; // No plugin folder, return without doing anything.
@@ -160,7 +155,9 @@ public class AddIn : IExcelAddIn
             if (Path.GetExtension(file).ToLower().Equals(".dll"))
                 try
                 {
-                    ExposePlugin(file);
+                    var assembly = Assembly.LoadFile(file);
+                    var plugin = GetPlugin(assembly);
+                    Plugins.Add(Tuple.Create(plugin, assembly));
                 }
                 catch (Exception e)
                 {
@@ -170,44 +167,17 @@ public class AddIn : IExcelAddIn
     }
 
     /// <summary>
-    /// Expose a plugin from a dll filename, if the dll is a valid plugin.
+    /// Get an <see cref="IQuantSAPlugin"/> from an assembly or throw an <see cref="AddInException"/>
     /// </summary>
-    private void ExposePlugin(string filename)
+    private static IQuantSAPlugin GetPlugin(Assembly assembly)
     {
-        var DLL = Assembly.LoadFile(filename);
-        string shortName = null;
-        foreach (var type in DLL.GetExportedTypes())
+        foreach (var type in assembly.GetExportedTypes())
             if (typeof(IQuantSAPlugin).IsAssignableFrom(type)) // This class is a QuantSA plugin
             {
-                var plugin = Activator.CreateInstance(type) as IQuantSAPlugin;
-                shortName = plugin.GetShortName();
-                Plugins.Add(plugin);
+                return Activator.CreateInstance(type) as IQuantSAPlugin;
             }
 
-        if (shortName == null)
-            throw new Exception(Path.GetFileName(filename) + " is in the Plugins directory but is not a valid plugin.");
-
-        foreach (var type in DLL.GetExportedTypes())
-        foreach (var member in type.GetMembers())
-        {
-            var attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-            if (attribute != null) // We have found an excel exposed function.
-            {
-                if (!attribute.Category.Equals(shortName))
-                    throw new Exception(attribute.Name + " in plugin " + shortName + " is not in the excel category " +
-                                        shortName);
-                var parts = attribute.Name.Split('.');
-                if (!(parts.Length == 2 && parts[0].Equals(shortName)))
-                    throw new Exception(attribute.Name + " in plugin " + shortName +
-                                        "does not following the naming convention: " + shortName + ".FunctionName");
-            }
-
-            if (member.MemberType.Equals(MemberTypes.Method))
-                if (((MethodInfo) member).ReturnType.Equals(typeof(Bitmap)))
-                {
-                    var image = ((MethodInfo) member).Invoke(null, null) as Bitmap;
-                    AssemblyImageResources.Add(member.Name.Substring(4), image);
-                }
-        }
+        throw new AddInException($"{Path.GetFileName(assembly.FullName)} is in the Plugins " +
+                                 "directory but is not a valid plugin.");
     }
 }
