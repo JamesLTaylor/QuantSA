@@ -30,24 +30,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExcelDna.Integration, Version=0.33.5730.40390, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExcelDna.Integration.0.33.9\lib\ExcelDna.Integration.dll</HintPath>
+    <Reference Include="ExcelDna.Integration, Version=0.34.6373.42344, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDna.Integration.0.34.6\lib\ExcelDna.Integration.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="QuantSA.Excel">
-      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Excel.dll</HintPath>
+    <Reference Include="QuantSA.Excel.Shared">
+      <HintPath>..\..\QuantSA\QuantSA.Excel.Shared\bin\Debug\QuantSA.Excel.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSA.General">
-      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.General.dll</HintPath>
-    </Reference>
-    <Reference Include="QuantSA.Interfaces">
-      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="QuantSA.Valuation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\QuantSA\Excel\bin\Debug\QuantSA.Valuation.dll</HintPath>
+    <Reference Include="QuantSA.Primitives">
+      <HintPath>..\..\QuantSA\QuantSA.Primitives\bin\Debug\QuantSA.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,13 +59,19 @@
     <Compile Include="PluginConnection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="PluginDemo-AddIn.dna" />
     <None Include="packages.config" />
+    <None Include="Properties\ExcelDna.Build.props" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" $(SolutionDir)\..\QuantSA\Excel\$(OutDir)Plugins\  /C /Y
-</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" $(SolutionDir)\..\QuantSA\QuantSA.Excel.AddIn\$(OutDir)Plugins\  /C /Y</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\ExcelDna.AddIn.0.34.6\tools\ExcelDna.AddIn.targets" Condition="Exists('..\packages\ExcelDna.AddIn.0.34.6\tools\ExcelDna.AddIn.targets')" />
+  <Target Name="EnsureExcelDnaTargetsImported" BeforeTargets="BeforeBuild" Condition="'$(ExcelDnaTargetsImported)' == ''">
+    <Error Condition="!Exists('..\packages\ExcelDna.AddIn.0.34.6\tools\ExcelDna.AddIn.targets') And ('$(RunExcelDnaBuild)' != '' And $(RunExcelDnaBuild))" Text="You are trying to build with ExcelDna, but the NuGet targets file that ExcelDna depends on is not available on this computer. This is probably because the ExcelDna package has not been committed to source control, or NuGet Package Restore is not enabled. Please enable NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\ExcelDna.AddIn.0.34.6\tools\ExcelDna.AddIn.targets') And ('$(RunExcelDnaBuild)' != '' And $(RunExcelDnaBuild))" Text="ExcelDna cannot be run because NuGet packages were restored prior to the build running, and the targets file was unavailable when the build started. Please build the project again to include these packages in the build. You may also need to make sure that your build server does not delete packages prior to each build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

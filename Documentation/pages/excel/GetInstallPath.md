@@ -3,14 +3,14 @@ title: GetInstallPath
 keywords:
 last_updated: March 18, 2017
 tags:
-summary: Get a string representing the path in which QuantSA is intalled.
+summary: Get a string representing the path in which QuantSA is installed.
 sidebar: excel_sidebar
 permalink: GetInstallPath.html
 folder: excel
 ---
 
 ## Description
-Get a string representing the path in which QuantSA is intalled.
+Get a string representing the path in which QuantSA is installed.
 
 <!--HUMAN EDIT START-->
 

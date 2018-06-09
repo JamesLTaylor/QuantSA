@@ -6,10 +6,6 @@ namespace QuantSA.General
     /// <summary>
     /// A curve is simply a function between dates and values.  
     /// </summary>
-    /// <remarks>
-    /// If you want something more abstract than this rather just 
-    /// interpolate across doubles.
-    ///</remarks>
     public interface ICurve
     {
         double InterpAtDate(Date date);
@@ -28,7 +24,7 @@ namespace QuantSA.General
         /// <returns></returns>
         public static double[] InterpAtDates(this ICurve curve, Date[] dates)
         {
-            return dates.Select(date => curve.InterpAtDate(date)).ToArray();
+            return dates.Select(curve.InterpAtDate).ToArray();
         }
     }
 }

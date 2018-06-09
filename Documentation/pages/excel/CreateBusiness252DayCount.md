@@ -24,8 +24,8 @@ Create an actual 252 daycount convention, this is can't be done directly from a 
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **calendar** The calendar to use.([Calendar](Calendar.html))
+* **objectName** The name that this object will be assigned on the map. Should be unique.
+* **calendar** ([Calendar](Calendar.html))The calendar to use.
 
 <!--HUMAN EDIT START-->
 

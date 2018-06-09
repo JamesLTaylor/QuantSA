@@ -14,8 +14,6 @@ namespace QuantSA.Valuation
     [Serializable]
     public class EquitySimulator : NumeraireSimulator
     {
-        private Dictionary<int, double[]> acculatedDivi; // stores the accumlated dividend on at each required date
-        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
         private readonly Date anchorDate;
         private readonly IDiscountingSource discountCurve;
         private readonly double[] divYields;
@@ -23,16 +21,18 @@ namespace QuantSA.Valuation
         private readonly double[] prices;
         private readonly Dictionary<MarketObservable, IFloatingRateSource> rateForecastCurves;
         private readonly MarketObservable[] shares;
-        private Dictionary<int, double[]> simulation; // stores the simulated share prices at each required date
         private readonly double[] vols;
+        private Dictionary<int, double[]> acculatedDivi; // stores the accumulated dividend on at each required date
+        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
+        private Dictionary<int, double[]> simulation; // stores the simulated share prices at each required date
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EquitySimulator"/> class.
         /// </summary>
         /// <param name="shares">An array of shares that will be simulated.</param>
         /// <param name="prices">The prices of the supplied shares.</param>
-        /// <param name="vols">The annualized volatilites of the supplied shares.</param>
-        /// <param name="divYields">The continous dividend yields.</param>
+        /// <param name="vols">The annualized volatilities of the supplied shares.</param>
+        /// <param name="divYields">The continuous dividend yields.</param>
         /// <param name="correlations">The correlation matrix for all the shares.</param>
         /// <param name="discountCurve">The discount curve that will be also be used to determine the drift on the shares.</param>
         /// <param name="rateForecastCurves">Deterministic rate forecast curves, used for example when a 
@@ -48,8 +48,12 @@ namespace QuantSA.Valuation
             anchorDate = discountCurve.GetAnchorDate();
             normal = new MultivariateNormalDistribution(Vector.Zeros(prices.Length), correlations);
             this.rateForecastCurves = new Dictionary<MarketObservable, IFloatingRateSource>();
+            if (rateForecastCurves == null) return;
             foreach (var floatingRateSource in rateForecastCurves)
+            {
+                if (floatingRateSource == null) continue;
                 this.rateForecastCurves.Add(floatingRateSource.GetFloatingIndex(), floatingRateSource);
+            }
         }
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredTimes)

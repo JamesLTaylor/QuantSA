@@ -19,7 +19,7 @@ There are 4 main projects:
 and 2 test projects
 
 ###  `General` and `Valuation`
-Most maths and finance except valuation is implemented in `General`.  The simulators and other valuation tools are implemented in `Valuations`.  The main reason for this separation is that it keeps the valuation philosphy enforced.  A product in `General` can have no reference to the `Valuations` project this forces the developer to consider only the [market observables](home_valuation_principles.html#market-observables) when implementing the cashflows of the product and not how these will be generated.
+Most maths and finance except valuation is implemented in `General`.  The simulators and other valuation tools are implemented in `Valuations`.  The main reason for this separation is that it keeps the valuation philosophy enforced.  A product in `General` can have no reference to the `Valuations` project this forces the developer to consider only the [market observables](home_valuation_principles.html#market-observables) when implementing the cashflows of the product and not how these will be generated.
 
 ###  `QuantSAInterfaces`
 These are the interfaces that are used by plugins.
@@ -29,7 +29,7 @@ The actual functions that get exposed to Excel and some utilities and features f
 
 Whenever possible the functions in here should be wrappers that only convert data before sending it through to functions in `General` and `Valuation`
 
-See [here](home_expose_to_excel.html) for more details about expsosing functions to Excel.
+See [here](home_expose_to_excel.html) for more details about exposing functions to Excel.
 
 ## Project details - General
 
@@ -37,7 +37,7 @@ See [here](home_expose_to_excel.html) for more details about expsosing functions
 Various curves for providing fixes or forecasts.
 
 ### CurveTools
-Tools used to contruct or generate curves.
+Tools used to construct or generate curves.
 
 ### DataAnalysis
 

@@ -1,11 +1,4 @@
-﻿using QuantSA.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QuantSA.Excel.Common
+﻿namespace QuantSA.Excel.Shared
 {
     public interface IQuantSAPlugin
     {
@@ -16,9 +9,5 @@ namespace QuantSA.Excel.Common
 
         string GetRibbonGroup();
         string GetAboutMacro();
-
-        void SetInstance(IQuantSAPlugin itself);
-        void SetObjectMap(ObjectMap objectMap);
-        ObjectMap getObjectMap();        
     }
 }

@@ -24,8 +24,8 @@ Get the discount factor from a curve object.  The DF will be from the anchor dat
 
 ## Arguments
 
-* **curve** The curve from which the DF is required.
-* **date** The date on which the discount factor is required.  Cannot be before the anchor date of the curve.([Date](Date.html))
+* **curve** (IDiscountingSource)The curve from which the DF is required.
+* **date** ([Date](Date.html))The date on which the discount factor is required.  Cannot be before the anchor date of the curve.
 
 <!--HUMAN EDIT START-->
 

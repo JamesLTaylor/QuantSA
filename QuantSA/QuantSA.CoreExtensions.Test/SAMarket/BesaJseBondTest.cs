@@ -27,11 +27,11 @@ namespace ProductExtensionsTest.SAMarket
 
             double ytm = 0.097;
             ResultStore results = bondR2030.GetSpotMeasures(settleDate, ytm);
-            Assert.AreEqual(87.85607808, results.GetScalar(BesaJseBondEx.Keys.unroundedAip),1e-8);
-            Assert.AreEqual(87.85608, results.GetScalar(BesaJseBondEx.Keys.roundedAip), 1e-8);
-            Assert.AreEqual(87.15470822, results.GetScalar(BesaJseBondEx.Keys.unroundedClean), 1e-8);
-            Assert.AreEqual(87.15471, results.GetScalar(BesaJseBondEx.Keys.roundedClean), 1e-8);
-            Assert.AreEqual(0.701369836, results.GetScalar(BesaJseBondEx.Keys.unroundedAccrued), 1e-7);
+            Assert.AreEqual(87.85607808, (double)results.GetScalar(BesaJseBondEx.Keys.unroundedAip),1e-8);
+            Assert.AreEqual(87.85608, (double)results.GetScalar(BesaJseBondEx.Keys.roundedAip), 1e-8);
+            Assert.AreEqual(87.15470822, (double)results.GetScalar(BesaJseBondEx.Keys.unroundedClean), 1e-8);
+            Assert.AreEqual(87.15471, (double)results.GetScalar(BesaJseBondEx.Keys.roundedClean), 1e-8);
+            Assert.AreEqual(0.701369836, (double)results.GetScalar(BesaJseBondEx.Keys.unroundedAccrued), 1e-7);
         }
     }
 }

@@ -24,12 +24,12 @@ Create a standard ZAR FRA
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **tradeDate** The trade date of the FRA.  The near and far dates will be calculated from this.([Date](Date.html))
-* **notional** The notional of the FRA in rands.
-* **rate** The fixed rate paid or received.
-* **fraCode** The fra code, eg '3x6'.
-* **payFixed** Is the fixed rate paid? Enter 'TRUE' for yes.([Boolean](Boolean.html))
+* **objectName** The name that this object will be assigned on the map. Should be unique.
+* **tradeDate** ([Date](Date.html))The trade date of the FRA.  The near and far dates will be calculated from this.
+* **notional** (Double)The notional of the FRA in rands.
+* **rate** (Double)The fixed rate paid or received.
+* **fraCode** (String)The FRA code, e.g. '3x6'.
+* **payFixed** ([Boolean](Boolean.html))Is the fixed rate paid? Enter 'TRUE' for yes.
 
 <!--HUMAN EDIT START-->
 

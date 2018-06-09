@@ -3,14 +3,14 @@ title: RateConvert
 keywords:
 last_updated: March 18, 2017
 tags:
-summary: Convert an interest rate from one compoundin convention to another.
+summary: Convert an interest rate from one compounding convention to another.
 sidebar: excel_sidebar
 permalink: RateConvert.html
 folder: excel
 ---
 
 ## Description
-Convert an interest rate from one compoundin convention to another.
+Convert an interest rate from one compounding convention to another.
 
 <!--HUMAN EDIT START-->
 
@@ -24,10 +24,10 @@ Convert an interest rate from one compoundin convention to another.
 
 ## Arguments
 
-* **rate** The rate to convert.
-* **compoundingFrom** The compounding convention of the input rate.([CompoundingConvention](CompoundingConvention.html))
-* **compoundingTo** The compounding convention that the output rate should be in.([CompoundingConvention](CompoundingConvention.html))
-* **yearFraction** (Optional) The yearfraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'
+* **rate** (Double)The rate to convert.
+* **compoundingFrom** ([CompoundingConvention](CompoundingConvention.html))The compounding convention of the input rate.
+* **compoundingTo** ([CompoundingConvention](CompoundingConvention.html))The compounding convention that the output rate should be in.
+* **yearFraction** *(Double)(Optional) The yearfraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'(Default value = )
 
 <!--HUMAN EDIT START-->
 

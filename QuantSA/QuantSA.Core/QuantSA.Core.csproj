@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurvesAndSurfaces\InterpolatedCurve.cs" />
     <Compile Include="CurvesAndSurfaces\NelsonSiegel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

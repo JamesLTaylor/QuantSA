@@ -24,12 +24,12 @@ An approximate PFE for a portfolio of trades.
 
 ## Arguments
 
-* **products** A list of products.
-* **valueDate** The value date.([Date](Date.html))
-* **forwardValueDates** The dates at which the expected positive exposure is required.([Date](Date.html))
-* **requiredPecentiles** The required percentiles.  95th percentile should be entered as 0.95.  Can be a list of percentiles and the PFE will be calculated at each of the provided levels.
-* **model** A model able to handle all the market observables required to calculate the cashflows in the portfolio.
-* **nSims** The number of simulations required.
+* **products** (Product[])A list of products.
+* **valueDate** ([Date](Date.html))The value date.
+* **forwardValueDates** ([Date](Date.html)[])The dates at which the expected positive exposure is required.
+* **requiredPecentiles** (Double[])The required percentiles.  95th percentile should be entered as 0.95.  Can be a list of percentiles and the PFE will be calculated at each of the provided levels.
+* **model** (NumeraireSimulator)A model able to handle all the market observables required to calculate the cashflows in the portfolio.
+* **nSims** (Int32)The number of simulations required.
 
 <!--HUMAN EDIT START-->
 

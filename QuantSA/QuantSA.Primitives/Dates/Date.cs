@@ -49,9 +49,13 @@ namespace QuantSA.Primitives.Dates
         {
         }
 
+        /// <summary>
+        /// Date in ISO8601 (yyyy-MM-dd) format.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return date.ToString("dd MMM yyyy");
+            return date.ToString("yyyy-MM-dd");
         }
 
         public int Day { get { return date.Day; } }

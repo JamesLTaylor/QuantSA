@@ -24,7 +24,7 @@ Get a list of available results in the results object.
 
 ## Arguments
 
-* **objectName** The name of the results object as returned by call to another QuantSA function
+* **resultStore** (IProvidesResultStore)The results object as returned by call to another QuantSA function
 
 <!--HUMAN EDIT START-->
 

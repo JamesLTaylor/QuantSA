@@ -7,12 +7,12 @@ namespace PrepareRelease
     {
         // Default values
         //TODO: Make it possible to overwrite these in args of main.
-        private static readonly bool checkSpreadsheets = false;
-        private static readonly bool generateHelp = false;
-        private static readonly bool checkExampleSheetsAreValid = checkSpreadsheets && generateHelp && false;
+        private static readonly bool checkSpreadsheets = true;
+        private static readonly bool generateHelp = true;
+        private static readonly bool checkExampleSheetsAreValid = checkSpreadsheets && generateHelp && true;
         private static readonly bool generateInstallerResources = true;
         public static string Rootpath = @"c:\dev\QuantSA";
-        public static string XllPath = @"QuantSA\ExcelAddin\bin\Debug\QuantSA.xll";
+        public static string XllPath = @"C:\Dev\QuantSA\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.xll";
 
         private static void Main(string[] args)
         {
@@ -72,6 +72,7 @@ namespace PrepareRelease
 
 
             // Wait for keyboard
+            Console.WriteLine("Finished.  Press any key...");
             Console.ReadKey();
         }
     }

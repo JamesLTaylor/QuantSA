@@ -1,5 +1,4 @@
-﻿using QuantSA.Primitives.Dates;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using QuantSA.General.Dates;
@@ -8,8 +7,8 @@ namespace QuantSA.ExcelFunctions
 {
     public static class StaticData
     {
-        private static Dictionary<string, Calendar> calendars = new Dictionary<string, Calendar>();
-        private static object calendarLock = new object();
+        private static readonly Dictionary<string, Calendar> Calendars = new Dictionary<string, Calendar>();
+        private static readonly object CalendarLock = new object();
 
 
         /// <summary>
@@ -17,17 +16,17 @@ namespace QuantSA.ExcelFunctions
         /// </summary>
         /// <param name="countryCode">The country or country and exchange code of the calendar required.</param>
         /// <returns></returns>
-        public static Calendar GetCalendar(string code)
+        public static Calendar GetCalendar(string countryCode)
         {
-            lock (calendarLock)
+            lock (CalendarLock)
             {
-                if (calendars.ContainsKey(code))
-                    return calendars[code];
+                if (Calendars.ContainsKey(countryCode))
+                    return Calendars[countryCode];
 
-                string path = AppDomain.CurrentDomain.BaseDirectory.ToString() + "/StaticData/Holidays/" + code + ".csv";
+                var path = AppDomain.CurrentDomain.BaseDirectory + "/StaticData/Holidays/" + countryCode + ".csv";
                 if (!File.Exists(path)) throw new Exception("The holiday file: " + path + " does not exist.");
-                calendars[code] =  Calendar.FromFile(path);
-                return calendars[code];                
+                Calendars[countryCode] = Calendar.FromFile(path);
+                return Calendars[countryCode];
             }
         }
     }

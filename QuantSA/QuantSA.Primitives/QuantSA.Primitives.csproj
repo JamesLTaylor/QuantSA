@@ -101,7 +101,7 @@
     <Compile Include="Debug.cs" />
     <Compile Include="Formulae\BlackEtc.cs" />
     <Compile Include="Formulae\JSEBondPrice.cs" />
-    <Compile Include="ICurve.cs" />
+    <Compile Include="CurvesAndSurfaces\ICurve.cs" />
     <Compile Include="ICurveForStripping.cs" />
     <Compile Include="IDiscountingSource.cs" />
     <Compile Include="IFloatingRateSource.cs" />

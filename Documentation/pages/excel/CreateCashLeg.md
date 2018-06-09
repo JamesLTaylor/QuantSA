@@ -24,10 +24,10 @@ Create a general set of cashflows that can be valued like any other product.
 
 ## Arguments
 
-* **objectName** The name of the object to be created.
-* **paymentDates** The dates on which the cashflows take place.([Date](Date.html))
-* **amounts** The sizes of the cashflows.  Positive for cashflows that are received.
-* **currencies** The currencies of the cashflows.([Currency](Currency.html))
+* **objectName** The name that this object will be assigned on the map. Should be unique.
+* **paymentDates** ([Date](Date.html)[])The dates on which the cashflows take place.
+* **amounts** (Double[])The sizes of the cashflows.  Positive for cashflows that are received.
+* **currencies** ([Currency](Currency.html)[])The currencies of the cashflows.
 
 <!--HUMAN EDIT START-->
 

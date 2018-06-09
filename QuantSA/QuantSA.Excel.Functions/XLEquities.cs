@@ -1,13 +1,13 @@
 ﻿using QuantSA.General;
 using QuantSA.Valuation;
-using QuantSA.Excel.Common;
+using QuantSA.Excel.Shared;
 using QuantSA.Primitives.Dates;
 
 namespace QuantSA.ExcelFunctions
 {
     public class XLEquities
     {
-        [QuantSAExcelFunction(Description = "Create a model that simulates multiple equites in one currency.  Assumes lognormal dynamics.",
+        [QuantSAExcelFunction(Description = "Create a model that simulates multiple equities in one currency.  Assumes lognormal dynamics.",
             Name = "QSA.CreateEquityModel",
             HasGeneratedVersion = true,
             Category = "QSA.Equities",
@@ -20,14 +20,14 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "A single volatility for each share.")]double[] volatilities,
             [QuantSAExcelArgument(Description = "A single continuous dividend yield rate for each equity.")]double[] divYields,
             [QuantSAExcelArgument(Description = "A square matrix of correlations between shares, the rows and columns must be in the same order as the shares were listed in shareCodes.")]double[,] correlations,
-            [QuantSAExcelArgument(Description = "The floating rate forecast curves for all the rates that the products in the portfolio will need.")]IFloatingRateSource[] rateForecastCurves)
+            [QuantSAExcelArgument(Description = "The floating rate forecast curves for all the rates that the products in the portfolio will need.", Default = null)]IFloatingRateSource[] rateForecastCurves)
         {
             return new EquitySimulator(shares, spotPrices, volatilities, divYields, correlations, discountCurve,
                 rateForecastCurves);
         }
 
 
-        [QuantSAExcelFunction(Description = "Create a model that simulates multiple equites in one currency.  Assumes lognormal dynamics.",
+        [QuantSAExcelFunction(Description = "Create a model that simulates multiple equities in one currency.  Assumes lognormal dynamics.",
             Name = "QSA.CreateEquityCall",
             HasGeneratedVersion = true,
             Category = "QSA.Equities",

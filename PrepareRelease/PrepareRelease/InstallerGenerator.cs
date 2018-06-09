@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrepareRelease
 {
     /// <summary>
     /// This class generates files that allow the custom installer to know which files to include.
     /// </summary>
-    class InstallerGenerator
+    internal class InstallerGenerator
     {
-        private string installFilesPartialPath;
-        private string rootpath;
+        private readonly List<string[]> fileList;
 
-        private string installFileInfoPath;
-        private string resourcesPath;
-        List<string[]> fileList;
+        private readonly string installFileInfoPath;
+        private readonly string installFilesPartialPath;
+        private readonly string resourcesPath;
+        private readonly string rootpath;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InstallerGenerator"/> class.
@@ -29,7 +27,8 @@ namespace PrepareRelease
         {
             this.rootpath = rootpath;
             this.installFilesPartialPath = installFilesPartialPath;
-            installFileInfoPath = Path.Combine(rootpath, @"QuantSAInstaller\QuantSAInstaller\Resources\InstallFileInfo.csv");
+            installFileInfoPath =
+                Path.Combine(rootpath, @"QuantSAInstaller\QuantSAInstaller\Resources\InstallFileInfo.csv");
             resourcesPath = Path.Combine(rootpath, @"QuantSAInstaller\QuantSAInstaller\Properties\Resources.resx");
             fileList = new List<string[]>();
         }
@@ -52,7 +51,8 @@ namespace PrepareRelease
         /// </summary>
         private void WriteInstallFileInfo()
         {
-            File.WriteAllLines(installFileInfoPath, fileList.Select(strArr => strArr[0]+","+ strArr[1] + "," + strArr[2]).ToArray());
+            File.WriteAllLines(installFileInfoPath,
+                fileList.Select(strArr => strArr[0] + "," + strArr[1] + "," + strArr[2]).ToArray());
         }
 
 
@@ -70,26 +70,32 @@ namespace PrepareRelease
         /// <exception cref="Exception"></exception>
         private void AddElementsToResourceFile()
         {
-            string[] originalLines = File.ReadAllLines(resourcesPath);
-            List<string> combinedLines = new List<string>();
-            int i = 0;
+            var originalLines = File.ReadAllLines(resourcesPath);
+            var combinedLines = new List<string>();
+            var i = 0;
             while (!originalLines[i].Contains("<!--AUTO-->") && i < originalLines.Length)
             {
                 combinedLines.Add(originalLines[i]);
                 i++;
             }
+
             if (i == originalLines.Length)
-                throw new Exception(resourcesPath + " does not contain a line '<!--AUTO-->' which is required.  Revert this file from git and try again.");
+                throw new Exception(resourcesPath +
+                                    " does not contain a line '<!--AUTO-->' which is required.  Revert this file from git and try again.");
 
             combinedLines.Add("<!--AUTO-->");
-            combinedLines.Add("<!--  Start of generated version.  See PrepareRelease.sln.  If the resources are edited in Visual Studio this comment will be removed and will be need to be reverted from git. -->");
-  
-            foreach (string[] line in fileList)
+            combinedLines.Add(
+                "<!--  Start of generated version.  See PrepareRelease.sln.  If the resources are edited in Visual Studio this comment will be removed and will be need to be reverted from git. -->");
+
+            foreach (var line in fileList)
             {
-                combinedLines.Add("  <data name=\"" + line[0] + "\" type=\"System.Resources.ResXFileRef, System.Windows.Forms\">");
-                combinedLines.Add("    <value>" + line[1] + "\\" + line[2] + ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>");
+                combinedLines.Add("  <data name=\"" + line[0] +
+                                  "\" type=\"System.Resources.ResXFileRef, System.Windows.Forms\">");
+                combinedLines.Add("    <value>" + line[1] + "\\" + line[2] +
+                                  ";System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>");
                 combinedLines.Add("  </data>");
             }
+
             combinedLines.Add("</root>");
             File.WriteAllLines(resourcesPath, combinedLines.ToArray());
         }
@@ -98,27 +104,25 @@ namespace PrepareRelease
         private void AddFiles(string subDir, string extension)
         {
             // Iterate over files in folder
-            DirectoryInfo directory = new DirectoryInfo(Path.Combine(rootpath, installFilesPartialPath, subDir));
-            FileInfo[] files = directory.GetFiles();
-            foreach (FileInfo fileInfo in files.Where(
+            var directory = new DirectoryInfo(Path.Combine(rootpath, installFilesPartialPath, subDir));
+            var files = directory.GetFiles();
+            foreach (var fileInfo in files.Where(
                 fileinfo => fileinfo.Extension.Equals(extension) &&
-                !fileinfo.Attributes.HasFlag(FileAttributes.Hidden)))
-            {
-                AddFile(fileInfo.Name, subDir);               
-            }
+                            !fileinfo.Attributes.HasFlag(FileAttributes.Hidden)))
+                AddFile(fileInfo.Name, subDir);
         }
 
         private void AddFile(string fileName, string subDir)
         {
-            string resourceName = RemoveIllegalChars(fileName);
-            string fileRelPath = Path.Combine(@"..\..\..\", installFilesPartialPath);
-            string targetPath = Path.Combine(subDir, fileName);
-            fileList.Add(new string[] { resourceName, fileRelPath, targetPath });
+            var resourceName = RemoveIllegalChars(fileName);
+            var fileRelPath = Path.Combine(@"..\..\..\", installFilesPartialPath);
+            var targetPath = Path.Combine(subDir, fileName);
+            fileList.Add(new[] {resourceName, fileRelPath, targetPath});
         }
 
         private string RemoveIllegalChars(string stringIn)
         {
-            string stringOut = stringIn.Replace('.', '_');
+            var stringOut = stringIn.Replace('.', '_');
             stringOut = stringOut.Replace(' ', '_');
             return stringOut;
         }

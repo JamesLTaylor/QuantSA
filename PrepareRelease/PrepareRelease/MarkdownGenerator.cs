@@ -5,50 +5,51 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ExcelDna.Integration;
-using QuantSA.Excel.Common;
+using QuantSA.Excel.Addin.Functions;
+using QuantSA.Excel.Shared;
 
 namespace PrepareRelease
 {
     /// <summary>
     /// Stores the generated files in a hierarchy of Category -> name -> contents.
     /// </summary>
-    internal class contentCollection
+    internal class ContentCollection
     {
-        private readonly Dictionary<string, Dictionary<string, FileContents>> structure;
+        private readonly Dictionary<string, Dictionary<string, FileContents>> _structure;
 
-        public contentCollection()
+        public ContentCollection()
         {
-            structure = new Dictionary<string, Dictionary<string, FileContents>>();
+            _structure = new Dictionary<string, Dictionary<string, FileContents>>();
         }
 
 
         public void AddFile(FileContents fileContents)
         {
-            var cat = fileContents.category;
+            var cat = fileContents.Category;
             Dictionary<string, FileContents> subMenu;
-            if (structure.ContainsKey(cat))
+            if (_structure.ContainsKey(cat))
             {
-                subMenu = structure[cat];
+                subMenu = _structure[cat];
             }
             else
             {
                 subMenu = new Dictionary<string, FileContents>();
-                structure[cat] = subMenu;
+                _structure[cat] = subMenu;
             }
 
-            subMenu[fileContents.name] = fileContents;
+            subMenu[fileContents.Name] = fileContents;
         }
 
         public List<string> GetCategories()
         {
-            var keys = structure.Keys.ToList();
+            var keys = _structure.Keys.ToList();
             keys.Sort();
             return keys;
         }
 
         public List<string> GetNames(string category)
         {
-            var keys = structure[category].Keys.ToList();
+            var keys = _structure[category].Keys.ToList();
             keys.Sort();
             return keys;
         }
@@ -56,15 +57,15 @@ namespace PrepareRelease
         public FileContents Get(string category, string name)
         {
             Dictionary<string, FileContents> subMenu;
-            if (!structure.ContainsKey(category))
+            if (!_structure.ContainsKey(category))
             {
                 subMenu = new Dictionary<string, FileContents>();
-                structure[category] = subMenu;
+                _structure[category] = subMenu;
             }
 
-            subMenu = structure[category];
+            subMenu = _structure[category];
             if (!subMenu.ContainsKey(name)) subMenu[name] = new FileContents();
-            return structure[category][name];
+            return _structure[category][name];
         }
     }
 
@@ -73,29 +74,29 @@ namespace PrepareRelease
     /// </summary>
     internal class FileContents
     {
-        public List<string> argDescriptions;
-        public List<string> argNames;
-        public string category;
-        private string description;
-        public string exampleSheet;
-        public string name;
-        public string summary;
+        private string _description;
+        public List<string> ArgDescriptions;
+        public List<string> ArgNames;
+        public string Category;
+        public string ExampleSheet;
+        public string Name;
+        public string Summary;
 
         public FileContents()
         {
-            argNames = new List<string>();
-            argDescriptions = new List<string>();
+            ArgNames = new List<string>();
+            ArgDescriptions = new List<string>();
         }
 
         public string Description
         {
-            get => description;
+            get => _description;
 
             set
             {
-                description = value;
-                var parts = description.Split('.');
-                summary = parts[0] + ".";
+                _description = value;
+                var parts = _description.Split('.');
+                Summary = parts[0] + ".";
             }
         }
     }
@@ -107,34 +108,32 @@ namespace PrepareRelease
     {
         public const string MD_ERROR_OUTPUT_FILE = "MarkdownGenerator.csv";
         public const string SS_ERROR_OUTPUT_FILE = "AreExampleSheetsValid.csv";
-        private contentCollection contentCollection;
-        private readonly string[] dllsWithExposedFunctions;
-        private readonly List<string> documentedTypes;
-        private List<string> errorInfo;
-        private readonly Dictionary<string, int> generatedMethodArgCount;
-        private readonly string helpURL;
-        private readonly string outputPath;
-        private readonly string tempOutputPath;
+        private readonly string[] _dllsWithExposedFunctions;
+        private readonly List<string> _documentedTypes;
+        private readonly string _helpUrl;
+        private readonly string _outputPath;
+        private readonly string _tempOutputPath;
+        private ContentCollection _contentCollection;
+        private List<string> _errorInfo;
 
         public MarkdownGenerator(string[] dllsWithExposedFunctions, string outputPath, string helpURL,
             string tempOutputPath)
         {
-            this.dllsWithExposedFunctions = dllsWithExposedFunctions;
-            this.outputPath = outputPath;
-            this.helpURL = helpURL;
-            this.tempOutputPath = tempOutputPath;
-            documentedTypes = new List<string>();
-            generatedMethodArgCount = new Dictionary<string, int>();
+            _dllsWithExposedFunctions = dllsWithExposedFunctions;
+            _outputPath = outputPath;
+            _helpUrl = helpURL;
+            _tempOutputPath = tempOutputPath;
+            _documentedTypes = new List<string>();
         }
 
         public int Generate()
         {
-            contentCollection = new contentCollection();
-            errorInfo = new List<string>();
+            _contentCollection = new ContentCollection();
+            _errorInfo = new List<string>();
             UpdateContentCollection();
             UpdateHelpYMLAndWriteMD();
-            File.WriteAllLines(Path.Combine(tempOutputPath, MD_ERROR_OUTPUT_FILE), errorInfo.ToArray());
-            return errorInfo.Count();
+            File.WriteAllLines(Path.Combine(_tempOutputPath, MD_ERROR_OUTPUT_FILE), _errorInfo.ToArray());
+            return _errorInfo.Count();
         }
 
 
@@ -147,13 +146,13 @@ namespace PrepareRelease
         public int AreAllExampleSheetsValid(Dictionary<string, HashSet<string>> sheetsAndFuncs)
         {
             var errorList = new List<string>();
-            if (contentCollection == null)
+            if (_contentCollection == null)
                 throw new Exception("Call Generate() before calling AreAllExampleSheetsValid().");
-            foreach (var category in contentCollection.GetCategories())
-            foreach (var name in contentCollection.GetNames(category))
+            foreach (var category in _contentCollection.GetCategories())
+            foreach (var name in _contentCollection.GetNames(category))
             {
-                var contents = contentCollection.Get(category, name);
-                var listedExample = contents.exampleSheet;
+                var contents = _contentCollection.Get(category, name);
+                var listedExample = contents.ExampleSheet;
                 if (sheetsAndFuncs.ContainsKey(listedExample))
                 {
                     var funcs = sheetsAndFuncs[listedExample];
@@ -166,7 +165,7 @@ namespace PrepareRelease
                 }
             }
 
-            File.WriteAllLines(Path.Combine(tempOutputPath, SS_ERROR_OUTPUT_FILE), errorList.ToArray());
+            File.WriteAllLines(Path.Combine(_tempOutputPath, SS_ERROR_OUTPUT_FILE), errorList.ToArray());
             return errorList.Count();
         }
 
@@ -175,7 +174,7 @@ namespace PrepareRelease
         /// </summary>
         private void UpdateHelpYMLAndWriteMD()
         {
-            var sidebarFile = outputPath + @"_data\sidebars\excel_sidebar.yml";
+            var sidebarFile = _outputPath + @"_data\sidebars\excel_sidebar.yml";
 
             string line;
             var file = new StreamReader(sidebarFile);
@@ -186,7 +185,7 @@ namespace PrepareRelease
                 if (line.Contains("title:"))
                 {
                     var idx = line.IndexOf("title:");
-                    documentedTypes.Add(line.Substring(idx + 6).Trim());
+                    _documentedTypes.Add(line.Substring(idx + 6).Trim());
                 }
 
                 if (line.Contains("AUTO GENERATED BEYOND THIS POINT")) break;
@@ -194,17 +193,17 @@ namespace PrepareRelease
 
             file.Close();
 
-            foreach (var category in contentCollection.GetCategories())
+            foreach (var category in _contentCollection.GetCategories())
             {
                 newFileLines.Add(@"  - title: " + category);
                 newFileLines.Add(@"    output: web, pdf");
                 newFileLines.Add(@"    folderitems:");
-                foreach (var name in contentCollection.GetNames(category))
+                foreach (var name in _contentCollection.GetNames(category))
                 {
                     newFileLines.Add(@"    - title: " + name);
                     newFileLines.Add(@"      url: /" + name + ".html");
                     newFileLines.Add(@"      output: web, pdf");
-                    UpdateOrCreateMD(outputPath, contentCollection.Get(category, name));
+                    UpdateOrCreateMD(_outputPath, _contentCollection.Get(category, name));
                 }
             }
 
@@ -213,7 +212,7 @@ namespace PrepareRelease
 
         private void UpdateOrCreateMD(string outputPath, FileContents fileContents)
         {
-            var markdownFilePath = outputPath + @"\pages\excel\" + fileContents.name + ".md";
+            var markdownFilePath = outputPath + @"\pages\excel\" + fileContents.Name + ".md";
             if (File.Exists(markdownFilePath))
                 UpdateExistingMD(markdownFilePath, fileContents);
             else
@@ -240,7 +239,7 @@ namespace PrepareRelease
                 {
                     if (line.Length > 8 && line.StartsWith("summary"))
                     {
-                        newFileLines.Add(@"summary: " + fc.summary);
+                        newFileLines.Add(@"summary: " + fc.Summary);
                     }
                     else if (line.Length > 8 && line.StartsWith("## Description"))
                     {
@@ -281,13 +280,13 @@ namespace PrepareRelease
             var now = DateTime.Now;
             var newFileLines = new List<string>();
             newFileLines.Add(@"---");
-            newFileLines.Add(@"title: " + fc.name);
+            newFileLines.Add(@"title: " + fc.Name);
             newFileLines.Add(@"keywords:");
             newFileLines.Add(@"last_updated: " + now.ToString("MMMM dd, yyyy"));
             newFileLines.Add(@"tags:");
-            newFileLines.Add(@"summary: " + fc.summary);
+            newFileLines.Add(@"summary: " + fc.Summary);
             newFileLines.Add(@"sidebar: excel_sidebar");
-            newFileLines.Add(@"permalink: " + fc.name + ".html");
+            newFileLines.Add(@"permalink: " + fc.Name + ".html");
             newFileLines.Add(@"folder: excel");
             newFileLines.Add(@"---");
             newFileLines.Add(@"");
@@ -321,12 +320,12 @@ namespace PrepareRelease
             newFileLines.Add(@"");
             newFileLines.Add(@"## Example Sheet");
             newFileLines.Add(@"");
-            newFileLines.Add(@"    " + fc.exampleSheet);
+            newFileLines.Add(@"    " + fc.ExampleSheet);
             newFileLines.Add(@"");
             newFileLines.Add(@"## Arguments");
             newFileLines.Add(@"");
-            for (var i = 0; i < fc.argNames.Count; i++)
-                newFileLines.Add(@"* **" + fc.argNames[i] + "** " + AddLinks(fc.argDescriptions[i]));
+            for (var i = 0; i < fc.ArgNames.Count; i++)
+                newFileLines.Add(@"* **" + fc.ArgNames[i] + "** " + AddLinks(fc.ArgDescriptions[i]));
             newFileLines.Add(@"");
             return newFileLines;
         }
@@ -368,11 +367,11 @@ namespace PrepareRelease
         /// <returns></returns>
         private string AddLinks(string input)
         {
-            foreach (var typeName in documentedTypes)
+            foreach (var typeName in _documentedTypes)
                 if (input.Contains(typeName))
                 {
                     var idx = input.IndexOf(typeName);
-                    if (idx > 1 && input[idx - 1] == '(' && input[idx + typeName.Length] == ')')
+                    if (idx >= 1 && input[idx - 1] == '(')
                         input = input.Substring(0, idx) + "[" + typeName + "](" + typeName + ".html)" +
                                 input.Substring(idx + typeName.Length);
                 }
@@ -382,110 +381,70 @@ namespace PrepareRelease
 
 
         /// <summary>
-        /// Turns the attributes on all functions exposed as excel functions in <paramref name="filename" /> into
+        /// Turns the attributes on all functions exposed as excel functions in <see cref="_dllsWithExposedFunctions"/> into
         /// contents for help files.
         /// Check the local variable errorList for a list of consistency issues that should be fixed.
         /// </summary>
         private void UpdateContentCollection()
         {
-            foreach (var dllName in dllsWithExposedFunctions) UpdateContentCollection1dll(dllName);
-            // Insert an extra argument description for those methods that have been generated with the first
-            // argument being the name of the object to use in Excel.
-            foreach (var category in contentCollection.GetCategories())
-            foreach (var name in contentCollection.GetNames(category))
-            {
-                var contents = contentCollection.Get(category, name);
-                if (generatedMethodArgCount.ContainsKey(name) &&
-                    contents.argNames.Count() < generatedMethodArgCount[name])
-                {
-                    contents.argNames.Insert(0, "objectName");
-                    contents.argDescriptions.Insert(0, "The name of the object to be created.");
-                }
-            }
+            foreach (var dllName in _dllsWithExposedFunctions) UpdateContentCollectionSingleDll(dllName);
         }
 
         /// <summary>
         /// Updates the content collection for a single dll.
         /// </summary>
         /// <param name="dllName">Name of the DLL.</param>
-        private void UpdateContentCollection1dll(string dllName)
+        private void UpdateContentCollectionSingleDll(string dllName)
         {
-            var DLL = Assembly.LoadFrom(dllName);
-            foreach (var type in DLL.GetExportedTypes())
-            foreach (var member in type.GetMembers())
+            var assembly = Assembly.LoadFrom(dllName);
+            var delegates = new List<Delegate>();
+            var functionAttributes = new List<object>();
+            var functionArgumentAttributes = new List<List<object>>();
+            FunctionRegistration.GetDelegatesAndAttributes(assembly, "QSA", ref delegates, ref functionAttributes,
+                ref functionArgumentAttributes);
+            for (var i = 0; i < delegates.Count; i++)
             {
-                var attribute = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
-                if (attribute != null && attribute.IsGeneratedVersion)
+                var attribute = functionAttributes[i] as QuantSAExcelFunctionAttribute;
+                var contents = new FileContents();
+                // Check consistency of contents
+                var nameParts = attribute.Name.Split('.');
+                if (attribute.Description.Length < 5)
+                    _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Does not have a description.");
+                if (!nameParts[0].Equals("QSA"))
+                    _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Name does not start with 'QSA'.");
+                if (attribute.HelpTopic == null)
+                    _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Does not have a help topic.");
+                else if (!attribute.HelpTopic.Equals(_helpUrl + nameParts[1] + ".html"))
+                    _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Help topic should be," + _helpUrl +
+                                   nameParts[1] + ".html");
+                if (attribute.ExampleSheet == null)
                 {
-                    var method = (MethodInfo) member;
-                    var name = attribute.Name.Split('.')[1];
-                    var argCount = method.GetParameters().Count();
-                    generatedMethodArgCount[name] = argCount;
+                    _errorInfo.Add(attribute.Category + "," + attribute.Name + ",,Example sheet has not been set.");
+                    contents.ExampleSheet = "Not available";
+                }
+                else
+                {
+                    contents.ExampleSheet = attribute.ExampleSheet;
                 }
 
-                if (attribute != null && !attribute.IsGeneratedVersion
-                ) // We have found an excel exposed function and it is not the generated version.
+                // Add details
+                contents.Name = attribute.Name.Split('.')[1];
+                contents.Category = attribute.Category.Split('.')[1];
+                contents.Description = attribute.Description;
+
+                foreach (var argAttribObj in functionArgumentAttributes[i])
                 {
-                    var contents = new FileContents();
-                    // Check consistency of contents
-                    var categoryParts = attribute.Category.Split('.');
-                    var nameParts = attribute.Name.Split('.');
-                    if (attribute.Description.Length < 5)
-                        errorInfo.Add(type.Name + "," + attribute.Name + ",,Does not have a description.");
-                    if (!nameParts[0].Equals("QSA"))
-                        errorInfo.Add(type.Name + "," + attribute.Name + ",,Name does not start with 'QSA'.");
-                    if (!("XL" + categoryParts[1]).Equals(type.Name))
-                        errorInfo.Add(type.Name + "," + attribute.Name + ",,Category does not match file.");
-                    if (attribute.HelpTopic == null)
-                        errorInfo.Add(type.Name + "," + attribute.Name + ",,Does not have a help topic.");
-                    else if (!attribute.HelpTopic.Equals(helpURL + nameParts[1] + ".html"))
-                        errorInfo.Add(type.Name + "," + attribute.Name + ",,Help topic should be," + helpURL +
-                                      nameParts[1] + ".html");
-                    if (attribute.ExampleSheet == null)
-                    {
-                        errorInfo.Add(type.Name + "," + attribute.Name + ",,Example sheet has not been set.");
-                        contents.exampleSheet = "Not available";
-                    }
-                    else
-                    {
-                        contents.exampleSheet = attribute.ExampleSheet;
-                    }
+                    var argAttrib = argAttribObj as ExcelArgumentAttribute;
+                    contents.ArgNames.Add(argAttrib.Name);
+                    // TODO: JT: Replace (type) with reference.
 
-                    // Add details
-                    contents.name = attribute.Name.Split('.')[1];
-                    contents.category = attribute.Category.Split('.')[1];
-                    contents.Description = attribute.Description;
-
-                    var method = (MethodInfo) member;
-                    foreach (var param in method.GetParameters())
-                    {
-                        var argAttrib = param.GetCustomAttribute<ExcelArgumentAttribute>();
-                        if (argAttrib != null)
-                        {
-                            contents.argNames.Add(param.Name);
-                            if (InputTypeShouldHaveHelpLink(param.ParameterType))
-                            {
-                                var name = param.ParameterType.IsArray
-                                    ? param.ParameterType.GetElementType().Name
-                                    : param.ParameterType.Name;
-                                argAttrib.Description += "(" + name + ")";
-                            }
-
-                            contents.argDescriptions.Add(argAttrib.Description);
-
-                            if (argAttrib.Description.Length < 5)
-                                errorInfo.Add(type.Name + "," + attribute.Name + "," + param.Name +
-                                              ",No argument description");
-                        }
-                        else
-                        {
-                            errorInfo.Add(type.Name + "," + attribute.Name + "," + param.Name +
-                                          ",Argument does not have ExcelArgumentAttribute");
-                        }
-                    }
-
-                    contentCollection.AddFile(contents);
+                    contents.ArgDescriptions.Add(argAttrib.Description);
+                    if (argAttrib.Description.Length < 5)
+                        _errorInfo.Add(attribute.Category + "," + attribute.Name + "," + argAttrib.Name +
+                                       ",No argument description");
                 }
+
+                _contentCollection.AddFile(contents);
             }
         }
     }

@@ -11,7 +11,7 @@ namespace QuantSA.General
     {
         private string code;
 
-        private Currency(string code)
+        public Currency(string code)
         { this.code = code.ToUpper(); }
 
         /// <summary>

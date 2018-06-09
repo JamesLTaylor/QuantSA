@@ -15,9 +15,9 @@ namespace QuantSA.General
     [Serializable]
     public class ResultStore : IProvidesResultStore
     {
-        private readonly Dictionary<string, double[,]> data;
-        private readonly Dictionary<string, Date[,]> dataDates;
-        private readonly Dictionary<string, string[,]> dataStrings;
+        private readonly Dictionary<string, object[,]> _data;
+        private readonly Dictionary<string, object[,]> _dataDates;
+        private readonly Dictionary<string, object[,]> _dataStrings;
 
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace QuantSA.General
         /// </summary>
         public ResultStore()
         {
-            data = new Dictionary<string, double[,]>();
-            dataDates = new Dictionary<string, Date[,]>();
-            dataStrings = new Dictionary<string, string[,]>();
+            _data = new Dictionary<string, object[,]>();
+            _dataDates = new Dictionary<string, object[,]>();
+            _dataStrings = new Dictionary<string, object[,]>();
         }
 
 
@@ -47,7 +47,7 @@ namespace QuantSA.General
         /// <param name="result">A string value</param>
         public void Add(string name, string result)
         {
-            dataStrings[name] = new[,] {{result}};
+            _dataStrings[name] = new object[,] {{result}};
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace QuantSA.General
         /// <param name="result">A scalar value.</param>
         public void Add(string name, double result)
         {
-            data[name] = new[,] {{result}};
+            _data[name] = new object[,] {{result}};
         }
 
         /// <summary>
@@ -70,15 +70,15 @@ namespace QuantSA.General
         {
             if (column)
             {
-                var fullSizeResult = new double[result.Length, 1];
+                var fullSizeResult = new object[result.Length, 1];
                 for (var i = 0; i < result.Length; i++) fullSizeResult[i, 0] = result[i];
-                data[name] = fullSizeResult;
+                _data[name] = fullSizeResult;
             }
             else
             {
-                var fullSizeResult = new double[1, result.Length];
+                var fullSizeResult = new object[1, result.Length];
                 for (var i = 0; i < result.Length; i++) fullSizeResult[0, i] = result[i];
-                data[name] = fullSizeResult;
+                _data[name] = fullSizeResult;
             }
         }
 
@@ -89,27 +89,27 @@ namespace QuantSA.General
         /// <param name="result">An array of values</param>
         public void Add(string name, double[,] result)
         {
-            data[name] = result.Clone() as double[,];
+            _data[name] = result.Clone() as object[,];
         }
 
         public void Add(string name, Date result)
         {
-            dataDates[name] = new[,] {{result}};
+            _dataDates[name] = new object[,] {{result}};
         }
 
         public void Add(string name, Date[] result, bool column = true)
         {
             if (column)
             {
-                var fullSizeResult = new Date[result.Length, 1];
+                var fullSizeResult = new object[result.Length, 1];
                 for (var i = 0; i < result.Length; i++) fullSizeResult[i, 0] = result[i];
-                dataDates[name] = fullSizeResult;
+                _dataDates[name] = fullSizeResult;
             }
             else
             {
-                var fullSizeResult = new Date[1, result.Length];
+                var fullSizeResult = new object[1, result.Length];
                 for (var i = 0; i < result.Length; i++) fullSizeResult[0, i] = result[i];
-                dataDates[name] = fullSizeResult;
+                _dataDates[name] = fullSizeResult;
             }
         }
 
@@ -119,9 +119,9 @@ namespace QuantSA.General
         /// <returns></returns>
         public string[] GetNames()
         {
-            var nameList = data.Keys.ToList();
-            nameList.AddRange(dataDates.Keys);
-            nameList.AddRange(dataStrings.Keys);
+            var nameList = _data.Keys.ToList();
+            nameList.AddRange(_dataDates.Keys);
+            nameList.AddRange(_dataStrings.Keys);
             nameList.Sort();
             return nameList.ToArray<string>();
         }
@@ -131,10 +131,10 @@ namespace QuantSA.General
         /// </summary>
         /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.</param>
         /// <returns></returns>
-        public double[,] Get(string name)
+        public object[,] Get(string name)
         {
-            if (data.ContainsKey(name))
-                return data[name];
+            if (_data.ContainsKey(name))
+                return _data[name];
             throw new ArgumentException(
                 name + " does not exist in this store.  Use GetNames to check all available names.");
         }
@@ -144,13 +144,13 @@ namespace QuantSA.General
         /// </summary>
         /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.</param>
         /// <returns></returns>
-        public double GetScalar(string name)
+        public object GetScalar(string name)
         {
-            if (data.ContainsKey(name))
+            if (_data.ContainsKey(name))
             {
-                if (data[name].GetLength(0) > 1 || data[name].GetLength(1) > 1)
+                if (_data[name].GetLength(0) > 1 || _data[name].GetLength(1) > 1)
                     throw new ArgumentException(name + " is not a scalar value in this ResultStore");
-                return data[name][0, 0];
+                return _data[name][0, 0];
             }
 
             throw new ArgumentException(
@@ -161,12 +161,12 @@ namespace QuantSA.General
         /// Get the Date results stored with the provided name.
         /// </summary>
         /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.  
-        /// Use <see cref="IsDate(string)"/> to check if the result is of type Date.        /// 
+        /// Use <see cref="IsDate(string)"/> to check if the result is of type Date.</param>.
         /// <returns></returns>
-        public Date[,] GetDates(string name)
+        public object[,] GetDates(string name)
         {
-            if (dataDates.ContainsKey(name))
-                return dataDates[name];
+            if (_dataDates.ContainsKey(name))
+                return _dataDates[name];
             throw new ArgumentException(
                 name + " does not exist in this store.  Use GetNames to check all available names.");
         }
@@ -175,12 +175,12 @@ namespace QuantSA.General
         /// Get the Date results stored with the provided name.
         /// </summary>
         /// <param name="name">The name of the required result.  Use <see cref="GetNames"/> to see all the available names.  
-        /// Use <see cref="IsDate(string)"/> to check if the result is of type Date.        /// 
+        /// Use <see cref="IsDate(string)"/> to check if the result is of type Date.</param>.
         /// <returns></returns>
-        public string[,] GetStrings(string name)
+        public object[,] GetStrings(string name)
         {
-            if (dataStrings.ContainsKey(name))
-                return dataStrings[name];
+            if (_dataStrings.ContainsKey(name))
+                return _dataStrings[name];
             throw new ArgumentException(
                 name + " does not exist in this store.  Use GetNames to check all available names.");
         }
@@ -192,9 +192,9 @@ namespace QuantSA.General
         /// <returns></returns>
         public bool IsDate(string name)
         {
-            if (dataDates.ContainsKey(name)) return true;
-            if (data.ContainsKey(name)) return false;
-            if (dataStrings.ContainsKey(name)) return false;
+            if (_dataDates.ContainsKey(name)) return true;
+            if (_data.ContainsKey(name)) return false;
+            if (_dataStrings.ContainsKey(name)) return false;
             throw new ArgumentException(
                 name + " does not exist in this store.  Use GetNames to check all available names.");
         }
@@ -206,9 +206,9 @@ namespace QuantSA.General
         /// <returns></returns>
         public bool IsString(string name)
         {
-            if (dataStrings.ContainsKey(name)) return true;
-            if (data.ContainsKey(name)) return false;
-            if (dataDates.ContainsKey(name)) return false;
+            if (_dataStrings.ContainsKey(name)) return true;
+            if (_data.ContainsKey(name)) return false;
+            if (_dataDates.ContainsKey(name)) return false;
             throw new ArgumentException(
                 name + " does not exist in this store.  Use GetNames to check all available names.");
         }

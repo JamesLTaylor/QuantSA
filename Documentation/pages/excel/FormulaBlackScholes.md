@@ -24,13 +24,13 @@ The Black Scholes formula for a call.
 
 ## Arguments
 
-* **strike** Strike
-* **valueDate** The value date as and Excel date.
-* **exerciseDate** The exercise date of the option.  Must be greater than the value date.
-* **spotPrice** The spot proce of the underlying at the value date.
-* **vol** Annualized volatility.
-* **riskfreeRate** Continuously compounded risk free rate.
-* **divYield** Continuously compounded dividend yield.
+* **strike** (Double)Strike
+* **valueDate** ([Date](Date.html))The value date as and Excel date.
+* **exerciseDate** ([Date](Date.html))The exercise date of the option.  Must be greater than the value date.
+* **spotPrice** (Double)The spot price of the underlying at the value date.
+* **vol** (Double)Annualized volatility.
+* **riskfreeRate** (Double)Continuously compounded risk free rate.
+* **divYield** *(Double)Continuously compounded dividend yield.(Default value = 0.0)
 
 <!--HUMAN EDIT START-->
 
