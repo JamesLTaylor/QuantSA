@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QuantSAInstaller
+﻿namespace QuantSAInstaller
 {
-    enum Bitness
+    internal enum Bitness
     {
         Bitness32,
         Bitness64
     }
 
-    class BitInstance
+    internal class BitInstance
     {
         public BitInstance(string data, Bitness bitness)
         {
@@ -20,7 +14,7 @@ namespace QuantSAInstaller
             Bitness = Bitness;
         }
 
-        public string Data { get; private set; }
-        public Bitness Bitness { get; private set; }
+        public string Data { get; }
+        public Bitness Bitness { get; }
     }
 }
