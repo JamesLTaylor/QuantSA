@@ -22,9 +22,13 @@ Both of which need private log on details and can't be changed by other develope
 
  * Build the markdown docs using Jekyll
  * Checks that there are no dead links
- * Upload all output to <http://www.quantsa.org/latest>.  
+ * Upload all output to <http://www.quantsa.org/latest>
+
+The Travis build script includes the FTP password which obviously needs to be hidden, see <https://docs.travis-ci.com/user/encryption-keys/> for how to do this. Once everything is set up you need to run:
+
+`travis encrypt FTP_PWD=xxxxxxxx --add`
  
-This was easier to set up on Travis than installing Ruby into Visual Studio Team Servives.
+Setting up the travis build was easier than installing Ruby into Visual Studio Team Services.
 
 ## Visual Studio
 
@@ -50,7 +54,7 @@ Excel parts:
 The deploy steps are manual, for a version X.Y.Z:
 
 * Copy <http://www.QuantSA.org/latest> to <http://www.QuantSA.org/[vX.Y.Z]> and <http://www.QuantSA.org>
-  * This can only be done by delopers who have an FTP account and password on QuantSA.org
+  * This can only be done by developers who have an FTP account and password on QuantSA.org
   * Note that with FileZilla you cannot copy files between folders on the server.  They need to be downloaded then uploaded to a new location.
 * Make a github release
 * Copy latest zip and installer to github release, rename to include version.

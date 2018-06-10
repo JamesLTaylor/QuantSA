@@ -19,10 +19,6 @@ The main library and tests.  No dependencies to the rest of QuantSA.
 
 The interfaces and utilities used by the excel addin and plugins.  Also needed for generating Excel code.
 
-## GenerateXLCode.sln
-
-This solution/project produces an executable called `GenerateXLCode.exe`.  This is used in the build steps of `QuantSAExcelAddIn.sln`.
-
 ## QuantSAExcelAddIn.sln
 
 Produces the Excel addin.  
@@ -39,5 +35,5 @@ An InstallShield Setup Project for QuantSA ().
 * Visual Studio 2015 Professional or higher (The Community Edition will not suffice).
 * InstallShield Limited Edition.
 
-The setup project ensures that the client has the required .NET framework and automatically adds the correct verison of the add-in to all installed versions of Excel.
+The setup project ensures that the client has the required .NET framework and automatically adds the correct version of the add-in to all installed versions of Excel.
 

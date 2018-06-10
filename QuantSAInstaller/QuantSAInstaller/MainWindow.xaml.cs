@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace QuantSAInstaller
 {
@@ -21,33 +10,35 @@ namespace QuantSAInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
-        CancellationTokenSource cancellationSource;
-        Installer installer;
+        private CancellationTokenSource _cancellationSource;
+        private Installer _installer;
 
         public MainWindow()
         {
             InitializeComponent();
-            cancellationSource = new CancellationTokenSource();
+            _cancellationSource = new CancellationTokenSource();
         }
 
         private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
             btnStart.IsEnabled = false;
             // btnCancel.IsEnabled = true;
-            
-            cancellationSource.Dispose();
-            cancellationSource = new CancellationTokenSource();
 
-            installer = new Installer();
+            _cancellationSource.Dispose();
+            _cancellationSource = new CancellationTokenSource();
+
+            _installer = new Installer();
 
             var progressOutput = new Progress<string>(s => tbOutput.AppendText("\n" + s));
             var progressStep = new Progress<string>(s => UpdateStep(s));
 
-            string installPath = tbInstallPath.Text;
+            var installPath = tbInstallPath.Text;
 
-            await Task.Factory.StartNew(() => installer.Start(installPath, progressOutput, progressStep, cancellationSource.Token),
-                                        TaskCreationOptions.LongRunning);
-            MessageBox.Show("Installation Complete!\n\nClose the window when done.", "Finished", MessageBoxButton.OK, MessageBoxImage.Information);
+            await Task.Factory.StartNew(
+                () => _installer.Start(installPath, progressOutput, progressStep, _cancellationSource.Token),
+                TaskCreationOptions.LongRunning);
+            MessageBox.Show("Installation Complete!\n\nClose the window when done.", "Finished", MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
 
         private void UpdateStep(string stepName)
@@ -59,8 +50,6 @@ namespace QuantSAInstaller
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-
         }
-
     }
 }

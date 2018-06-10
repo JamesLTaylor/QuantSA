@@ -1,28 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.IO.Compression;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
+using QuantSAInstaller.Properties;
 
 namespace QuantSAInstaller
 {
-    class Installer
+    internal class Installer
     {
-        string installPath;
+        private string _installPath;
 
 
-        public void Start(string installPath, IProgress<string> progressOutput, IProgress<string> progressStep, CancellationToken cancellationToken)
+        public void Start(string installPath, IProgress<string> progressOutput, IProgress<string> progressStep,
+            CancellationToken cancellationToken)
         {
-            try {
-                //this.installPath = @"c:\temp";
-                this.installPath = installPath;
-                string folder = Path.Combine(this.installPath, "QuantSA");
-                string installFileInfoRaw = Properties.Resources.InstallFileInfo;
-                string[] lines = installFileInfoRaw.Split('\n');
-                string[,] installFileInfo = new string[lines.Length, 3];
+            try
+            {
+                _installPath = installPath;
+                var folder = Path.Combine(_installPath, "QuantSA");
+                var installFileInfoRaw = Resources.InstallFileInfo;
+                var lines = installFileInfoRaw.Split('\n');
 
                 progressOutput.Report("Started");
 
@@ -31,6 +29,7 @@ namespace QuantSAInstaller
                     progressStep.Report("Removing old Files");
                     Directory.Delete(folder, true);
                 }
+
                 //Create folder
                 progressStep.Report("Creating Folder");
                 Directory.CreateDirectory(folder);
@@ -38,25 +37,23 @@ namespace QuantSAInstaller
 
                 //Install Files
                 progressStep.Report("Installing Files");
-                for (int i = 0; i < lines.Length; i++)
+                foreach (var line in lines)
                 {
-                    string[] cols = lines[i].Trim().Split(',');
-                    if (cols.Length == 3)
+                    var cols = line.Trim().Split(',');
+                    if (cols.Length != 3) continue;
+                    var contents = Resources.ResourceManager.GetObject(cols[0]) as byte[];
+                    var filename = Path.Combine(folder, cols[2]);
+                    progressOutput.Report("Copying: " + filename);
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                    var fileStream = File.Create(filename);
+                    fileStream.Write(contents, 0, contents.Length);
+                    fileStream.Close();
+                    if (Path.GetExtension(filename).ToLower().Equals(".zip"))
                     {
-                        byte[] contents = Properties.Resources.ResourceManager.GetObject(cols[0]) as byte[];
-                        string filename = Path.Combine(folder, cols[2]);
-                        progressOutput.Report("Copying: " + filename);
-                        Directory.CreateDirectory(Path.GetDirectoryName(filename));
-                        var fileStream = File.Create(filename);
-                        fileStream.Write(contents, 0, contents.Length);
-                        fileStream.Close();
-                        if (Path.GetExtension(filename).ToLower().Equals(".zip"))
-                        {
-                            progressOutput.Report("Unzipping: " + filename);
-                            System.IO.Compression.ZipFile.ExtractToDirectory(filename, Path.GetDirectoryName(filename));
-                            progressOutput.Report("Deleting: " + filename);
-                            File.Delete(filename);
-                        }
+                        progressOutput.Report("Unzipping: " + filename);
+                        ZipFile.ExtractToDirectory(filename, Path.GetDirectoryName(filename));
+                        progressOutput.Report("Deleting: " + filename);
+                        File.Delete(filename);
                     }
                 }
 

@@ -132,6 +132,9 @@
   <data name="QuantSA_xll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\QuantSA\QuantSA.Excel.Addin\bin\Release\QuantSA.xll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ExcelDna_IntelliSense_xll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\QuantSA\QuantSA.Excel.Addin\bin\Release\ExcelDna.IntelliSense.xll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="QuantSA_Help_url" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\QuantSA\QuantSA.Excel.Addin\bin\Release\QuantSA Help.url;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

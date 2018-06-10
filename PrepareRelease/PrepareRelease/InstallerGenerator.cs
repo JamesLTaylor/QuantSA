@@ -36,6 +36,7 @@ namespace PrepareRelease
         public void Generate()
         {
             AddFile("QuantSA.xll", @"");
+            AddFile("ExcelDna.IntelliSense.xll", @"");
             AddFile("QuantSA Help.url", @"");
             AddFile("QuantSA.dna", @"");
             AddFile("zipped_dlls.zip", @"");

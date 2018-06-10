@@ -95,6 +95,9 @@
     <Compile Include="Functions\ExposedUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ExcelDna.IntelliSense.xll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="QuantSA Help.url">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
