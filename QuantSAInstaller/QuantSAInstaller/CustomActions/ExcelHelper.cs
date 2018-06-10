@@ -103,7 +103,9 @@ namespace QuantSAInstaller
             else
                 addIn = new FileInfo(Path.Combine(targetPath, "QuantSA64.xll"));
 
+            var intellisenseAddin = new FileInfo(Path.Combine(targetPath, "ExcelDna.IntelliSense.xll"));
             InstallAddin(officeRegistryKey, addIn);
+            InstallAddin(officeRegistryKey, intellisenseAddin);
         }
 
         private static void RemoveRelevantAddin(BitInstance excelInstance)
