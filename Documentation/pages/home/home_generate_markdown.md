@@ -18,5 +18,5 @@ The skeleton of the help markdown files can be generated from the attributes set
  * Update the output folder to the location where  you have the documentation checked out.
  * Compile and run the solution.
 
-Note that the docs are built officialy by the Travis build described [here](home_builds.html).
+Note that the docs are built officially by the Travis build described [here](home_builds.html).
 

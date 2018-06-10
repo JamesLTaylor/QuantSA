@@ -19,10 +19,6 @@ The main library and tests.  No dependencies to the rest of QuantSA.
 
 The interfaces and utilities used by the excel addin and plugins.  Also needed for generating Excel code.
 
-## GenerateXLCode.sln
-
-This solution/project produces an executable called `GenerateXLCode.exe`.  This is used in the build steps of `QuantSAExcelAddIn.sln`.
-
 ## QuantSAExcelAddIn.sln
 
 Produces the Excel addin.  
