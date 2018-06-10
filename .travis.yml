@@ -5,7 +5,7 @@ rvm:
 - 2.2.2
 before_install:
 - npm install gulp
-- npm install gulp-cli
+- npm install --global gulp-cli
 - npm install vinyl-ftp gulp-util minimist
 - cd ./Documentation
 install:
