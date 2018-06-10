@@ -1,7 +1,7 @@
 ---
 title: Exposing Functions to Excel
 keywords: 
-last_updated: May 28, 2018
+last_updated: Jun 10, 2018
 tags: [developers]
 sidebar: home_sidebar
 permalink: home_expose_to_excel.html
@@ -10,7 +10,11 @@ folder: home
 
 ## Introduction
 
-QuantSA uses ExcelDNA to expose functions to Excel.  The Excel layer should be a wrapper layer for the rest of the library as far as possible.  No business logic should be implemented in this layer except to the extent that input validation requires some business logic.
+QuantSA uses [ExcelDNA](https://github.com/Excel-DNA/ExcelDna) to expose functions to Excel, the add-in includes [Excel-DNA IntelliSense](https://github.com/Excel-DNA/IntelliSense) which gives a great feedback to users while they type in QuantSA functions (see example below).
+
+![ExcelDna-intellisense.JPG](./images/ExcelDna-intellisense.JPG)
+
+The Excel layer should be a wrapper layer for the rest of the library as far as possible.  No business logic should be implemented in this layer except to the extent that input validation requires some business logic.
 
 Technically any `public static` method can be exposed by giving it the ExcelDNA `ExcelFunctionAttribute`, however it is preferable to rather use the attribute `QuantSAExcelFunctionAttribute`.   The latter allows for the function visibility to be controlled at runtime and is extensible for future features.
 
@@ -20,7 +24,7 @@ When exposing a function to Excel it must have the `QuantSAExcelFunctionAttribut
 
  * Description
  * Name - must start with QSA in the main library
- * Category - should match the name of the `public static` class in whihc the function is contained, which should in turn match the location of the underlying function in the main library
+ * Category - should match the name of the `public static` class in which the function is contained, which should in turn match the location of the underlying function in the main library
  * ExampleSheet - a sheet that shows a user how to create the necessary inputs for the function and call it.
  * IsHidden - The default hidden state of the function.  This can be overridden at runtime.  Most functions should be `false`.  If the function is sufficiently obscure that it should be hidden from most users then consider putting it in an add-in.  In future if we need to deprecate a function it will make sense to hide it so that new users don't start using it.
 
@@ -37,6 +41,6 @@ Functions exposed to excel can have any inputs including C# reference types and 
 
 * Data types handled natively by ExcelDNA.  Examples are doubles, strings and booleans.
 * Data types for which a converter has been written.  The converters can be implemented anywhere in the QuantSA.Excel.Functions assembly or in a Plug In assembly.  Converters are any classes that implement `IInputConverter` or `IOutputConverter` from `QuantSA.Excel.Shared`.
-* All other types that are handled in Excel as references with their instances stored on a global object map in QuantSA.
+* All other types are handled in Excel as references with their instances stored on a global object map in QuantSA.
 
 
