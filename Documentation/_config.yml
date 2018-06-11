@@ -2,7 +2,7 @@
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
 
-topnav_title: QuantSA (v0.2.0-alpha)
+topnav_title: QuantSA (v0.3.0-alpha)
 # this appears on the top navigation bar next to the home button
 
 site_title: QuantSA
