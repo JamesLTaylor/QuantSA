@@ -4,7 +4,7 @@ using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.Compounding;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.ExcelFunctions
 {

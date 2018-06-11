@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.General.Products.Rates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Valuation;
 
 namespace ValuationTest

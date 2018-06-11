@@ -1,7 +1,7 @@
 ﻿using System;
 using QuantSA.General;
 using QuantSA.General.Products.SAMarket;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.ProductExtensions.SAMarket
 {

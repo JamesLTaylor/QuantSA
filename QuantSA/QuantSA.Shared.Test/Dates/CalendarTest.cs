@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.Primitives.Dates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QuantSA.General.Dates;
+using QuantSA.Shared.Dates;
 
 namespace GeneralTest.Dates
 {

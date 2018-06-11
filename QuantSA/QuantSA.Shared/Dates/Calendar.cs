@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General.Dates
+namespace QuantSA.Shared.Dates
 {
 
     /// <summary>

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.CurvesAndSurfaces;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 
 namespace QuantSA.General

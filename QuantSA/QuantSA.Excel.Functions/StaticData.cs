@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using QuantSA.General.Dates;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.ExcelFunctions
 {

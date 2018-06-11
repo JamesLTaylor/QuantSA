@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.General.Formulae;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Valuation;

@@ -1,7 +1,7 @@
 ﻿using System;
 using QuantSA.General;
 
-namespace QuantSA.Primitives.Dates
+namespace QuantSA.Shared.Dates
 {
     /// <summary>
     /// Dates should always be thought of as whole numbers in the QuantSA library.  They are treated as doubles

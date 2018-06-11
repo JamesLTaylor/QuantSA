@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 
 namespace GeneralTest.Conventions.BusinessDay
 {

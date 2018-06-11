@@ -4,8 +4,7 @@ using QuantSA.ExcelFunctions;
 using QuantSA.General;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Excel.Addin.TypeConverters

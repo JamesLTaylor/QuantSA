@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Accord.Math.Optimization;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.CurvesAndSurfaces;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.General
 {

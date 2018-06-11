@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using QuantSA.General;
 using Accord.Math.Optimization;
 using Accord.Math.Convergence;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 

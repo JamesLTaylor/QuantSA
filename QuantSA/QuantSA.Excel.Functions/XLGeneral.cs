@@ -4,7 +4,7 @@ using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Formulae;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.ExcelFunctions
 {

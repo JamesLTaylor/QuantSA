@@ -6,7 +6,7 @@ using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Valuation

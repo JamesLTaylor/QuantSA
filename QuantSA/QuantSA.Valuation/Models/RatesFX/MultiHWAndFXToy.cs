@@ -5,7 +5,7 @@ using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
 using QuantSA.General;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 

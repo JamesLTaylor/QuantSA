@@ -5,7 +5,7 @@ using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Products.Rates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Valuation;

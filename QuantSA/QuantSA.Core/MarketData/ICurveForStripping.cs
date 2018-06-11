@@ -1,4 +1,4 @@
-﻿using QuantSA.Primitives.Dates;
+﻿using QuantSA.Shared.Dates;
 
 namespace QuantSA.General
 {
