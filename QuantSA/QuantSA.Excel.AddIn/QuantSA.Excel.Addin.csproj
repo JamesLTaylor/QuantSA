@@ -157,9 +157,9 @@ xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEve
       <Project>{d71dfb97-e341-4dc8-b263-b2e81e5aaa60}</Project>
       <Name>QuantSA.Excel.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>QuantSA.Primitives</Name>
+      <Name>QuantSA.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="..\QuantSA.Valuation\QuantSA.Valuation.csproj">
       <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>

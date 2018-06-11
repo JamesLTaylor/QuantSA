@@ -7,8 +7,8 @@
     <ProjectGuid>{EE53E241-C329-4D56-965A-F6E2BB1FCE50}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantSA.Primitives</RootNamespace>
-    <AssemblyName>QuantSA.Primitives</AssemblyName>
+    <RootNamespace>QuantSA.Shared</RootNamespace>
+    <AssemblyName>QuantSA.Shared</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

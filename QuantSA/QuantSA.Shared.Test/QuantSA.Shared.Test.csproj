@@ -89,7 +89,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>QuantSA.Primitives</Name>
     </ProjectReference>
