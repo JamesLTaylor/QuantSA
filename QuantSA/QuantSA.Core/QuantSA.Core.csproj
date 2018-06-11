@@ -75,14 +75,13 @@
     <Compile Include="MarketData\ForwardRatesCurveForStripping.cs" />
     <Compile Include="MarketData\FXForecastCurve.cs" />
     <Compile Include="MarketData\HazardCurve.cs" />
+    <Compile Include="MarketData\ICurveForStripping.cs" />
     <Compile Include="MarketData\ShiftedDiscountSource.cs" />
     <Compile Include="MarketData\SingleRate.cs" />
     <Compile Include="MarketData\ZeroRatesCurveForStripping.cs" />
     <Compile Include="Products\Credit\CDS.cs" />
     <Compile Include="Products\Equity\EuropeanOption.cs" />
     <Compile Include="Products\FX\CCIRS.cs" />
-    <Compile Include="Products\Product.cs" />
-    <Compile Include="Products\ProductWithEarlyExercise.cs" />
     <Compile Include="Products\ProductWrapper.cs" />
     <Compile Include="Products\Rates\BermudanSwaption.cs" />
     <Compile Include="Products\Rates\CallableBond.cs" />
