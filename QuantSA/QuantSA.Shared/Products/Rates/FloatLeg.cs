@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
@@ -24,7 +26,7 @@ namespace QuantSA.General
         }
 
         public FloatLeg(Currency ccy, Date[] paymentDates, double[] notionals, Date[] resetDates,
-            FloatingIndex[] floatingIndices,
+            FloatRateIndex[] floatingIndices,
             double[] spreads, double[] accrualFractions)
         {
             this.ccy = ccy;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {

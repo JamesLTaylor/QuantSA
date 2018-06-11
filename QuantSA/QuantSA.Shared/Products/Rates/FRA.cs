@@ -4,6 +4,8 @@ using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General.Products.Rates
 {
@@ -17,7 +19,7 @@ namespace QuantSA.General.Products.Rates
         private readonly double accrualFraction;
         private readonly Currency ccy;
         private readonly Date farDate;
-        private readonly FloatingIndex floatIndex;
+        private readonly FloatRateIndex floatIndex;
         private readonly Date nearDate;
         private readonly double notional;
         private readonly bool payFixed;
@@ -34,7 +36,7 @@ namespace QuantSA.General.Products.Rates
         /// <param name="floatIndex">The floating rate index that will referenced by the FRA.  Will also 
         /// determine the currency of the cashflow.</param>
         public FRA(double notional, double accrualFraction, double rate, bool payFixed, Date nearDate,
-            Date farDate, FloatingIndex floatIndex)
+            Date farDate, FloatRateIndex floatIndex)
         {
             this.accrualFraction = accrualFraction;
             this.notional = notional;
@@ -98,7 +100,7 @@ namespace QuantSA.General.Products.Rates
             var nearDate = mf.Adjust(tradeDate.AddMonths(near), zaCalendar);
             var farDate = mf.Adjust(tradeDate.AddMonths(far), zaCalendar);
             var accrualFraction = DayCountStore.Actual365Fixed.YearFraction(nearDate, farDate);
-            return new FRA(notional, accrualFraction, rate, payFixed, nearDate, farDate, FloatingIndex.JIBAR3M);
+            return new FRA(notional, accrualFraction, rate, payFixed, nearDate, farDate, FloatRateIndex.JIBAR3M);
         }
 
         public override List<Cashflow> GetCFs()

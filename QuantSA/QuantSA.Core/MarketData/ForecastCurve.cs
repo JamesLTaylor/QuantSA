@@ -1,5 +1,7 @@
 ﻿using System;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.General
 {
@@ -11,7 +13,7 @@ namespace QuantSA.General
     public class ForecastCurve : IFloatingRateSource
     {
         private readonly DatesAndRates dateAndRates;
-        private readonly FloatingIndex index;
+        private readonly FloatRateIndex index;
 
         /// <summary>
         /// Create a curve that linearly interpolates the provided forward rates.  Rates are not used to get discount factors.
@@ -23,14 +25,14 @@ namespace QuantSA.General
         /// <param name="dates"></param>
         /// <param name="rates"></param>
         /// <param name="maximumDate"></param>
-        public ForecastCurve(Date anchorDate, FloatingIndex index, Date[] dates, double[] rates,
+        public ForecastCurve(Date anchorDate, FloatRateIndex index, Date[] dates, double[] rates,
             Date maximumDate = null)
         {
             this.index = index;
             dateAndRates = new DatesAndRates(Currency.ANY, anchorDate, dates, rates, maximumDate);
         }
 
-        public FloatingIndex GetFloatingIndex()
+        public FloatRateIndex GetFloatingIndex()
         {
             return index;
         }

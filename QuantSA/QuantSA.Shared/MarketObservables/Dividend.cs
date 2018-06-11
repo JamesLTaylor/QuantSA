@@ -1,4 +1,5 @@
 ﻿using System;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.General
 {

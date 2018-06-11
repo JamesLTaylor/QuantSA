@@ -2,6 +2,8 @@
 using QuantSA.Valuation;
 using QuantSA.Excel.Shared;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.ExcelFunctions
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General.Products.SAMarket
 {

@@ -1,6 +1,6 @@
 ﻿using QuantSA.Primitives.Dates;
 
-namespace QuantSA.Primitives.MarketData
+namespace QuantSA.Shared.MarketData
 {
     /// <summary>
     /// Common interface implemented by all market data sources.

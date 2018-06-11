@@ -1,5 +1,7 @@
 ﻿using System;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.General
 {
@@ -11,7 +13,7 @@ namespace QuantSA.General
     {
         private readonly IDiscountingSource discountCurve;
         private readonly IFloatingRateSource fixingCurve;
-        private readonly FloatingIndex index;
+        private readonly FloatRateIndex index;
 
         /// <summary>
         /// Will use the discount factors to obtain the forward rates after the curve's anchor date and the fixing curve before that date.
@@ -19,7 +21,7 @@ namespace QuantSA.General
         /// <param name="discountCurve"></param>
         /// <param name="index"></param>
         /// <param name="fixingCurve"></param>
-        public ForecastCurveFromDiscount(IDiscountingSource discountCurve, FloatingIndex index,
+        public ForecastCurveFromDiscount(IDiscountingSource discountCurve, FloatRateIndex index,
             IFloatingRateSource fixingCurve)
         {
             this.discountCurve = discountCurve;
@@ -27,7 +29,7 @@ namespace QuantSA.General
             this.fixingCurve = fixingCurve;
         }
 
-        public FloatingIndex GetFloatingIndex()
+        public FloatRateIndex GetFloatingIndex()
         {
             return index;
         }

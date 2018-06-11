@@ -89,6 +89,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QuantSA.Core\QuantSA.Core.csproj">
+      <Project>{65DA30BB-96AD-40A3-BB56-FEB27738C75A}</Project>
+      <Name>QuantSA.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>QuantSA.Primitives</Name>

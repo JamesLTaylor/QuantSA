@@ -1,6 +1,6 @@
 ﻿using QuantSA.General;
 
-namespace QuantSA.Primitives.MarketData
+namespace QuantSA.Shared.MarketData
 {
     /// <summary>
     /// A description of an <see cref="IDiscountingSource"/> and what it should be used for.  For example

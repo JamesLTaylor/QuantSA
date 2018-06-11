@@ -1,5 +1,6 @@
 ﻿using System;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
 
 namespace QuantSA.General
 {

@@ -6,6 +6,7 @@ using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Excel.Addin.TypeConverters
 {
@@ -121,24 +122,24 @@ namespace QuantSA.Excel.Addin.TypeConverters
 
     public class FloatingIndexConverter : IInputConverter
     {
-        public Type RequiredType => typeof(FloatingIndex);
+        public Type RequiredType => typeof(FloatRateIndex);
 
         public object Convert(object input, string inputName, string defaultValue)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null)
-                throw new ArgumentException($"{inputName} must be one of the strings representing a FloatingIndex.");
+                throw new ArgumentException($"{inputName} must be one of the strings representing a FloatRateIndex.");
             switch (strValue.ToUpper())
             {
-                case "JIBAR1M": return FloatingIndex.JIBAR1M;
-                case "JIBAR3M": return FloatingIndex.JIBAR3M;
-                case "JIBAR6M": return FloatingIndex.JIBAR6M;
-                case "PRIME1M_AVG": return FloatingIndex.PRIME1M_AVG;
-                case "LIBOR1M": return FloatingIndex.LIBOR1M;
-                case "LIBOR3M": return FloatingIndex.LIBOR3M;
-                case "LIBOR6M": return FloatingIndex.LIBOR6M;
-                case "EURIBOR3M": return FloatingIndex.EURIBOR3M;
-                case "EURIBOR6M": return FloatingIndex.EURIBOR6M;
+                case "JIBAR1M": return FloatRateIndex.JIBAR1M;
+                case "JIBAR3M": return FloatRateIndex.JIBAR3M;
+                case "JIBAR6M": return FloatRateIndex.JIBAR6M;
+                case "PRIME1M_AVG": return FloatRateIndex.PRIME1M_AVG;
+                case "LIBOR1M": return FloatRateIndex.LIBOR1M;
+                case "LIBOR3M": return FloatRateIndex.LIBOR3M;
+                case "LIBOR6M": return FloatRateIndex.LIBOR6M;
+                case "EURIBOR3M": return FloatRateIndex.EURIBOR3M;
+                case "EURIBOR6M": return FloatRateIndex.EURIBOR6M;
                 default:
                     throw new ArgumentException(strValue + " is not a known floating rate index in input: " +
                                                 inputName);

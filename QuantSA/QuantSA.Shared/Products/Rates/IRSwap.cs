@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
@@ -90,7 +92,7 @@ namespace QuantSA.General
             newSwap.payFixed = payFixed ? -1 : 1;
             newSwap.indexDates = new Date[quarters];
             newSwap.paymentDates = new Date[quarters];
-            newSwap.index = FloatingIndex.JIBAR3M;
+            newSwap.index = FloatRateIndex.JIBAR3M;
             newSwap.spreads = new double[quarters];
             ;
             newSwap.accrualFractions = new double[quarters];
@@ -121,9 +123,9 @@ namespace QuantSA.General
         /// Returns the single floating rate index underlying this swap.
         /// </summary>
         /// <returns></returns>
-        public FloatingIndex GetFloatingIndex()
+        public FloatRateIndex GetFloatingIndex()
         {
-            return (FloatingIndex) index;
+            return (FloatRateIndex) index;
         }
 
 

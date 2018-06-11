@@ -7,6 +7,7 @@ using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Valuation
 {
@@ -66,7 +67,7 @@ namespace QuantSA.Valuation
             return newSimulator;
         }
 
-        public void AddForecast(FloatingIndex index)
+        public void AddForecast(FloatRateIndex index)
         {
             forecastTenors.Add(index, index.tenor);
         }

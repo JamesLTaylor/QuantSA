@@ -1,5 +1,7 @@
 ﻿using System;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.General
 {
@@ -9,16 +11,16 @@ namespace QuantSA.General
     [Serializable]
     public class FloatingRateFixingCurve1Rate : IFloatingRateSource
     {
-        private readonly FloatingIndex index;
+        private readonly FloatRateIndex index;
         private readonly double rate;
 
-        public FloatingRateFixingCurve1Rate(double rate, FloatingIndex index)
+        public FloatingRateFixingCurve1Rate(double rate, FloatRateIndex index)
         {
             this.rate = rate;
             this.index = index;
         }
 
-        public FloatingIndex GetFloatingIndex()
+        public FloatRateIndex GetFloatingIndex()
         {
             return index;
         }

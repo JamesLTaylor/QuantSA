@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
@@ -12,7 +14,7 @@ namespace QuantSA.General
     [Serializable]
     public class LoanFloatingRate : FloatLeg, IProvidesResultStore
     {
-        private FloatingIndex index;
+        private FloatRateIndex index;
 
         private List<Cashflow> notionalFlows;
 
@@ -49,7 +51,7 @@ namespace QuantSA.General
         /// even if the balances remain constant.</param>
         /// <param name="simpleFixedRate">Interest will be calculated simple </param>
         /// <returns></returns>
-        public static LoanFloatingRate CreateSimple(Date[] balanceDates, double[] balances, FloatingIndex index,
+        public static LoanFloatingRate CreateSimple(Date[] balanceDates, double[] balances, FloatRateIndex index,
             double spread, Currency ccy)
         {
             var loan = new LoanFloatingRate();
@@ -62,7 +64,7 @@ namespace QuantSA.General
             // Set the details for the FloatLeg
             loan.paymentDates = new Date[balanceDates.Length - 1];
             loan.resetDates = new Date[balanceDates.Length - 1];
-            loan.floatingIndices = new FloatingIndex[balanceDates.Length - 1];
+            loan.floatingIndices = new FloatRateIndex[balanceDates.Length - 1];
             loan.spreads = new double[balanceDates.Length - 1];
             loan.notionals = new double[balanceDates.Length - 1];
             loan.accrualFractions = new double[balanceDates.Length - 1];
@@ -93,7 +95,7 @@ namespace QuantSA.General
         {
             var cfs = base.GetCFs();
             foreach (var flow in notionalFlows)
-                if (flow.date > valueDate)
+                if (flow.Date > valueDate)
                     cfs.Add(flow);
             return cfs;
         }

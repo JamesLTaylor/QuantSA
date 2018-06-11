@@ -3,6 +3,8 @@ using Accord.Math;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.General
 {
@@ -12,7 +14,7 @@ namespace QuantSA.General
     /// can be made to follow the shape of an underlying curve, <see cref="underlyingCurve"/>.
     /// </summary>
     /// <seealso cref="QuantSA.General.ICurveForStripping" />
-    /// <seealso cref="QuantSA.General.IFloatingRateSource" />
+    /// <seealso cref="IFloatingRateSource" />
     public class ForwardRatesCurveForStripping : ICurveForStripping, IFloatingRateSource
     {
         private readonly Date anchorDate;
@@ -20,25 +22,25 @@ namespace QuantSA.General
         private Date[] dates;
         private double[] dateValues;
 
-        private readonly FloatingIndex index;
+        private readonly FloatRateIndex index;
         private LinearSpline spline;
         private readonly IFloatingRateSource underlyingCurve;
 
-        public ForwardRatesCurveForStripping(Date anchorDate, FloatingIndex index)
+        public ForwardRatesCurveForStripping(Date anchorDate, FloatRateIndex index)
         {
             this.anchorDate = anchorDate;
             this.index = index;
             underlyingCurve = new ZeroFloatingRates(index);
         }
 
-        public ForwardRatesCurveForStripping(Date anchorDate, FloatingIndex index, IDiscountingSource underlyingCurve)
+        public ForwardRatesCurveForStripping(Date anchorDate, FloatRateIndex index, IDiscountingSource underlyingCurve)
         {
             this.anchorDate = anchorDate;
             this.index = index;
             this.underlyingCurve = new DiscountBasedFloatingRates(index, underlyingCurve);
         }
 
-        public ForwardRatesCurveForStripping(Date anchorDate, FloatingIndex index, IFloatingRateSource underlyingCurve)
+        public ForwardRatesCurveForStripping(Date anchorDate, FloatRateIndex index, IFloatingRateSource underlyingCurve)
         {
             this.anchorDate = anchorDate;
             this.index = index;
@@ -79,7 +81,7 @@ namespace QuantSA.General
             spline = LinearSpline.InterpolateSorted(dateValues, rates);
         }
 
-        public FloatingIndex GetFloatingIndex()
+        public FloatRateIndex GetFloatingIndex()
         {
             return index;
         }
@@ -93,17 +95,17 @@ namespace QuantSA.General
         /// <summary>
         /// An <see cref="IFloatingRateSource"/> that always returns zero.
         /// </summary>
-        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
+        /// <seealso cref="IFloatingRateSource" />
         private class ZeroFloatingRates : IFloatingRateSource
         {
-            private readonly FloatingIndex index;
+            private readonly FloatRateIndex index;
 
-            public ZeroFloatingRates(FloatingIndex index)
+            public ZeroFloatingRates(FloatRateIndex index)
             {
                 this.index = index;
             }
 
-            public FloatingIndex GetFloatingIndex()
+            public FloatRateIndex GetFloatingIndex()
             {
                 return index;
             }
@@ -119,19 +121,19 @@ namespace QuantSA.General
         /// discount curve.  Takes a shortcut in calculating the forward rate from discount factors by adding
         /// 3 months with no date adjustments and assuming actual 365 and simple compounding for the implied rate.
         /// </summary>
-        /// <seealso cref="QuantSA.General.IFloatingRateSource" />
+        /// <seealso cref="IFloatingRateSource" />
         private class DiscountBasedFloatingRates : IFloatingRateSource
         {
             private readonly IDiscountingSource discountingSource;
-            private readonly FloatingIndex index;
+            private readonly FloatRateIndex index;
 
-            public DiscountBasedFloatingRates(FloatingIndex index, IDiscountingSource discountingSource)
+            public DiscountBasedFloatingRates(FloatRateIndex index, IDiscountingSource discountingSource)
             {
                 this.index = index;
                 this.discountingSource = discountingSource;
             }
 
-            public FloatingIndex GetFloatingIndex()
+            public FloatRateIndex GetFloatingIndex()
             {
                 return index;
             }

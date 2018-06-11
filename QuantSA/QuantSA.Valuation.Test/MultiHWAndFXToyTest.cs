@@ -5,6 +5,8 @@ using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models;
 
@@ -18,11 +20,11 @@ namespace ValuationTest
         {
             var valueDate = new Date(2016, 9, 17);
             var zarRatesSim = new HullWhite1F(Currency.ZAR, 0.05, 0.01, 0.07, 0.07, valueDate);
-            zarRatesSim.AddForecast(FloatingIndex.JIBAR3M);
+            zarRatesSim.AddForecast(FloatRateIndex.JIBAR3M);
             var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.0000001, 0.01, 0.01, valueDate);
-            usdRatesSim.AddForecast(FloatingIndex.LIBOR3M);
+            usdRatesSim.AddForecast(FloatRateIndex.LIBOR3M);
             var eurRatesSim = new HullWhite1F(Currency.EUR, 0.05, 0.0000001, 0.005, 0.005, valueDate);
-            eurRatesSim.AddForecast(FloatingIndex.EURIBOR3M);
+            eurRatesSim.AddForecast(FloatRateIndex.EURIBOR3M);
 
             CurrencyPair[] currencyPairs =
                 {new CurrencyPair(Currency.USD, Currency.ZAR), new CurrencyPair(Currency.EUR, Currency.ZAR)};
@@ -47,9 +49,9 @@ namespace ValuationTest
                 model.RunSimulation(i);
                 fwdSpotValues[i, 0] = model.GetIndices(currencyPairs[0], simDates)[0];
                 fwdSpotValues[i, 1] = model.GetIndices(currencyPairs[1], simDates)[0];
-                fwdSpotValues[i, 2] = model.GetIndices(FloatingIndex.JIBAR3M, simDates)[0];
-                fwdSpotValues[i, 3] = model.GetIndices(FloatingIndex.LIBOR3M, simDates)[0];
-                fwdSpotValues[i, 4] = model.GetIndices(FloatingIndex.EURIBOR3M, simDates)[0];
+                fwdSpotValues[i, 2] = model.GetIndices(FloatRateIndex.JIBAR3M, simDates)[0];
+                fwdSpotValues[i, 3] = model.GetIndices(FloatRateIndex.LIBOR3M, simDates)[0];
+                fwdSpotValues[i, 4] = model.GetIndices(FloatRateIndex.EURIBOR3M, simDates)[0];
             }
 
             var meanUSDZAR = fwdSpotValues.GetColumn(0).Mean();
@@ -65,7 +67,7 @@ namespace ValuationTest
         }
 
 
-        private FloatLeg CreateFloatingLeg(Currency ccy, Date startDate, double notional, FloatingIndex index,
+        private FloatLeg CreateFloatingLeg(Currency ccy, Date startDate, double notional, FloatRateIndex index,
             int tenorYears)
         {
             var quarters = tenorYears * 4;
@@ -88,11 +90,11 @@ namespace ValuationTest
         {
             var valueDate = new Date(2016, 9, 17);
             var zarRatesSim = new HullWhite1F(Currency.ZAR, 0.05, 0.01, 0.07, 0.07, valueDate);
-            zarRatesSim.AddForecast(FloatingIndex.JIBAR3M);
+            zarRatesSim.AddForecast(FloatRateIndex.JIBAR3M);
             var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.01, 0.01, 0.01, valueDate);
-            usdRatesSim.AddForecast(FloatingIndex.LIBOR3M);
+            usdRatesSim.AddForecast(FloatRateIndex.LIBOR3M);
             var eurRatesSim = new HullWhite1F(Currency.EUR, 0.05, 0.01, 0.005, 0.005, valueDate);
-            eurRatesSim.AddForecast(FloatingIndex.EURIBOR3M);
+            eurRatesSim.AddForecast(FloatRateIndex.EURIBOR3M);
 
             var currencyPairs = new[]
                 {new CurrencyPair(Currency.USD, Currency.ZAR), new CurrencyPair(Currency.EUR, Currency.ZAR)};
@@ -107,10 +109,10 @@ namespace ValuationTest
                 currencyPairs, spots, vols, correlations);
 
             var portfolio = new List<Product>();
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, FloatingIndex.JIBAR3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatingIndex.EURIBOR3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatingIndex.JIBAR3M, 13));
-            portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatingIndex.EURIBOR3M, 13));
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, FloatRateIndex.JIBAR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatRateIndex.EURIBOR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatRateIndex.JIBAR3M, 13));
+            portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatRateIndex.EURIBOR3M, 13));
             portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.Years(4)));
 
             var stepInMonths = 1;
@@ -145,37 +147,37 @@ namespace ValuationTest
                 new[] {valueDate, valueDate.AddMonths(240)},
                 new[] {0.07, 0.07});
             var zarHWParams = new HWParams {vol = 0.01, meanReversionSpeed = 0.05};
-            var zarRequiredIndices = new List<FloatingIndex> {FloatingIndex.JIBAR3M};
+            var zarRequiredIndices = new List<FloatRateIndex> {FloatRateIndex.JIBAR3M};
 
             // Lists to be populated for other currencies
             var otherCcys = new List<Currency>();
             var otherCcyCurves = new List<IDiscountingSource>();
             var otherCcyHwParams = new List<HWParams>();
-            var otherCcyRequiredIndices = new List<List<FloatingIndex>>();
+            var otherCcyRequiredIndices = new List<List<FloatRateIndex>>();
 
             // USD HW specs
             otherCcys.Add(Currency.USD);
             otherCcyCurves.Add(new DatesAndRates(Currency.USD, valueDate, new[] {valueDate, valueDate.AddMonths(240)},
                 new[] {0.01, 0.01}));
             otherCcyHwParams.Add(new HWParams {vol = 0.01, meanReversionSpeed = 0.05});
-            otherCcyRequiredIndices.Add(new List<FloatingIndex> {FloatingIndex.LIBOR3M});
+            otherCcyRequiredIndices.Add(new List<FloatRateIndex> {FloatRateIndex.LIBOR3M});
 
             // EUR HW specs
             otherCcys.Add(Currency.EUR);
             otherCcyCurves.Add(new DatesAndRates(Currency.EUR, valueDate, new[] {valueDate, valueDate.AddMonths(240)},
                 new[] {0.005, 0.005}));
             otherCcyHwParams.Add(new HWParams {vol = 0.01, meanReversionSpeed = 0.05});
-            otherCcyRequiredIndices.Add(new List<FloatingIndex> {FloatingIndex.EURIBOR3M});
+            otherCcyRequiredIndices.Add(new List<FloatRateIndex> {FloatRateIndex.EURIBOR3M});
 
             // Construct the model
             var model = new MultiHWAndFXToy(valueDate, zarCurve, zarRequiredIndices, zarHWParams,
                 otherCcys, spots, vols, otherCcyCurves, otherCcyRequiredIndices, otherCcyHwParams, correlations);
 
             var portfolio = new List<Product>();
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, FloatingIndex.JIBAR3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatingIndex.EURIBOR3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatingIndex.JIBAR3M, 13));
-            portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatingIndex.EURIBOR3M, 13));
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, FloatRateIndex.JIBAR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatRateIndex.EURIBOR3M, 7));
+            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatRateIndex.JIBAR3M, 13));
+            portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatRateIndex.EURIBOR3M, 13));
             portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.Years(4)));
 
             var stepInMonths = 1;

@@ -5,6 +5,7 @@ using QuantSA.Valuation;
 using System.Linq;
 using QuantSA.Excel.Shared;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
 
 namespace QuantSA.ExcelFunctions
 {

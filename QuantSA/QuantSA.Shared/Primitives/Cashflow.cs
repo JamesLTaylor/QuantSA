@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuantSA.General;
 using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.Primitives
 {
     [Serializable]
     public class Cashflow
     {
         public Cashflow(Date date, double amount, Currency currency)
         {
-            this.date = date;
-            this.amount = amount;
-            this.currency = currency;
+            Date = date;
+            Amount = amount;
+            Currency = currency;
         }
 
-        public double amount { get; }
-        public Currency currency { get; }
-        public Date date { get; }
+        public double Amount { get; }
+        public Currency Currency { get; }
+        public Date Date { get; }
     }
 
     /// <summary>
@@ -33,7 +34,7 @@ namespace QuantSA.General
         public static List<Date> GetDates(this List<Cashflow> cfs)
         {
             var dates = new List<Date>();
-            foreach (var cf in cfs) dates.Add(new Date(cf.date));
+            foreach (var cf in cfs) dates.Add(new Date(cf.Date));
             return dates;
         }
     }

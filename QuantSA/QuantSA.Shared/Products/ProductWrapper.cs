@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
@@ -106,7 +107,7 @@ namespace QuantSA.General
             var cfs = GetCFs();
             SetCashflowDates(cfs.GetDates());
             getIndexValueToUse = GetNormal;
-            currency = cfs[0].currency;
+            currency = cfs[0].Currency;
         }
 
 

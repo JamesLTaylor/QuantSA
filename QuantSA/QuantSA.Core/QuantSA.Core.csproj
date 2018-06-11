@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,8 +59,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurvesAndSurfaces\DatesAndRates.cs" />
     <Compile Include="CurvesAndSurfaces\InterpolatedCurve.cs" />
     <Compile Include="CurvesAndSurfaces\NelsonSiegel.cs" />
+    <Compile Include="CurveTools\PCACurveSimulator.cs" />
+    <Compile Include="CurveTools\ZARSwapCurveStripper.cs" />
+    <Compile Include="DataAnalysis\PCA.cs" />
+    <Compile Include="Dates\DateExtensions.cs" />
+    <Compile Include="Dates\DateGenerators.cs" />
+    <Compile Include="Formulae\BlackEtc.cs" />
+    <Compile Include="Formulae\JSEBondPrice.cs" />
+    <Compile Include="MarketData\FloatingRateFixingCurve1Rate.cs" />
+    <Compile Include="MarketData\ForecastCurve.cs" />
+    <Compile Include="MarketData\ForecastCurveFromDiscount.cs" />
+    <Compile Include="MarketData\ForwardRatesCurveForStripping.cs" />
+    <Compile Include="MarketData\FXForecastCurve.cs" />
+    <Compile Include="MarketData\HazardCurve.cs" />
+    <Compile Include="MarketData\ShiftedDiscountSource.cs" />
+    <Compile Include="MarketData\SingleRate.cs" />
+    <Compile Include="MarketData\ZeroRatesCurveForStripping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

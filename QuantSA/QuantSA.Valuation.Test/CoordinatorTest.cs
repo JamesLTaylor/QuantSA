@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.General.Formulae;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -98,7 +100,7 @@ namespace ValuationTest
             var vol = 0.01;
             var flatCurveRate = 0.07;
             var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
-            hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
+            hullWiteSim.AddForecast(FloatRateIndex.JIBAR3M);
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
             var date = valueDate;

@@ -4,6 +4,7 @@ using Accord.Math;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General.Dates;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketData;
 
 namespace QuantSA.General
 {
@@ -12,7 +13,7 @@ namespace QuantSA.General
     /// composed as a spread over another discounting curve to ensure that the shape
     /// of the underlying curve is maintained.
     /// </summary>
-    /// <seealso cref="QuantSA.General.IDiscountingSource" />
+    /// <seealso cref="IDiscountingSource" />
     public class ZeroRatesCurveForStripping : ICurveForStripping, IDiscountingSource
     {
         private readonly Date anchorDate;

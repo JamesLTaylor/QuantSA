@@ -1,6 +1,7 @@
-﻿using QuantSA.Primitives.Dates;
+﻿using QuantSA.General;
+using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketData
 {
     public interface IDiscountingSource
     {

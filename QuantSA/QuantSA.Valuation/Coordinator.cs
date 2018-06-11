@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -165,18 +166,18 @@ namespace QuantSA.Valuation
                     List<Cashflow> timesAndCFS = product.GetCFs();
                     foreach (Cashflow cf in timesAndCFS)
                     {
-                        if (cf.currency.Equals(valueCurrency))
+                        if (cf.Currency.Equals(valueCurrency))
                         {
-                            double cfValue = cf.amount * numeraireAtValue / localNumeraire.Numeraire(cf.date);
-                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.date, cfValue, cf.currency));
+                            double cfValue = cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
+                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.Date, cfValue, cf.Currency));
                         }
                         else
                         {
-                            MarketObservable currencyPair = new CurrencyPair(cf.currency, localNumeraire.GetNumeraireCurrency());
+                            MarketObservable currencyPair = new CurrencyPair(cf.Currency, localNumeraire.GetNumeraireCurrency());
                             Simulator simulator = localSimulators[indexSources[currencyPair]];
-                            double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.date })[0];
-                            double cfValue = fxRate * cf.amount * numeraireAtValue / localNumeraire.Numeraire(cf.date);
-                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.date, cfValue, cf.currency));
+                            double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.Date })[0];
+                            double cfValue = fxRate * cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
+                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.Date, cfValue, cf.Currency));
                         }
                     }
                 }
@@ -280,14 +281,14 @@ namespace QuantSA.Valuation
                         int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
                         foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
                         {
-                            if (cf.date > optimalStop[pathCount])
-                                pvOptimalCFs[pathCount] += cf.amount;
+                            if (cf.Date > optimalStop[pathCount])
+                                pvOptimalCFs[pathCount] += cf.Amount;
                         }
                     }
                     foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                     {
-                        if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
-                            pvOptimalCFs[pathCount] += cf.amount;
+                        if (cf.Date > valueDate && cf.Date <= optimalStop[pathCount])
+                            pvOptimalCFs[pathCount] += cf.Amount;
                     }
                 }
 
@@ -312,12 +313,12 @@ namespace QuantSA.Valuation
                 int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
                 foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
                 {
-                    if (cf.date > optimalStop[pathCount])
+                    if (cf.Date > optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
                 }
                 foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                 {
-                    if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
+                    if (cf.Date > valueDate && cf.Date <= optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
                 }
             }

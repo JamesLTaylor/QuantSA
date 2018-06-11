@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
@@ -28,8 +29,8 @@ namespace QuantSA.General
         {
             var currencies = new List<Currency>();
             foreach (var cf in cfs)
-                if (!currencies.Contains(cf.currency))
-                    currencies.Add(cf.currency);
+                if (!currencies.Contains(cf.Currency))
+                    currencies.Add(cf.Currency);
             return currencies;
         }
 
@@ -37,8 +38,8 @@ namespace QuantSA.General
         {
             var dates = new List<Date>();
             foreach (var cf in cfs)
-                if (cf.date > valueDate)
-                    dates.Add(cf.date);
+                if (cf.Date > valueDate)
+                    dates.Add(cf.Date);
             return dates;
         }
 
@@ -46,7 +47,7 @@ namespace QuantSA.General
         {
             var futureCFs = new List<Cashflow>();
             foreach (var cf in cfs)
-                if (cf.date > valueDate)
+                if (cf.Date > valueDate)
                     futureCFs.Add(cf);
             return futureCFs;
         }

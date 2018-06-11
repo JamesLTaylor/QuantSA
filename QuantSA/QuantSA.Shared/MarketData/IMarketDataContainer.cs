@@ -1,4 +1,5 @@
 ﻿using QuantSA.General;
+using QuantSA.Shared.MarketData;
 
 namespace QuantSA.Primitives.MarketData
 {

@@ -1,6 +1,8 @@
-﻿using QuantSA.Primitives.Dates;
+﻿using QuantSA.General;
+using QuantSA.Primitives.Dates;
+using QuantSA.Shared.MarketObservables;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketData
 {
     public interface IFloatingRateSource
     {
@@ -12,9 +14,9 @@ namespace QuantSA.General
         double GetForwardRate(Date date);
 
         /// <summary>
-        /// The <see cref="FloatingIndex"/> that this curve forecasts.
+        /// The <see cref="FloatRateIndex"/> that this curve forecasts.
         /// </summary>
         /// <returns></returns>
-        FloatingIndex GetFloatingIndex();
+        FloatRateIndex GetFloatingIndex();
     }
 }

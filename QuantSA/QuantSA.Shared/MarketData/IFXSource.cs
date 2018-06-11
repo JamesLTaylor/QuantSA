@@ -1,9 +1,10 @@
-﻿using QuantSA.Primitives.Dates;
+﻿using QuantSA.General;
+using QuantSA.Primitives.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketData
 {
     /// <summary>
-    /// A general object to provide:FX fixes, current spot and forecasts.  Currently there is no support for 
+    /// A general object to provide current spot and forecasts.  Currently there is no support for 
     /// settlement conventions.  The rate it returns is the rate observed on the date supplied.  It will 
     /// in general apply for some later settlement date.
     /// </summary>
@@ -14,7 +15,7 @@ namespace QuantSA.General
         CurrencyPair GetCurrencyPair();
 
         /// <summary>
-        /// Get the exchange rate at the supplied date.  No accomodation is made for settlement conventions and 
+        /// Get the exchange rate at the supplied date.  No accommodation is made for settlement conventions and 
         /// the rate will in general apply at a later date.
         /// </summary>
         /// <param name="date"></param>
