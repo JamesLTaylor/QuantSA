@@ -1,35 +1,43 @@
 ---
 title: The project and solution structure
-summary: How the QuantSA projects are grouped into solutions and their depdencies.
+summary: How the QuantSA projects are grouped into solutions and their dependencies.
 keywords: 
-last_updated: December 26, 2016
+last_updated: June 11, 2018
 tags: developers
 sidebar: home_sidebar
 permalink: home_projects.html
 folder: home
 ---
 
-The sections below are ordered according to the order in which you would compile them.
+There are several solutions contained in the QuantSA repository, these are listed below with short descriptions.  All solutions can be compiled with Visual Studio 2017 community edition.
 
-## QuantSACore.sln
+## QuantSA.sln
 
-The main library and tests.  No dependencies to the rest of QuantSA.
+The main library, tests and Excel Add-in.  This is a complete solution and is the most common place to develop.  See [here](home_code_intro.html) for details of the projects.
 
-## QuantSAExcelCommon.sln
+## QuantSA.Main.sln
 
-The interfaces and utilities used by the excel addin and plugins.  Also needed for generating Excel code.
+QuantSA without the Excel layer. 
 
-## QuantSAExcelAddIn.sln
+## QuantSA.Shared.sln
 
-Produces the Excel addin.  
+If you wish to write a plug-in then this is the only project that needs to be referenced.
 
 ## PrepareRelease.sln
 
-A collection of useful steps that make some consistency checks on the solution.  At the moment this can only run on a developers machine because it needs Excel installed.
+A collection of useful steps that make some consistency checks on the solution.  At the moment this can only run on a developers machine because it needs Excel installed.  This can only be run after QuantSA.sln has been compiled since it references the dlls created by that.
+
+## QuantSAInstaller.sln
+
+A hand written installer with no dependencies on anything extra being installed in visual studio.
+
+## QuantSAPluginDemo.sln
+
+An example plugin.
 
 ## QuantSASetup.sln
 
-An InstallShield Setup Project for QuantSA ().
+An InstallShield Setup Project for QuantSA.
 
 ### Requirements
 * Visual Studio 2015 Professional or higher (The Community Edition will not suffice).
