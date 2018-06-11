@@ -1,7 +1,7 @@
 ---
 title: Introduction to the code
 keywords: 
-last_updated: October 14, 2016
+last_updated: June 11, 2018
 tags: [getting_started, developers]
 sidebar: home_sidebar
 permalink: home_code_intro.html
