@@ -19,7 +19,7 @@ namespace ValuationTest
             var payFixed = true;
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
-            var tenor = Tenor.Years(5);
+            var tenor = Tenor.FromYears(5);
             var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
 
             // Set up the model
@@ -37,7 +37,7 @@ namespace ValuationTest
             while (date < endDate)
             {
                 fwdValueDates.Add(date);
-                date = date.AddTenor(Tenor.Days(10));
+                date = date.AddTenor(Tenor.FromDays(10));
             }
 
             var epe = coordinator.EPE(new Product[] {swap}, valueDate, fwdValueDates.ToArray());

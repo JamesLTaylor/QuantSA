@@ -35,16 +35,16 @@ namespace QuantSA.Shared.MarketObservables
         /// When you add new indices here remember to add them to: 
         /// ExcelUtilties.GetFloatingIndices0D 
         /// 
-        public static FloatRateIndex JIBAR3M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.Months(3));
+        public static FloatRateIndex JIBAR3M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.FromMonths(3));
 
-        public static FloatRateIndex JIBAR6M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.Months(6));
-        public static FloatRateIndex JIBAR1M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.Months(1));
-        public static FloatRateIndex PRIME1M_AVG = new FloatRateIndex(Currency.ZAR, "Prime1MonthAvg", Tenor.Months(1));
-        public static FloatRateIndex LIBOR3M = new FloatRateIndex(Currency.USD, "Libor", Tenor.Months(3));
-        public static FloatRateIndex LIBOR6M = new FloatRateIndex(Currency.USD, "Libor", Tenor.Months(6));
-        public static FloatRateIndex LIBOR1M = new FloatRateIndex(Currency.USD, "Libor", Tenor.Months(1));
-        public static FloatRateIndex EURIBOR3M = new FloatRateIndex(Currency.EUR, "Euribor", Tenor.Months(3));
-        public static FloatRateIndex EURIBOR6M = new FloatRateIndex(Currency.EUR, "Euribor", Tenor.Months(6));
+        public static FloatRateIndex JIBAR6M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.FromMonths(6));
+        public static FloatRateIndex JIBAR1M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.FromMonths(1));
+        public static FloatRateIndex PRIME1M_AVG = new FloatRateIndex(Currency.ZAR, "Prime1MonthAvg", Tenor.FromMonths(1));
+        public static FloatRateIndex LIBOR3M = new FloatRateIndex(Currency.USD, "Libor", Tenor.FromMonths(3));
+        public static FloatRateIndex LIBOR6M = new FloatRateIndex(Currency.USD, "Libor", Tenor.FromMonths(6));
+        public static FloatRateIndex LIBOR1M = new FloatRateIndex(Currency.USD, "Libor", Tenor.FromMonths(1));
+        public static FloatRateIndex EURIBOR3M = new FloatRateIndex(Currency.EUR, "Euribor", Tenor.FromMonths(3));
+        public static FloatRateIndex EURIBOR6M = new FloatRateIndex(Currency.EUR, "Euribor", Tenor.FromMonths(6));
 
         #endregion
     }

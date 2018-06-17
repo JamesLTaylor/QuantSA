@@ -39,7 +39,7 @@ namespace QuantSA.Core.Products.Rates
             exProducts = new List<IProduct>();
             foreach (var couponDate in couponDates)
                 if (couponDate > firstCouponDate)
-                    exProducts.Add(new CashLeg(new[] {couponDate.AddTenor(Tenor.Days(1))}, new[] {-notional},
+                    exProducts.Add(new CashLeg(new[] {couponDate.AddTenor(Tenor.FromDays(1))}, new[] {-notional},
                         new[] {Currency.ZAR}));
         }
 

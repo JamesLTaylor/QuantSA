@@ -64,7 +64,7 @@ namespace ValuationTest
 
             Product depo1 = new CashLeg(new[] {valueDate, date1}, new[] {-N, N * (1 + r1 * 0.5)}, new[] {zar, zar});
             Product depo2 = new CashLeg(new[] {valueDate, date2}, new[] {-N, N * (1 + r2 * 1)}, new[] {zar, zar});
-            Product swap = IRSwap.CreateZARSwap(0.08, true, 1.0, valueDate, Tenor.Months(9));
+            Product swap = IRSwap.CreateZARSwap(0.08, true, 1.0, valueDate, Tenor.FromMonths(9));
 
             var modelZARDisc = new DeterminsiticCurves(zarDisc);
             modelZARDisc.AddRateForecast(jibar3mForecast);
@@ -177,15 +177,15 @@ namespace ValuationTest
             mcs.AddDiscounting(depo1, () => coordZARDiscUSDColl.Value(depo1, valueDate), 1.0, 1.0, zarDiscUSDColl);
             mcs.AddDiscounting(depo2, () => coordZARDiscUSDColl.Value(depo2, valueDate), 1.0, 1.0, zarDiscUSDColl);
 
-            Product swapUSDColl1 = IRSwap.CreateZARSwap(0.07, true, 1.0, valueDate, Tenor.Months(24));
-            Product swapUSDColl2 = IRSwap.CreateZARSwap(0.072, true, 1.0, valueDate, Tenor.Months(48));
+            Product swapUSDColl1 = IRSwap.CreateZARSwap(0.07, true, 1.0, valueDate, Tenor.FromMonths(24));
+            Product swapUSDColl2 = IRSwap.CreateZARSwap(0.072, true, 1.0, valueDate, Tenor.FromMonths(48));
             mcs.AddForecast(swapUSDColl1, () => coordZARDiscUSDColl.Value(swapUSDColl1, valueDate), 0, 1, jibarCurve,
                 FloatRateIndex.JIBAR3M);
             mcs.AddForecast(swapUSDColl2, () => coordZARDiscUSDColl.Value(swapUSDColl2, valueDate), 0, 1, jibarCurve,
                 FloatRateIndex.JIBAR3M);
 
-            Product swapNoColl1 = IRSwap.CreateZARSwap(0.0709, true, 1.0, valueDate, Tenor.Months(36));
-            Product swapNoColl2 = IRSwap.CreateZARSwap(0.0719, true, 1.0, valueDate, Tenor.Months(48));
+            Product swapNoColl1 = IRSwap.CreateZARSwap(0.0709, true, 1.0, valueDate, Tenor.FromMonths(36));
+            Product swapNoColl2 = IRSwap.CreateZARSwap(0.0719, true, 1.0, valueDate, Tenor.FromMonths(48));
             mcs.AddDiscounting(swapNoColl1, () => coordZARDisc.Value(swapNoColl1, valueDate), 0, 1, zarDisc);
             mcs.AddDiscounting(swapNoColl2, () => coordZARDisc.Value(swapNoColl2, valueDate), 0, 1, zarDisc);
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using QuantSA.General;
 
 namespace QuantSA.Shared.Dates
 {
@@ -20,9 +19,7 @@ namespace QuantSA.Shared.Dates
     [Serializable]
     public class Date : IComparable<Date>
     {
-        private static DateTime Epoch = new DateTime(2000,1,1);
-        private DateTime date { get; }//private set; }
-        public int value { get; private set; }
+        private static readonly DateTime Epoch = new DateTime(2000, 1, 1);
 
         /// <summary>
         /// Creates a Date from a value that reflects the number of days since the Epoch for this class.
@@ -30,7 +27,7 @@ namespace QuantSA.Shared.Dates
         /// <param name="value"></param>
         public Date(double value)
         {
-            this.value = (int)value;
+            this.value = (int) value;
             date = Epoch.AddDays(this.value);
         }
 
@@ -42,12 +39,21 @@ namespace QuantSA.Shared.Dates
         }
 
         public Date(int year, int month, int day) : this(new DateTime(year, month, day).Date)
-        {            
+        {
         }
 
         public Date(Date currentDate) : this(currentDate.date)
         {
         }
+
+        private DateTime date { get; } //private set; }
+        public int value { get; }
+
+        public int Day => date.Day;
+
+        public int Month => date.Month;
+
+        public int Year => date.Year;
 
         /// <summary>
         /// Date in ISO8601 (yyyy-MM-dd) format.
@@ -57,12 +63,6 @@ namespace QuantSA.Shared.Dates
         {
             return date.ToString("yyyy-MM-dd");
         }
-
-        public int Day { get { return date.Day; } }
-
-        public int Month { get { return date.Month; } }
-
-        public int Year { get { return date.Year; } }
 
         public static bool IsLeapYear(int y)
         {
@@ -81,7 +81,7 @@ namespace QuantSA.Shared.Dates
 
         public static bool isEndOfMonth(Date d)
         {
-            return (d.Day == DaysInMonth(d.Year, d.Month));
+            return d.Day == DaysInMonth(d.Year, d.Month);
         }
 
         /// <summary>
@@ -95,12 +95,12 @@ namespace QuantSA.Shared.Dates
             return (d1.date - d2.date).Days;
         }
 
-        static public implicit operator int (Date d)
+        public static implicit operator int(Date d)
         {
             return d.value;
         }
 
-        static public implicit operator double (Date d)
+        public static implicit operator double(Date d)
         {
             return d.value;
         }
@@ -132,39 +132,60 @@ namespace QuantSA.Shared.Dates
         /// <returns></returns>
         public Date AddTenor(Tenor tenor)
         {
-            DateTime newDate = date.AddYears(tenor.years);
-            newDate = newDate.AddMonths(tenor.months);
-            newDate = newDate.AddDays(tenor.weeks * 7 + tenor.days);
+            var newDate = date.AddYears(tenor.Years);
+            newDate = newDate.AddMonths(tenor.Months);
+            newDate = newDate.AddDays(tenor.Weeks * 7 + tenor.Days);
             return new Date(newDate);
         }
-                
+
         #region Comparisons
+
         public int CompareTo(Date compareDate)
         {
             return value.CompareTo(compareDate.value);
         }
+
         public static bool operator ==(Date left, Date right)
         {
-            if ((object)left == null && (object)right == null) return true;
-            if ((object)left != null && (object)right == null) return false;
-            if ((object)left == null && (object)right != null) return false;
-            return (left.GetHashCode() == right.GetHashCode());
+            if ((object) left == null && (object) right == null) return true;
+            if ((object) left != null && (object) right == null) return false;
+            if ((object) left == null && (object) right != null) return false;
+            return left.GetHashCode() == right.GetHashCode();
         }
+
         public static bool operator !=(Date left, Date right)
         {
             return !(left == right);
         }
+
         //TODO: Handle nulls
-        public static bool operator <(Date left, Date right) { return left.value < right.value; }
-        public static bool operator >(Date left, Date right) { return left.value > right.value; }
-        public static bool operator <=(Date left, Date right) { return left.value <= right.value; }
-        public static bool operator >=(Date left, Date right) { return left.value >= right.value; }
+        public static bool operator <(Date left, Date right)
+        {
+            return left.value < right.value;
+        }
+
+        public static bool operator >(Date left, Date right)
+        {
+            return left.value > right.value;
+        }
+
+        public static bool operator <=(Date left, Date right)
+        {
+            return left.value <= right.value;
+        }
+
+        public static bool operator >=(Date left, Date right)
+        {
+            return left.value >= right.value;
+        }
+
         public override bool Equals(object obj)
         {
-            Date d = obj as Date;
+            var d = obj as Date;
             if (d == null) return false;
             return value == d.value;
         }
+
         public override int GetHashCode()
         {
             return value;
@@ -179,12 +200,12 @@ namespace QuantSA.Shared.Dates
         {
             return date.DayOfWeek;
         }
+
         #endregion
 
         /*static public implicit operator Date (double d)
         {
             return new Date(d);
         }*/
-
     }
 }

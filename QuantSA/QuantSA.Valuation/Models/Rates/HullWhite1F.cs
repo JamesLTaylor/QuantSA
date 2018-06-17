@@ -132,7 +132,7 @@ namespace QuantSA.Valuation
                 var nSteps = (int) Math.Floor((allDates[i] - allDates[i - 1]) / minStepSize);
                 var days = (allDates[i] - allDates[i - 1]) / (nSteps + 1);
                 for (var j = 0; j < nSteps; j++)
-                    newDates.Add(new Date(allDates[i - 1].AddTenor(Tenor.Days((j + 1) * days))));
+                    newDates.Add(new Date(allDates[i - 1].AddTenor(Tenor.FromDays((j + 1) * days))));
                 newDates.Add(new Date(allDates[i]));
             }
 

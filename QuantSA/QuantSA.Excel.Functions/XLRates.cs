@@ -325,7 +325,7 @@ namespace QuantSA.ExcelFunctions
             FloatRateIndex forecastIndices)
         {
             var anchorDate = baseCurve.GetAnchorDate();
-            var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));
+            var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.FromYears(1))));
             var model = new HullWhite1F(baseCurve.GetCurrency(), meanReversion, flatVol, flatCurveRate, flatCurveRate,
                 anchorDate);
             model.AddForecast(forecastIndices);

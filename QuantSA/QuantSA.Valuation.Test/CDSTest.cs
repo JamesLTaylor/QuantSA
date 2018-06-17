@@ -24,7 +24,7 @@ namespace ValuationTest
             var refEntity = new ReferenceEntity("ABC");
             Date[] paymentDates;
             double[] accrualFractions;
-            DateGenerators.CreateDatesNoHolidays(Tenor.Months(3), anchorDate, 20, out paymentDates,
+            DateGenerators.CreateDatesNoHolidays(Tenor.FromMonths(3), anchorDate, 20, out paymentDates,
                 out accrualFractions);
             var zarNotionals = Vector.Ones(paymentDates.Length).Multiply(1000000.0);
             var usdNotionals = zarNotionals.Divide(spot);
@@ -38,7 +38,7 @@ namespace ValuationTest
                 boughtProtection);
 
             // Model
-            var curveDates = new[]{anchorDate, anchorDate.AddTenor(Tenor.Years(10))};
+            var curveDates = new[]{anchorDate, anchorDate.AddTenor(Tenor.FromYears(10))};
             var expectedRecovery = 0.4;
             var hazardRates = new[]{cdsSpread / (1 - expectedRecovery), cdsSpread / (1 - expectedRecovery)};
             var usdRates = new[]{0.01, 0.02};

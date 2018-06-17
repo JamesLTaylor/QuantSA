@@ -161,7 +161,7 @@ namespace QuantSA.Valuation
             // Simulate the default
             var normal = new NormalDistribution();
             var uniform = new UniformContinuousDistribution();
-            var hazEst = survivalProbSource.GetSP(survivalProbSource.getAnchorDate().AddTenor(Tenor.Years(1)));
+            var hazEst = survivalProbSource.GetSP(survivalProbSource.getAnchorDate().AddTenor(Tenor.FromYears(1)));
             hazEst = -Math.Log(hazEst);
             Generator.Seed =
                 -533776581 * simNumber; // This magic number is: "DeterministicCreditWithFXJump".GetHashCode();
@@ -213,7 +213,7 @@ namespace QuantSA.Valuation
             var regressors = new double[3];
             var fxRate = GetIndices(currencyPair, new List<Date> {date})[0];
             var defaultIndicator = date < simDefaultTime ? 0.0 : 1.0;
-            var fwdDefaultP = 1.0 - survivalProbSource.GetSP(date.AddTenor(Tenor.Years(1))) /
+            var fwdDefaultP = 1.0 - survivalProbSource.GetSP(date.AddTenor(Tenor.FromYears(1))) /
                               survivalProbSource.GetSP(date);
             regressors[0] = fxRate;
             regressors[1] = defaultIndicator;

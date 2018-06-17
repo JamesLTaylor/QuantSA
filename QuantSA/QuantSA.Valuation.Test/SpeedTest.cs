@@ -42,8 +42,8 @@ namespace ValuationTest
                 while (years < cumSum.GetLength(0) && x > cumSum[years, 0]) years++;
                 var days = (int) Math.Round(generator365.Generate());
                 var endDate = anchorDate.AddTenor(new Tenor(days, 0, 0, years));
-                var startDate = endDate.AddTenor(Tenor.Years(-years - 1));
-                allSwaps[swapNum] = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, Tenor.Years(years + 1));
+                var startDate = endDate.AddTenor(Tenor.FromYears(-years - 1));
+                allSwaps[swapNum] = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, Tenor.FromYears(years + 1));
             }
 
             return allSwaps;

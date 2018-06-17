@@ -114,7 +114,7 @@ namespace ValuationTest
             portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatRateIndex.EURIBOR3M, 7));
             portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatRateIndex.JIBAR3M, 13));
             portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatRateIndex.EURIBOR3M, 13));
-            portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.Years(4)));
+            portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.FromYears(4)));
 
             var stepInMonths = 1;
             var fwdValueDates = Enumerable.Range(1, 13 * 12 / stepInMonths)
@@ -179,7 +179,7 @@ namespace ValuationTest
             portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, FloatRateIndex.EURIBOR3M, 7));
             portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, FloatRateIndex.JIBAR3M, 13));
             portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, FloatRateIndex.EURIBOR3M, 13));
-            portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.Years(4)));
+            portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.FromYears(4)));
 
             var stepInMonths = 1;
             var fwdValueDates = Enumerable.Range(1, 13 * 12 / stepInMonths)

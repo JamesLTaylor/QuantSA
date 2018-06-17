@@ -4,7 +4,6 @@ using System.IO;
 
 namespace QuantSA.Shared.Dates
 {
-
     /// <summary>
     /// 
     /// This class provides methods for determining whether a date is a
@@ -20,20 +19,20 @@ namespace QuantSA.Shared.Dates
     /// </remarks>
     public class Calendar
     {
-        private List<Date> holidays = new List<Date>();
+        private readonly List<Date> holidays = new List<Date>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Calendar"/> class with no public holidays only weekends.
         /// </summary>        
         public Calendar()
         {
-            holidays = new List<Date>();            
+            holidays = new List<Date>();
         }
 
         public Calendar(List<Date> holidays)
         {
             this.holidays = new List<Date>();
-            foreach (Date date in holidays)
+            foreach (var date in holidays)
                 this.holidays.Add(new Date(date));
         }
 
@@ -45,21 +44,23 @@ namespace QuantSA.Shared.Dates
         /// <exception cref="System.FormatException">Encountered date " + str + " which is not in the required format 'yyyy-mm-dd'.</exception>
         public static Calendar FromFile(string filename)
         {
-            string[] holidayStrings = File.ReadAllLines(filename);
-            List<Date> holsFromFile = new List<Date>();
-            foreach (string str in holidayStrings)
+            var holidayStrings = File.ReadAllLines(filename);
+            var holsFromFile = new List<Date>();
+            foreach (var str in holidayStrings)
             {
-                string[] vals = str.Split('-');
+                var vals = str.Split('-');
                 if (vals.Length == 3)
                 {
-                    Date date = new Date(int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2]));
+                    var date = new Date(int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2]));
                     holsFromFile.Add(date);
                 }
                 else
                 {
-                    throw new FormatException("Encountered date " + str + " which is not in the required format 'yyyy-mm-dd'.");
+                    throw new FormatException("Encountered date " + str +
+                                              " which is not in the required format 'yyyy-mm-dd'.");
                 }
             }
+
             return new Calendar(holsFromFile);
         }
 
@@ -73,12 +74,10 @@ namespace QuantSA.Shared.Dates
         /// </returns>
         public bool isBusinessDay(Date date)
         {
-
             if (holidays.Contains(date))
                 return false;
-            return (!isWeekend(date.DayOfWeek()));
+            return !isWeekend(date.DayOfWeek());
         }
-    
 
 
         //<summary>
@@ -96,7 +95,10 @@ namespace QuantSA.Shared.Dates
         /// <returns>
         ///   <c>true</c> if the specified d is holiday; otherwise, <c>false</c>.
         /// </returns>
-        public bool isHoliday(Date date) { return (holidays.Contains(date)); }
+        public bool isHoliday(Date date)
+        {
+            return holidays.Contains(date);
+        }
 
         /// <summary>
         /// Returns <tt>true</tt> iff the date is last business day for the
@@ -106,6 +108,7 @@ namespace QuantSA.Shared.Dates
         {
             throw new NotImplementedException();
         }
+
         /// <summary>
         /// last business day of the month to which the given date belongs
         /// </summary>
@@ -121,27 +124,23 @@ namespace QuantSA.Shared.Dates
         /// </summary>
         public int businessDaysBetween(Date from, Date to, bool includeFirst = true, bool includeLast = false)
         {
-            int wd = 0;
+            var wd = 0;
             if (from != to)
             {
                 if (from < to)
                 {
                     // the last one is treated separately to avoid incrementing Date::maxDate()
-                    for (Date d = from; d < to; d=d.AddDays(1))
-                    {
+                    for (var d = from; d < to; d = d.AddDays(1))
                         if (isBusinessDay(d))
                             ++wd;
-                    }
                     if (isBusinessDay(to))
                         ++wd;
                 }
                 else
                 {
-                    for (Date d = to; d < from; d=d.AddDays(1))
-                    {
+                    for (var d = to; d < from; d = d.AddDays(1))
                         if (isBusinessDay(d))
                             ++wd;
-                    }
                     if (isBusinessDay(from))
                         ++wd;
                 }
@@ -154,6 +153,7 @@ namespace QuantSA.Shared.Dates
                 if (from > to)
                     wd = -wd;
             }
+
             return wd;
         }
 
@@ -165,6 +165,5 @@ namespace QuantSA.Shared.Dates
             if (isBusinessDay(d))
                 holidays.Add(d);
         }
-
     }
 }
