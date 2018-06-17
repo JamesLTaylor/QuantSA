@@ -1,9 +1,10 @@
 ﻿using System;
 using QuantSA.Excel.Shared;
-using QuantSA.General.Conventions.BusinessDay;
-using QuantSA.General.Conventions.Compounding;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
+using QuantSA.Shared.Conventions.BusinessDay;
+using QuantSA.Shared.Conventions.Compounding;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.ExcelFunctions
@@ -20,9 +21,9 @@ namespace QuantSA.ExcelFunctions
         public static double RateConvert([QuantSAExcelArgument(Description = "The rate to convert.")]
             double rate,
             [QuantSAExcelArgument(Description = "The compounding convention of the input rate.")]
-            CompoundingConvention compoundingFrom,
+            ICompoundingConvention compoundingFrom,
             [QuantSAExcelArgument(Description = "The compounding convention that the output rate should be in.")]
-            CompoundingConvention compoundingTo,
+            ICompoundingConvention compoundingTo,
             [QuantSAExcelArgument(
                 Description =
                     "(Optional) The yearfraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'",
@@ -44,8 +45,8 @@ namespace QuantSA.ExcelFunctions
                     "Cannot convert to a 'Discount' convention without the year fraction being specified.");
 
             if (double.IsNaN(yearFraction)) yearFraction = 1.0;
-            var df = compoundingFrom.DF(rate, yearFraction);
-            var resultRate = compoundingTo.rateFromDF(df, yearFraction);
+            var df = compoundingFrom.DfFromRate(rate, yearFraction);
+            var resultRate = compoundingTo.RateFromDf(df, yearFraction);
             return resultRate;
         }
 
@@ -61,12 +62,12 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "The rate to use in finding the discount factor.")]
             double rate,
             [QuantSAExcelArgument(Description = "The compounding convention of the input rate.")]
-            CompoundingConvention compounding,
+            ICompoundingConvention compounding,
             [QuantSAExcelArgument(Description = "The year fraction over which the rate applies.")]
             double yearFraction)
 
         {
-            return compounding.DF(rate, yearFraction);
+            return compounding.DfFromRate(rate, yearFraction);
         }
 
         [QuantSAExcelFunction(
@@ -80,7 +81,7 @@ namespace QuantSA.ExcelFunctions
         public static Date ApplyBusinessDayAdjustment([QuantSAExcelArgument(Description = "The date to be adjusted")]
             Date date,
             [QuantSAExcelArgument(Description = "The business day rule to apply to the date.")]
-            BusinessDayConvention convention,
+            IBusinessDayConvention convention,
             [QuantSAExcelArgument(Description = "The calendar to use in the adjustment.")]
             Calendar calendar)
 
@@ -120,7 +121,7 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "The second date.")]
             Date date2,
             [QuantSAExcelArgument(Description = "The day count convention to use for getting the accrual fraction.")]
-            DayCountConvention convention)
+            IDayCountConvention convention)
 
         {
             return convention.YearFraction(date1, date2);
@@ -135,7 +136,7 @@ namespace QuantSA.ExcelFunctions
             ExampleSheet = "Conventions.xlsx",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateBusiness252DayCount.html")]
-        public static DayCountConvention CreateBusiness252DayCount(
+        public static IDayCountConvention CreateBusiness252DayCount(
             [QuantSAExcelArgument(Description = "The calendar to use.")]
             Calendar calendar)
         {

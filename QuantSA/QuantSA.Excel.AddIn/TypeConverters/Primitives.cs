@@ -2,8 +2,9 @@
 using QuantSA.Excel.Shared;
 using QuantSA.ExcelFunctions;
 using QuantSA.General;
-using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
+using QuantSA.Shared.Conventions.BusinessDay;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -68,7 +69,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
 
     public class BusinessDayConventionConverter : IInputConverter
     {
-        public Type RequiredType => typeof(BusinessDayConvention);
+        public Type RequiredType => typeof(IBusinessDayConvention);
 
         public object Convert(object input, string inputName, string defaultValue)
         {
@@ -99,7 +100,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
 
     public class DayCountConventionConverter : IInputConverter
     {
-        public Type RequiredType => typeof(DayCountConvention);
+        public Type RequiredType => typeof(IDayCountConvention);
 
         public object Convert(object input, string inputName, string defaultValue)
         {

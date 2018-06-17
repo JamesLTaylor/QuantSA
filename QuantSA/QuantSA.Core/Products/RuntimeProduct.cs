@@ -37,8 +37,7 @@ namespace QuantSA.General
 
         /// <summary>
         /// Creates a <see cref="RuntimeProduct"/> from a source listing in a file.  The file must only
-        /// contain the class fields and a GetCFs method.  If a full implementation of the product is required 
-        /// rather use <see cref="CreateFromSourceFile(string)"/>
+        /// contain the class fields and a GetCFs method.
         /// </summary>
         /// <param name="filename">The filename of the script with the full path.</param>
         /// <returns></returns>        

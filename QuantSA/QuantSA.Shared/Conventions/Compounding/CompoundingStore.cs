@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantSA.General.Conventions.Compounding
+namespace QuantSA.Shared.Conventions.Compounding
 {
     /// <summary>
     /// A collection of the compounding conventions available in QuantSA.  They are all singleton instances.
@@ -17,72 +17,85 @@ namespace QuantSA.General.Conventions.Compounding
         public static Continuous Continuous = Continuous.Instance;
     }
 
-    public class Simple : CompoundingConvention
+    public class Simple : ICompoundingConvention
     {
         public static readonly Simple Instance = new Simple();
-        private Simple() { }
-        public double DF(double rate, double yearFraction)
+
+        private Simple()
+        {
+        }
+
+        public double DfFromRate(double rate, double yearFraction)
         {
             return 1.0 / (1 + rate * yearFraction);
         }
-        public double rateFromDF(double df, double yearFraction)
+
+        public double RateFromDf(double df, double yearFraction)
         {
-            return (1 / df) - 1 / yearFraction;
-        }        
+            return (1 / df - 1) / yearFraction;
+        }
     }
 
-    public class Discount : CompoundingConvention
+    public class Discount : ICompoundingConvention
     {
         public static readonly Discount Instance = new Discount();
-        private Discount() { }
-        public double DF(double rate, double yearFraction)
+
+        private Discount()
         {
-            return (1 - rate * yearFraction);
         }
 
-        public double rateFromDF(double df, double yearFraction)
+        public double DfFromRate(double rate, double yearFraction)
+        {
+            return 1 - rate * yearFraction;
+        }
+
+        public double RateFromDf(double df, double yearFraction)
         {
             return (1 - df) / yearFraction;
         }
     }
 
-    public class Periodically : CompoundingConvention
+    public class Periodically : ICompoundingConvention
     {
-        private int n;
         public static readonly Periodically DailyInstance = new Periodically(365);
         public static readonly Periodically MonthlyInstance = new Periodically(12);
         public static readonly Periodically QuarterlyInstance = new Periodically(4);
         public static readonly Periodically SemiAnnualInstance = new Periodically(2);
         public static readonly Periodically AnnualInstance = new Periodically(1);
+        private readonly int _n;
 
-        private Periodically(int n) { this.n = n; }
-        public double DF(double rate, double yearFraction)
+        private Periodically(int n)
         {
-            return Math.Pow(1 + rate / n, n * yearFraction);
+            _n = n;
         }
 
-        public double rateFromDF(double df, double yearFraction)
+        public double DfFromRate(double rate, double yearFraction)
         {
-            return (Math.Pow(df, 1 / (n * yearFraction)) - 1) * n;
+            return Math.Pow(1 + rate / _n, -_n * yearFraction);
+        }
+
+        public double RateFromDf(double df, double yearFraction)
+        {
+            return (Math.Pow(df, -1 / (_n * yearFraction)) - 1) * _n;
         }
     }
 
-    public class Continuous : CompoundingConvention
+    public class Continuous : ICompoundingConvention
     {
-        private static readonly Continuous instance = new Continuous();
-        private Continuous() { }
-        public static Continuous Instance
-        { get { return instance; } }
-        public double DF(double rate, double yearFraction)
+        private Continuous()
+        {
+        }
+
+        public static Continuous Instance { get; } = new Continuous();
+
+        public double DfFromRate(double rate, double yearFraction)
         {
             return Math.Exp(-rate * yearFraction);
         }
 
-        public double rateFromDF(double df, double yearFraction)
+        public double RateFromDf(double df, double yearFraction)
         {
-            return (-Math.Log(df)) / yearFraction;
+            return -Math.Log(df) / yearFraction;
         }
     }
-
-
 }

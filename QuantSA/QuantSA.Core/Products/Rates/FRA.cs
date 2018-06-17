@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Core.Products;
-using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
 using QuantSA.Shared;
+using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -72,7 +71,7 @@ namespace QuantSA.General.Products.Rates
         /// <param name="notional">The notional used in calculating the cashflow.</param>
         /// <param name="rate">The fixed rate paid or received on the fra.</param>
         /// <param name="fraCode">The fra code, eg '3x6'.</param>
-        /// <param name="payFixed">if set to <c>true</c> the the fixed rate is paid..</param>
+        /// <param name="payFixed">if set to <c>true</c> the fixed rate is paid..</param>
         /// <param name="zaCalendar">The za calendar.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentException">

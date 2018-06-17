@@ -1,8 +1,9 @@
-﻿using QuantSA.Shared.Dates;
+﻿using QuantSA.Shared.Conventions.DayCount;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class Business252 : DayCountConvention
+    public class Business252 : IDayCountConvention
     {
         private readonly Calendar calendar;
 

@@ -1,8 +1,8 @@
 ﻿using QuantSA.Shared.Dates;
 
-namespace QuantSA.General.Conventions.DayCount
+namespace QuantSA.Shared.Conventions.DayCount
 {
-    public interface DayCountConvention
+    public interface IDayCountConvention
     {
         double YearFraction(Date date1, Date date2);
     }

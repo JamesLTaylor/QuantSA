@@ -1,9 +1,10 @@
 ﻿using System;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class Thirty360Euro : DayCountConvention
+    public class Thirty360Euro : IDayCountConvention
     {
         public static readonly Thirty360Euro Instance = new Thirty360Euro();
 

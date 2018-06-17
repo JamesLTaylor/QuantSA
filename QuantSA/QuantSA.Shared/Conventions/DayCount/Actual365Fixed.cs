@@ -1,8 +1,9 @@
-﻿using QuantSA.Shared.Dates;
+﻿using QuantSA.Shared.Conventions.DayCount;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class Actual365Fixed : DayCountConvention
+    public class Actual365Fixed : IDayCountConvention
     {
         public static readonly Actual365Fixed Instance = new Actual365Fixed();
 

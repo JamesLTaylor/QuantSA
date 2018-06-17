@@ -1,11 +1,11 @@
 ﻿using QuantSA.Shared.Dates;
 
-namespace QuantSA.General.Conventions.BusinessDay
+namespace QuantSA.Shared.Conventions.BusinessDay
 {
     /// <summary>
     /// A business day convention adjusts a date according to a rule and with a provided calendar.
     /// </summary>
-    public interface BusinessDayConvention
+    public interface IBusinessDayConvention
     {
         /// <summary>
         /// Adjusts the specified date using the provided calendar.

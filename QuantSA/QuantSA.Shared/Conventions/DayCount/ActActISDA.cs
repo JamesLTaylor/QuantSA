@@ -1,9 +1,10 @@
 ﻿using System;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.General.Conventions.DayCount
 {
-    public class ActActISDA : DayCountConvention
+    public class ActActISDA : IDayCountConvention
     {
         public static readonly ActActISDA Instance = new ActActISDA();
 
