@@ -6,6 +6,7 @@ using QuantSA.General.Formulae;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest

@@ -6,6 +6,7 @@ using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Excel.Addin.TypeConverters
 {

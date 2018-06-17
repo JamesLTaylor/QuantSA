@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuantSA.Core.Primitives;
+using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products
 {
     /// <summary>
     /// Wraps the general <see cref="Product" /> class in a simple case where there are cashflows
@@ -24,7 +26,7 @@ namespace QuantSA.General
         /// For each index, store the dates that are required and during a valuation
         /// also the values at each of those dates.  
         /// Stored in a dictionary of lists rather than a 
-        /// disctionary of dictionaries since the order of the dates and values is
+        /// dictionary of dictionaries since the order of the dates and values is
         /// important in <see cref="SetIndexValues(MarketObservable, double[])"/>.  
         /// It makes lookup slightly harder but is generally safer since there is no chance
         /// that values and dates may end up in a different order.  Also allows the values

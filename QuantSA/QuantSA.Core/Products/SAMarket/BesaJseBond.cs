@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuantSA.Core.Products;
 using QuantSA.General.Dates;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;

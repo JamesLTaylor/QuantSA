@@ -11,30 +11,6 @@ namespace QuantSA.General
     public class RuntimeProduct
     {
         /// <summary>
-        /// Creates a from a full source file.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns></returns>
-        /// <exception cref="System.Exception">The defined type must derive from QuantSA.General.Product</exception>
-        public static Product CreateFromSourceFile(string filename)
-        {
-            var codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            var parameters = new CompilerParameters {GenerateInMemory = true};
-            var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            UpdateReferencedAssemblies(parameters, folder);
-
-            var results = codeProvider.CompileAssemblyFromFile(parameters, filename);
-            ProcessErrors(results);
-
-            var typeName = results.CompiledAssembly.DefinedTypes.First().Name;
-            var productType = results.CompiledAssembly.GetType(typeName);
-            if (!typeof(Product).IsAssignableFrom(productType))
-                throw new Exception("The defined type must derive from QuantSA.General.Product");
-
-            return (Product) Activator.CreateInstance(productType);
-        }
-
-        /// <summary>
         /// Processes compile errors and makes them into a readable string.
         /// </summary>
         /// <param name="results">The compiler results.</param>
@@ -106,7 +82,7 @@ namespace QuantSA.General
 
         private static void UpdateReferencedAssemblies(CompilerParameters parameters, string folder)
         {
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Primitives.dll"));
+            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Shared.dll"));
             parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Core.dll"));
             parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Valuation.dll"));
         }
@@ -121,17 +97,19 @@ namespace QuantSA.General
         private static string Expand(string productName, string sourceCode)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("using QuantSA.Valuation;");
-            sb.AppendLine("using QuantSA.General; ");
-            sb.AppendLine("using QuantSA.Primitives.Dates; ");
-            sb.AppendLine("using System; ");
-            sb.AppendLine("using System.Collections.Generic; ");
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using QuantSA.Shared;");
+            sb.AppendLine("using QuantSA.Shared.Dates;");
+            sb.AppendLine("using QuantSA.Shared.MarketObservables;");
+            sb.AppendLine("using QuantSA.Shared.Primitives;");
+            sb.AppendLine("using QuantSA.Core.Products;");
             sb.AppendLine("public class " + productName + " : ProductWrapper");
             sb.AppendLine("{");
             sb.AppendLine(sourceCode);
             sb.AppendLine("public " + productName + " ()");
             sb.AppendLine("{ Init(); }");
-            sb.AppendLine("public override Product Clone()");
+            sb.AppendLine("public override IProduct Clone()");
             sb.AppendLine("{");
             sb.AppendLine(productName + " product = new " + productName + "(); ");
             sb.AppendLine("if (valueDate != null)");

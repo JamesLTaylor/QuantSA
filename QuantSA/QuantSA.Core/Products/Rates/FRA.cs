@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuantSA.Core.Products;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
@@ -13,7 +14,7 @@ namespace QuantSA.General.Products.Rates
     /// <summary>
     /// A FRA that pays the discounted flow at the near date/reset date.
     /// </summary>
-    /// <seealso cref="QuantSA.General.ProductWrapper" />
+    /// <seealso cref="ProductWrapper" />
     [Serializable]
     public class FRA : ProductWrapper, IProvidesResultStore
     {

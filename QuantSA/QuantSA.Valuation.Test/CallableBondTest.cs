@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.General.Products.Rates;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest

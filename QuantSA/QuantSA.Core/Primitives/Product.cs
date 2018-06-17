@@ -8,35 +8,8 @@ using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
-    /// <summary>
-    /// The call sequence for getting the cashflows of any product must be:
-    /// <para/>
-    /// Product.Reset(...)
-    /// <para/>
-    /// Product.SetValueDate(...)
-    /// <para/>
-    /// Product.GetCashflowCurrencies(...)
-    /// <para/>
-    /// Product.GetRequiredIndices(...)
-    /// <para/>
-    /// Then inside the simulation loop
-    /// <para/>
-    /// Then for each index:
-    /// <para/>
-    /// -  Product.Reset(...)
-    /// <para/>
-    /// -  Product.GetRequiredIndexDates(...)
-    /// <para/>
-    /// -  Product.SetIndexValues(...) 
-    /// <para/>
-    /// GetCFs()
-    /// <para/>
-    /// 
-    /// The calls to GetCashflowCurrencies and GetCashflowDates will only be used when there is a 
-    /// multi currency valuation and exchange rates will need to be used in the valuation.
-    /// </summary>
     [Serializable]
-    public abstract class Product
+    public abstract class Product : IProduct
     {
         /// <summary>
         /// The identifier of the product instance.  
@@ -44,20 +17,6 @@ namespace QuantSA.General
         public string id { get; protected set; } = "Not Set";
 
         public string type { get; protected set; } = "Not Set";
-
-        /// <summary>
-        /// Return a deep copy of the Product, without any market data.
-        /// </summary>
-        public virtual Product Clone()
-        {
-            var stream = new MemoryStream();
-            IFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, this);
-            stream.Seek(0, SeekOrigin.Begin);
-            var o = formatter.Deserialize(stream);
-            return (Product) o;
-        }
-
 
         /// <summary>
         /// Set the value date of the contract.
@@ -70,7 +29,7 @@ namespace QuantSA.General
         public abstract void Reset();
 
         /// <summary>
-        /// A list of all possible currencies that cashlows may occur in.  This is used to make 
+        /// A list of all possible currencies that cashflows may occur in.  This is used to make 
         /// sure that there are simulators available to convert these to the value currency.
         /// </summary>
         /// <returns></returns>
@@ -84,7 +43,7 @@ namespace QuantSA.General
 
         /// <summary>
         /// The dates at which the provided index is required to calculate cashflows.  This will be called 
-        /// repeatedly so if possible precalculate in <see cref="SetValueDate(Date)"/>.
+        /// repeatedly so if possible pre-calculate in <see cref="SetValueDate(Date)"/>.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -118,20 +77,18 @@ namespace QuantSA.General
         /// <returns>A List of cashflows.  Under some circumstances it may be faster if these are ordered by 
         /// increasing time.</returns>
         public abstract List<Cashflow> GetCFs();
-    }
 
-    public static class ProductExtensions
-    {
         /// <summary>
-        /// Makes a deep copy of the List of <see cref="Product"/>s
+        /// Return a deep copy of the Product, without any market data.
         /// </summary>
-        /// <param name="originalPortfolio">The original portfolio.</param>
-        /// <returns></returns>
-        public static List<Product> Clone(this List<Product> originalPortfolio)
+        public virtual IProduct Clone()
         {
-            var newPortfolio = new List<Product>();
-            foreach (var p in originalPortfolio) newPortfolio.Add(p.Clone());
-            return newPortfolio;
+            var stream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
+            stream.Seek(0, SeekOrigin.Begin);
+            var o = formatter.Deserialize(stream);
+            return (Product) o;
         }
     }
 }

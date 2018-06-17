@@ -80,6 +80,10 @@
     <Compile Include="MarketData\ShiftedDiscountSource.cs" />
     <Compile Include="MarketData\SingleRate.cs" />
     <Compile Include="MarketData\ZeroRatesCurveForStripping.cs" />
+    <Compile Include="Primitives\CashflowEx.cs" />
+    <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
+    <Compile Include="Primitives\Product.cs" />
+    <Compile Include="Primitives\ProductEx.cs" />
     <Compile Include="Products\Credit\CDS.cs" />
     <Compile Include="Products\Equity\EuropeanOption.cs" />
     <Compile Include="Products\FX\CCIRS.cs" />

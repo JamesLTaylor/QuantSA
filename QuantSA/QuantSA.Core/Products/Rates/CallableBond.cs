@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuantSA.Core.Primitives;
+using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General.Products.Rates
+namespace QuantSA.Core.Products.Rates
 {
     [Serializable]
     public class CallableBond : ProductWithEarlyExercise
     {
         private readonly double coupon;
         private readonly Date[] couponDates;
-        private List<Date> exDates;
-        private List<Product> exProducts;
         private readonly Date firstCouponDate;
-        private Date maturityDate;
         private readonly double notional;
+        private List<Date> exDates;
+        private List<IProduct> exProducts;
 
         private Date valueDate;
 
@@ -23,22 +24,22 @@ namespace QuantSA.General.Products.Rates
         {
             firstCouponDate = new Date(2016, 12, 30);
             couponDates = Enumerable.Range(1, 10).Select(i => firstCouponDate.AddMonths(6 * i)).ToArray();
-            maturityDate = couponDates[couponDates.Length - 1];
             coupon = 0.185;
             notional = 100;
-            setDates();
+            SetDates();
         }
 
-        private void setDates()
+        private void SetDates()
         {
             exDates = new List<Date>();
-            for (var i = 0; i < couponDates.Length; i++)
-                if (couponDates[i] > firstCouponDate)
-                    exDates.Add(couponDates[i]);
-            exProducts = new List<Product>();
-            for (var i = 0; i < couponDates.Length; i++)
-                if (couponDates[i] > firstCouponDate)
-                    exProducts.Add(new CashLeg(new[] {couponDates[i].AddTenor(Tenor.Days(1))}, new[] {-notional},
+            foreach (var couponDate in couponDates)
+                if (couponDate > firstCouponDate)
+                    exDates.Add(couponDate);
+
+            exProducts = new List<IProduct>();
+            foreach (var couponDate in couponDates)
+                if (couponDate > firstCouponDate)
+                    exProducts.Add(new CashLeg(new[] {couponDate.AddTenor(Tenor.Days(1))}, new[] {-notional},
                         new[] {Currency.ZAR}));
         }
 
@@ -79,7 +80,7 @@ namespace QuantSA.General.Products.Rates
             throw new Exception(exDate + " is not an exercise date.");
         }
 
-        public override List<Product> GetPostExProducts()
+        public override List<IProduct> GetPostExProducts()
         {
             //setDates();
             return exProducts;

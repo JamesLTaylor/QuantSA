@@ -1,4 +1,5 @@
 ﻿using System;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {

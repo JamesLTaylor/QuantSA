@@ -2,6 +2,7 @@
 using Accord.Math;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Primitives;
 using Normal = MathNet.Numerics.Distributions.Normal;
 
 namespace QuantSA.General

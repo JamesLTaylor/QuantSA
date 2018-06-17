@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
@@ -17,7 +18,7 @@ namespace QuantSA.General
     /// </summary>
     /// <remarks>
     /// </remarks>
-    /// <seealso cref="QuantSA.General.ProductWithEarlyExercise" />
+    /// <seealso cref="IProductWithEarlyExercise" />
     [Serializable]
     public class BermudanSwaption : ProductWithEarlyExercise
     {
@@ -41,36 +42,15 @@ namespace QuantSA.General
         }
 
         /// <summary>
-        /// Creates Bermudan swaption with a simple ZAR swap as underlying, the ZAR swap is the same as that created by:
-        ///  <see cref="IRSwap.CreateZARSwap"/>.
-        /// </summary>
-        /// <param name="exerciseDates">The exercise dates.  The dates on which the person who is long optionality can exercise.</param>
-        /// <param name="longOptionality">if set to <c>true</c> then the person valuing this product owns the optionality.</param>
-        /// <param name="rate">The fixed rate on the underlying swap.</param>
-        /// <param name="payFixed">if set to <c>true</c> then the underlying swap has the person valuaing the product paying fixed after exercise.</param>
-        /// <param name="notional">The constant notional in ZAR on the underlying swap.</param>
-        /// <param name="startDate">The start date of the underlying swap.</param>
-        /// <param name="tenor">The tenor of the underlying swap.</param>
-        /// <returns></returns>
-        public static BermudanSwaption CreateZARBermudanSwaption(Date[] exerciseDates, bool longOptionality,
-            double rate,
-            bool payFixed, double notional, Date startDate, Tenor tenor)
-        {
-            var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
-            var swaption = new BermudanSwaption(swap, exerciseDates.ToList(), longOptionality);
-            return swaption;
-        }
-
-        /// <summary>
         /// Gets the products that this product will exercise into.  A Bermudan swaption exercised into a single swap.
         /// </summary>
         /// <remarks>
         /// It is a list in case the underlying product is different at each exercise date
         /// </remarks>
         /// <returns></returns>
-        public override List<Product> GetPostExProducts()
+        public override List<IProduct> GetPostExProducts()
         {
-            return new List<Product> {postExerciseSwap};
+            return new List<IProduct> {postExerciseSwap};
         }
 
         /// <summary>
@@ -94,7 +74,7 @@ namespace QuantSA.General
         }
 
         /// <summary>
-        /// Is this product long optionality.  ie at each exercise date will the decision made by the holder in which case
+        /// Is this product long optionality.  i.e. at each exercise date will the decision made by the holder in which case
         /// the value will be the maximum of the continuation or exercise value.
         /// </summary>
         /// <param name="exDate">The exercise date.  Must be in the list of dates returned by <see cref="GetExerciseDates" />.</param>
@@ -146,6 +126,27 @@ namespace QuantSA.General
         public override List<Cashflow> GetCFs()
         {
             return new List<Cashflow>();
+        }
+
+        /// <summary>
+        /// Creates Bermudan swaption with a simple ZAR swap as underlying, the ZAR swap is the same as that created by:
+        ///  <see cref="IRSwap.CreateZARSwap"/>.
+        /// </summary>
+        /// <param name="exerciseDates">The exercise dates.  The dates on which the person who is long optionality can exercise.</param>
+        /// <param name="longOptionality">if set to <c>true</c> then the person valuing this product owns the optionality.</param>
+        /// <param name="rate">The fixed rate on the underlying swap.</param>
+        /// <param name="payFixed">if set to <c>true</c> then the underlying swap has the person valuing the product paying fixed after exercise.</param>
+        /// <param name="notional">The constant notional in ZAR on the underlying swap.</param>
+        /// <param name="startDate">The start date of the underlying swap.</param>
+        /// <param name="tenor">The tenor of the underlying swap.</param>
+        /// <returns></returns>
+        public static BermudanSwaption CreateZARBermudanSwaption(Date[] exerciseDates, bool longOptionality,
+            double rate,
+            bool payFixed, double notional, Date startDate, Tenor tenor)
+        {
+            var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
+            var swaption = new BermudanSwaption(swap, exerciseDates.ToList(), longOptionality);
+            return swaption;
         }
     }
 }

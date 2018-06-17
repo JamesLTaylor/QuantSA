@@ -8,6 +8,7 @@ using QuantSA.General;
 using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {

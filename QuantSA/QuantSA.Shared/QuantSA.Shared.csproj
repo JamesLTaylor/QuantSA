@@ -100,8 +100,9 @@
     <Compile Include="MarketObservables\Dividend.cs" />
     <Compile Include="MarketObservables\FloatRateIndex.cs" />
     <Compile Include="MarketObservables\Share.cs" />
-    <Compile Include="Primitives\Product.cs" />
-    <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
+    <Compile Include="Primitives\IPortfolio.cs" />
+    <Compile Include="Primitives\IProduct.cs" />
+    <Compile Include="Primitives\IProductWithEarlyExercise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MarketObservables\ReferenceEntity.cs" />
     <Compile Include="ResultStore.cs" />

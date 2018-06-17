@@ -2,6 +2,7 @@
 using QuantSA.General;
 using System;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {

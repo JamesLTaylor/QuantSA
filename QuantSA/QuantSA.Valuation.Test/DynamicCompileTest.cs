@@ -7,6 +7,7 @@ using QuantSA.General.Formulae;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -22,9 +23,9 @@ namespace ValuationTest
         {
             Stopwatch watch;
             // Make a product at runtime
-            var runtimeProduct = RuntimeProduct.CreateFromSourceFile(@"ScriptEuropeanOption.txt");
+            var runtimeProduct = RuntimeProduct.CreateFromScript(@"ScriptEuropeanOption.txt");
 
-            // Setup an approriate simulation
+            // Setup an appropriate simulation
             var shares = new[]
             {
                 new Share("AAA", Currency.ZAR)
