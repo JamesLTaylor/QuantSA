@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 

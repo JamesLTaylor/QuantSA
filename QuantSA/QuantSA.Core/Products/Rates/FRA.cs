@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using QuantSA.General.Conventions.BusinessDay;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.General.Dates;
+using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;

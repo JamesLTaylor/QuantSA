@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuantSA.General;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Shared
 {
     /// <summary>
     /// A general storage container to keep both final results and debug data in QuantSA objects.

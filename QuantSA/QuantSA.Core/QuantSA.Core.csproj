@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurvesAndSurfaces\DatesAndRates.cs" />
+    <Compile Include="CurvesAndSurfaces\CurveEx.cs" />
     <Compile Include="CurvesAndSurfaces\InterpolatedCurve.cs" />
     <Compile Include="CurvesAndSurfaces\NelsonSiegel.cs" />
     <Compile Include="CurveTools\PCACurveSimulator.cs" />
