@@ -83,7 +83,7 @@
     <Compile Include="Dates\Calendar.cs" />
     <Compile Include="Dates\Date.cs" />
     <Compile Include="Dates\Tenor.cs" />
-    <Compile Include="Debug.cs" />
+    <Compile Include="Debug\Debug.cs" />
     <Compile Include="CurvesAndSurfaces\ICurve.cs" />
     <Compile Include="MarketData\IDiscountingSource.cs" />
     <Compile Include="MarketData\IFloatingRateSource.cs" />

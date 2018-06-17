@@ -1,10 +1,11 @@
 ﻿using System;
+using QuantSA.General;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketData
 {
     /// <summary>
-    /// A an object that can provide survival probabilites for a specific <see cref="ReferenceEntity"/>
+    /// A an object that can provide survival probabilities for a specific <see cref="ReferenceEntity"/>
     /// </summary>
     [Serializable]
     public abstract class ISurvivalProbabilitySource

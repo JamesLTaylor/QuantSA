@@ -5,6 +5,7 @@ using Accord.Math.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Debug;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Valuation;

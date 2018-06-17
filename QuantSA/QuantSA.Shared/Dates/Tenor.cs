@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.Dates
 {
     [Serializable]
     public class Tenor
     {
-        public int days { get; private set; }
-        public int months { get; private set; }
-        public int weeks { get; private set; }
-        public int years { get; private set; }
-
         public Tenor(int days, int weeks, int months, int years)
         {
-            if ((days + weeks*7) >= 10000) throw new ArgumentException("Please use months or years rather than more than 10000 days.");            
+            if (days + weeks * 7 >= 10000)
+                throw new ArgumentException("Please use months or years rather than more than 10000 days.");
             this.days = days;
             this.weeks = weeks;
             this.months = months;
             this.years = years;
         }
+
+        public int days { get; }
+        public int months { get; }
+        public int weeks { get; }
+        public int years { get; }
 
         public static Tenor Years(int years)
         {
@@ -40,7 +38,7 @@ namespace QuantSA.General
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (years > 0) sb.Append(years).Append("Y");
             if (months > 0) sb.Append(months).Append("M");
             if (weeks > 0) sb.Append(weeks).Append("W");
@@ -49,23 +47,28 @@ namespace QuantSA.General
         }
 
         #region Comparisons
+
         public static bool operator ==(Tenor left, Tenor right)
         {
-            if ((object)left == null && (object)right == null) return true;
-            if ((object)left != null && (object)right == null) return false;
-            if ((object)left == null && (object)right != null) return false;
-            return (left.days + 7 * left.weeks == right.days + 7 * right.weeks) && (left.months + 12 * left.years) == (right.months + 12 * right.years);
+            if ((object) left == null && (object) right == null) return true;
+            if ((object) left != null && (object) right == null) return false;
+            if ((object) left == null && (object) right != null) return false;
+            return left.days + 7 * left.weeks == right.days + 7 * right.weeks &&
+                   left.months + 12 * left.years == right.months + 12 * right.years;
         }
+
         public static bool operator !=(Tenor left, Tenor right)
         {
             return !(left == right);
         }
+
         public override bool Equals(object obj)
-        {            
-            Tenor t = obj as Tenor;
+        {
+            var t = obj as Tenor;
             if (t == null) return false;
-            return this==t;
+            return this == t;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -76,9 +79,9 @@ namespace QuantSA.General
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return days + weeks * 7 + (months  + years * 12) * 100000;            
+            return days + weeks * 7 + (months + years * 12) * 100000;
         }
-        #endregion
 
+        #endregion
     }
 }

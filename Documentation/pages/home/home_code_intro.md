@@ -18,11 +18,11 @@ Within the main QuantSA solution there There are 4  projects other than the Exce
 
 ### QuantSA.Shared
 
-This is all the most basic types and interfaces that are then implemented in other projects or in users private projects.
+This contains all the most basic types and interfaces that are then implemented in other projects or in user's private projects.
 
 ### QuantSA.Core
 
-Implementations of products and general tools.
+Implementations of products and general tools that are useful for Valuation and CoreExtensions.
 
 ### Valuation
 
@@ -30,7 +30,7 @@ The simulators and other valuation tools are implemented in `Valuations`.  The m
 
 ### QuantSA.CoreExtensions
 
-Extension methods of objects implemented in Core that we want to exist completely independently of the valuation framework.  For example a closed for option price.  Calibrators will typically be implemented in CoreExtensions as well since they are likely to require such closed for expressions.
+Extension methods of objects implemented in Core that we want to exist completely independently of the valuation framework.  For example a closed for option price.  Calibrators will typically be implemented in CoreExtensions as well since they are likely to require such closed form expressions.
 
 ## Project details - Shared
 
