@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -57,11 +60,11 @@ namespace ValuationTest
             var date2 = valueDate.AddMonths(12);
 
             var zarDisc = new ZeroRatesCurveForStripping(valueDate, zar);
-            var jibar3mForecast = new ForwardRatesCurveForStripping(valueDate, FloatingIndex.JIBAR3M, zarDisc);
+            var jibar3mForecast = new ForwardRatesCurveForStripping(valueDate, FloatRateIndex.JIBAR3M, zarDisc);
 
             Product depo1 = new CashLeg(new[] {valueDate, date1}, new[] {-N, N * (1 + r1 * 0.5)}, new[] {zar, zar});
             Product depo2 = new CashLeg(new[] {valueDate, date2}, new[] {-N, N * (1 + r2 * 1)}, new[] {zar, zar});
-            Product swap = IRSwap.CreateZARSwap(0.08, true, 1.0, valueDate, Tenor.Months(9));
+            Product swap = IRSwap.CreateZARSwap(0.08, true, 1.0, valueDate, Tenor.FromMonths(9));
 
             var modelZARDisc = new DeterminsiticCurves(zarDisc);
             modelZARDisc.AddRateForecast(jibar3mForecast);
@@ -72,7 +75,7 @@ namespace ValuationTest
             mcs.AddDiscounting(depo1, () => coordZARDisc.Value(depo1, valueDate), N, 1.0, zarDisc);
             mcs.AddDiscounting(depo2, () => coordZARDisc.Value(depo2, valueDate), N, 1.0, zarDisc);
             mcs.AddForecast(swap, () => coordZARDisc.Value(swap, valueDate), 0.0, 1.0, jibar3mForecast,
-                FloatingIndex.JIBAR3M);
+                FloatRateIndex.JIBAR3M);
             mcs.Strip();
 
             Assert.AreEqual(N, coordZARDisc.Value(depo1, valueDate), 1e-6);
@@ -155,7 +158,7 @@ namespace ValuationTest
             // Empty curves
             var zarDiscUSDColl = new ZeroRatesCurveForStripping(valueDate, zar);
             var zarDisc = new ZeroRatesCurveForStripping(valueDate, zar);
-            var jibarCurve = new ForwardRatesCurveForStripping(valueDate, FloatingIndex.JIBAR3M);
+            var jibarCurve = new ForwardRatesCurveForStripping(valueDate, FloatRateIndex.JIBAR3M);
 
             // Models
             var modelZARDiscUSDColl = new DeterminsiticCurves(zarDiscUSDColl);
@@ -174,15 +177,15 @@ namespace ValuationTest
             mcs.AddDiscounting(depo1, () => coordZARDiscUSDColl.Value(depo1, valueDate), 1.0, 1.0, zarDiscUSDColl);
             mcs.AddDiscounting(depo2, () => coordZARDiscUSDColl.Value(depo2, valueDate), 1.0, 1.0, zarDiscUSDColl);
 
-            Product swapUSDColl1 = IRSwap.CreateZARSwap(0.07, true, 1.0, valueDate, Tenor.Months(24));
-            Product swapUSDColl2 = IRSwap.CreateZARSwap(0.072, true, 1.0, valueDate, Tenor.Months(48));
+            Product swapUSDColl1 = IRSwap.CreateZARSwap(0.07, true, 1.0, valueDate, Tenor.FromMonths(24));
+            Product swapUSDColl2 = IRSwap.CreateZARSwap(0.072, true, 1.0, valueDate, Tenor.FromMonths(48));
             mcs.AddForecast(swapUSDColl1, () => coordZARDiscUSDColl.Value(swapUSDColl1, valueDate), 0, 1, jibarCurve,
-                FloatingIndex.JIBAR3M);
+                FloatRateIndex.JIBAR3M);
             mcs.AddForecast(swapUSDColl2, () => coordZARDiscUSDColl.Value(swapUSDColl2, valueDate), 0, 1, jibarCurve,
-                FloatingIndex.JIBAR3M);
+                FloatRateIndex.JIBAR3M);
 
-            Product swapNoColl1 = IRSwap.CreateZARSwap(0.0709, true, 1.0, valueDate, Tenor.Months(36));
-            Product swapNoColl2 = IRSwap.CreateZARSwap(0.0719, true, 1.0, valueDate, Tenor.Months(48));
+            Product swapNoColl1 = IRSwap.CreateZARSwap(0.0709, true, 1.0, valueDate, Tenor.FromMonths(36));
+            Product swapNoColl2 = IRSwap.CreateZARSwap(0.0719, true, 1.0, valueDate, Tenor.FromMonths(48));
             mcs.AddDiscounting(swapNoColl1, () => coordZARDisc.Value(swapNoColl1, valueDate), 0, 1, zarDisc);
             mcs.AddDiscounting(swapNoColl2, () => coordZARDisc.Value(swapNoColl2, valueDate), 0, 1, zarDisc);
 
@@ -207,7 +210,7 @@ namespace ValuationTest
         /// A curve that ensures that the overnight rate as calculated on the turnDate will be 
         /// different from the rate before or after that by turnSize.
         /// </summary>
-        /// <seealso cref="QuantSA.General.IDiscountingSource" />
+        /// <seealso cref="IDiscountingSource" />
         private class DFCurveWithTurn : IDiscountingSource
         {
             private readonly Date anchorDate;

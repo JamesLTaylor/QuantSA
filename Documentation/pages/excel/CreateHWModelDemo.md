@@ -28,7 +28,7 @@ Create demo Hull White model.  Will be used for discounting and forecasting any 
 * **meanReversion** (Double)The constant rate of mean reversion.
 * **flatVol** (Double)The constant short rate volatility.  Note that this is a Gaussian vol and will in general be lower than the vol that would be used in Black.
 * **baseCurve** (IDiscountingSource)The curve to which zero coupon bond prices will be calibrated.
-* **forecastIndices** ([FloatingIndex](FloatingIndex.html))The indices that should be forecast with this same curve.  No spreads are added.
+* **forecastIndices** ([FloatRateIndex](FloatRateIndex.html))The indices that should be forecast with this same curve.  No spreads are added.
 
 <!--HUMAN EDIT START-->
 

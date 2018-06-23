@@ -10,7 +10,7 @@ folder: home
 
 ## Introduction
 
-QuantSA uses [ExcelDNA](https://github.com/Excel-DNA/ExcelDna) to expose functions to Excel, the add-in includes [Excel-DNA IntelliSense](https://github.com/Excel-DNA/IntelliSense) which gives a great feedback to users while they type in QuantSA functions (see example below).
+QuantSA uses [ExcelDNA](https://github.com/Excel-DNA/ExcelDna) to expose functions to Excel, the add-in includes [Excel-DNA IntelliSense](https://github.com/Excel-DNA/IntelliSense) which gives great feedback to users while they type in QuantSA functions (see example below).
 
 ![ExcelDna-intellisense.JPG](./images/ExcelDna-intellisense.JPG)
 

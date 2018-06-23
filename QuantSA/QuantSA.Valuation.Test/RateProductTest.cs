@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -22,7 +25,7 @@ namespace ValuationTest
             var payFixed = true;
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
-            var tenor = Tenor.Years(5);
+            var tenor = Tenor.FromYears(5);
             var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
 
             // Set up the model
@@ -30,7 +33,7 @@ namespace ValuationTest
             Date[] dates = {new Date(2016, 9, 17), new Date(2026, 9, 17)};
             double[] rates = {0.07, 0.07};
             IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, dates, rates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatingIndex.JIBAR3M, dates, rates);
+            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatRateIndex.JIBAR3M, dates, rates);
             var curveSim = new DeterminsiticCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
             var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
@@ -49,7 +52,7 @@ namespace ValuationTest
             var payFixed = true;
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
-            var tenor = Tenor.Years(5);
+            var tenor = Tenor.FromYears(5);
             var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
 
             // Set up the model
@@ -58,7 +61,7 @@ namespace ValuationTest
             var vol = 0.01;
             var flatCurveRate = 0.07;
             var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
-            hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
+            hullWiteSim.AddForecast(FloatRateIndex.JIBAR3M);
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 10000);
 
             // Run the valuation
@@ -75,7 +78,7 @@ namespace ValuationTest
             var payFixed = true;
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
-            var tenor = Tenor.Years(1);
+            var tenor = Tenor.FromYears(1);
             var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
 
             // Make a FloatLeg
@@ -93,7 +96,7 @@ namespace ValuationTest
 
             var floatLeg = new FloatLeg(Currency.ZAR, paymentDates, new[] {1e6, 1e6, 1e6, 1e6},
                 resetDates,
-                new[] {FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M, FloatingIndex.JIBAR3M},
+                new[] {FloatRateIndex.JIBAR3M, FloatRateIndex.JIBAR3M, FloatRateIndex.JIBAR3M, FloatRateIndex.JIBAR3M},
                 new double[] {0, 0, 0, 0}, accrualFractions);
 
             // Set up the model
@@ -101,7 +104,7 @@ namespace ValuationTest
             Date[] dates = {new Date(2016, 9, 17), new Date(2026, 9, 17)};
             double[] rates = {0.07, 0.07};
             IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, dates, rates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatingIndex.JIBAR3M, dates, rates);
+            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatRateIndex.JIBAR3M, dates, rates);
             var curveSim = new DeterminsiticCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
 

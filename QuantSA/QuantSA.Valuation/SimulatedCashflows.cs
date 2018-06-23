@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -58,7 +59,7 @@ namespace QuantSA.Valuation
                 {
                     foreach (Cashflow cf in allCFs[productCounter][pathCounter])
                     {
-                        if (cf.date > date) result[pathCounter] += cf.amount;
+                        if (cf.Date > date) result[pathCounter] += cf.Amount;
                     }
                 }
             }

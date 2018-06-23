@@ -39,8 +39,8 @@
     <Reference Include="QuantSA.Excel.Shared">
       <HintPath>..\..\QuantSA\QuantSA.Excel.Shared\bin\Debug\QuantSA.Excel.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="QuantSA.Primitives">
-      <HintPath>..\..\QuantSA\QuantSA.Primitives\bin\Debug\QuantSA.Primitives.dll</HintPath>
+    <Reference Include="QuantSA.Shared">
+      <HintPath>..\..\QuantSA\QuantSA.Shared\bin\Debug\QuantSA.Shared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

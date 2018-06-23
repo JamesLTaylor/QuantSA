@@ -6,7 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using QuantSA.Primitives.Dates;
+using QuantSA.Core.Primitives;
+using QuantSA.Shared;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -45,7 +49,7 @@ namespace QuantSA.Valuation
         List<Date> allDates;
 
         // Portfolio information
-        List<Product> allTrades;
+        List<IProduct> allTrades;
         List<int> originalTrades;
         /// <summary>
         /// Trades in <see cref="allTrades"/> that are options with the indices of what they exercise into.
@@ -108,11 +112,11 @@ namespace QuantSA.Valuation
         /// <param name="simulatedRegs">The valuesor the regressors by path and date.</param>
         /// <param name="pathStart">The path start.</param>
         /// <param name="pathEnd">The path end.</param>
-        private void PerformSimulationChunk(List<Product> portfolio, List<Date> fwdValueDates,
+        private void PerformSimulationChunk(List<IProduct> portfolio, List<Date> fwdValueDates,
             SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs, int pathStart, int pathEnd)
         {
             // clone the simulators and portfolio if this is running multi threaded
-            List<Product> localPortfolio;
+            List<IProduct> localPortfolio;
             NumeraireSimulator localNumeraire = null;
             List<Simulator> localSimulators = null;
 
@@ -149,11 +153,12 @@ namespace QuantSA.Valuation
                         }
                     }
                 }
+
                 // use the simulators that now contain a simulation to provide market observables to the 
                 // products.
                 for (int productCounter = 0; productCounter < localPortfolio.Count; productCounter++)
                 {
-                    Product product = localPortfolio[productCounter];
+                    var product = localPortfolio[productCounter];
                     product.Reset();
                     foreach (MarketObservable index in product.GetRequiredIndices())
                     {
@@ -165,18 +170,18 @@ namespace QuantSA.Valuation
                     List<Cashflow> timesAndCFS = product.GetCFs();
                     foreach (Cashflow cf in timesAndCFS)
                     {
-                        if (cf.currency.Equals(valueCurrency))
+                        if (cf.Currency.Equals(valueCurrency))
                         {
-                            double cfValue = cf.amount * numeraireAtValue / localNumeraire.Numeraire(cf.date);
-                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.date, cfValue, cf.currency));
+                            double cfValue = cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
+                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.Date, cfValue, cf.Currency));
                         }
                         else
                         {
-                            MarketObservable currencyPair = new CurrencyPair(cf.currency, localNumeraire.GetNumeraireCurrency());
+                            MarketObservable currencyPair = new CurrencyPair(cf.Currency, localNumeraire.GetNumeraireCurrency());
                             Simulator simulator = localSimulators[indexSources[currencyPair]];
-                            double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.date })[0];
-                            double cfValue = fxRate * cf.amount * numeraireAtValue / localNumeraire.Numeraire(cf.date);
-                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.date, cfValue, cf.currency));
+                            double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.Date })[0];
+                            double cfValue = fxRate * cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
+                            simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.Date, cfValue, cf.Currency));
                         }
                     }
                 }
@@ -207,29 +212,29 @@ namespace QuantSA.Valuation
         /// </summary>
         /// <param name="portfolioIn">The user supplied portfolio.</param>
         /// <param name="fwdValueDates">The extra forward value dates.</param>
-        private void PreparePortfolios(Product[] portfolioIn, Date[] fwdValueDates)
+        private void PreparePortfolios(IProduct[] portfolioIn, Date[] fwdValueDates)
         {            
             allDates = fwdValueDates.Select(date => new Date(date)).ToList();
             allDates.Add(valueDate);
-            allTrades = new List<Product>();
+            allTrades = new List<IProduct>();
             originalTrades = new List<int>();
             postExerciseTrades = new Dictionary<int, List<int>>();
 
             // Add the orginal trades
             int counter = 0;
-            foreach (Product product in portfolioIn)
+            foreach (var product in portfolioIn)
             {
                 allTrades.Add(product.Clone());
                 originalTrades.Add(counter);                
-                ProductWithEarlyExercise option = product as ProductWithEarlyExercise;
+                IProductWithEarlyExercise option = product as IProductWithEarlyExercise;
                 if (option != null)
                 {
                     List<int> subList = new List<int>();
                     postExerciseTrades.Add(counter, subList);
                     counter++;
                     allDates.AddRange(option.GetExerciseDates());
-                    List<Product> postExProducts = option.GetPostExProducts();
-                    foreach (Product postExProduct in postExProducts)
+                    List<IProduct> postExProducts = option.GetPostExProducts();
+                    foreach (var postExProduct in postExProducts)
                     {
                         allTrades.Add(postExProduct);
                         subList.Add(counter);
@@ -250,7 +255,7 @@ namespace QuantSA.Valuation
         private void ApplyEarlyExercise(int key)
         {
             // Get pathwise regressed values of post exercise products.
-            ProductWithEarlyExercise option = allTrades[key] as ProductWithEarlyExercise;
+            IProductWithEarlyExercise option = allTrades[key] as IProductWithEarlyExercise;
             List<Date> exDates = option.GetExerciseDates();
             double[,] postExRegressedValues = new double[N, exDates.Count];
             for (int i = 0; i < exDates.Count; i++)
@@ -280,14 +285,14 @@ namespace QuantSA.Valuation
                         int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
                         foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
                         {
-                            if (cf.date > optimalStop[pathCount])
-                                pvOptimalCFs[pathCount] += cf.amount;
+                            if (cf.Date > optimalStop[pathCount])
+                                pvOptimalCFs[pathCount] += cf.Amount;
                         }
                     }
                     foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                     {
-                        if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
-                            pvOptimalCFs[pathCount] += cf.amount;
+                        if (cf.Date > valueDate && cf.Date <= optimalStop[pathCount])
+                            pvOptimalCFs[pathCount] += cf.Amount;
                     }
                 }
 
@@ -312,12 +317,12 @@ namespace QuantSA.Valuation
                 int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
                 foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
                 {
-                    if (cf.date > optimalStop[pathCount])
+                    if (cf.Date > optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
                 }
                 foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
                 {
-                    if (cf.date > valueDate && cf.date <= optimalStop[pathCount])
+                    if (cf.Date > valueDate && cf.Date <= optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
                 }
             }
@@ -458,7 +463,7 @@ namespace QuantSA.Valuation
         /// <param name="portfolioIn">The portfolio in.</param>
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
-        private void CalculateAll(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+        private void CalculateAll(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates)
         {
             this.valueDate = valueDate;
             PreparePortfolios(portfolioIn, fwdValueDates);
@@ -480,7 +485,7 @@ namespace QuantSA.Valuation
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
         /// <returns></returns>
-        public ResultStore GetValuePaths(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+        public ResultStore GetValuePaths(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates)
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
             ResultStore results = new ResultStore();
@@ -507,7 +512,7 @@ namespace QuantSA.Valuation
         /// <param name="valueDate">The value date.</param>
         /// <param name="fwdValueDates">The forward value dates.</param>
         /// <returns></returns>
-        public double[] EPE(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates)
+        public double[] EPE(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates)
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
 
@@ -529,7 +534,7 @@ namespace QuantSA.Valuation
             return epe;
         }
 
-        public double[,] PFE(Product[] portfolioIn, Date valueDate, Date[] fwdValueDates, double[] percentiles)
+        public double[,] PFE(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates, double[] percentiles)
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
             
@@ -553,9 +558,9 @@ namespace QuantSA.Valuation
         /// <param name="product">The product to be valued.</param>
         /// <param name="valueDate">The value date.</param>
         /// <returns></returns>
-        public double Value(Product product, Date valueDate)
+        public double Value(IProduct product, Date valueDate)
         {
-            return Value(new Product[] { product }, valueDate);
+            return Value(new [] { product }, valueDate);
         }
 
 
@@ -565,7 +570,7 @@ namespace QuantSA.Valuation
         /// <param name="portfolioIn">The portfolio to be valued.</param>
         /// <param name="valueDate">The value date.</param>
         /// <returns></returns>
-        public double Value(Product[] portfolioIn, Date valueDate)
+        public double Value(IProduct[] portfolioIn, Date valueDate)
         {
             CalculateAll(portfolioIn, valueDate, new Date[0]);
             double[] pathwisePVs = simulatedCFs.GetPathwisePV(valueDate, originalTrades);
@@ -578,14 +583,14 @@ namespace QuantSA.Valuation
         /// </summary>
         /// <param name="extraDates">Extra dates over and above the contract dates where the simulators will need to 
         /// provide their indices.</param>
-        private void InitializeSimulators(List<Product> portfolio, List<Date> extraDates)
+        private void InitializeSimulators(List<IProduct> portfolio, List<Date> extraDates)
         {
             // Reset all the simulators
             foreach (Simulator simulator in simulators)
             { simulator.Reset(); }
 
             // Set up the simulators for the times at which they will be queried
-            foreach (Product product in portfolio)
+            foreach (var product in portfolio)
             {
                 product.SetValueDate(valueDate);
                 // Tell the simulators at what times indices will be required.
@@ -627,12 +632,12 @@ namespace QuantSA.Valuation
         /// or
         /// Required currency pair: " + index.ToString() + " is not provided by any of the simulators
         /// </exception>
-        private void AssociateFactorsWithSimulators(List<Product> portfolio)
+        private void AssociateFactorsWithSimulators(List<IProduct> portfolio)
         {
             // Find which simulator will provide each of the potentially required MarketObservables.
             indexSources = new Dictionary<MarketObservable, int>();
             HashSet<Currency> requiredCurrencySet = new HashSet<Currency>();
-            foreach (Product product in portfolio)
+            foreach (var product in portfolio)
             {
                 // Associate the index simulators
                 foreach (MarketObservable index in product.GetRequiredIndices())

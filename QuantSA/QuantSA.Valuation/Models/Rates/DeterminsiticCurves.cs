@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -93,7 +96,7 @@ namespace QuantSA.Valuation
             var i = 0;
             foreach (var date in requiredDates)
             {
-                if (index is FloatingIndex)
+                if (index is FloatRateIndex)
                     result[i] = forecastCurves[index].GetForwardRate(date);
                 else if (index is CurrencyPair)
                     result[i] = fxCurves[index].GetRate(date);
@@ -106,7 +109,7 @@ namespace QuantSA.Valuation
 
         public override bool ProvidesIndex(MarketObservable index)
         {
-            var floatIndex = index as FloatingIndex;
+            var floatIndex = index as FloatRateIndex;
             if (floatIndex != null) return forecastCurves.ContainsKey(floatIndex);
             var currencyPair = index as CurrencyPair;
             if (currencyPair != null) return fxCurves.ContainsKey(currencyPair);

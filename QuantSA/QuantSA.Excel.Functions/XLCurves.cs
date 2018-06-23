@@ -1,7 +1,10 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.CurvesAndSurfaces;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.ExcelFunctions
 {

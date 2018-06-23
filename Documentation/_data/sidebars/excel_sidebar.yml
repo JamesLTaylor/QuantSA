@@ -28,8 +28,8 @@
     - title: DayCountConvention
       url: /DayCountConvention.html
       output: web, pdf      
-    - title: FloatingIndex
-      url: /FloatingIndex.html
+    - title: FloatRateIndex
+      url: /FloatRateIndex.html
       output: web, pdf
     - title: Tenor
       url: /Tenor.html

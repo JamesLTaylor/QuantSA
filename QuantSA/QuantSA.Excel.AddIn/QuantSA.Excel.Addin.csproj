@@ -141,14 +141,6 @@ xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEve
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuantSA.CoreExtensions\QuantSA.CoreExtensions.csproj">
-      <Project>{f8101f09-3abd-472e-a9a6-d3d45e748e06}</Project>
-      <Name>QuantSA.CoreExtensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuantSA.Core\QuantSA.Core.csproj">
-      <Project>{65da30bb-96ad-40a3-bb56-feb27738c75a}</Project>
-      <Name>QuantSA.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QuantSA.Excel.Functions\QuantSA.Excel.Functions.csproj">
       <Project>{0ee19fe5-6c46-40ae-9cce-1d43c9c29f57}</Project>
       <Name>QuantSA.Excel.Functions</Name>
@@ -157,13 +149,9 @@ xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEve
       <Project>{d71dfb97-e341-4dc8-b263-b2e81e5aaa60}</Project>
       <Name>QuantSA.Excel.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>QuantSA.Primitives</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuantSA.Valuation\QuantSA.Valuation.csproj">
-      <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>
-      <Name>QuantSA.Valuation</Name>
+      <Name>QuantSA.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Target Name="AfterBuild">

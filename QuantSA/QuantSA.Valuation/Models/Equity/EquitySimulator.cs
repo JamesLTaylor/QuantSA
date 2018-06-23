@@ -4,7 +4,10 @@ using System.Linq;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -58,7 +61,7 @@ namespace QuantSA.Valuation
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredTimes)
         {
-            if (index is FloatingIndex)
+            if (index is FloatRateIndex)
             {
                 var result = new double[requiredTimes.Count];
                 for (var i = 0; i < requiredTimes.Count; i++)

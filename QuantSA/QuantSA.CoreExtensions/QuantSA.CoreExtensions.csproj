@@ -44,9 +44,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+    <ProjectReference Include="..\QuantSA.Core\QuantSA.Core.csproj">
+      <Project>{65da30bb-96ad-40a3-bb56-feb27738c75a}</Project>
+      <Name>QuantSA.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>QuantSA.Primitives</Name>
+      <Name>QuantSA.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

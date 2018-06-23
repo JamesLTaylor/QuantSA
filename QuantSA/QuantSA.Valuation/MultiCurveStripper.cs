@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using QuantSA.General;
 using Accord.Math.Optimization;
 using Accord.Math.Convergence;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -81,7 +84,7 @@ namespace QuantSA.Valuation
         /// <param name="index">The index that the product depends on and that the curve provides that will be used to find the 
         /// node date.  The node date will be the last date that this index is required.</param>
         public void AddForecast<CurveType>(Product product, Func<double> targetMetric, double targetValue, double targetWeight,
-                                           CurveType curve, FloatingIndex index)
+                                           CurveType curve, FloatRateIndex index)
             where CurveType : IFloatingRateSource, ICurveForStripping
         {
             targetMetrics.Add(targetMetric);

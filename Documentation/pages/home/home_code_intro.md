@@ -1,7 +1,7 @@
 ---
 title: Introduction to the code
 keywords: 
-last_updated: October 14, 2016
+last_updated: June 11, 2018
 tags: [getting_started, developers]
 sidebar: home_sidebar
 permalink: home_code_intro.html
@@ -9,44 +9,28 @@ folder: home
 ---
 
 ## Project overview
-There are 4 main projects:
+Within the main QuantSA solution there There are 4  projects other than the Excel and test projects:
 
-* General
-* Valuations
-* Excel
-* QuantSAInterfaces
+* QuantSA.Shared
+* QuantSA.Core
+* QuantSA.CoreExtensions
+* QuantSA.Valuations
 
-and 2 test projects
+### QuantSA.Shared
 
-###  `General` and `Valuation`
-Most maths and finance except valuation is implemented in `General`.  The simulators and other valuation tools are implemented in `Valuations`.  The main reason for this separation is that it keeps the valuation philosophy enforced.  A product in `General` can have no reference to the `Valuations` project this forces the developer to consider only the [market observables](home_valuation_principles.html#market-observables) when implementing the cashflows of the product and not how these will be generated.
+This contains all the most basic types and interfaces that are then implemented in other projects or in user's private projects.
 
-###  `QuantSAInterfaces`
-These are the interfaces that are used by plugins.
+### QuantSA.Core
 
-### `Excel`
-The actual functions that get exposed to Excel and some utilities and features for the main add-in.  This project heavily uses ExcelDNA.
+Implementations of products and general tools that are useful for Valuation and CoreExtensions.
 
-Whenever possible the functions in here should be wrappers that only convert data before sending it through to functions in `General` and `Valuation`
+### Valuation
 
-See [here](home_expose_to_excel.html) for more details about exposing functions to Excel.
+The simulators and other valuation tools are implemented in `Valuations`.  The main reason for this separation is that it keeps the valuation philosophy enforced.  A product in `Core` can have no reference to the `Valuations` project this forces the developer to consider only the [market observables](home_valuation_principles.html#market-observables) when implementing the cashflows of the product and not how these will be generated.
 
-## Project details - General
+### QuantSA.CoreExtensions
 
-### Curves
-Various curves for providing fixes or forecasts.
+Extension methods of objects implemented in Core that we want to exist completely independently of the valuation framework.  For example a closed for option price.  Calibrators will typically be implemented in CoreExtensions as well since they are likely to require such closed form expressions.
 
-### CurveTools
-Tools used to construct or generate curves.
+## Project details - Shared
 
-### DataAnalysis
-
-### Formulae
-Standard formulae such as the Black Scholes equation.
-
-### MarketObservables
-
-## Project details - Valuation
-
-## Project details - Excel
-Each `public static` function that wraps something in `General` or `Valuation` should sit in a class and file called `XLSomething` where `something` is the name of the project or source sub folder in which the called function resides. 

@@ -1,7 +1,8 @@
 ﻿using System;
 using MathNet.Numerics.Interpolation;
 using QuantSA.General;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.CurvesAndSurfaces;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.Core.CurvesAndSurfaces
 {

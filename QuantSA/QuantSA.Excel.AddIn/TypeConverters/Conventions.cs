@@ -1,12 +1,12 @@
 ﻿using System;
 using QuantSA.Excel.Shared;
-using QuantSA.General.Conventions.Compounding;
+using QuantSA.Shared.Conventions.Compounding;
 
 namespace QuantSA.Excel.Addin.TypeConverters
 {
     public class CompoundingConverter : IInputConverter
     {
-        public Type RequiredType => typeof(CompoundingConvention);
+        public Type RequiredType => typeof(ICompoundingConvention);
 
         public object Convert(object input, string inputName, string defaultValue)
         {

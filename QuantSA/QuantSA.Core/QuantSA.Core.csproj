@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,8 +59,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurvesAndSurfaces\DatesAndRates.cs" />
+    <Compile Include="CurvesAndSurfaces\CurveEx.cs" />
     <Compile Include="CurvesAndSurfaces\InterpolatedCurve.cs" />
     <Compile Include="CurvesAndSurfaces\NelsonSiegel.cs" />
+    <Compile Include="CurveTools\PCACurveSimulator.cs" />
+    <Compile Include="CurveTools\ZARSwapCurveStripper.cs" />
+    <Compile Include="DataAnalysis\PCA.cs" />
+    <Compile Include="Dates\DateExtensions.cs" />
+    <Compile Include="Dates\DateGenerators.cs" />
+    <Compile Include="Formulae\BlackEtc.cs" />
+    <Compile Include="Formulae\JSEBondPrice.cs" />
+    <Compile Include="MarketData\FloatingRateFixingCurve1Rate.cs" />
+    <Compile Include="MarketData\ForecastCurve.cs" />
+    <Compile Include="MarketData\ForecastCurveFromDiscount.cs" />
+    <Compile Include="MarketData\ForwardRatesCurveForStripping.cs" />
+    <Compile Include="MarketData\FXForecastCurve.cs" />
+    <Compile Include="MarketData\HazardCurve.cs" />
+    <Compile Include="MarketData\ICurveForStripping.cs" />
+    <Compile Include="MarketData\ShiftedDiscountSource.cs" />
+    <Compile Include="MarketData\SingleRate.cs" />
+    <Compile Include="MarketData\ZeroRatesCurveForStripping.cs" />
+    <Compile Include="Primitives\CashflowEx.cs" />
+    <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
+    <Compile Include="Primitives\Product.cs" />
+    <Compile Include="Primitives\ProductEx.cs" />
+    <Compile Include="Products\Credit\CDS.cs" />
+    <Compile Include="Products\Equity\EuropeanOption.cs" />
+    <Compile Include="Products\FX\CCIRS.cs" />
+    <Compile Include="Products\ProductWrapper.cs" />
+    <Compile Include="Products\Rates\BermudanSwaption.cs" />
+    <Compile Include="Products\Rates\CallableBond.cs" />
+    <Compile Include="Products\Rates\CashLeg.cs" />
+    <Compile Include="Products\Rates\FixedLeg.cs" />
+    <Compile Include="Products\Rates\FloatLeg.cs" />
+    <Compile Include="Products\Rates\FRA.cs" />
+    <Compile Include="Products\Rates\GeneralSwap.cs" />
+    <Compile Include="Products\Rates\IRSwap.cs" />
+    <Compile Include="Products\Rates\LoanFixedRate.cs" />
+    <Compile Include="Products\Rates\LoanFloatingRate.cs" />
+    <Compile Include="Products\RuntimeProduct.cs" />
+    <Compile Include="Products\SAMarket\BesaJseBond.cs" />
+    <Compile Include="Products\Swap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,9 +108,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuantSA.Primitives\QuantSA.Primitives.csproj">
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>QuantSA.Primitives</Name>
+      <Name>QuantSA.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

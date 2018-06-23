@@ -4,7 +4,10 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.General.Formulae;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -20,9 +23,9 @@ namespace ValuationTest
         {
             Stopwatch watch;
             // Make a product at runtime
-            var runtimeProduct = RuntimeProduct.CreateFromSourceFile(@"ScriptEuropeanOption.txt");
+            var runtimeProduct = RuntimeProduct.CreateFromScript(@"ScriptEuropeanOption.txt");
 
-            // Setup an approriate simulation
+            // Setup an appropriate simulation
             var shares = new[]
             {
                 new Share("AAA", Currency.ZAR)
@@ -123,7 +126,7 @@ public override List<Cashflow> GetCFs()
         {
             var source =
                 @"Date date = new Date(2017, 08, 28);
-FloatingIndex jibar = FloatingIndex.JIBAR3M;
+FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
 double dt = 91.0/365.0;
 double fixedRate = 0.071;
 double notional = 1000000.0;
@@ -143,7 +146,7 @@ public override List<Cashflow> GetCFs()
             Date[] dates = {new Date(2016, 9, 17), new Date(2026, 9, 17)};
             double[] rates = {0.07, 0.07};
             IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, dates, rates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatingIndex.JIBAR3M, dates, rates);
+            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatRateIndex.JIBAR3M, dates, rates);
             var curveSim = new DeterminsiticCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
 

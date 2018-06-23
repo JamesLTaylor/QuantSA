@@ -374,6 +374,9 @@ namespace PrepareRelease
                     if (idx >= 1 && input[idx - 1] == '(')
                         input = input.Substring(0, idx) + "[" + typeName + "](" + typeName + ".html)" +
                                 input.Substring(idx + typeName.Length);
+                    if (idx >= 1 && input[idx - 1] == 'I' && input[idx - 2] == '(')
+                        input = input.Substring(0, idx - 1) + "[" + typeName + "](" + typeName + ".html)" +
+                                input.Substring(idx + typeName.Length);
                 }
 
             return input;

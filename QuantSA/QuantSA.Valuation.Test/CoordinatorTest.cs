@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.General;
 using QuantSA.General.Formulae;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -89,7 +92,7 @@ namespace ValuationTest
             var payFixed = true;
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
-            var tenor = Tenor.Years(5);
+            var tenor = Tenor.FromYears(5);
             var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
 
             // Set up the model
@@ -98,7 +101,7 @@ namespace ValuationTest
             var vol = 0.01;
             var flatCurveRate = 0.07;
             var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
-            hullWiteSim.AddForecast(FloatingIndex.JIBAR3M);
+            hullWiteSim.AddForecast(FloatRateIndex.JIBAR3M);
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
             var date = valueDate;
@@ -107,7 +110,7 @@ namespace ValuationTest
             while (date < endDate)
             {
                 fwdValueDates.Add(date);
-                date = date.AddTenor(Tenor.Days(10));
+                date = date.AddTenor(Tenor.FromDays(10));
             }
 
             var allDetails = coordinator.GetValuePaths(new Product[] {swap}, valueDate, fwdValueDates.ToArray());

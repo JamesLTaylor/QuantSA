@@ -5,7 +5,10 @@ using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Products.Rates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace QuantSA.ExcelFunctions
@@ -44,7 +47,7 @@ namespace QuantSA.ExcelFunctions
         public static FloatLeg CreateFloatLeg([ExcelArgument(Description = "The currency of the cashflows. (Currency)")]
             Currency currency,
             [ExcelArgument(Description = "A string describing the floating index.")]
-            FloatingIndex floatingIndex,
+            FloatRateIndex floatingIndex,
             [ExcelArgument(Description = "The dates on which the floating indices reset.")]
             Date[] resetDates,
             [ExcelArgument(Description = "The dates on which the payments are made.")]
@@ -211,7 +214,7 @@ namespace QuantSA.ExcelFunctions
             HelpTopic = "http://www.quantsa.org/CreateRateForecastCurveFromDiscount.html")]
         public static IFloatingRateSource CreateRateForecastCurveFromDiscount(
             [ExcelArgument(Description = "The floating rate that this curve will be used to forecast.")]
-            FloatingIndex floatingRateIndex,
+            FloatRateIndex floatingRateIndex,
             [ExcelArgument(Description =
                 "The name of the discount curve that will be used to obtain the forward rates.")]
             IDiscountingSource discountCurve,
@@ -292,7 +295,7 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "The notionals on which the payments are based.")]
             double[] balanceAmounts,
             [ExcelArgument(Description = "The reference index on which the floating flows are based.")]
-            FloatingIndex floatingIndex,
+            FloatRateIndex floatingIndex,
             [ExcelArgument(Description = "The spread that will be added to the floating index.")]
             double floatingSpread)
         {
@@ -319,10 +322,10 @@ namespace QuantSA.ExcelFunctions
             IDiscountingSource baseCurve,
             [ExcelArgument(Description =
                 "The indices that should be forecast with this same curve.  No spreads are added.")]
-            FloatingIndex forecastIndices)
+            FloatRateIndex forecastIndices)
         {
             var anchorDate = baseCurve.GetAnchorDate();
-            var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.Years(1))));
+            var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.FromYears(1))));
             var model = new HullWhite1F(baseCurve.GetCurrency(), meanReversion, flatVol, flatCurveRate, flatCurveRate,
                 anchorDate);
             model.AddForecast(forecastIndices);

@@ -6,7 +6,9 @@ using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using QuantSA.General;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation
 {
@@ -66,7 +68,7 @@ namespace QuantSA.Valuation
             return newSimulator;
         }
 
-        public void AddForecast(FloatingIndex index)
+        public void AddForecast(FloatRateIndex index)
         {
             forecastTenors.Add(index, index.tenor);
         }
@@ -130,7 +132,7 @@ namespace QuantSA.Valuation
                 var nSteps = (int) Math.Floor((allDates[i] - allDates[i - 1]) / minStepSize);
                 var days = (allDates[i] - allDates[i - 1]) / (nSteps + 1);
                 for (var j = 0; j < nSteps; j++)
-                    newDates.Add(new Date(allDates[i - 1].AddTenor(Tenor.Days((j + 1) * days))));
+                    newDates.Add(new Date(allDates[i - 1].AddTenor(Tenor.FromDays((j + 1) * days))));
                 newDates.Add(new Date(allDates[i]));
             }
 

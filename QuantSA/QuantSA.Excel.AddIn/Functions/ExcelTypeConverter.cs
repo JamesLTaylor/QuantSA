@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
 
 namespace QuantSA.Excel.Addin.Functions
 {

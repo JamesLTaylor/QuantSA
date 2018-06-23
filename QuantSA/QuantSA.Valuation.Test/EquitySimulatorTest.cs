@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using Accord.Math;
 using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.Products;
 using QuantSA.General;
 using QuantSA.General.Formulae;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -19,7 +23,7 @@ namespace ValuationTest
         private readonly Date dealEndDate = new Date(2019, 9, 30);
         private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
         private readonly Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
-        private readonly FloatingIndex jibar = FloatingIndex.JIBAR3M;
+        private readonly FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
         private readonly double nShares = 1;
         private readonly Share share = new Share("AAA", Currency.ZAR);
 
@@ -103,8 +107,8 @@ namespace ValuationTest
                 new[] {0.07, 0.09});
             rateForecastCurves = new List<IFloatingRateSource>
             {
-                new ForecastCurveFromDiscount(discountCurve, FloatingIndex.JIBAR3M,
-                    new FloatingRateFixingCurve1Rate(0.07, FloatingIndex.JIBAR3M))
+                new ForecastCurveFromDiscount(discountCurve, FloatRateIndex.JIBAR3M,
+                    new FloatingRateFixingCurve1Rate(0.07, FloatRateIndex.JIBAR3M))
             }.ToArray();
         }
 
@@ -122,7 +126,7 @@ namespace ValuationTest
             sim.RunSimulation(0);
             var divs = sim.GetIndices(divi, dates);
             var shareprices = sim.GetIndices(shares[0], dates);
-            var fwdRates = sim.GetIndices(FloatingIndex.JIBAR3M, dates);
+            var fwdRates = sim.GetIndices(FloatRateIndex.JIBAR3M, dates);
             Assert.AreEqual(shareprices[1] * 184.0 / 365 * 0.03, divs[2], 0.01);
             Assert.AreEqual(rateForecastCurves[0].GetForwardRate(dates[1]), fwdRates[1], 0.0001);
         }

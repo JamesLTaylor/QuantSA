@@ -5,7 +5,10 @@ using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
 using QuantSA.General;
 using QuantSA.General.Dates;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation.Models
 {
@@ -45,9 +48,9 @@ namespace QuantSA.Valuation.Models
         /// <param name="correlations">The correlation matrix ordered by: numeraireRate, otherCcy1Rate, ..., otherCcyFX1, ...</param>
         /// <exception cref="System.ArgumentException">A rate simulator must be provided for the numeraire currency: " + numeraireCcy.ToString()</exception>
         public MultiHWAndFXToy(Date anchorDate, IDiscountingSource numeraireCurve,
-            List<FloatingIndex> numeraireCcyRequiredIndices, HWParams numeraireHWParams,
+            List<FloatRateIndex> numeraireCcyRequiredIndices, HWParams numeraireHWParams,
             List<Currency> otherCcys, List<double> otherCcySpots, List<double> otherCcyVols,
-            List<IDiscountingSource> otherCcyCurves, List<List<FloatingIndex>> otherCcyRequiredIndices,
+            List<IDiscountingSource> otherCcyCurves, List<List<FloatRateIndex>> otherCcyRequiredIndices,
             List<HWParams> otherCcyHwParams,
             double[,] correlations)
         {
@@ -131,7 +134,7 @@ namespace QuantSA.Valuation.Models
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
         {
-            if (index is FloatingIndex)
+            if (index is FloatRateIndex)
             {
                 foreach (var rateSimulator in rateSimulators)
                     if (rateSimulator.ProvidesIndex(index))

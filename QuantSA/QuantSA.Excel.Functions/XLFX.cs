@@ -4,7 +4,10 @@ using QuantSA.Valuation.Models;
 using QuantSA.Valuation;
 using System.Linq;
 using QuantSA.Excel.Shared;
-using QuantSA.Primitives.Dates;
+using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.ExcelFunctions
 {
