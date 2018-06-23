@@ -1,11 +1,11 @@
 ---
 title: Floating rate index
 keywords:
-last_updated: September 30, 2016
+last_updated: Jun 23, 2018
 tags:
 summary: The floating rate index input type
 sidebar: excel_sidebar
-permalink: FloatingIndex.html
+permalink: FloatRateIndex.html
 folder: excel
 ---
 

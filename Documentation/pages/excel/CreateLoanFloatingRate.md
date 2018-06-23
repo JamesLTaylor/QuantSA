@@ -28,7 +28,7 @@ Create a floating rate loan.
 * **currency** ([Currency](Currency.html))The currency of the cashflows.
 * **balanceDates** ([Date](Date.html)[])The dates on which the loan balances are known.  All dates other than the first one will be assumed to also be cashflow dates.
 * **balanceAmounts** (Double[])The notionals on which the payments are based.
-* **floatingIndex** ([FloatingIndex](FloatingIndex.html))The reference index on which the floating flows are based.
+* **floatingIndex** ([FloatRateIndex](FloatRateIndex.html))The reference index on which the floating flows are based.
 * **floatingSpread** (Double)The spread that will be added to the floating index.
 
 <!--HUMAN EDIT START-->

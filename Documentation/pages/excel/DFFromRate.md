@@ -25,7 +25,7 @@ Get the discont factor implied by an interest rate of the given convention.
 ## Arguments
 
 * **rate** (Double)The rate to use in finding the discount factor.
-* **compounding** ([CompoundingConvention](CompoundingConvention.html))The compounding convention of the input rate.
+* **compounding** (ICompoundingConvention)The compounding convention of the input rate.
 * **yearFraction** (Double)The year fraction over which the rate applies.
 
 <!--HUMAN EDIT START-->

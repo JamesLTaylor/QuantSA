@@ -26,7 +26,7 @@ Create a general floating leg of a swap.
 
 * **objectName** The name that this object will be assigned on the map. Should be unique.
 * **currency** ([Currency](Currency.html))The currency of the cashflows. (Currency)
-* **floatingIndex** ([FloatingIndex](FloatingIndex.html))A string describing the floating index.
+* **floatingIndex** ([FloatRateIndex](FloatRateIndex.html))A string describing the floating index.
 * **resetDates** ([Date](Date.html)[])The dates on which the floating indices reset.
 * **paymentDates** ([Date](Date.html)[])The dates on which the payments are made.
 * **notionals** (Double[])The notionals on which the payments are based.
