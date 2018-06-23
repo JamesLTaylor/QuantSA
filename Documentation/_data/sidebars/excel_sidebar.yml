@@ -144,6 +144,12 @@
     - title: InterpLinear
       url: /InterpLinear.html
       output: web, pdf
+    - title: ViewObjectPropertyNames
+      url: /ViewObjectPropertyNames.html
+      output: web, pdf
+    - title: ViewObjectPropertyValue
+      url: /ViewObjectPropertyValue.html
+      output: web, pdf
   - title: Rates
     output: web, pdf
     folderitems:

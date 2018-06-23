@@ -18,9 +18,11 @@ namespace QuantSA.Excel.Addin.Functions
                                             "information only, do not rely on the object's internal structure " +
                                             "since this can change at any time.",
             Name = "QSA.ViewObjectPropertyNames",
+            ExampleSheet = "ZARSwap.xlsx",
             Category = "QSA.General",
             IsMacroType = false,
-            IsHidden = false)]
+            IsHidden = false,
+        HelpTopic = "http://www.quantsa.org/ViewObjectPropertyNames.html")]
         public static string[] ViewObjectPropertyNames(
             [QuantSAExcelArgument(Description = "The object you wish to view.", Name = "Object")]
             object objectName)
@@ -40,11 +42,13 @@ namespace QuantSA.Excel.Addin.Functions
             return names.ToArray();
         }
 
-        [QuantSAExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "View the contents of one of the properties of a QuantSA object.",
             Name = "QSA.ViewObjectPropertyValue",
             Category = "QSA.General",
+            ExampleSheet = "ZARSwap.xlsx",
             IsMacroType = false,
-            IsHidden = false)]
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/ViewObjectPropertyValue.html")]
         public static object[,] ViewObjectPropertyValue(
             [QuantSAExcelArgument(Description = "The object you wish to view.", Name = "Object")]
             object objectName,

@@ -395,7 +395,7 @@ namespace QuantSA.Valuation
         /// </summary>
         /// <param name="fwdValueDates">The full set of forward value dates.</param>
         /// <param name="startIndex">The start index of the range.  Forward values after this date will be updated.</param>
-        /// <param name="endIndex">The end index of the range.  forward values stricly before this date will be updated.</param>
+        /// <param name="endIndex">The end index of the range.  forward values strictly before this date will be updated.</param>
         /// <param name="regressedValues">The full set of estimated forward values.</param>
         private void ApplyForwardValueRegressionsChunk(List<Date> fwdValueDates, int startIndex, int endIndex, double[,] regressedValues)
         {
