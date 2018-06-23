@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Accord.Math;
 using Accord.Math.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Debug;

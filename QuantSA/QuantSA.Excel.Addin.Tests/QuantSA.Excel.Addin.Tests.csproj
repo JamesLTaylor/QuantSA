@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Addin\ExcelTypeConverterTests.cs" />
+    <Compile Include="Functions\ObjectViewerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,9 +59,17 @@
     <Folder Include="TypeConverters\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QuantSA.Core\QuantSA.Core.csproj">
+      <Project>{65DA30BB-96AD-40A3-BB56-FEB27738C75A}</Project>
+      <Name>QuantSA.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuantSA.Excel.AddIn\QuantSA.Excel.Addin.csproj">
       <Project>{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}</Project>
       <Name>QuantSA.Excel.Addin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
+      <Project>{EE53E241-C329-4D56-965A-F6E2BB1FCE50}</Project>
+      <Name>QuantSA.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

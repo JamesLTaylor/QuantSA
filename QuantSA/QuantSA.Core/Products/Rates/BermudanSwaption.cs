@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using QuantSA.Core.Primitives;
+using QuantSA.Core.Products.Rates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;

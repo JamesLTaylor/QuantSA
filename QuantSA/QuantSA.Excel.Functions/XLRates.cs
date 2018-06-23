@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ExcelDna.Integration;
+using QuantSA.Core.Products.Rates;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Products.Rates;
