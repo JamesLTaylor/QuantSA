@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuantSA.General;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products.Rates
 {
     /// <summary>    
     /// </summary>
@@ -12,28 +13,13 @@ namespace QuantSA.General
     /// This fixed rate loan has been implemented as a CashLeg with a convenient constructor.
     /// </remarks>
     /// <seealso cref="QuantSA.General.CashLeg" />
-    /// <seealso cref="QuantSA.General.IProvidesResultStore" />
     [Serializable]
-    public class LoanFixedRate : CashLeg, IProvidesResultStore
+    public class LoanFixedRate : CashLeg
     {
         private double[] balanceAmounts;
         private Date[] balanceDates;
         private Currency ccy;
         private double fixedRate;
-
-
-        public ResultStore GetResultStore()
-        {
-            var results = new ResultStore();
-            results.Add("id", id);
-            results.Add("type", type);
-            results.Add("ccy", ccy.ToString());
-            results.Add("fixedRate", fixedRate);
-            results.Add("loanDates", balanceDates);
-            results.Add("loanBalances", balanceAmounts);
-            return results;
-        }
-
 
         /// <summary>
         /// Create a fixed rate loan from a loan profile.  The first date in the profile is the disbursment date and 

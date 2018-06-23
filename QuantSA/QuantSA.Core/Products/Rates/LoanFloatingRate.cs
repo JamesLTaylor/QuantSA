@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.Shared;
+using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products.Rates
 {
     /// <summary>
     /// A Floating rate loan with exactly the same structure as <see cref="FloatLeg"/> but with notional flows added.
     /// </summary>    
     /// <seealso cref="QuantSA.General.FloatLeg" />
-    /// <seealso cref="QuantSA.General.IProvidesResultStore" />
     [Serializable]
-    public class LoanFloatingRate : FloatLeg, IProvidesResultStore
+    public class LoanFloatingRate : FloatLeg
     {
         private FloatRateIndex index;
 
@@ -21,24 +20,6 @@ namespace QuantSA.General
 
         //TODO: Move float leg to a component rather than a base class.  See https://en.wikipedia.org/wiki/Composition_over_inheritance
         private double spread;
-
-
-        /// <summary>
-        /// Some useful information for a user who has an instance of this class.
-        /// </summary>
-        /// <returns></returns>
-        public ResultStore GetResultStore()
-        {
-            var results = new ResultStore();
-            results.Add("id", id);
-            results.Add("type", type);
-            results.Add("ccy", ccy.ToString());
-            results.Add("floatIndex", index.ToString());
-            results.Add("spread", spread);
-            results.Add("loanDates", resetDates);
-            results.Add("loanBalances", notionals);
-            return results;
-        }
 
         /// <summary>
         /// Create a floating rate loan from a loan profile.  The first date in the profile is the disbursment date and 

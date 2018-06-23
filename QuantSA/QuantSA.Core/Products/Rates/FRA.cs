@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.Core.Products;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.Shared;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General.Products.Rates
+namespace QuantSA.Core.Products.Rates
 {
     /// <summary>
     /// A FRA that pays the discounted flow at the near date/reset date.
     /// </summary>
     /// <seealso cref="ProductWrapper" />
     [Serializable]
-    public class FRA : ProductWrapper, IProvidesResultStore
+    public class FRA : ProductWrapper
     {
         private readonly double accrualFraction;
         private readonly Currency ccy;
@@ -48,20 +46,6 @@ namespace QuantSA.General.Products.Rates
             this.floatIndex = floatIndex;
             ccy = floatIndex.currency;
             Init();
-        }
-
-        public ResultStore GetResultStore()
-        {
-            var result = new ResultStore();
-            result.Add("notional", notional);
-            result.Add("accrualFraction", accrualFraction);
-            result.Add("rate", rate);
-            result.Add("nearDate", nearDate);
-            result.Add("farDate", farDate);
-            result.Add("floatIndex", floatIndex.ToString());
-            result.Add("payFixed", payFixed.ToString());
-            result.Add("ccy", ccy.ToString());
-            return result;
         }
 
         /// <summary>

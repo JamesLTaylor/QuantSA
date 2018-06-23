@@ -72,7 +72,6 @@
     <Compile Include="MarketData\IFloatingRateSource.cs" />
     <Compile Include="MarketData\IFXSource.cs" />
     <Compile Include="MarketData\ISurvivalProbabilitySource.cs" />
-    <Compile Include="IProvidesResultStore.cs" />
     <Compile Include="MarketData\IDiscountingDescription.cs" />
     <Compile Include="MarketData\IMarketDataContainer.cs" />
     <Compile Include="MarketData\IMarketDataSource.cs" />

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Text;
 using ExcelDna.Integration;
 using QuantSA.Excel.Shared;
-using QuantSA.General;
 
 namespace QuantSA.Excel.Addin.Functions
 {
@@ -86,42 +85,6 @@ namespace QuantSA.Excel.Addin.Functions
         public static string GetInstallPath()
         {
             return AppDomain.CurrentDomain.BaseDirectory;
-        }
-
-        [QuantSAExcelFunction(Description = "Get a list of available results in the results object.",
-            Name = "QSA.GetAvailableResults",
-            Category = "QSA.General",
-            ExampleSheet = "ZARSwap.xlsx",
-            IsHidden = false,
-            HelpTopic = "http://www.quantsa.org/GetAvailableResults.html")]
-        public static object[,] GetAvailableResults(
-            [ExcelArgument(Description = "The results object as returned by call to another QuantSA function")]
-            IProvidesResultStore resultStore)
-        {
-            var temp = resultStore.GetResultStore().GetNames();
-            var column = new object[temp.Length, 1];
-            for (var i = 0; i < temp.Length; i++) column[i, 0] = temp[i];
-            return column;
-        }
-
-        [QuantSAExcelFunction(Description = "Get the stored results of a calculation from a results object.",
-            Name = "QSA.GetResults",
-            Category = "QSA.General",
-            ExampleSheet = "ZARSwap.xlsx",
-            IsHidden = false,
-            HelpTopic = "http://www.quantsa.org/GetResults.html")]
-        public static object[,] GetResults([ExcelArgument(Description =
-                "The results object as returned by a call to another QuantSA function")]
-            IProvidesResultStore resultStore,
-            [ExcelArgument(Description =
-                "The name of the result required.  Use QSA.GetAvailableResults to get a list of all available results in this object.")]
-            string resultName)
-        {
-            if (resultStore.GetResultStore().IsDate(resultName))
-                return resultStore.GetResultStore().GetDates(resultName);
-            if (resultStore.GetResultStore().IsString(resultName))
-                return resultStore.GetResultStore().GetStrings(resultName);
-            return resultStore.GetResultStore().Get(resultName);
         }
     }
 }

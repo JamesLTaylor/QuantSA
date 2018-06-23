@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General.Products.SAMarket;
+using QuantSA.Core.Products.SAMarket;
 using QuantSA.General;
 using QuantSA.General.Dates;
 using QuantSA.ProductExtensions.SAMarket;

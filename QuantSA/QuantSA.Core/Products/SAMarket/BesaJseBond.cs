@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.Core.Products;
-using QuantSA.General.Dates;
-using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General.Products.SAMarket
+namespace QuantSA.Core.Products.SAMarket
 {
     /// <summary>
     /// The market standard bond traded on the JSE, formerly the BESA.
     /// </summary>
-    public class BesaJseBond : ProductWrapper, IProvidesResultStore
+    public class BesaJseBond : ProductWrapper
     {
+        private readonly List<Cashflow> cfs;
         public double annualCouponRate;
 
         /// <summary>
@@ -20,7 +18,6 @@ namespace QuantSA.General.Products.SAMarket
         /// </summary>
         public int booksCloseDateDays;
 
-        private readonly List<Cashflow> cfs;
         public int couponDay1, couponDay2;
         public int couponMonth1, couponMonth2;
 
@@ -54,14 +51,6 @@ namespace QuantSA.General.Products.SAMarket
             cfs = new List<Cashflow>();
             cfs.Add(new Cashflow(maturityDate, notional, Currency.ZAR));
             Init();
-        }
-
-        public ResultStore GetResultStore()
-        {
-            var result = new ResultStore();
-            result.Add("maturityDate", maturityDate);
-            result.Add("annualCouponRate", annualCouponRate);
-            return result;
         }
 
         public override List<Cashflow> GetCFs()

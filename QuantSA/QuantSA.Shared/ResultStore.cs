@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.Shared
@@ -14,7 +13,7 @@ namespace QuantSA.Shared
     /// doubles, strings, ints and similar.
     /// </details>
     [Serializable]
-    public class ResultStore : IProvidesResultStore
+    public class ResultStore
     {
         private readonly Dictionary<string, object[,]> _data;
         private readonly Dictionary<string, object[,]> _dataDates;
