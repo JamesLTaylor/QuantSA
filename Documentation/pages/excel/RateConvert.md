@@ -25,8 +25,8 @@ Convert an interest rate from one compounding convention to another.
 ## Arguments
 
 * **rate** (Double)The rate to convert.
-* **compoundingFrom** (ICompoundingConvention)The compounding convention of the input rate.
-* **compoundingTo** (ICompoundingConvention)The compounding convention that the output rate should be in.
+* **compoundingFrom** ([CompoundingConvention](CompoundingConvention.html))The compounding convention of the input rate.
+* **compoundingTo** ([CompoundingConvention](CompoundingConvention.html))The compounding convention that the output rate should be in.
 * **yearFraction** *(Double)(Optional) The yearfraction over which the rate applies.  Only required if one of the conventions is 'Simple' or 'Discount'(Default value = )
 
 <!--HUMAN EDIT START-->
