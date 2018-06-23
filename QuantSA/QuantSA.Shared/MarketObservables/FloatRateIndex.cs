@@ -1,5 +1,4 @@
 ﻿using System;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
@@ -11,8 +10,8 @@ namespace QuantSA.Shared.MarketObservables
     [Serializable]
     public class FloatRateIndex : MarketObservable
     {
-        private string name;
         private readonly string toString;
+        private string name;
 
         private FloatRateIndex(Currency currency, string name, Tenor tenor)
         {
@@ -39,7 +38,10 @@ namespace QuantSA.Shared.MarketObservables
 
         public static FloatRateIndex JIBAR6M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.FromMonths(6));
         public static FloatRateIndex JIBAR1M = new FloatRateIndex(Currency.ZAR, "Jibar", Tenor.FromMonths(1));
-        public static FloatRateIndex PRIME1M_AVG = new FloatRateIndex(Currency.ZAR, "Prime1MonthAvg", Tenor.FromMonths(1));
+
+        public static FloatRateIndex PRIME1M_AVG =
+            new FloatRateIndex(Currency.ZAR, "Prime1MonthAvg", Tenor.FromMonths(1));
+
         public static FloatRateIndex LIBOR3M = new FloatRateIndex(Currency.USD, "Libor", Tenor.FromMonths(3));
         public static FloatRateIndex LIBOR6M = new FloatRateIndex(Currency.USD, "Libor", Tenor.FromMonths(6));
         public static FloatRateIndex LIBOR1M = new FloatRateIndex(Currency.USD, "Libor", Tenor.FromMonths(1));

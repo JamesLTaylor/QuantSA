@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General

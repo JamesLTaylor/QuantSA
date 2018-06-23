@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketObservables
 {
     [Serializable]
     public abstract class MarketObservable
@@ -12,16 +12,19 @@ namespace QuantSA.General
         /// <returns></returns>
         public abstract override string ToString();
 
-        public sealed override bool Equals(object obj) {
+        public sealed override bool Equals(object obj)
+        {
             return ToString().Equals(obj.ToString());
         }
+
         public static bool operator ==(MarketObservable left, MarketObservable right)
         {
-            if ((object)left == null && (object)right == null) return true;
-            if ((object)left != null && (object)right == null) return false;
-            if ((object)left == null && (object)right != null) return false;
-            return (left.GetHashCode() == right.GetHashCode());
+            if ((object) left == null && (object) right == null) return true;
+            if ((object) left != null && (object) right == null) return false;
+            if ((object) left == null && (object) right != null) return false;
+            return left.GetHashCode() == right.GetHashCode();
         }
+
         public static bool operator !=(MarketObservable left, MarketObservable right)
         {
             return !(left == right);
@@ -29,7 +32,7 @@ namespace QuantSA.General
 
         public sealed override int GetHashCode()
         {
-            return ToString().GetHashCode();            
+            return ToString().GetHashCode();
         }
     }
 }

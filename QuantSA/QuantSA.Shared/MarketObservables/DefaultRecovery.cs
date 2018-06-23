@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketObservables
 {
     /// <summary>
     /// The recovery rate in a default event.  It is undefined until there is a default.  When it is undefined 
@@ -14,14 +10,14 @@ namespace QuantSA.General
     public class DefaultRecovery : MarketObservable
     {
         private ReferenceEntity refEntity;
-        private string toString;
+        private readonly string toString;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultTime"/> class.
         /// </summary>
         /// <param name="refEntity">The reference entity for whom the default time will be monitored.</param>
         public DefaultRecovery(ReferenceEntity refEntity)
-        {            
+        {
             this.refEntity = refEntity;
             toString = "DEFAULT:RECOVERYRATE:" + refEntity.ToString().ToUpper();
         }

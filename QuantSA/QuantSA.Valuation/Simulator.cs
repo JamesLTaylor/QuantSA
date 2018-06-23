@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Valuation
 {

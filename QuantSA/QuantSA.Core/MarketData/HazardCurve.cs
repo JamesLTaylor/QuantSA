@@ -3,6 +3,7 @@ using Accord.Math;
 using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.General
 {

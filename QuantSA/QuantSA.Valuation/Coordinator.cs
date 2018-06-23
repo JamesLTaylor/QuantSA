@@ -9,6 +9,7 @@ using System.Threading;
 using QuantSA.Core.Primitives;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Valuation

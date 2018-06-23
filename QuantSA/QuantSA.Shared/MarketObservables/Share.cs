@@ -1,5 +1,4 @@
 ﻿using System;
-using QuantSA.General;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.MarketObservables
@@ -7,8 +6,8 @@ namespace QuantSA.Shared.MarketObservables
     [Serializable]
     public class Share : MarketObservable
     {
-        internal string shareCode;
         private readonly string toString;
+        internal string shareCode;
 
         public Share(string shareCode, Currency currency)
         {

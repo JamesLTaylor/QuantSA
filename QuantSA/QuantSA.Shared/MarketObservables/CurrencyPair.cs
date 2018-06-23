@@ -1,7 +1,7 @@
 ﻿using System;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Shared.MarketObservables
 {
     /// <summary>
     /// A currency pair.  Its observed value will always be units of counter currency 

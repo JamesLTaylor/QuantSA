@@ -4,6 +4,7 @@ using System.Linq;
 using QuantSA.Core.Primitives;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Core.Products

@@ -1,5 +1,4 @@
-﻿using QuantSA.General;
-using QuantSA.Shared.Primitives;
+﻿using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.MarketData
 {
@@ -10,6 +9,6 @@ namespace QuantSA.Shared.MarketData
     /// </summary>
     public interface IDiscountingDescription
     {
-        string GetName();
+        string Name { get; }
     }
 }

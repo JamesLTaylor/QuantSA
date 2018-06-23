@@ -1,5 +1,6 @@
 ﻿using QuantSA.General;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Shared.MarketData
 {
