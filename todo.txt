@@ -1,3 +1,0 @@
-IProvidesResultStore -> basically get human readable version of products.
-
-Need result object -> like a cube that can also be serialized
