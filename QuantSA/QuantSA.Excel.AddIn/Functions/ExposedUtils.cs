@@ -98,7 +98,7 @@ namespace QuantSA.Excel.Addin.Functions
             [ExcelArgument(Description = "The results object as returned by call to another QuantSA function")]
             ResultStore resultStore)
         {
-            var temp = resultStore.GetResultStore().GetNames();
+            var temp = resultStore.GetNames();
             var column = new object[temp.Length, 1];
             for (var i = 0; i < temp.Length; i++) column[i, 0] = temp[i];
             return column;
@@ -117,11 +117,11 @@ namespace QuantSA.Excel.Addin.Functions
                 "The name of the result required.  Use QSA.GetAvailableResults to get a list of all available results in this object.")]
             string resultName)
         {
-            if (resultStore.GetResultStore().IsDate(resultName))
-                return resultStore.GetResultStore().GetDates(resultName);
-            if (resultStore.GetResultStore().IsString(resultName))
-                return resultStore.GetResultStore().GetStrings(resultName);
-            return resultStore.GetResultStore().Get(resultName);
+            if (resultStore.IsDate(resultName))
+                return resultStore.GetDates(resultName);
+            if (resultStore.IsString(resultName))
+                return resultStore.GetStrings(resultName);
+            return resultStore.Get(resultName);
         }
     }
 }

@@ -30,16 +30,6 @@ namespace QuantSA.Shared
             _dataStrings = new Dictionary<string, object[,]>();
         }
 
-
-        /// <summary>
-        /// Returns itself.
-        /// </summary>
-        /// <returns></returns>
-        public ResultStore GetResultStore()
-        {
-            return this;
-        }
-
         /// <summary>
         /// Add a string the ResultStore
         /// </summary>
