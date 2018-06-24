@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.General;
 using QuantSA.General.Formulae;
 using QuantSA.Shared.Dates;

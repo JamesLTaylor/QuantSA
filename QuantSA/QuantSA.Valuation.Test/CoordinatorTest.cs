@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.General.Formulae;

@@ -8,7 +8,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.CurvesAndSurfaces
 {
     /// <summary>
     /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 

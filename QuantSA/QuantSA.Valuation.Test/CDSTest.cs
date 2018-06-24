@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Accord.Math;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.General;
 using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;

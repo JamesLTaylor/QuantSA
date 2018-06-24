@@ -1,5 +1,6 @@
 ﻿using System;
 using Accord.Math;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;

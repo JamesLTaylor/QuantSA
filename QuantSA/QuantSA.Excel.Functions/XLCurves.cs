@@ -1,4 +1,5 @@
 ﻿using ExcelDna.Integration;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.Shared.CurvesAndSurfaces;

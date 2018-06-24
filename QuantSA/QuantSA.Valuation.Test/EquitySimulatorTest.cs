@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Accord.Math;
 using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products;
 using QuantSA.General;
 using QuantSA.General.Formulae;
