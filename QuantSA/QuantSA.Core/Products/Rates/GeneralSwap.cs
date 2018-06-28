@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuantSA.General
 {
-    [Serializable]
+    
     public class GeneralSwap
     {
 

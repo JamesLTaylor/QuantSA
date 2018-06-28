@@ -12,7 +12,7 @@ namespace QuantSA.Shared
     /// While this object stores 2-d arrays of objects, it is intended for these objects to only be 
     /// doubles, strings, ints and similar.
     /// </details>
-    [Serializable]
+    
     public class ResultStore
     {
         private readonly Dictionary<string, object[,]> _data;

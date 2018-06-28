@@ -7,7 +7,7 @@ namespace QuantSA.Shared.MarketObservables
     /// it should have the value of 1 Jan 3000.
     /// </summary>
     /// <seealso cref="MarketObservable" />
-    [Serializable]
+    
     public class DefaultTime : MarketObservable
     {
         private ReferenceEntity refEntity;

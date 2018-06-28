@@ -2,7 +2,7 @@
 
 namespace QuantSA.Shared.MarketObservables
 {
-    [Serializable]
+    
     public abstract class MarketObservable
     {
         /// <summary>

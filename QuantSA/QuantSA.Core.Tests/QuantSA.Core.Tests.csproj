@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurvesAndSurfaces\NelsonSiegelTest.cs" />
+    <Compile Include="Primitives\ProductTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +66,10 @@
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>QuantSA.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Solution.Test\QuantSA.Solution.Test.csproj">
+      <Project>{8BFBEAC7-789D-4E15-9965-5129BC7589E5}</Project>
+      <Name>QuantSA.Solution.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

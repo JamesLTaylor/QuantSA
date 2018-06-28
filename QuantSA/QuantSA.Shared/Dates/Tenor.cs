@@ -3,7 +3,7 @@ using System.Text;
 
 namespace QuantSA.Shared.Dates
 {
-    [Serializable]
+    
     public class Tenor
     {
         public Tenor(int days, int weeks, int months, int years)

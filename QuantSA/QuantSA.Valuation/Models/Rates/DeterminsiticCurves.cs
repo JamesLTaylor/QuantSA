@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -12,17 +11,20 @@ namespace QuantSA.Valuation
     /// A "Simulator" that works with only 1 simulation.  The numeraire and all forward rates are obtained 
     /// directly from a curve.
     /// <para/>
-    /// Using this model is the equivalent of the usual forecasting and discounting valuetion for linear 
-    /// instrments like swaps.
+    /// Using this model is the equivalent of the usual forecasting and discounting valuation for linear 
+    /// instruments like swaps.
     /// </summary>
     /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
-    [Serializable]
     public class DeterminsiticCurves : NumeraireSimulator
     {
         private readonly IDiscountingSource discountCurve;
         private readonly Dictionary<MarketObservable, IFloatingRateSource> forecastCurves;
         private readonly Dictionary<MarketObservable, IFXSource> fxCurves;
         private readonly Currency numeraireCurrency;
+
+        private DeterminsiticCurves()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterminsiticCurves"/> class with just a discounting curve.

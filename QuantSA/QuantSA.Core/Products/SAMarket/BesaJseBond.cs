@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 

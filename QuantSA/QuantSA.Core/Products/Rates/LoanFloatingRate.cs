@@ -11,7 +11,7 @@ namespace QuantSA.Core.Products.Rates
     /// A Floating rate loan with exactly the same structure as <see cref="FloatLeg"/> but with notional flows added.
     /// </summary>    
     /// <seealso cref="QuantSA.General.FloatLeg" />
-    [Serializable]
+    
     public class LoanFloatingRate : FloatLeg
     {
         private FloatRateIndex index;

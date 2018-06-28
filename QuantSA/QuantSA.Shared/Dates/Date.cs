@@ -16,8 +16,7 @@ namespace QuantSA.Shared.Dates
     /// The choice of Epoch for this class is completely arbitrary and exists only to make sure that calculations 
     /// can easily be performed on number of days and move these backwards and forwards between dates without having to 
     /// make new <see cref="DateTime"/>s.
-    /// </remarks>
-    [Serializable]
+    /// </remarks>s
     public class Date : IComparable<Date>
     {
         private static readonly DateTime Epoch = new DateTime(2000, 1, 1);

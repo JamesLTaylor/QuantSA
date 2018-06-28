@@ -12,7 +12,6 @@ using QuantSA.Valuation;
 
 namespace ValuationTest
 {
-    [Serializable]
     public class ProductWrapperEquitySample1 : ProductWrapper
     {
         private readonly Share aaa = new Share("AAA", Currency.ZAR);
@@ -67,7 +66,7 @@ namespace ValuationTest
         }
     }
 
-    [Serializable]
+    
     public class ProductWrapperEquitySample2 : ProductWrapper
     {
         private readonly Share aaa = new Share("AAA", Currency.ZAR);

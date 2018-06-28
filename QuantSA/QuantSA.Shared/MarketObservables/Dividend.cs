@@ -2,7 +2,7 @@
 
 namespace QuantSA.Shared.MarketObservables
 {
-    [Serializable]
+    
     public class Dividend : MarketObservable
     {
         private readonly string toString;

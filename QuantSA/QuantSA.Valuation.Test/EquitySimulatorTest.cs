@@ -18,7 +18,6 @@ namespace ValuationTest
     /// <summary>
     /// Sample product for test simulated indices.
     /// </summary>
-    [Serializable]
     public class ProductWithDiviAndFwd : ProductWrapper
     {
         private readonly Date dealEndDate = new Date(2019, 9, 30);

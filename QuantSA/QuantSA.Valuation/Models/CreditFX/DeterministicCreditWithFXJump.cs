@@ -17,7 +17,7 @@ namespace QuantSA.Valuation
     /// Regression variables are FX, defaultedFlag (0,1), 1 year default probability
     /// </summary>
     /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
-    [Serializable]
+    
     public class DeterministicCreditWithFXJump : NumeraireSimulator
     {
         // The simulations

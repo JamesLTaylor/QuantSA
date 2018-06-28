@@ -1,42 +1,24 @@
-﻿using QuantSA.General;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Collections.Generic;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Valuation
 {
     /// <summary>
-    /// The fundemental class in QuantSA valuations.  Implementations of this are responsible primarily 
+    /// The fundamental class in QuantSA valuations.  Implementations of this are responsible primarily 
     /// for producing realizations of <see cref="MarketObservable"/>s.
     /// <para/>
     /// Implementations also need to provide underlying variables that can be used in regressions for 
     /// forward values.  See QuantSA.pdf.
     /// </summary>
-    [Serializable]
     public abstract class Simulator
     {
-
-        /// <summary>
-        /// Clones this instance by serializing and deserializing the object.  If there is any issue with serializing
-        /// an implementation of a Simulator then this method should be overridden.
-        /// </summary>
-        /// <returns></returns>
-        public virtual Simulator Clone()
+        protected Simulator()
         {
-            MemoryStream stream = new MemoryStream();
-            IFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, this);
-            stream.Seek(0, SeekOrigin.Begin);
-            object o = formatter.Deserialize(stream);
-            return (Simulator)o;
         }
 
         /// <summary>
-        /// Identify if the the simulator is able to simulate the provided index.
+        /// Identify if the simulator is able to simulate the provided index.
         /// </summary>
         /// <param name="index">The index that is tested for.</param>
         /// <returns></returns>
@@ -89,7 +71,7 @@ namespace QuantSA.Valuation
         /// The method must always return the same number of factors in the same order.
         /// 
         /// Regression only makes sense for simulators with a low number of factors.  For example a Lognormal forward
-        /// model with 120 brownian motions would not be practical and some dimension reduction would be 
+        /// model with 120 Brownian motions would not be practical and some dimension reduction would be 
         /// required. 
         /// </summary>
         /// <param name="date">The date at which the factors are required.</param>

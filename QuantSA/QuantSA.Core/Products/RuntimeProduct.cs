@@ -7,7 +7,6 @@ using System.Text;
 
 namespace QuantSA.General
 {
-    [Serializable]
     public class RuntimeProduct
     {
         /// <summary>

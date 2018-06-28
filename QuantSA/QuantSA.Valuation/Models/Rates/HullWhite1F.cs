@@ -51,23 +51,6 @@ namespace QuantSA.Valuation
             this.currency = currency;
         }
 
-        /// <summary>
-        /// Clones this instance.  Overridden from <see cref="Simulator"/> because the lambda functions 
-        /// don't want to serialize.
-        /// </summary>        
-        /// <returns></returns>
-        public override Simulator Clone()
-        {
-            //TODO: Take deep copies of everything.  The current implemenation is safe for use in the Coordinator though.
-            var newSimulator = new HullWhite1F(currency, a, vol, r0, rate, time0);
-            newSimulator.forecastTenors = forecastTenors;
-            newSimulator.allDates = allDates.Clone();
-            newSimulator.allDatesDouble = (double[]) allDatesDouble.Clone();
-            //newSimulator.r;
-            //newSimulator.bankAccount;
-            return newSimulator;
-        }
-
         public void AddForecast(FloatRateIndex index)
         {
             forecastTenors.Add(index, index.tenor);

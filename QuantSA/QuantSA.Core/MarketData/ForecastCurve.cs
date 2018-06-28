@@ -11,7 +11,7 @@ namespace QuantSA.General
     /// Linearly interpolates forward rates.  Must only be used for a single floating index.  This is generally enforced 
     /// by the model using it.
     /// </summary>
-    [Serializable]
+    
     public class ForecastCurve : IFloatingRateSource
     {
         private readonly DatesAndRates dateAndRates;

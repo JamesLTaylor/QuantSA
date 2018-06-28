@@ -14,7 +14,6 @@ namespace QuantSA.Core.CurvesAndSurfaces
     /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 
     /// discount factors or interpolated directly.
     /// </summary>
-    [Serializable]
     public class DatesAndRates : IDiscountingSource, ICurve
     {
         private readonly Date anchorDate;
@@ -23,8 +22,13 @@ namespace QuantSA.Core.CurvesAndSurfaces
         private readonly double anchorDateValue;
         private readonly Currency currency;
         private readonly double[] dates;
+        public double[] rates { get; }
 
         [NonSerialized] private LinearSpline spline;
+
+        private DatesAndRates()
+        {
+        }
 
         /// <summary>
         /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
@@ -61,9 +65,6 @@ namespace QuantSA.Core.CurvesAndSurfaces
             spline = LinearSpline.InterpolateSorted(this.dates, this.rates);
         }
 
-        public double[] rates { get; }
-
-
         /// <summary>
         /// Interpolate the curve.
         /// </summary>
@@ -88,7 +89,7 @@ namespace QuantSA.Core.CurvesAndSurfaces
         }
 
         /// <summary>
-        /// Get a discount factor assuming the rates are continuosly compounded and the daycount in actual/365
+        /// Get a discount factor assuming the rates are continuously compounded and the daycount in actual/365
         /// </summary>
         /// <param name="date">The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to this date.</param>
         /// <returns></returns>

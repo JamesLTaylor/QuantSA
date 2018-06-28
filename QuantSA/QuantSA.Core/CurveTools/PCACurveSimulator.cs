@@ -8,7 +8,7 @@ using Normal = MathNet.Numerics.Distributions.Normal;
 
 namespace QuantSA.General
 {
-    [Serializable]
+    
     public class PCACurveSimulator
     {
         /// <summary>

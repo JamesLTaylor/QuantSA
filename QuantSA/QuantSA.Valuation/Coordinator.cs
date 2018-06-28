@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using QuantSA.Core.Primitives;
+using QuantSA.Core.Serialization;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
@@ -198,11 +199,11 @@ namespace QuantSA.Valuation
         private void CopySimulators(out NumeraireSimulator localNumeraire, out List<Simulator> localSimulators)
         {
             localSimulators = new List<Simulator>();
-            foreach (Simulator simulator in simulators)
+            foreach (var simulator in simulators)
             {
-                localSimulators.Add(simulator.Clone());
+                localSimulators.Add((Simulator) Cloner.Clone(simulator));
             }
-            localNumeraire = (NumeraireSimulator)localSimulators[0];
+            localNumeraire = (NumeraireSimulator) localSimulators[0];
         }
 
         /// <summary>

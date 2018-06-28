@@ -3,7 +3,7 @@ using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.MarketObservables
 {
-    [Serializable]
+    
     public class Share : MarketObservable
     {
         private readonly string toString;

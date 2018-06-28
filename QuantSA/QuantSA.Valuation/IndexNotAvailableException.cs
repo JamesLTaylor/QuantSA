@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace QuantSA.Valuation
 {
-    [Serializable]
+    
     internal class IndexNotAvailableException : Exception
     {
         public IndexNotAvailableException()

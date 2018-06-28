@@ -11,7 +11,7 @@ namespace QuantSA.General
     ///
     /// </summary>
     /// <example>If the ZAR USD exchnage rate was 13.52 ZAR per USD then ZAR is the counter and USD the base.</example>
-    [Serializable]
+    
     public class FXForecastCurve : IFXSource
     {
         private readonly Currency baseCurrency;

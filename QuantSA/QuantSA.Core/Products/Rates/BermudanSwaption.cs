@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using QuantSA.Core.Primitives;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Shared.Dates;
@@ -21,7 +22,6 @@ namespace QuantSA.General
     /// <remarks>
     /// </remarks>
     /// <seealso cref="IProductWithEarlyExercise" />
-    [Serializable]
     public class BermudanSwaption : ProductWithEarlyExercise
     {
         private readonly Currency ccy = Currency.ZAR;

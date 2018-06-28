@@ -15,7 +15,6 @@ namespace QuantSA.Core.Products
     /// Requires fewer methods to be implemented.
     /// </summary>
     /// <seealso cref="Product" />
-    [Serializable]
     public abstract class ProductWrapper : Product
     {
         private List<Date> cfDates;

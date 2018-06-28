@@ -122,16 +122,6 @@ namespace QuantSA.Valuation.Models
                                             numeraireCcy);
         }
 
-        public override Simulator Clone()
-        {
-            var rateSimulatorsCopy = rateSimulators.Select(sim => (HullWhite1F) sim.Clone()).ToArray();
-            var model = new MultiHWAndFXToy(new Date(anchorDate), numeraireCcy, rateSimulatorsCopy, currencyPairs,
-                spots, vols, correlations);
-            model.allRequiredDates = allRequiredDates.Clone();
-            return model;
-        }
-
-
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
         {
             if (index is FloatRateIndex)

@@ -8,8 +8,6 @@ using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Core.Products.Rates
 {
-    [JsonObject(MemberSerialization.Fields)]
-    [Serializable]
     public class IRSwap : Product
     {
         private readonly double[] _accrualFractions;
@@ -53,8 +51,6 @@ namespace QuantSA.Core.Products.Rates
             _notionals = notionals;
             _fixedRate = fixedRate;
             _ccy = ccy;
-
-            _indexValues = new double[indexDates.Length];
         }
 
         /// <summary>
@@ -112,6 +108,7 @@ namespace QuantSA.Core.Products.Rates
         /// <param name="valueDate"></param>
         public override void SetValueDate(Date valueDate)
         {
+            _indexValues = new double[_indexDates.Length];
             _valueDate = valueDate;
             _futurePayDates = new List<Date>();
             _futureIndexDates = new List<Date>();

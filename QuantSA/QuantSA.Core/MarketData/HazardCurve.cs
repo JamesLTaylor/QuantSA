@@ -14,7 +14,7 @@ namespace QuantSA.General
     /// survival is given by exp(-lambda(T)*T)
     /// </summary>
     /// <seealso cref="ISurvivalProbabilitySource" />
-    [Serializable]
+    
     public class HazardCurve : ISurvivalProbabilitySource
     {
         private readonly double[] dateValues;

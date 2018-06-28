@@ -7,7 +7,7 @@ namespace QuantSA.Shared.MarketObservables
     /// A currency pair.  Its observed value will always be units of counter currency 
     /// per single unit of base currency
     /// </summary>
-    [Serializable]
+    
     public class CurrencyPair : MarketObservable
     {
         private readonly string toString;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using QuantSA.Core.Primitives;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
@@ -9,7 +10,6 @@ using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Core.Products.Rates
 {
-    [Serializable]
     public class CallableBond : ProductWithEarlyExercise
     {
         private readonly double coupon;

@@ -13,7 +13,7 @@ namespace QuantSA.Core.Products.Rates
     /// This fixed rate loan has been implemented as a CashLeg with a convenient constructor.
     /// </remarks>
     /// <seealso cref="QuantSA.General.CashLeg" />
-    [Serializable]
+    
     public class LoanFixedRate : CashLeg
     {
         private double[] balanceAmounts;

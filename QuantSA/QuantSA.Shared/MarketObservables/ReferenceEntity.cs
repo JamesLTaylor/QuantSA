@@ -5,7 +5,7 @@ namespace QuantSA.Shared.MarketObservables
     /// <summary>
     /// A company that may be used in some credit derivatives and whose default time will be required.
     /// </summary>
-    [Serializable]
+    
     public class ReferenceEntity
     {
         private readonly string name;

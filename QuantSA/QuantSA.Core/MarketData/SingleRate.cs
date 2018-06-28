@@ -5,7 +5,7 @@ using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
-    [Serializable]
+    
     public class SingleRate : IDiscountingSource
     {
         private readonly Date anchorDate;

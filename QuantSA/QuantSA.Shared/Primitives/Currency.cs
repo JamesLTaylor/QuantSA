@@ -1,11 +1,12 @@
-﻿using System;
-
-namespace QuantSA.Shared.Primitives
+﻿namespace QuantSA.Shared.Primitives
 {
-    [Serializable]
     public class Currency
     {
         private readonly string _code;
+
+        public Currency()
+        {
+        }
 
         public Currency(string code)
         {
@@ -59,7 +60,7 @@ namespace QuantSA.Shared.Primitives
         /// that can be used for any product.
         /// </summary>
         public static Currency ANY = new Currency("ANY");
-        
+
         #endregion
     }
 }

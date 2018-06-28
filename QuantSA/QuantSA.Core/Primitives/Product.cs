@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using QuantSA.Core.Serialization;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
-    [Serializable]
     public abstract class Product : IProduct
     {
         /// <summary>
@@ -84,12 +81,7 @@ namespace QuantSA.General
         /// </summary>
         public virtual IProduct Clone()
         {
-            var stream = new MemoryStream();
-            IFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, this);
-            stream.Seek(0, SeekOrigin.Begin);
-            var o = formatter.Deserialize(stream);
-            return (Product) o;
+            return (Product) Cloner.Clone(this);
         }
     }
 }

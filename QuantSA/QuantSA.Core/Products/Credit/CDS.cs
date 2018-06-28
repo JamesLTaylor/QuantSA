@@ -8,12 +8,11 @@ using QuantSA.Shared.Primitives;
 namespace QuantSA.General
 {
     /// <summary>
-    /// A par stype credit default swap whose cashflows depend explicitly on the default events.  
+    /// A par type credit default swap whose cashflows depend explicitly on the default events.  
     /// Protection always applies from the value date: there is not concept in the class of a forward starting 
     /// CDS.
     /// </summary>
     /// <seealso cref="QuantSA.General.Product" />
-    [Serializable]
     public class CDS : Product
     {
         private readonly double[] accrualFractions;
@@ -27,13 +26,13 @@ namespace QuantSA.General
         // Market observables
         private readonly DefaultRecovery defaultRecovery;
         private readonly DefaultTime defaultTime;
-        private Date defaultTimeValue;
 
         private readonly double[] notionals;
 
         // Contract definition
         private readonly Date[] paymentDates;
         private readonly double[] rates;
+        private Date defaultTimeValue;
         private double recoveryRate;
 
         // Simulation values        

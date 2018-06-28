@@ -1,5 +1,4 @@
-﻿using System;
-using QuantSA.Shared.Dates;
+﻿using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.MarketObservables
@@ -7,13 +6,12 @@ namespace QuantSA.Shared.MarketObservables
     /// <summary>
     /// An object to describe a floating rate index such as 3 Month Jibar.
     /// </summary>
-    [Serializable]
     public class FloatRateIndex : MarketObservable
     {
         private readonly string toString;
         private string name;
 
-        private FloatRateIndex(Currency currency, string name, Tenor tenor)
+        public FloatRateIndex(Currency currency, string name, Tenor tenor)
         {
             this.currency = currency;
             this.name = name;

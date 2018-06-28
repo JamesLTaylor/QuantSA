@@ -6,7 +6,7 @@ namespace QuantSA.Shared.MarketObservables
     /// The recovery rate in a default event.  It is undefined until there is a default.  When it is undefined 
     /// set it to Double.NaN in the simulation, this will make sure that it is not inadvertently used.
     /// </summary>
-    [Serializable]
+    
     public class DefaultRecovery : MarketObservable
     {
         private ReferenceEntity refEntity;

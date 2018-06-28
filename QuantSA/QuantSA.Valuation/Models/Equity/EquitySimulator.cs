@@ -14,7 +14,7 @@ namespace QuantSA.Valuation
     /// <summary>
     /// A <see cref="Simulator"/> that can provide realizations of several share prices in a single currency.
     /// </summary>
-    [Serializable]
+    
     public class EquitySimulator : NumeraireSimulator
     {
         private readonly Date anchorDate;

@@ -49,6 +49,8 @@
     <Compile Include="..\AssemblyInfoAll.cs">
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
+    <Compile Include="Calculation\ICalculationState.cs" />
+    <Compile Include="Data\ISharedInstances.cs" />
     <Compile Include="MarketData\IFixingSource.cs" />
     <Compile Include="Primitives\Cashflow.cs" />
     <Compile Include="Conventions\BusinessDay\BusinessDayStore.cs" />
@@ -88,6 +90,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MarketObservables\ReferenceEntity.cs" />
     <Compile Include="ResultStore.cs" />
+    <Compile Include="Serialization\ISharedData.cs" />
+    <Compile Include="Serialization\ISerializableViaName.cs" />
+    <Compile Include="Serialization\QuantSAState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
