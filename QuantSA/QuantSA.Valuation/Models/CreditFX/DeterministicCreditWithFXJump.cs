@@ -4,7 +4,6 @@ using System.Linq;
 using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
 using Newtonsoft.Json;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -18,21 +17,15 @@ namespace QuantSA.Valuation
     /// Regression variables are FX, defaultedFlag (0,1), 1 year default probability
     /// </summary>
     /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
-    
     public class DeterministicCreditWithFXJump : NumeraireSimulator
     {
-        // The simulations
-        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
-        
         private readonly MarketObservable currencyPair;
         private readonly MarketObservable defaultRecovery;
         private readonly MarketObservable defaultTime;
         private readonly IFXSource fxSource;
         private readonly double fxVol;
         private readonly double relJumpSizeInDefault;
-        private double simDefaultTime;
         private readonly double simRecoveryRate;
-        private Dictionary<int, double> simulation; // stores the simulated share prices at each required date
         private readonly double spot;
 
         private readonly ISurvivalProbabilitySource survivalProbSource;
@@ -40,6 +33,11 @@ namespace QuantSA.Valuation
         private readonly IDiscountingSource valueCurrencyDiscount;
 
         [JsonIgnore] private Date _anchorDate;
+
+        // The simulations
+        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
+        private double simDefaultTime;
+        private Dictionary<int, double> simulation; // stores the simulated share prices at each required date
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterministicCreditWithFXJump"/> class.
@@ -60,17 +58,18 @@ namespace QuantSA.Valuation
             double fxVol, double relJumpSizeInDefault, double expectedRecoveryRate)
         {
             this.survivalProbSource = survivalProbSource;
-            valueCurrency = valueCurrencyDiscount.GetCurrency();
             this.fxSource = fxSource;
             this.valueCurrencyDiscount = valueCurrencyDiscount;
             this.fxVol = fxVol;
             this.relJumpSizeInDefault = relJumpSizeInDefault;
             var refEntity = survivalProbSource.GetReferenceEntity();
+            simRecoveryRate = expectedRecoveryRate;
+
             defaultTime = new DefaultTime(refEntity);
             defaultRecovery = new DefaultRecovery(refEntity);
             currencyPair = new CurrencyPair(otherCurrency, valueCurrency);
             spot = fxSource.GetRate(_anchorDate);
-            simRecoveryRate = expectedRecoveryRate;
+            valueCurrency = valueCurrencyDiscount.GetCurrency();
         }
 
         /// <summary>

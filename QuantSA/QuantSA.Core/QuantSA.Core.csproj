@@ -76,13 +76,10 @@
     <Compile Include="MarketData\FloatingRateFixingCurve1Rate.cs" />
     <Compile Include="MarketData\ForecastCurve.cs" />
     <Compile Include="MarketData\ForecastCurveFromDiscount.cs" />
-    <Compile Include="MarketData\ForwardRatesCurveForStripping.cs" />
     <Compile Include="MarketData\FXForecastCurve.cs" />
     <Compile Include="MarketData\HazardCurve.cs" />
-    <Compile Include="MarketData\ICurveForStripping.cs" />
     <Compile Include="MarketData\ShiftedDiscountSource.cs" />
     <Compile Include="MarketData\SingleRate.cs" />
-    <Compile Include="MarketData\ZeroRatesCurveForStripping.cs" />
     <Compile Include="Primitives\CashflowEx.cs" />
     <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
     <Compile Include="Primitives\Product.cs" />

@@ -10,8 +10,7 @@ namespace QuantSA.General
     /// Currencies are quoted in units of counter currency per one unit of base currency.
     ///
     /// </summary>
-    /// <example>If the ZAR USD exchnage rate was 13.52 ZAR per USD then ZAR is the counter and USD the base.</example>
-    
+    /// <example>If the ZAR USD exchange rate was 13.52 ZAR per USD then ZAR is the counter and USD the base.</example>
     public class FXForecastCurve : IFXSource
     {
         private readonly Currency baseCurrency;
