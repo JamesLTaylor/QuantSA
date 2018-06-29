@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
@@ -18,12 +17,14 @@ namespace QuantSA.Core.Products.Rates
         private readonly double _payFixed; // -1 for payFixed, 1 for receive fixed
         private readonly Date[] _paymentDates;
         private readonly double[] _spreads;
-        private readonly Currency _ccy;
+
+        [JsonIgnore] private Currency _ccy;
         [JsonIgnore] private List<Date> _futureIndexDates;
         [JsonIgnore] private List<Date> _futurePayDates;
 
         // Product state
         [JsonIgnore] private double[] _indexValues;
+        [JsonIgnore] private string _secret;
         [JsonIgnore] private Date _valueDate;
 
         /// <summary>
@@ -50,7 +51,17 @@ namespace QuantSA.Core.Products.Rates
             _accrualFractions = accrualFractions;
             _notionals = notionals;
             _fixedRate = fixedRate;
-            _ccy = ccy;
+            Ccy = ccy;
+        }
+
+        private Currency Ccy
+        {
+            get => _ccy;
+            set
+            {
+                _ccy = value;
+                _secret = _ccy.ToString();
+            }
         }
 
         /// <summary>

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.General;
-using Accord.Statistics.Models.Regression.Linear;
 using Accord.Statistics.Distributions.Univariate;
+using Accord.Statistics.Models.Regression.Linear;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.Valuation
@@ -12,12 +11,13 @@ namespace QuantSA.Valuation
     /// </summary>
     internal class SimulatedRegressors
     {
-        private List<Date> dates;
-        private int nSims;
+        private readonly List<Date> dates;
+        private readonly int nSims;
+
         /// <summary>
         /// The regressors.  Index order is simulation number, date number, regressor number
         /// </summary>
-        private double[,,] regressors;
+        private readonly double[,,] regressors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulatedRegressors"/> class.  Uses the provided simulators to
@@ -26,25 +26,17 @@ namespace QuantSA.Valuation
         /// The order of the simulators must stay the same and the 
         /// number of regressors that they produce must stay the same.
         /// </summary>
-        /// <param name="dates">The dates as whihc regressors will be stored.</param>
+        /// <param name="dates">The dates as which regressors will be stored.</param>
         /// <param name="nSims">The number of  simulations.</param>
-        public SimulatedRegressors(List<Date> dates, int nSims, List<Simulator> simulators)
+        public SimulatedRegressors(List<Date> dates, int nSims, int regressorCount)
         {
             this.dates = dates;
             this.nSims = nSims;
-            // run one simulation to see how many indepedent variables each simulator provides
-            int regressorCount = 0;
-            foreach (Simulator simulator in simulators)
-            {
-                simulator.RunSimulation(0);
-                regressorCount += simulator.GetUnderlyingFactors(dates[0]).Length;
-            }
-
             regressors = new double[nSims, dates.Count, regressorCount];
         }
 
         /// <summary>
-        /// Adds a regressor at a specfied location.
+        /// Adds a regressor at a specified location.
         /// </summary>
         /// <param name="simNumber">The simulation number.</param>
         /// <param name="dateNumber">The forward date number.</param>
@@ -63,42 +55,41 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         private double[][] GetPolynomialValsRegular(Date date, int order)
         {
-            int col = dates.FindIndex(d => d == date);
-            double[][] result = new double[regressors.GetLength(0)][];
-            for (int row = 0; row < regressors.GetLength(0); row++)
+            var col = dates.FindIndex(d => d == date);
+            var result = new double[regressors.GetLength(0)][];
+            for (var row = 0; row < regressors.GetLength(0); row++)
             {
-                double[] rowValues = new double[1 + order * regressors.GetLength(2)];
+                var rowValues = new double[1 + order * regressors.GetLength(2)];
                 rowValues[0] = 1;
-                for (int i = 0; i < regressors.GetLength(2); i++)
+                for (var i = 0; i < regressors.GetLength(2); i++)
                 {
-                    double x = regressors[row, col, i];
-                    rowValues[1 + i*order] = x;
-                    for (int orderCounter = 1; orderCounter < order; orderCounter++)
-                    {
-                        rowValues[1 + i * order + orderCounter] = rowValues[i * order + orderCounter] * x;                        
-                    }
+                    var x = regressors[row, col, i];
+                    rowValues[1 + i * order] = x;
+                    for (var orderCounter = 1; orderCounter < order; orderCounter++)
+                        rowValues[1 + i * order + orderCounter] = rowValues[i * order + orderCounter] * x;
                 }
+
                 result[row] = rowValues;
             }
-            return result;            
+
+            return result;
         }
 
         /// <summary>
         /// Gets a fitted approximation to the forward values.
         /// </summary>
         /// <param name="date">The date at which the regressors should be observed.</param>
-        /// <param name="cfs">The sum of the pv of all the cashlows on the path that take place after <paramref name="date"/>.</param>
+        /// <param name="cfs">The sum of the PV of all the cashflows on the path that take place after <paramref name="date"/>.</param>
         /// <returns></returns>
         public double[] FitCFs(Date date, double[] cfs)
         {
             //double[][] inputs = GetPolynomialValsRegular(date, 3);
-            double[][] inputs = GetIntrinsic(date, 10);
+            var inputs = GetIntrinsic(date, 10);
 
-            var ols = new OrdinaryLeastSquares()
-            { UseIntercept = true, IsRobust = true };            
-            MultipleLinearRegression regression = ols.Learn(inputs, cfs);
-            double[] result = regression.Transform(inputs);
-            return result;            
+            var ols = new OrdinaryLeastSquares {UseIntercept = true, IsRobust = true};
+            var regression = ols.Learn(inputs, cfs);
+            var result = regression.Transform(inputs);
+            return result;
         }
 
         /// <summary>
@@ -109,8 +100,8 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         private double[] GetSingleX(int dateCol, int regressorNumber)
         {
-            double[] result = new double[regressors.GetLength(0)];
-            for (int i = 0; i < result.Length; i++)
+            var result = new double[regressors.GetLength(0)];
+            for (var i = 0; i < result.Length; i++)
                 result[i] = regressors[i, dateCol, regressorNumber];
             return result;
         }
@@ -121,41 +112,39 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         private double[][] GetIntrinsic(Date date, int order)
         {
-            int col = dates.FindIndex(d => d == date);
-            double[][] result = new double[regressors.GetLength(0)][];
+            var col = dates.FindIndex(d => d == date);
+            var result = new double[regressors.GetLength(0)][];
 
-            for (int regressorNumber = 0; regressorNumber < regressors.GetLength(2); regressorNumber++)
+            for (var regressorNumber = 0; regressorNumber < regressors.GetLength(2); regressorNumber++)
             {
                 // For each regressor get the partition of the possible values
-                double[] xVec = GetSingleX(col, regressorNumber);
-                EmpiricalDistribution xDist = new EmpiricalDistribution(xVec);
-                double[] strikes = new double[order - 1];
-                for (int i = 1; i < order; i++)
-                {
-                    strikes[i - 1] = xDist.InverseDistributionFunction((double)i / order);
-                }
+                var xVec = GetSingleX(col, regressorNumber);
+                var xDist = new EmpiricalDistribution(xVec);
+                var strikes = new double[order - 1];
+                for (var i = 1; i < order; i++) strikes[i - 1] = xDist.InverseDistributionFunction((double) i / order);
                 // Create the values of the basis functions for each regressor
-                for (int row = 0; row < regressors.GetLength(0); row++)
+                for (var row = 0; row < regressors.GetLength(0); row++)
                 {
                     double[] rowValues;
-                    if (regressorNumber == 0) // On the first pass for the first regressor, create the rows on the result matrix.
+                    if (regressorNumber == 0
+                    ) // On the first pass for the first regressor, create the rows on the result matrix.
                     {
                         rowValues = new double[1 + order * regressors.GetLength(2)];
                         rowValues[0] = 1;
                         result[row] = rowValues;
                     }
-                    else 
+                    else
                     {
                         rowValues = result[row];
                     }
-                    double x = regressors[row, col, regressorNumber];
+
+                    var x = regressors[row, col, regressorNumber];
                     rowValues[1 + regressorNumber * order] = Math.Max(0, strikes[0] - x);
-                    for (int orderCounter = 0; orderCounter < (order-1); orderCounter++)
-                    {
+                    for (var orderCounter = 0; orderCounter < order - 1; orderCounter++)
                         rowValues[2 + regressorNumber * order + orderCounter] = Math.Max(0, x - strikes[orderCounter]);
-                    }
                 }
             }
+
             return result;
         }
 
@@ -176,15 +165,13 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         public double[,] GetRegressors(int regressorNumber, Date[] fwdValueDates)
         {
-            double[,] result = new double[nSims, fwdValueDates.Length];
-            for (int j = 0; j < fwdValueDates.Length; j++)
+            var result = new double[nSims, fwdValueDates.Length];
+            for (var j = 0; j < fwdValueDates.Length; j++)
             {
-                int dateCol = dates.FindIndex(d => d == fwdValueDates[j]);
-                for (int i = 0; i<nSims; i++)
-                {
-                    result[i, j] = regressors[i, dateCol, regressorNumber];
-                }
+                var dateCol = dates.FindIndex(d => d == fwdValueDates[j]);
+                for (var i = 0; i < nSims; i++) result[i, j] = regressors[i, dateCol, regressorNumber];
             }
+
             return result;
         }
     }

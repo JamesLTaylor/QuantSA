@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
+using Newtonsoft.Json;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
@@ -22,7 +23,7 @@ namespace QuantSA.Valuation
     {
         // The simulations
         private List<Date> allRequiredDates; // the set of all dates that will be simulated.
-        private readonly Date anchorDate;
+        
         private readonly MarketObservable currencyPair;
         private readonly MarketObservable defaultRecovery;
         private readonly MarketObservable defaultTime;
@@ -38,6 +39,7 @@ namespace QuantSA.Valuation
         private readonly Currency valueCurrency;
         private readonly IDiscountingSource valueCurrencyDiscount;
 
+        [JsonIgnore] private Date _anchorDate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterministicCreditWithFXJump"/> class.
@@ -67,8 +69,7 @@ namespace QuantSA.Valuation
             defaultTime = new DefaultTime(refEntity);
             defaultRecovery = new DefaultRecovery(refEntity);
             currencyPair = new CurrencyPair(otherCurrency, valueCurrency);
-            anchorDate = valueCurrencyDiscount.GetAnchorDate();
-            spot = fxSource.GetRate(anchorDate);
+            spot = fxSource.GetRate(_anchorDate);
             simRecoveryRate = expectedRecoveryRate;
         }
 
@@ -90,7 +91,7 @@ namespace QuantSA.Valuation
             {
                 var result = new double[requiredTimes.Count];
                 for (var i = 0; i < requiredTimes.Count; i++)
-                    if (requiredTimes[i] <= anchorDate)
+                    if (requiredTimes[i] <= _anchorDate)
                         result[i] = fxSource.GetRate(requiredTimes[i]);
                     else
                         result[i] = simulation[requiredTimes[i]];
@@ -142,8 +143,9 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Remove duplicate dates and sort the list
         /// </summary>
-        public override void Prepare()
+        public override void Prepare(Date anchorDate)
         {
+            _anchorDate = anchorDate;
             allRequiredDates = allRequiredDates.Distinct().ToList();
             allRequiredDates.Sort();
         }
@@ -168,14 +170,14 @@ namespace QuantSA.Valuation
                 -533776581 * simNumber; // This magic number is: "DeterministicCreditWithFXJump".GetHashCode();
             var tau = uniform.Generate();
             tau = Math.Log(tau) / -hazEst;
-            simDefaultTime = anchorDate.value + tau * 365;
+            simDefaultTime = _anchorDate.value + tau * 365;
 
             for (var timeCounter = 0; timeCounter < allRequiredDates.Count; timeCounter++)
             {
                 double dt = timeCounter > 0
                     ? allRequiredDates[timeCounter] - allRequiredDates[timeCounter - 1]
-                    : allRequiredDates[timeCounter] - anchorDate.value;
-                newFXfwd = fxSource.GetRate(new Date(anchorDate.value + dt));
+                    : allRequiredDates[timeCounter] - _anchorDate.value;
+                newFXfwd = fxSource.GetRate(new Date(_anchorDate.value + dt));
 
                 dt = dt / 365.0;
                 var sdt = Math.Sqrt(dt);

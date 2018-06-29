@@ -150,6 +150,7 @@ namespace ValuationTest
         /// from uncollateralized swap quotes.  The key here is that the same bootstrapping call
         /// gets swaps with collateral discounting and swaps with staight zar discounting.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void TestCurveStripTwoZARDiscount()
         {

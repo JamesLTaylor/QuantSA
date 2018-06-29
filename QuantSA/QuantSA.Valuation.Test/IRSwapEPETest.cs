@@ -6,6 +6,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {
@@ -28,7 +29,7 @@ namespace ValuationTest
             var a = 0.05;
             var vol = 0.005;
             var flatCurveRate = 0.07;
-            var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
+            var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate);
             hullWiteSim.AddForecast(FloatRateIndex.JIBAR3M);
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 

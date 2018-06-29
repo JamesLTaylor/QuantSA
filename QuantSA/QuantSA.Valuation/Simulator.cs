@@ -13,10 +13,6 @@ namespace QuantSA.Valuation
     /// </summary>
     public abstract class Simulator
     {
-        protected Simulator()
-        {
-        }
-
         /// <summary>
         /// Identify if the simulator is able to simulate the provided index.
         /// </summary>
@@ -35,7 +31,8 @@ namespace QuantSA.Valuation
         /// times.
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="requiredDates">The date at which <paramref name="index"/> will be required.  This method can be called multiple times for the same index but you 
+        /// <param name="requiredDates">The date at which <paramref name="index"/> will be required.  This method can be
+        /// called multiple times for the same index but you 
         /// are guaranteed that <see cref="Prepare"/> will be called before a simulation is requested.</param>        
         public abstract void SetRequiredDates(MarketObservable index, List<Date> requiredDates);
 
@@ -45,7 +42,7 @@ namespace QuantSA.Valuation
         ///  * sort and remove duplicate required dates
         ///  * add extra simulation dates internally
         /// </summary>
-        public abstract void Prepare();
+        public abstract void Prepare(Date anchorDate);
 
         /// <summary>
         /// Run the simulation and internally store the indices that will be required.  Will only be called 

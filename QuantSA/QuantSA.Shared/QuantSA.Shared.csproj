@@ -52,6 +52,7 @@
     <Compile Include="Calculation\ICalculationState.cs" />
     <Compile Include="Data\ISharedInstances.cs" />
     <Compile Include="MarketData\IFixingSource.cs" />
+    <Compile Include="MarketObservables\BankAccountNumeraire.cs" />
     <Compile Include="Primitives\Cashflow.cs" />
     <Compile Include="Conventions\BusinessDay\BusinessDayStore.cs" />
     <Compile Include="Conventions\BusinessDay\IBusinessDayConvention.cs" />

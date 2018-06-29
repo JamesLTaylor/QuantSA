@@ -5,6 +5,8 @@ using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Core.Serialization;
 using QuantSA.Shared.Primitives;
+using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace QuantSA.Solution.Test
 {
@@ -24,9 +26,17 @@ namespace QuantSA.Solution.Test
         public void IRSwap_CanCloneViaSerialize()
         {
             var swap = TestHelpers.ZARSwap();
-            var newSwap = (IRSwap)Cloner.Clone(swap);
+            var newSwap = (IRSwap) Cloner.Clone(swap);
         }
 
+        [TestMethod]
+        public void HullWhite1F_CanCloneViaSerialize()
+        {
+            var model = new HullWhite1F(TestHelpers.ZAR, 0.05, 0.01, 0.07, 0.07);
+            var newModel = (HullWhite1F) Cloner.Clone(model);
+        }
+
+        /*
         [TestMethod]
         public void AllProducts_AreSerializable()
         {
@@ -36,5 +46,6 @@ namespace QuantSA.Solution.Test
                 Assert.Fail($"{type.FullName} is not Json serializable");
             }
         }
+        */
     }
 }

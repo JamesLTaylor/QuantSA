@@ -1,4 +1,5 @@
-﻿using ExcelDna.Integration;
+﻿using System;
+using ExcelDna.Integration;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
@@ -129,6 +130,9 @@ namespace QuantSA.ExcelFunctions
                 Default = "Currency.ANY")]
             Currency currency)
         {
+            for (var i = 1; i < dates.Length; i++)
+                if (dates[i].value <= dates[i - 1].value)
+                    throw new ArgumentException("Dates must be strictly increasing");
             return new DatesAndRates(currency, dates[0], dates, rates);
         }
 

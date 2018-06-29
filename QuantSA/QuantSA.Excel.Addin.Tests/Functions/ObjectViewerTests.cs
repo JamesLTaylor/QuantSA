@@ -20,7 +20,7 @@ namespace QuantSA.Excel.Addin.Tests.Functions
         public void ObjectViewer_ViewObjectPropertyNames_GetAllNonIgnore()
         {
             var fields = ObjectViewer.ViewObjectPropertyNames(_swap);
-            Assert.AreEqual(9, fields.Length);
+            Assert.AreEqual(8, fields.Length);
         }
 
         [TestMethod]
@@ -33,7 +33,7 @@ namespace QuantSA.Excel.Addin.Tests.Functions
         [TestMethod]
         public void ObjectViewer_ViewObjectPropertyValue_TwoLevel()
         {
-            var ccy = ObjectViewer.ViewObjectPropertyValue(_swap, "ccy", "code");
+            var ccy = ObjectViewer.ViewObjectPropertyValue(_swap, "Ccy", "code");
             Assert.AreEqual("ZAR", (string) ccy[0, 0]);
         }
     }

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
+using Newtonsoft.Json;
 using QuantSA.General;
 using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Valuation.Models.Rates;
 
 namespace QuantSA.Valuation.Models
 {
@@ -33,6 +35,7 @@ namespace QuantSA.Valuation.Models
         private Dictionary<int, double[]> simulation; // stores the simulated spot rates at each required date
         private readonly double[] spots;
         private readonly double[] vols;
+        [JsonIgnore] private Date _anchorDate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiHWAndFXToy"/> class.
@@ -61,9 +64,7 @@ namespace QuantSA.Valuation.Models
             ccySimMap = new Dictionary<Currency, HullWhite1F>();
             var rate = -Math.Log(numeraireCurve.GetDF(anchorDate.AddMonths(12)));
             numeraireSimulator = new HullWhite1F(numeraireCcy, numeraireHWParams.meanReversionSpeed,
-                numeraireHWParams.vol, rate, rate, anchorDate);
-            foreach (var index in numeraireCcyRequiredIndices)
-                numeraireSimulator.AddForecast(index);
+                numeraireHWParams.vol, rate, rate, numeraireCcyRequiredIndices);
 
             rateSimulatorsList.Add(numeraireSimulator);
             ccySimMap[numeraireCcy] = numeraireSimulator;
@@ -71,9 +72,7 @@ namespace QuantSA.Valuation.Models
             {
                 rate = -Math.Log(otherCcyCurves[i].GetDF(anchorDate.AddMonths(12)));
                 var thisSim = new HullWhite1F(otherCcys[i], otherCcyHwParams[i].meanReversionSpeed,
-                    otherCcyHwParams[i].vol, rate, rate, anchorDate);
-                foreach (var index in otherCcyRequiredIndices[i])
-                    thisSim.AddForecast(index);
+                    otherCcyHwParams[i].vol, rate, rate, otherCcyRequiredIndices[i]);
                 rateSimulatorsList.Add(thisSim);
                 ccySimMap[otherCcys[i]] = thisSim;
             }
@@ -168,10 +167,11 @@ namespace QuantSA.Valuation.Models
             return numeraireSimulator.Numeraire(valueDate);
         }
 
-        public override void Prepare()
+        public override void Prepare(Date anchorDate)
         {
+            _anchorDate = anchorDate;
             foreach (var simulator in rateSimulators)
-                simulator.Prepare();
+                simulator.Prepare(anchorDate);
             allRequiredDates = allRequiredDates.Distinct().ToList();
             allRequiredDates.Sort();
         }

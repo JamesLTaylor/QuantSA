@@ -10,6 +10,7 @@ using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -327,8 +328,7 @@ namespace QuantSA.ExcelFunctions
             var anchorDate = baseCurve.GetAnchorDate();
             var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.FromYears(1))));
             var model = new HullWhite1F(baseCurve.GetCurrency(), meanReversion, flatVol, flatCurveRate, flatCurveRate,
-                anchorDate);
-            model.AddForecast(forecastIndices);
+                new[] {forecastIndices});
             return model;
         }
     }

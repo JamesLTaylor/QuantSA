@@ -12,6 +12,7 @@ using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {
@@ -22,11 +23,11 @@ namespace ValuationTest
         public void TestMultiHWAndFXToyForwards()
         {
             var valueDate = new Date(2016, 9, 17);
-            var zarRatesSim = new HullWhite1F(Currency.ZAR, 0.05, 0.01, 0.07, 0.07, valueDate);
+            var zarRatesSim = new HullWhite1F(Currency.ZAR, 0.05, 0.01, 0.07, 0.07);
             zarRatesSim.AddForecast(FloatRateIndex.JIBAR3M);
-            var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.0000001, 0.01, 0.01, valueDate);
+            var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.0000001, 0.01, 0.01);
             usdRatesSim.AddForecast(FloatRateIndex.LIBOR3M);
-            var eurRatesSim = new HullWhite1F(Currency.EUR, 0.05, 0.0000001, 0.005, 0.005, valueDate);
+            var eurRatesSim = new HullWhite1F(Currency.EUR, 0.05, 0.0000001, 0.005, 0.005);
             eurRatesSim.AddForecast(FloatRateIndex.EURIBOR3M);
 
             CurrencyPair[] currencyPairs =
@@ -42,7 +43,7 @@ namespace ValuationTest
             model.Reset();
             model.SetNumeraireDates(simDates);
             model.SetRequiredDates(currencyPairs[0], simDates); // Will simulate both currency pairs
-            model.Prepare();
+            model.Prepare(valueDate);
 
             var N = 100;
             var fwdSpotValues = Matrix.Zeros(N, 5);
@@ -92,11 +93,11 @@ namespace ValuationTest
         public void TestMultiHWAndFXToyCCIRS()
         {
             var valueDate = new Date(2016, 9, 17);
-            var zarRatesSim = new HullWhite1F(Currency.ZAR, 0.05, 0.01, 0.07, 0.07, valueDate);
+            var zarRatesSim = new HullWhite1F(Currency.ZAR, 0.05, 0.01, 0.07, 0.07);
             zarRatesSim.AddForecast(FloatRateIndex.JIBAR3M);
-            var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.01, 0.01, 0.01, valueDate);
+            var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.01, 0.01, 0.01);
             usdRatesSim.AddForecast(FloatRateIndex.LIBOR3M);
-            var eurRatesSim = new HullWhite1F(Currency.EUR, 0.05, 0.01, 0.005, 0.005, valueDate);
+            var eurRatesSim = new HullWhite1F(Currency.EUR, 0.05, 0.01, 0.005, 0.005);
             eurRatesSim.AddForecast(FloatRateIndex.EURIBOR3M);
 
             var currencyPairs = new[]

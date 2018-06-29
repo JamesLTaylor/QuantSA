@@ -122,7 +122,7 @@ namespace ValuationTest
             sim.Reset();
             sim.SetRequiredDates(divi, dates);
             sim.SetRequiredDates(shares[0], dates);
-            sim.Prepare();
+            sim.Prepare(anchorDate);
             sim.RunSimulation(0);
             var divs = sim.GetIndices(divi, dates);
             var shareprices = sim.GetIndices(shares[0], dates);
@@ -141,9 +141,9 @@ namespace ValuationTest
                 rateForecastCurves);
             sim.Reset();
             var simDate = new List<Date> {anchorDate.AddMonths(120)};
-            double dt = (simDate[0] - anchorDate) / 365;
+            double dt = (simDate[0] - anchorDate) / 365.0;
             sim.SetRequiredDates(shares[0], simDate);
-            sim.Prepare();
+            sim.Prepare(anchorDate);
             for (var i = 0; i < N; i++)
             {
                 sim.RunSimulation(i);

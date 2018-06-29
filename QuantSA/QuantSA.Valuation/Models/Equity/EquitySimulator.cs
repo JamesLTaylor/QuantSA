@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
+using Newtonsoft.Json;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
@@ -14,7 +15,6 @@ namespace QuantSA.Valuation
     /// <summary>
     /// A <see cref="Simulator"/> that can provide realizations of several share prices in a single currency.
     /// </summary>
-    
     public class EquitySimulator : NumeraireSimulator
     {
         private readonly Date anchorDate;
@@ -28,6 +28,7 @@ namespace QuantSA.Valuation
         private Dictionary<int, double[]> acculatedDivi; // stores the accumulated dividend on at each required date
         private List<Date> allRequiredDates; // the set of all dates that will be simulated.
         private Dictionary<int, double[]> simulation; // stores the simulated share prices at each required date
+        [JsonIgnore] private Date _anchorDate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EquitySimulator"/> class.
@@ -130,8 +131,9 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Remove duplicate dates and sort the list
         /// </summary>
-        public override void Prepare()
+        public override void Prepare(Date anchorDate)
         {
+            _anchorDate = anchorDate;
             allRequiredDates = allRequiredDates.Distinct().ToList();
             allRequiredDates.Sort();
         }
