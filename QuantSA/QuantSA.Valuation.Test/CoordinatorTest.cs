@@ -10,6 +10,7 @@ using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Equity;
 using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest

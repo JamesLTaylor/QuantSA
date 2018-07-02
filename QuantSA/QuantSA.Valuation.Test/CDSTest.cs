@@ -2,13 +2,15 @@
 using Accord.Math;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.MarketData;
 using QuantSA.General;
 using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
-using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.CreditFX;
 
 namespace ValuationTest
 {
@@ -23,13 +25,10 @@ namespace ValuationTest
             var cdsSpread = 0.025;
             // Trades
             var anchorDate = new Date(2016, 11, 25);
-            var refEntity = new ReferenceEntity("ABC");
-            Date[] paymentDates;
-            double[] accrualFractions;
-            DateGenerators.CreateDatesNoHolidays(Tenor.FromMonths(3), anchorDate, 20, out paymentDates,
-                out accrualFractions);
+            var refEntity = TestHelpers.TestCp;
+            DateGenerators.CreateDatesNoHolidays(Tenor.FromMonths(3), anchorDate, 20, out var paymentDates,
+                out var accrualFractions);
             var zarNotionals = Vector.Ones(paymentDates.Length).Multiply(1000000.0);
-            var usdNotionals = zarNotionals.Divide(spot);
             var zarSpreads = Vector.Ones(paymentDates.Length).Multiply(cdsSpread);
             var usdSpreads = zarSpreads.Multiply(1 + relJumpSizeInDefault); // Adjusted for the FX jump size.
             var boughtProtection = true;
@@ -40,26 +39,27 @@ namespace ValuationTest
                 boughtProtection);
 
             // Model
-            var curveDates = new[]{anchorDate, anchorDate.AddTenor(Tenor.FromYears(10))};
+            var curveDates = new[] {anchorDate, anchorDate.AddTenor(Tenor.FromYears(10))};
             var expectedRecovery = 0.4;
-            var hazardRates = new[]{cdsSpread / (1 - expectedRecovery), cdsSpread / (1 - expectedRecovery)};
-            var usdRates = new[]{0.01, 0.02};
-            var zarRates = new[]{0.07, 0.08};
-            IDiscountingSource usdDiscountCurve = new DatesAndRates(Currency.USD, anchorDate, curveDates, usdRates);
-            IDiscountingSource zarDiscountCurve = new DatesAndRates(Currency.ZAR, anchorDate, curveDates, zarRates);
-            ISurvivalProbabilitySource abcHazardCurve = new HazardCurve(refEntity, anchorDate, curveDates, hazardRates);
+            var hazardRates = new[] {cdsSpread / (1 - expectedRecovery), cdsSpread / (1 - expectedRecovery)};
+            var usdRates = new[] {0.01, 0.02};
+            var zarRates = new[] {0.07, 0.08};
+            var usdDiscountCurve = new DatesAndRates(Currency.USD, anchorDate, curveDates, usdRates);
+            var zarDiscountCurve = new DatesAndRates(Currency.ZAR, anchorDate, curveDates, zarRates);
+            var abcHazardCurve = new HazardCurve(refEntity, anchorDate, curveDates, hazardRates);
             var otherCurrency = Currency.USD;
 
             var fxSource = new FXForecastCurve(otherCurrency, Currency.ZAR, spot, usdDiscountCurve, zarDiscountCurve);
             var fxVol = 0.15;
-            NumeraireSimulator model = new DeterministicCreditWithFXJump(abcHazardCurve, otherCurrency, fxSource,
+            var model = new DeterministicCreditWithFXJump(abcHazardCurve,
+                new CurrencyPair(otherCurrency, Currency.ZAR), fxSource,
                 zarDiscountCurve, fxVol, relJumpSizeInDefault, expectedRecovery);
 
             // Valuation
             var N = 5000;
             var coord = new Coordinator(model, new List<Simulator>(), N);
-            var zarValue = coord.Value(new Product[] {cdsZAR}, anchorDate);
-            var usdValue = coord.Value(new Product[] {cdsUSD}, anchorDate);
+            var zarValue = coord.Value(new[] {cdsZAR}, anchorDate);
+            var usdValue = coord.Value(new[] {cdsUSD}, anchorDate);
 
             Assert.AreEqual(0.0, zarValue, 800.0); // about 2bp
             Assert.AreEqual(0.0, usdValue, 800.0); // about 2bp            

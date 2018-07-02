@@ -5,6 +5,39 @@ namespace QuantSA.Shared.Dates
 {
     public class Tenor
     {
+        /// <summary>
+        /// A tenor from a string.  Tenor string must be in decreasing order of tenor types, e.g. 1Y2D is OK but
+        /// 2D1Y is not OK.
+        /// </summary>
+        /// <param name="tenorStr"></param>
+        public Tenor(string tenorStr)
+        {
+            var rest = tenorStr;
+            var parts = rest.Split('Y');
+            if (parts.Length > 1)
+            {
+                Years = int.Parse(parts[0]);
+                rest = parts[1];
+            }
+
+            parts = rest.Split('M');
+            if (parts.Length > 1)
+            {
+                Months = int.Parse(parts[0]);
+                rest = parts[1];
+            }
+
+            parts = rest.Split('W');
+            if (parts.Length > 1)
+            {
+                Weeks = int.Parse(parts[0]);
+                rest = parts[1];
+            }
+
+            parts = rest.Split('D');
+            if (parts.Length > 1) Days = int.Parse(parts[0]);
+        }
+
         public Tenor(int days, int weeks, int months, int years)
         {
             if (days + weeks * 7 >= 10000)

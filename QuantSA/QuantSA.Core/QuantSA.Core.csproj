@@ -107,6 +107,7 @@
     <Compile Include="Serialization\DateConverter.cs" />
     <Compile Include="Serialization\NameSerializer.cs" />
     <Compile Include="Serialization\Reflector.cs" />
+    <Compile Include="Serialization\TenorConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -4,8 +4,6 @@ using System.Linq;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
 using Newtonsoft.Json;
-using QuantSA.General;
-using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -22,20 +20,20 @@ namespace QuantSA.Valuation.Models
 
     public class MultiHWAndFXToy : NumeraireSimulator
     {
-        private List<Date> allRequiredDates; // the set of all dates that will be simulated.
         private readonly Date anchorDate;
 
-        private readonly Dictionary<Currency, HullWhite1F> ccySimMap;
+        private readonly Dictionary<string, HullWhite1F> ccySimMap;
         private readonly double[,] correlations;
         private readonly CurrencyPair[] currencyPairs;
-        private readonly MultivariateNormalDistribution normal;
         private readonly Currency numeraireCcy;
         private readonly HullWhite1F numeraireSimulator;
         private readonly HullWhite1F[] rateSimulators;
-        private Dictionary<int, double[]> simulation; // stores the simulated spot rates at each required date
         private readonly double[] spots;
         private readonly double[] vols;
+        [JsonIgnore] private readonly MultivariateNormalDistribution normal;
         [JsonIgnore] private Date _anchorDate;
+        [JsonIgnore] private List<Date> allRequiredDates; // the set of all dates that will be simulated.
+        [JsonIgnore] private Dictionary<int, double[]> simulation; // stores the simulated spot rates at each required date
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiHWAndFXToy"/> class.
@@ -61,20 +59,20 @@ namespace QuantSA.Valuation.Models
             numeraireCcy = numeraireCurve.GetCurrency();
 
             var rateSimulatorsList = new List<HullWhite1F>();
-            ccySimMap = new Dictionary<Currency, HullWhite1F>();
+            ccySimMap = new Dictionary<string, HullWhite1F>();
             var rate = -Math.Log(numeraireCurve.GetDF(anchorDate.AddMonths(12)));
             numeraireSimulator = new HullWhite1F(numeraireCcy, numeraireHWParams.meanReversionSpeed,
                 numeraireHWParams.vol, rate, rate, numeraireCcyRequiredIndices);
 
             rateSimulatorsList.Add(numeraireSimulator);
-            ccySimMap[numeraireCcy] = numeraireSimulator;
+            ccySimMap[numeraireCcy.ToString()] = numeraireSimulator;
             for (var i = 0; i < otherCcys.Count; i++)
             {
                 rate = -Math.Log(otherCcyCurves[i].GetDF(anchorDate.AddMonths(12)));
                 var thisSim = new HullWhite1F(otherCcys[i], otherCcyHwParams[i].meanReversionSpeed,
                     otherCcyHwParams[i].vol, rate, rate, otherCcyRequiredIndices[i]);
                 rateSimulatorsList.Add(thisSim);
-                ccySimMap[otherCcys[i]] = thisSim;
+                ccySimMap[otherCcys[i].ToString()] = thisSim;
             }
 
             currencyPairs = otherCcys.Select(ccy => new CurrencyPair(ccy, numeraireCcy)).ToArray();
@@ -107,13 +105,14 @@ namespace QuantSA.Valuation.Models
             this.spots = spots;
             this.vols = vols;
             this.correlations = correlations;
+
             normal = new MultivariateNormalDistribution(Vector.Zeros(currencyPairs.Length), correlations);
             numeraireSimulator = null;
-            ccySimMap = new Dictionary<Currency, HullWhite1F>();
+            ccySimMap = new Dictionary<string, HullWhite1F>();
             foreach (var simulator in rateSimulators)
             {
                 if (simulator.GetNumeraireCurrency() == numeraireCcy) numeraireSimulator = simulator;
-                ccySimMap[simulator.GetNumeraireCurrency()] = simulator;
+                ccySimMap[simulator.GetNumeraireCurrency().ToString()] = simulator;
             }
 
             if (numeraireSimulator == null)
@@ -212,8 +211,8 @@ namespace QuantSA.Valuation.Models
 
                 for (var s = 0; s < currencyPairs.Length; s++)
                 {
-                    var drift = ccySimMap[currencyPairs[s].counterCurrency].Numeraire(allRequiredDates[timeCounter]) /
-                                ccySimMap[currencyPairs[s].baseCurrency].Numeraire(allRequiredDates[timeCounter]);
+                    var drift = ccySimMap[currencyPairs[s].counterCurrency.ToString()].Numeraire(allRequiredDates[timeCounter]) /
+                                ccySimMap[currencyPairs[s].baseCurrency.ToString()].Numeraire(allRequiredDates[timeCounter]);
 
                     simPrices[s] = simPrices[s] * drift / oldDrifts[s] *
                                    Math.Exp(-0.5 * vols[s] * vols[s] * dt + vols[s] * sdt * dW[s]);

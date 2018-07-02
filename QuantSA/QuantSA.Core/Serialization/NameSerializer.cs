@@ -8,7 +8,7 @@ namespace QuantSA.Core.Serialization
 {
     /// <summary>
     /// Takes any object that implements <see cref="ISerializableViaName"/> and ensures that it is serialized
-    /// only as its name.  Deserialization then occurs by looking for an instance of the required type with the
+    /// only as its name.  De-serialization then occurs by looking for an instance of the required type with the
     /// same name in <see cref="QuantSAState"/>.
     /// </summary>
     public class NameSerializer : JsonConverter
@@ -32,7 +32,7 @@ namespace QuantSA.Core.Serialization
             var objWithName = value as ISerializableViaName;
             writer.WriteStartObject();
             writer.WritePropertyName("name");
-            serializer.Serialize(writer, objWithName.LookupName);
+            serializer.Serialize(writer, objWithName.GetName());
             writer.WriteEndObject();
         }
     }

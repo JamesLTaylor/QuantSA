@@ -93,7 +93,9 @@
     <Compile Include="ResultStore.cs" />
     <Compile Include="Serialization\ISharedData.cs" />
     <Compile Include="Serialization\ISerializableViaName.cs" />
+    <Compile Include="Serialization\SharedDataEx.cs" />
     <Compile Include="Serialization\QuantSAState.cs" />
+    <Compile Include="Serialization\SerializableViaName.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

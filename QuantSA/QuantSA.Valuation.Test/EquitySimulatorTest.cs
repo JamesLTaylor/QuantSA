@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Accord.Math;
 using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products;
 using QuantSA.General;
@@ -12,6 +13,7 @@ using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Equity;
 
 namespace ValuationTest
 {
@@ -20,12 +22,12 @@ namespace ValuationTest
     /// </summary>
     public class ProductWithDiviAndFwd : ProductWrapper
     {
-        private readonly Date dealEndDate = new Date(2019, 9, 30);
-        private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
-        private readonly Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
-        private readonly FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
-        private readonly double nShares = 1;
-        private readonly Share share = new Share("AAA", Currency.ZAR);
+        [JsonIgnore] private readonly Date dealEndDate = new Date(2019, 9, 30);
+        [JsonIgnore] private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
+        [JsonIgnore] private readonly Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
+        [JsonIgnore] private readonly FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
+        [JsonIgnore] private readonly double nShares = 1;
+        [JsonIgnore] private readonly Share share = new Share("AAA", Currency.ZAR);
 
         public ProductWithDiviAndFwd()
         {

@@ -568,9 +568,9 @@ namespace QuantSA.Valuation
         /// <param name="portfolioIn">The portfolio to be valued.</param>
         /// <param name="valueDate">The value date.</param>
         /// <returns></returns>
-        public double Value(IProduct[] portfolioIn, Date valueDate)
+        public double Value(IEnumerable<IProduct> portfolioIn, Date valueDate)
         {
-            CalculateAll(portfolioIn, valueDate, new Date[0]);
+            CalculateAll(portfolioIn.ToArray(), valueDate, new Date[0]);
             var pathwisePVs = _simulatedCFs.GetPathwisePV(valueDate, _originalTrades);
             return pathwisePVs.Average();
         }

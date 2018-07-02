@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace QuantSA.Shared.MarketObservables
+﻿namespace QuantSA.Shared.MarketObservables
 {
-    
     public abstract class MarketObservable
     {
         /// <summary>

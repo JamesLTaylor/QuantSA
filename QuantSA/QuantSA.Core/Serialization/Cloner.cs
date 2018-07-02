@@ -13,7 +13,8 @@ namespace QuantSA.Core.Serialization
                 Converters = new List<JsonConverter>
                 {
                     new NameSerializer(),
-                    new DateConverter()
+                    new DateConverter(),
+                    new TenorConverter()
                 },
                 ContractResolver = new AllFieldsContractResolver(),
                 TypeNameHandling = TypeNameHandling.Auto,

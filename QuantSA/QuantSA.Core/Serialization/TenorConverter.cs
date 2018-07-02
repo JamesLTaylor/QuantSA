@@ -5,25 +5,25 @@ using QuantSA.Shared.Dates;
 
 namespace QuantSA.Core.Serialization
 {
-    public class DateConverter : JsonConverter
+    public class TenorConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(Date);
+            return objectType == typeof(Tenor);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)
         {
-            var dateStr = JToken.Load(reader).ToString();
-            return string.IsNullOrWhiteSpace(dateStr) ? null : new Date(dateStr);
+            var tenorStr = JToken.Load(reader).ToString();
+            return string.IsNullOrWhiteSpace(tenorStr) ? null : new Tenor(tenorStr);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (value == null) return;
-            var date = value as Date;
-            serializer.Serialize(writer, date.ToString());
+            var tenor = value as Tenor;
+            serializer.Serialize(writer, tenor.ToString());
         }
     }
 }
