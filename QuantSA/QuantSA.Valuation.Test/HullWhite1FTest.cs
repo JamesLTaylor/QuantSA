@@ -21,7 +21,7 @@ namespace ValuationTest
         {
             var valueDate = new Date(2016, 9, 17);
             var flatRate = 0.01;
-            var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.01, flatRate, flatRate);
+            var usdRatesSim = new HullWhite1F(TestHelpers.USD, 0.05, 0.01, flatRate, flatRate);
             usdRatesSim.AddForecast(TestHelpers.Libor3M);
 
             var simDates = new List<Date>();

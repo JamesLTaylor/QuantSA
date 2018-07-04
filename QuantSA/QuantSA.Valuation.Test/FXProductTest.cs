@@ -23,9 +23,9 @@ namespace ValuationTest
         {
             Date[] cfDates = {new Date(2016, 12, 23), new Date(2017, 03, 23)};
 
-            var legZAR = new FixedLeg(Currency.ZAR, cfDates, new double[] {-16000000, -16000000}, new[] {0.07, 0.07},
+            var legZAR = new FixedLeg(TestHelpers.ZAR, cfDates, new double[] {-16000000, -16000000}, new[] {0.07, 0.07},
                 new[] {0.25, 0.25});
-            var legUSD = new FixedLeg(Currency.USD, cfDates, new double[] {1000000, 1000000}, new[] {0.01, 0.01},
+            var legUSD = new FixedLeg(TestHelpers.USD, cfDates, new double[] {1000000, 1000000}, new[] {0.01, 0.01},
                 new[] {0.25, 0.25});
 
             // Set up the model
@@ -34,9 +34,9 @@ namespace ValuationTest
             double[] rates = {0.0725, 0.0725};
             double[] basisRates = {0.0735, 0.0735};
             double[] usdRates = {0.01, 0.012};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, dates, rates);
-            IDiscountingSource zarBasis = new DatesAndRates(Currency.ZAR, valueDate, dates, basisRates);
-            IDiscountingSource usdCurve = new DatesAndRates(Currency.USD, valueDate, dates, usdRates);
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, dates, rates);
+            IDiscountingSource zarBasis = new DatesAndRates(TestHelpers.ZAR, valueDate, dates, basisRates);
+            IDiscountingSource usdCurve = new DatesAndRates(TestHelpers.USD, valueDate, dates, usdRates);
             IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
             IFXSource fxSource = new FXForecastCurve(TestHelpers.USDZAR, 13.66, usdCurve, zarBasis);
             var curveSim = new DeterminsiticCurves(discountCurve);

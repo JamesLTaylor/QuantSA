@@ -8,6 +8,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
 
@@ -15,8 +16,8 @@ namespace ValuationTest
 {
     public class ProductWrapperEquitySample1 : ProductWrapper
     {
-        private readonly Share aaa = new Share("AAA", Currency.ZAR);
-        private readonly Share alsi = new Share("ALSI", Currency.ZAR);
+        private readonly Share aaa = new Share("AAA", TestHelpers.ZAR);
+        private readonly Share alsi = new Share("ALSI", TestHelpers.ZAR);
         private readonly Date date1 = new Date(2016, 9, 30); // The issue date of the scheme
         private readonly Date date2 = new Date(2017, 9, 30); // The first performance measurment date
 
@@ -30,7 +31,7 @@ namespace ValuationTest
         /// When the product is created it must tell the model which share prices it needs and
         /// on what dates it needs them.
         /// </summary>
-        public ProductWrapperEquitySample1() : base(Currency.ZAR)
+        public ProductWrapperEquitySample1() : base(TestHelpers.ZAR)
         {
             SetRequired(aaa, date1);
             SetRequired(aaa, date2);
@@ -63,15 +64,15 @@ namespace ValuationTest
             else
                 w2 = 0.0;
 
-            return new List<Cashflow> {new Cashflow(date3, Get(aaa, date3) * (w1 + w2), Currency.ZAR)};
+            return new List<Cashflow> {new Cashflow(date3, Get(aaa, date3) * (w1 + w2), TestHelpers.ZAR)};
         }
     }
 
     
     public class ProductWrapperEquitySample2 : ProductWrapper
     {
-        private readonly Share aaa = new Share("AAA", Currency.ZAR);
-        private readonly Share alsi = new Share("ALSI", Currency.ZAR);
+        private readonly Share aaa = new Share("AAA", TestHelpers.ZAR);
+        private readonly Share alsi = new Share("ALSI", TestHelpers.ZAR);
         private readonly Date date1 = new Date(2016, 9, 30); // The issue date of the scheme
         private readonly Date date2 = new Date(2017, 9, 30); // The first performance measurment date
 
@@ -104,7 +105,7 @@ namespace ValuationTest
             else
                 w2 = 0.0;
 
-            return new List<Cashflow> {new Cashflow(date3, Get(aaa, date3) * (w1 + w2), Currency.ZAR)};
+            return new List<Cashflow> {new Cashflow(date3, Get(aaa, date3) * (w1 + w2), TestHelpers.ZAR)};
         }
     }
 
@@ -119,7 +120,7 @@ namespace ValuationTest
 
             // The model
             var anchorDate = new Date(2016, 09, 30);
-            var shares = new [] {new Share("ALSI", Currency.ZAR), new Share("AAA", Currency.ZAR), new Share("BBB", Currency.ZAR)};
+            var shares = new [] {new Share("ALSI", TestHelpers.ZAR), new Share("AAA", TestHelpers.ZAR), new Share("BBB", TestHelpers.ZAR)};
             double[] prices = {200, 50, 100};
             double[] vols = {0.22, 0.52, 0.4};
             double[] divYields = {0.03, 0.0, 0.0};
@@ -129,7 +130,7 @@ namespace ValuationTest
                 {0.5, 1.0, 0.5},
                 {0.5, 0.5, 1.0}
             };
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, anchorDate,
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, anchorDate,
                 new[] {anchorDate, anchorDate.AddMonths(36)},
                 new[] {0.07, 0.07});
             var sim = new EquitySimulator(shares, prices, vols, divYields, correlations, discountCurve,

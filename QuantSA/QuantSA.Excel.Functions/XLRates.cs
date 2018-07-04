@@ -5,6 +5,7 @@ using ExcelDna.Integration;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
+using QuantSA.ProductExtensions.Products.Rates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -114,7 +115,7 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "Flat notional for all dates.", Default = "DEFAULT")]
             FloatRateIndex jibar)
         {
-            return BermudanSwaption.CreateZARBermudanSwaption(exerciseDates, longOptionality, rate, payFixed, notional,
+            return SwapFactory.CreateZARBermudanSwaption(exerciseDates, longOptionality, rate, payFixed, notional,
                 startDate, tenor, jibar);
         }
 
@@ -139,7 +140,7 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "The float rate index of the swap.", Default = "DEFAULT")]
             FloatRateIndex jibar)
         {
-            return IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor, jibar);
+            return SwapFactory.CreateZARSwap(rate, payFixed, notional, startDate, tenor, jibar);
         }
 
 

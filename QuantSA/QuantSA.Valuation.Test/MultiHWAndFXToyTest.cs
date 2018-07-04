@@ -107,15 +107,15 @@ namespace ValuationTest
                 {1.0, 0.0},
                 {0.0, 1.0}
             };
-            var model = new MultiHWAndFXToy(valueDate, Currency.ZAR, new[] {zarRatesSim, usdRatesSim, eurRatesSim},
+            var model = new MultiHWAndFXToy(valueDate, TestHelpers.ZAR, new[] {zarRatesSim, usdRatesSim, eurRatesSim},
                 currencyPairs, spots, vols, correlations);
 
             var portfolio = new List<Product>();
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, -15e6, TestHelpers.Jibar3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.EUR, valueDate, +1e6, TestHelpers.Euribor3M, 7));
-            portfolio.Add(CreateFloatingLeg(Currency.ZAR, valueDate, 13e6, TestHelpers.Jibar3M, 13));
-            portfolio.Add(CreateFloatingLeg(Currency.USD, valueDate, -1e6, TestHelpers.Euribor3M, 13));
-            portfolio.Add(IRSwap.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.FromYears(4), TestHelpers.Jibar3M));
+            portfolio.Add(CreateFloatingLeg(TestHelpers.ZAR, valueDate, -15e6, TestHelpers.Jibar3M, 7));
+            portfolio.Add(CreateFloatingLeg(TestHelpers.EUR, valueDate, +1e6, TestHelpers.Euribor3M, 7));
+            portfolio.Add(CreateFloatingLeg(TestHelpers.ZAR, valueDate, 13e6, TestHelpers.Jibar3M, 13));
+            portfolio.Add(CreateFloatingLeg(TestHelpers.USD, valueDate, -1e6, TestHelpers.Euribor3M, 13));
+            portfolio.Add(TestHelpers.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.FromYears(4), TestHelpers.Jibar3M));
 
             var stepInMonths = 1;
             var fwdValueDates = Enumerable.Range(1, 13 * 12 / stepInMonths)

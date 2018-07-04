@@ -25,10 +25,10 @@ namespace ValuationTest
     {
         [JsonIgnore] private readonly Date dealEndDate = new Date(2019, 9, 30);
         [JsonIgnore] private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
-        [JsonIgnore] private readonly Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
+        [JsonIgnore] private readonly Dividend dividend = new Dividend(new Share("AAA", TestHelpers.ZAR));
         [JsonIgnore] private readonly FloatRateIndex jibar = TestHelpers.Jibar3M;
         [JsonIgnore] private readonly double nShares = 1;
-        [JsonIgnore] private readonly Share share = new Share("AAA", Currency.ZAR);
+        [JsonIgnore] private readonly Share share = new Share("AAA", TestHelpers.ZAR);
 
         public ProductWithDiviAndFwd()
         {
@@ -50,16 +50,16 @@ namespace ValuationTest
                 var observedRate = Get(jibar, periodStartDate);
                 if (loanBalance < 1e-6)
                 {
-                    cfs.Add(new Cashflow(new Date(periodEndDate), 0, Currency.ZAR));
+                    cfs.Add(new Cashflow(new Date(periodEndDate), 0, TestHelpers.ZAR));
                 }
                 else
                 {
                     loanBalance *= 1 + (observedRate + spread) * 0.25;
                     var loanReduction = 0.9 * nShares * Get(dividend, periodEndDate);
                     if (loanReduction > loanBalance)
-                        cfs.Add(new Cashflow(new Date(periodEndDate), loanBalance, Currency.ZAR));
+                        cfs.Add(new Cashflow(new Date(periodEndDate), loanBalance, TestHelpers.ZAR));
                     else
-                        cfs.Add(new Cashflow(new Date(periodEndDate), loanReduction, Currency.ZAR));
+                        cfs.Add(new Cashflow(new Date(periodEndDate), loanReduction, TestHelpers.ZAR));
                     loanBalance = Math.Max(0, loanBalance - loanReduction);
                 }
 
@@ -70,7 +70,7 @@ namespace ValuationTest
             // Check if the loan is worth more than the shares.  If yes then there is a loss on the loan, 
             // otherwise the loan can be repaid in full.
             var finalPayment = Math.Min(loanBalance, nShares * Get(share, dealEndDate));
-            cfs.Add(new Cashflow(new Date(dealEndDate), finalPayment, Currency.ZAR));
+            cfs.Add(new Cashflow(new Date(dealEndDate), finalPayment, TestHelpers.ZAR));
 
             return cfs;
         }
@@ -95,7 +95,7 @@ namespace ValuationTest
         private readonly double[] prices = {200, 50, 100};
 
         private readonly Share[] shares =
-            {new Share("ALSI", Currency.ZAR), new Share("AAA", Currency.ZAR), new Share("BBB", Currency.ZAR)};
+            {new Share("ALSI", TestHelpers.ZAR), new Share("AAA", TestHelpers.ZAR), new Share("BBB", TestHelpers.ZAR)};
 
         private readonly double[] vols = {0.22, 0.52, 0.4};
 
@@ -105,7 +105,7 @@ namespace ValuationTest
         [TestInitialize]
         public void Init()
         {
-            discountCurve = new DatesAndRates(Currency.ZAR, anchorDate,
+            discountCurve = new DatesAndRates(TestHelpers.ZAR, anchorDate,
                 new[] {anchorDate, anchorDate.AddMonths(120)},
                 new[] {0.07, 0.09});
             rateForecastCurves = new List<IFloatingRateSource>

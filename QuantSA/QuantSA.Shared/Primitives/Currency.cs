@@ -55,13 +55,5 @@ namespace QuantSA.Shared.Primitives
         {
             return _code;
         }
-
-        #region Stored Currencies
-
-        public static Currency ZAR = new Currency("ZAR");
-        public static Currency USD = new Currency("USD");
-        public static Currency EUR = new Currency("EUR");
-
-        #endregion
     }
 }

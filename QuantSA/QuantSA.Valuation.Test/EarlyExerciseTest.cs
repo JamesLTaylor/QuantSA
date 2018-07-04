@@ -28,7 +28,7 @@ namespace ValuationTest
             var a = 0.05;
             var vol = 0.01;
             var flatCurveRate = 0.07;
-            hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate);
+            hullWiteSim = new HullWhite1F(TestHelpers.ZAR, a, vol, flatCurveRate, flatCurveRate);
             hullWiteSim.AddForecast(TestHelpers.Jibar3M);
 
             // Make the underlying swap
@@ -37,8 +37,8 @@ namespace ValuationTest
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
             var tenor = Tenor.FromYears(5);
-            swapPay = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
-            swapRec = IRSwap.CreateZARSwap(rate, !payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
+            swapPay = TestHelpers.CreateZARSwap(rate, payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
+            swapRec = TestHelpers.CreateZARSwap(rate, !payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
 
             // Full set of exercise dates
             exDates = new List<Date>

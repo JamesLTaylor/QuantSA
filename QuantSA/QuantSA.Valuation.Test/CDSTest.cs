@@ -33,9 +33,9 @@ namespace ValuationTest
             var usdSpreads = zarSpreads.Multiply(1 + relJumpSizeInDefault); // Adjusted for the FX jump size.
             var boughtProtection = true;
 
-            var cdsZAR = new CDS(refEntity, Currency.ZAR, paymentDates, zarNotionals, zarSpreads, accrualFractions,
+            var cdsZAR = new CDS(refEntity, TestHelpers.ZAR, paymentDates, zarNotionals, zarSpreads, accrualFractions,
                 boughtProtection);
-            var cdsUSD = new CDS(refEntity, Currency.USD, paymentDates, zarNotionals, usdSpreads, accrualFractions,
+            var cdsUSD = new CDS(refEntity, TestHelpers.USD, paymentDates, zarNotionals, usdSpreads, accrualFractions,
                 boughtProtection);
 
             // Model
@@ -44,8 +44,8 @@ namespace ValuationTest
             var hazardRates = new[] {cdsSpread / (1 - expectedRecovery), cdsSpread / (1 - expectedRecovery)};
             var usdRates = new[] {0.01, 0.02};
             var zarRates = new[] {0.07, 0.08};
-            var usdDiscountCurve = new DatesAndRates(Currency.USD, anchorDate, curveDates, usdRates);
-            var zarDiscountCurve = new DatesAndRates(Currency.ZAR, anchorDate, curveDates, zarRates);
+            var usdDiscountCurve = new DatesAndRates(TestHelpers.USD, anchorDate, curveDates, usdRates);
+            var zarDiscountCurve = new DatesAndRates(TestHelpers.ZAR, anchorDate, curveDates, zarRates);
             var abcHazardCurve = new HazardCurve(refEntity, anchorDate, curveDates, hazardRates);
 
             var fxSource = new FXForecastCurve(TestHelpers.USDZAR, spot, usdDiscountCurve, zarDiscountCurve);

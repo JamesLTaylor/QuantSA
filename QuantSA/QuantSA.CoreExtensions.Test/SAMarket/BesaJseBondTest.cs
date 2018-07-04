@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.Products.SAMarket;
-using QuantSA.General;
-using QuantSA.General.Dates;
 using QuantSA.ProductExtensions.SAMarket;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
+using QuantSA.Solution.Test;
 
 namespace ProductExtensionsTest.SAMarket
 {
@@ -24,7 +23,7 @@ namespace ProductExtensionsTest.SAMarket
             int couponDay2 = 31;
             Calendar zaCalendar = new Calendar();
             var bondR2030 = new BesaJseBond(maturityDate, notional, annualCouponRate, couponMonth1, 
-                couponDay1, couponMonth2, couponDay2, zaCalendar);
+                couponDay1, couponMonth2, couponDay2, zaCalendar, TestHelpers.ZAR);
 
             double ytm = 0.097;
             ResultStore results = bondR2030.GetSpotMeasures(settleDate, ytm);

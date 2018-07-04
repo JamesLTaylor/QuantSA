@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
@@ -35,9 +34,12 @@ namespace QuantSA.Core.Products.SAMarket
         /// </remarks>
         public Date settleDate;
 
+        private BesaJseBond()
+        {
+        }
 
         public BesaJseBond(Date maturityDate, double notional, double annualCouponRate,
-            int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, Calendar zaCalendar)
+            int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, Calendar zaCalendar, Currency ccy)
         {
             if (couponMonth1 > couponMonth2)
                 throw new ArgumentException("couponMonth1 must relate to the first coupon in the year.");
@@ -49,8 +51,7 @@ namespace QuantSA.Core.Products.SAMarket
             this.couponMonth2 = couponMonth2;
             this.couponDay2 = couponDay2;
 
-            cfs = new List<Cashflow>();
-            cfs.Add(new Cashflow(maturityDate, notional, Currency.ZAR));
+            cfs = new List<Cashflow> {new Cashflow(maturityDate, notional, ccy)};
             Init();
         }
 

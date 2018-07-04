@@ -23,7 +23,7 @@ namespace ValuationTest
             var hullWiteSim = new HullWhite1F(TestHelpers.ZAR, a, vol, flatCurveRate, flatCurveRate);
 
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
-            var callableBond = new CallableBond();
+            var callableBond = new CallableBond(TestHelpers.ZAR);
             var value1 = coordinator.Value(new Product[] {callableBond}, valueDate);
         }
     }

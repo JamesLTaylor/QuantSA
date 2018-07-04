@@ -46,7 +46,7 @@ namespace ValuationTest
                 var days = (int) Math.Round(generator365.Generate());
                 var endDate = anchorDate.AddTenor(new Tenor(days, 0, 0, years));
                 var startDate = endDate.AddTenor(Tenor.FromYears(-years - 1));
-                allSwaps[swapNum] = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, Tenor.FromYears(years + 1), TestHelpers.Jibar3M);
+                allSwaps[swapNum] = TestHelpers.CreateZARSwap(rate, payFixed, notional, startDate, Tenor.FromYears(years + 1), TestHelpers.Jibar3M);
             }
 
             return allSwaps;
@@ -72,7 +72,7 @@ namespace ValuationTest
             };
             double[] rates = {0.07, 0.07};
             double[] ratesLong = {0.07, 0.071, 0.072, 0.073, 0.074, 0.08};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, datesLong, ratesLong);
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, datesLong, ratesLong);
             IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(discountCurve, TestHelpers.Jibar3M,
                 new FloatingRateFixingCurve1Rate(0.07, TestHelpers.Jibar3M));
             var curveSim = new DeterminsiticCurves(discountCurve);
