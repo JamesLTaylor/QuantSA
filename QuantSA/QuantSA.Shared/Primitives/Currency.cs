@@ -1,6 +1,8 @@
-﻿namespace QuantSA.Shared.Primitives
+﻿using QuantSA.Shared.Serialization;
+
+namespace QuantSA.Shared.Primitives
 {
-    public class Currency
+    public class Currency : SerializableViaName
     {
         private readonly string _code;
 
@@ -49,17 +51,16 @@
             return ToString().GetHashCode();
         }
 
+        public override string GetName()
+        {
+            return _code;
+        }
+
         #region Stored Currencies
 
         public static Currency ZAR = new Currency("ZAR");
         public static Currency USD = new Currency("USD");
         public static Currency EUR = new Currency("EUR");
-
-        /// <summary>
-        /// A special currency that will return true when compared with any other currency.  Allows one to quickly make a curve 
-        /// that can be used for any product.
-        /// </summary>
-        public static Currency ANY = new Currency("ANY");
 
         #endregion
     }

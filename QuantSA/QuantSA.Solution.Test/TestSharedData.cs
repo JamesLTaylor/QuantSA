@@ -16,6 +16,11 @@ namespace QuantSA.Solution.Test
             return dictForType.TryGetValue(name, out serializableViaName);
         }
 
+        public void TempAdd(ISerializableViaName serializableViaName)
+        {
+            Set(serializableViaName);
+        }
+
         /// <summary>
         /// 
         /// </summary>

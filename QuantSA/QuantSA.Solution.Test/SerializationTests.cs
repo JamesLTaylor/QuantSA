@@ -1,12 +1,8 @@
-﻿using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Core.Serialization;
 using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
 using QuantSA.Valuation.Models.Rates;
 
@@ -45,7 +41,7 @@ namespace QuantSA.Solution.Test
             var model = new EquitySimulator(new[] {share}, new[] {100.0}, new[] {0.2}, new[] {0.0},
                 new[,] {{1.0}}, TestHelpers.FlatDiscountCurve(), null);
 
-            var newModel = (EquitySimulator)Cloner.Clone(model);
+            var newModel = (EquitySimulator) Cloner.Clone(model);
         }
 
         /*

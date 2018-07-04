@@ -171,8 +171,7 @@ namespace QuantSA.Valuation
                         }
                         else
                         {
-                            MarketObservable currencyPair =
-                                new CurrencyPair(cf.Currency, localNumeraire.GetNumeraireCurrency());
+                            var currencyPair = GetCcyPair(localNumeraire, cf.Currency);
                             var simulator = mappedSimulators[currencyPair];
                             var fxRate = simulator.GetIndices(currencyPair, new List<Date> {cf.Date})[0];
                             var cfValue = fxRate * cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
@@ -614,9 +613,9 @@ namespace QuantSA.Valuation
                     numeraireSimulator.SetNumeraireDates(fwdDates);
                     if (ccy != numeraireSimulator.GetNumeraireCurrency())
                     {
-                        MarketObservable index = new CurrencyPair(ccy, numeraireSimulator.GetNumeraireCurrency());
-                        mappedSimulators[index].SetRequiredDates(index, requiredDates);
-                        mappedSimulators[index].SetRequiredDates(index, fwdDates);
+                        var ccyPair = GetCcyPair(numeraireSimulator, ccy);
+                        mappedSimulators[ccyPair].SetRequiredDates(ccyPair, requiredDates);
+                        mappedSimulators[ccyPair].SetRequiredDates(ccyPair, fwdDates);
                     }
                 }
 
@@ -627,6 +626,14 @@ namespace QuantSA.Valuation
 
             // Prepare all the simulators
             foreach (var simulator in availableSimulators) simulator.Prepare(valueDate);
+        }
+
+        private static MarketObservable GetCcyPair(NumeraireSimulator numeraireSimulator, Currency ccy)
+        {
+            // TODO: Currency pair should be passed in somehow rather than constructed here so that there is no risk of names not coinciding.
+            MarketObservable index = new CurrencyPair($"{ccy}{numeraireSimulator.GetNumeraireCurrency()}",
+                ccy, numeraireSimulator.GetNumeraireCurrency());
+            return index;
         }
 
         /// <summary>
@@ -653,7 +660,7 @@ namespace QuantSA.Valuation
                 foreach (var index in product.GetRequiredIndices())
                     indices.Add(index);
                 foreach (var ccy in product.GetCashflowCurrencies().Where(c => c != numeraireSimulator.GetNumeraireCurrency()))
-                    indices.Add(new CurrencyPair(ccy, numeraireSimulator.GetNumeraireCurrency()));
+                    indices.Add(GetCcyPair(numeraireSimulator, ccy));
             }
 
             foreach (var index in indices)

@@ -68,9 +68,6 @@ namespace QuantSA.Valuation
 
         public void AddFXForecast(IFXSource fxForecastCurve)
         {
-            if (numeraireCurrency.GetHashCode() == Currency.ANY.GetHashCode())
-                throw new ArgumentException(
-                    "If the model provides multiple currencies then the discounting currency cannot be 'ANY'.");
             if (!fxCurves.ContainsKey(fxForecastCurve.GetCurrencyPair().ToString()))
                 fxCurves.Add(fxForecastCurve.GetCurrencyPair().ToString(), fxForecastCurve);
             else

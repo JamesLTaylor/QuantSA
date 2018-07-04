@@ -34,7 +34,7 @@ namespace QuantSA.General
             Date maximumDate = null)
         {
             this.index = index;
-            dateAndRates = new DatesAndRates(Currency.ANY, anchorDate, dates, rates, maximumDate);
+            dateAndRates = new DatesAndRates(index.Currency, anchorDate, dates, rates, maximumDate);
         }
 
         public FloatRateIndex GetFloatingIndex()

@@ -8,7 +8,6 @@ using Normal = MathNet.Numerics.Distributions.Normal;
 
 namespace QuantSA.General
 {
-    
     public class PCACurveSimulator
     {
         /// <summary>
@@ -53,7 +52,7 @@ namespace QuantSA.General
                     "The components data must either have the same number of columns as the length of the provided tenors if the components are provided in rows, or the same rows if they are provided in columns.");
 
             if (tenors.Length != initialRates.Length)
-                throw new ArgumentException("The provided dates tenros and initial rates must be the same length.");
+                throw new ArgumentException("The provided dates tenors and initial rates must be the same length.");
             if (vols.Length != this.components.GetLength(0))
                 throw new ArgumentException("The number of vols must be the same as the number of components.");
 
@@ -76,10 +75,8 @@ namespace QuantSA.General
         /// <param name="simulationDates">Dates on which the simulation is run.  Must all be greater than the 
         /// anchor date.</param>
         /// <returns></returns>
-        public ICurve[] GetSimulatedCurves(Date[] simulationDates, Currency curveCcy = null)
+        public ICurve[] GetSimulatedCurves(Date[] simulationDates)
         {
-            if (curveCcy == null)
-                curveCcy = Currency.ANY;
             var results = new ICurve[simulationDates.Length];
             var dist = new Normal();
             var previousDate = anchorDate;
@@ -100,7 +97,7 @@ namespace QuantSA.General
                 var eps2 = dist.Sample();
                 var eps3 = dist.Sample();
 
-                // Iterate thrrough the dates on the curve
+                // Iterate through the dates on the curve
                 for (var i = 0; i < initialRates.Length; i++)
                 {
                     curveDates[i] = simulationDates[simCounter].AddTenor(tenors[i]);
@@ -122,7 +119,7 @@ namespace QuantSA.General
                 }
 
                 currentRates = currentRates.Multiply(multiplier);
-                results[simCounter] = new DatesAndRates(curveCcy, simulationDates[simCounter], curveDates, currentRates,
+                results[simCounter] = new DatesAndRates(new Currency("IGNORE"), simulationDates[simCounter], curveDates, currentRates,
                     simulationDates[simCounter].AddMonths(360));
                 previousRates = currentRates.Clone() as double[];
                 previousDate = new Date(currentDate);
@@ -134,7 +131,8 @@ namespace QuantSA.General
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="simulationDates">Dates on whihc the simulation is run.  Must all be greater than the anchor date.</param>
+        /// <param name="simulationDates">Dates on which the simulation is run.  Must all be greater than the anchor date.</param>
+        /// <param name="requiredTenors"></param>
         /// <returns></returns>
         public double[,] GetSimulatedRates(Date[] simulationDates, Tenor[] requiredTenors)
         {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Excel.Addin.Functions;
-using QuantSA.Shared.Dates;
+using QuantSA.Solution.Test;
 
 namespace QuantSA.Excel.Addin.Tests.Functions
 {
@@ -13,14 +13,14 @@ namespace QuantSA.Excel.Addin.Tests.Functions
         [TestInitialize]
         public void SetUp()
         {
-            _swap = IRSwap.CreateZARSwap(0.07, true, 100, new Date("2018-06-23"), Tenor.FromYears(2));
+            _swap = TestHelpers.ZARSwap();
         }
 
         [TestMethod]
         public void ObjectViewer_ViewObjectPropertyNames_GetAllNonIgnore()
         {
             var fields = ObjectViewer.ViewObjectPropertyNames(_swap);
-            Assert.AreEqual(8, fields.Length);
+            Assert.AreEqual(9, fields.Length);
         }
 
         [TestMethod]
@@ -33,7 +33,7 @@ namespace QuantSA.Excel.Addin.Tests.Functions
         [TestMethod]
         public void ObjectViewer_ViewObjectPropertyValue_TwoLevel()
         {
-            var ccy = ObjectViewer.ViewObjectPropertyValue(_swap, "Ccy", "code");
+            var ccy = ObjectViewer.ViewObjectPropertyValue(_swap, "ccy", "code");
             Assert.AreEqual("ZAR", (string) ccy[0, 0]);
         }
     }

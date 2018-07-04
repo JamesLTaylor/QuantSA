@@ -7,6 +7,7 @@ using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
 
@@ -21,11 +22,11 @@ namespace ValuationTest
             var valueDate = new Date(2016, 9, 17);
             var flatRate = 0.01;
             var usdRatesSim = new HullWhite1F(Currency.USD, 0.05, 0.01, flatRate, flatRate);
-            usdRatesSim.AddForecast(FloatRateIndex.LIBOR3M);
+            usdRatesSim.AddForecast(TestHelpers.Libor3M);
 
             var simDates = new List<Date>();
             simDates.Add(valueDate.AddMonths(24));
-            simDates.Add(simDates[0].AddTenor(FloatRateIndex.LIBOR3M.tenor));
+            simDates.Add(simDates[0].AddTenor(TestHelpers.Libor3M.Tenor));
             usdRatesSim.Reset();
             usdRatesSim.SetNumeraireDates(simDates);
             usdRatesSim.Prepare(valueDate);
@@ -36,7 +37,7 @@ namespace ValuationTest
             for (var i = 0; i < N; i++)
             {
                 usdRatesSim.RunSimulation(i);
-                simFwdValues[i, 0] = usdRatesSim.GetIndices(FloatRateIndex.LIBOR3M, simDates)[0];
+                simFwdValues[i, 0] = usdRatesSim.GetIndices(TestHelpers.Libor3M, simDates)[0];
                 simFwdValues[i, 1] = 1.0 / usdRatesSim.Numeraire(simDates[1]);
             }
 

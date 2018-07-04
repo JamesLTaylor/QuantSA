@@ -156,7 +156,7 @@ namespace QuantSA.Valuation.Models.Rates
             for (var i = 0; i < requiredDates.Count; i++)
             {
                 var rt = Tools.Interpolate1D(requiredDates[i].value, allDatesDouble, r, r[0], r[r.Length - 1]);
-                var tenor = floatRateIndex.tenor;
+                var tenor = floatRateIndex.Tenor;
                 var date2 = requiredDates[i].AddTenor(tenor);
                 var bondPrice = BondPrice(rt, requiredDates[i], date2);
                 var rate = 365.0 * (1 / bondPrice - 1) / (date2 - requiredDates[i]);

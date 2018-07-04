@@ -110,10 +110,12 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
             bool payFixed,
             [ExcelArgument(Description = "Flat notional for all dates.")]
-            double notional)
+            double notional,
+            [QuantSAExcelArgument(Description = "Flat notional for all dates.", Default = "DEFAULT")]
+            FloatRateIndex jibar)
         {
             return BermudanSwaption.CreateZARBermudanSwaption(exerciseDates, longOptionality, rate, payFixed, notional,
-                startDate, tenor);
+                startDate, tenor, jibar);
         }
 
 
@@ -133,9 +135,11 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
             bool payFixed,
             [ExcelArgument(Description = "Flat notional for all dates.")]
-            double notional)
+            double notional,
+            [QuantSAExcelArgument(Description = "The float rate index of the swap.", Default = "DEFAULT")]
+            FloatRateIndex jibar)
         {
-            return IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
+            return IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor, jibar);
         }
 
 
@@ -156,11 +160,12 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "The FRA code, e.g. '3x6'.")]
             string fraCode,
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
-            bool payFixed)
-
+            bool payFixed,
+            [QuantSAExcelArgument(Description = "The float rate index of the FRA.", Default = "DEFAULT")]
+            FloatRateIndex jibar)
         {
             var zaCalendar = StaticData.GetCalendar("ZA");
-            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, zaCalendar);
+            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, zaCalendar, jibar);
         }
 
 
@@ -187,7 +192,7 @@ namespace QuantSA.ExcelFunctions
 
             // Calculate the first fixing off the curve to use at all past dates.
             var df1 = curve.GetDF(valueDate);
-            var laterDate = valueDate.AddTenor(index.tenor);
+            var laterDate = valueDate.AddTenor(index.Tenor);
             var df2 = curve.GetDF(laterDate);
             var dt = (laterDate - valueDate) / 365.0;
             var rate = (df1 / df2 - 1) / dt;
@@ -229,7 +234,7 @@ namespace QuantSA.ExcelFunctions
             {
                 // Calculate the first fixing off the curve to use at all past dates.
                 var df1 = 1.0;
-                var laterDate = discountCurve.GetAnchorDate().AddTenor(floatingRateIndex.tenor);
+                var laterDate = discountCurve.GetAnchorDate().AddTenor(floatingRateIndex.Tenor);
                 var df2 = discountCurve.GetDF(laterDate);
                 var dt = (laterDate - discountCurve.GetAnchorDate()) / 365.0;
                 var rate = (df1 / df2 - 1) / dt;

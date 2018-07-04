@@ -4,6 +4,7 @@ using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
 
@@ -19,7 +20,7 @@ namespace ValuationTest
             var a = 0.05;
             var vol = 0.01;
             var flatCurveRate = 0.18;
-            var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate);
+            var hullWiteSim = new HullWhite1F(TestHelpers.ZAR, a, vol, flatCurveRate, flatCurveRate);
 
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
             var callableBond = new CallableBond();

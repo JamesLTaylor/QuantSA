@@ -60,8 +60,8 @@ namespace QuantSA.ExcelFunctions
                 "A curve that provides survival probabilities.  Usually a hazard curve.")]
             ISurvivalProbabilitySource survivalProbSource,
             [QuantSAExcelArgument(Description =
-                "The other currency required in the simulation.  The valuation currency will be inferred from the valueCurrencyDiscount.  This value needs to be explicitly set since fxSource may provide multiple pairs.")]
-            Currency otherCurrency,
+                "The currency pair to be simulated.  It should have the value currency as its counter currency.")]
+            CurrencyPair currencyPair,
             [QuantSAExcelArgument(Description = "The source FX spot and forwards.")]
             IFXSource fxSource,
             [QuantSAExcelArgument(Description = "The value currency discount curve.")]
@@ -74,8 +74,8 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "The constant recovery rate that will be assumed to apply in default.")]
             double expectedRecoveryRate)
         {
-            return new DeterministicCreditWithFXJump(survivalProbSource,
-                new CurrencyPair(otherCurrency, valueCurrencyDiscount.GetCurrency()), fxSource, valueCurrencyDiscount,
+            return new DeterministicCreditWithFXJump(survivalProbSource, currencyPair, 
+                fxSource, valueCurrencyDiscount,
                 fxVol, relJumpSizeInDefault, expectedRecoveryRate);
         }
 

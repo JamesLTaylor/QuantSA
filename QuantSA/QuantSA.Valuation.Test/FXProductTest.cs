@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.MarketData;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
 
 namespace ValuationTest
@@ -35,8 +37,8 @@ namespace ValuationTest
             IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, dates, rates);
             IDiscountingSource zarBasis = new DatesAndRates(Currency.ZAR, valueDate, dates, basisRates);
             IDiscountingSource usdCurve = new DatesAndRates(Currency.USD, valueDate, dates, usdRates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatRateIndex.JIBAR3M, dates, rates);
-            IFXSource fxSource = new FXForecastCurve(Currency.USD, Currency.ZAR, 13.66, usdCurve, zarBasis);
+            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
+            IFXSource fxSource = new FXForecastCurve(TestHelpers.USDZAR, 13.66, usdCurve, zarBasis);
             var curveSim = new DeterminsiticCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
             curveSim.AddFXForecast(fxSource);

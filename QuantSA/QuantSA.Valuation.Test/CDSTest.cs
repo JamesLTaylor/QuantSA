@@ -47,12 +47,10 @@ namespace ValuationTest
             var usdDiscountCurve = new DatesAndRates(Currency.USD, anchorDate, curveDates, usdRates);
             var zarDiscountCurve = new DatesAndRates(Currency.ZAR, anchorDate, curveDates, zarRates);
             var abcHazardCurve = new HazardCurve(refEntity, anchorDate, curveDates, hazardRates);
-            var otherCurrency = Currency.USD;
 
-            var fxSource = new FXForecastCurve(otherCurrency, Currency.ZAR, spot, usdDiscountCurve, zarDiscountCurve);
+            var fxSource = new FXForecastCurve(TestHelpers.USDZAR, spot, usdDiscountCurve, zarDiscountCurve);
             var fxVol = 0.15;
-            var model = new DeterministicCreditWithFXJump(abcHazardCurve,
-                new CurrencyPair(otherCurrency, Currency.ZAR), fxSource,
+            var model = new DeterministicCreditWithFXJump(abcHazardCurve, TestHelpers.USDZAR, fxSource,
                 zarDiscountCurve, fxVol, relJumpSizeInDefault, expectedRecovery);
 
             // Valuation

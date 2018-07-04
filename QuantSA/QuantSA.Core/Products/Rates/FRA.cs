@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Dates;
@@ -44,7 +43,7 @@ namespace QuantSA.Core.Products.Rates
             this.nearDate = nearDate;
             this.farDate = farDate;
             this.floatIndex = floatIndex;
-            ccy = floatIndex.currency;
+            ccy = floatIndex.Currency;
             Init();
         }
 
@@ -57,11 +56,12 @@ namespace QuantSA.Core.Products.Rates
         /// <param name="fraCode">The fra code, eg '3x6'.</param>
         /// <param name="payFixed">if set to <c>true</c> the fixed rate is paid..</param>
         /// <param name="zaCalendar">The za calendar.</param>
+        /// <param name="jibar"></param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentException">
         /// </exception>
         public static FRA CreateZARFra(Date tradeDate, double notional, double rate, string fraCode, bool payFixed,
-            Calendar zaCalendar)
+            Calendar zaCalendar, FloatRateIndex jibar)
         {
             var parts = fraCode.ToLower().Trim().Split('x');
             if (parts.Length != 2)
@@ -85,7 +85,7 @@ namespace QuantSA.Core.Products.Rates
             var nearDate = mf.Adjust(tradeDate.AddMonths(near), zaCalendar);
             var farDate = mf.Adjust(tradeDate.AddMonths(far), zaCalendar);
             var accrualFraction = DayCountStore.Actual365Fixed.YearFraction(nearDate, farDate);
-            return new FRA(notional, accrualFraction, rate, payFixed, nearDate, farDate, FloatRateIndex.JIBAR3M);
+            return new FRA(notional, accrualFraction, rate, payFixed, nearDate, farDate, jibar);
         }
 
         public override List<Cashflow> GetCFs()

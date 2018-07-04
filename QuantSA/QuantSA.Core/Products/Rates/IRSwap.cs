@@ -12,19 +12,18 @@ namespace QuantSA.Core.Products.Rates
         private readonly double[] _accrualFractions;
         private readonly double _fixedRate;
         private readonly FloatRateIndex _index;
+        private readonly Currency _ccy;
         private readonly Date[] _indexDates;
         private readonly double[] _notionals;
         private readonly double _payFixed; // -1 for payFixed, 1 for receive fixed
         private readonly Date[] _paymentDates;
         private readonly double[] _spreads;
-
-        [JsonIgnore] private Currency _ccy;
+        
         [JsonIgnore] private List<Date> _futureIndexDates;
         [JsonIgnore] private List<Date> _futurePayDates;
 
         // Product state
         [JsonIgnore] private double[] _indexValues;
-        [JsonIgnore] private string _secret;
         [JsonIgnore] private Date _valueDate;
 
         /// <summary>
@@ -51,17 +50,7 @@ namespace QuantSA.Core.Products.Rates
             _accrualFractions = accrualFractions;
             _notionals = notionals;
             _fixedRate = fixedRate;
-            Ccy = ccy;
-        }
-
-        private Currency Ccy
-        {
-            get => _ccy;
-            set
-            {
-                _ccy = value;
-                _secret = _ccy.ToString();
-            }
+            _ccy = ccy;
         }
 
         /// <summary>
@@ -73,12 +62,11 @@ namespace QuantSA.Core.Products.Rates
         /// <param name="startDate">First reset date of swap</param>
         /// <param name="tenor">Tenor of swap, must be a whole number of years.</param>
         /// <returns></returns>
-        public static IRSwap CreateZARSwap(double rate, bool payFixed, double notional, Date startDate, Tenor tenor)
+        public static IRSwap CreateZARSwap(double rate, bool payFixed, double notional, Date startDate, Tenor tenor, FloatRateIndex jibar)
         {
             var quarters = tenor.Years * 4 + tenor.Months / 3;
             var indexDates = new Date[quarters];
             var paymentDates = new Date[quarters];
-            var index = FloatRateIndex.JIBAR3M;
             var spreads = new double[quarters];
             var accrualFractions = new double[quarters];
             var notionals = new double[quarters];
@@ -98,7 +86,7 @@ namespace QuantSA.Core.Products.Rates
                 date1 = new Date(date2);
             }
 
-            var newSwap = new IRSwap(payFixed ? -1 : 1, indexDates, paymentDates, index, spreads, accrualFractions,
+            var newSwap = new IRSwap(payFixed ? -1 : 1, indexDates, paymentDates, jibar, spreads, accrualFractions,
                 notionals, fixedRate, ccy);
             return newSwap;
         }

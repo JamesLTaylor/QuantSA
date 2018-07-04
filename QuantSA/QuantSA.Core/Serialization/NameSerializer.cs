@@ -21,19 +21,17 @@ namespace QuantSA.Core.Serialization
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)
         {
-            var jsonObject = JObject.Load(reader);
-            var properties = jsonObject.Properties().ToList();
-            var name = (string) properties[0].Value;
-            return QuantSAState.SharedData.Get(objectType, name);
+            var name = JToken.Load(reader).ToString();
+            return string.IsNullOrWhiteSpace(name) ? null : QuantSAState.SharedData.Get(objectType, name);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            if (value == null) return;
             var objWithName = value as ISerializableViaName;
-            writer.WriteStartObject();
-            writer.WritePropertyName("name");
             serializer.Serialize(writer, objWithName.GetName());
-            writer.WriteEndObject();
+            if (!QuantSAState.SharedData.TryGet(value.GetType(), objWithName.GetName(), out _))
+                QuantSAState.SharedData.TempAdd(objWithName);
         }
     }
 }

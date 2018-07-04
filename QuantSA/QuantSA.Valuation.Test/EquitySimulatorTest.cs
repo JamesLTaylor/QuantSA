@@ -12,6 +12,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
 
@@ -25,7 +26,7 @@ namespace ValuationTest
         [JsonIgnore] private readonly Date dealEndDate = new Date(2019, 9, 30);
         [JsonIgnore] private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
         [JsonIgnore] private readonly Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
-        [JsonIgnore] private readonly FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
+        [JsonIgnore] private readonly FloatRateIndex jibar = TestHelpers.Jibar3M;
         [JsonIgnore] private readonly double nShares = 1;
         [JsonIgnore] private readonly Share share = new Share("AAA", Currency.ZAR);
 
@@ -109,8 +110,8 @@ namespace ValuationTest
                 new[] {0.07, 0.09});
             rateForecastCurves = new List<IFloatingRateSource>
             {
-                new ForecastCurveFromDiscount(discountCurve, FloatRateIndex.JIBAR3M,
-                    new FloatingRateFixingCurve1Rate(0.07, FloatRateIndex.JIBAR3M))
+                new ForecastCurveFromDiscount(discountCurve, TestHelpers.Jibar3M,
+                    new FloatingRateFixingCurve1Rate(0.07, TestHelpers.Jibar3M))
             }.ToArray();
         }
 
@@ -128,7 +129,7 @@ namespace ValuationTest
             sim.RunSimulation(0);
             var divs = sim.GetIndices(divi, dates);
             var shareprices = sim.GetIndices(shares[0], dates);
-            var fwdRates = sim.GetIndices(FloatRateIndex.JIBAR3M, dates);
+            var fwdRates = sim.GetIndices(TestHelpers.Jibar3M, dates);
             Assert.AreEqual(shareprices[1] * 184.0 / 365 * 0.03, divs[2], 0.01);
             Assert.AreEqual(rateForecastCurves[0].GetForwardRate(dates[1]), fwdRates[1], 0.0001);
         }

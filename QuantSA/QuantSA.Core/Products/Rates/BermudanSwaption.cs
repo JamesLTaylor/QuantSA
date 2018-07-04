@@ -141,12 +141,13 @@ namespace QuantSA.General
         /// <param name="notional">The constant notional in ZAR on the underlying swap.</param>
         /// <param name="startDate">The start date of the underlying swap.</param>
         /// <param name="tenor">The tenor of the underlying swap.</param>
+        /// <param name="jibar"></param>
         /// <returns></returns>
         public static BermudanSwaption CreateZARBermudanSwaption(Date[] exerciseDates, bool longOptionality,
             double rate,
-            bool payFixed, double notional, Date startDate, Tenor tenor)
+            bool payFixed, double notional, Date startDate, Tenor tenor, FloatRateIndex jibar)
         {
-            var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
+            var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor, jibar);
             var swaption = new BermudanSwaption(swap, exerciseDates.ToList(), longOptionality);
             return swaption;
         }
