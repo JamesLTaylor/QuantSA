@@ -50,8 +50,7 @@ namespace QuantSA.General
 
         /// <summary>
         /// Creates a <see cref="RuntimeProduct"/> from a string containing C# source code.  The file must only
-        /// contain the class fields and a GetCFs method.  If a full implementation of the product is required 
-        /// rather use <see cref="CreateFromSourceFile(string)"/>
+        /// contain the class fields and a GetCFs method."/>
         /// </summary>
         /// <param name="productName">Name of the product.</param>
         /// <param name="sourceCode">The source code.</param>
@@ -60,8 +59,7 @@ namespace QuantSA.General
         public static Product CreateFromString(string productName, string sourceCode)
         {
             var codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            var parameters = new CompilerParameters();
-            parameters.GenerateInMemory = true;
+            var parameters = new CompilerParameters {GenerateInMemory = true};
             var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             UpdateReferencedAssemblies(parameters, folder);
 
