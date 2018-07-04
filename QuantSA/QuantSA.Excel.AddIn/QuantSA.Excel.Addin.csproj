@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QuantSA.Excel.Addin</RootNamespace>
     <AssemblyName>QuantSA.Excel.Addin</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,6 +80,7 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="AddIn.cs" />
+    <Compile Include="Config\StaticData.cs" />
     <Compile Include="Functions\ExcelFunction.cs" />
     <Compile Include="Functions\FunctionRegistration.cs" />
     <Compile Include="Functions\ExcelTypeConverter.cs" />
@@ -145,6 +147,10 @@ xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEve
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QuantSA.CoreExtensions\QuantSA.CoreExtensions.csproj">
+      <Project>{f8101f09-3abd-472e-a9a6-d3d45e748e06}</Project>
+      <Name>QuantSA.CoreExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuantSA.Excel.Functions\QuantSA.Excel.Functions.csproj">
       <Project>{0ee19fe5-6c46-40ae-9cce-1d43c9c29f57}</Project>
       <Name>QuantSA.Excel.Functions</Name>

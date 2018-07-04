@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using QuantSA.Shared.Serialization;
 
-namespace QuantSA.Solution.Test
+namespace QuantSA.ProductExtensions.Data
 {
-    public class TestSharedData : ISharedData
+    /// <summary>
+    /// A storage for shared data definitions.
+    /// </summary>
+    public class SharedData : ISharedData
     {
-        private readonly Dictionary<Type, Dictionary<string, ISerializableViaName>> TypeNameAndInstances =
+        private readonly Dictionary<Type, Dictionary<string, ISerializableViaName>> _typeNameAndInstances =
             new Dictionary<Type, Dictionary<string, ISerializableViaName>>();
 
         public bool TryGet(Type type, string name, out ISerializableViaName serializableViaName)
@@ -29,7 +32,7 @@ namespace QuantSA.Solution.Test
         /// <returns></returns>
         private bool TryGetValueForType(Type type, out Dictionary<string, ISerializableViaName> dictForType)
         {
-            foreach (var index in TypeNameAndInstances)
+            foreach (var index in _typeNameAndInstances)
             {
                 if (!type.IsAssignableFrom(index.Key)) continue;
                 dictForType = index.Value;
@@ -47,10 +50,10 @@ namespace QuantSA.Solution.Test
 
         public void Set(ISerializableViaName instance)
         {
-            if (!TypeNameAndInstances.TryGetValue(instance.GetType(), out var dictForType))
+            if (!_typeNameAndInstances.TryGetValue(instance.GetType(), out var dictForType))
             {
                 dictForType = new Dictionary<string, ISerializableViaName>();
-                TypeNameAndInstances[instance.GetType()] = dictForType;
+                _typeNameAndInstances[instance.GetType()] = dictForType;
             }
 
             if (dictForType.ContainsKey(instance.GetName()))

@@ -1,5 +1,6 @@
 ﻿using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products.Rates;
+using QuantSA.ProductExtensions.Data;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -9,14 +10,14 @@ namespace QuantSA.Solution.Test
 {
     public static class TestHelpers
     {
-        private static TestSharedData _sharedData;
+        private static SharedData _sharedData;
 
-        public static TestSharedData SharedData
+        public static SharedData SharedData
         {
             get
             {
                 if (_sharedData != null) return _sharedData;
-                _sharedData = new TestSharedData();
+                _sharedData = new SharedData();
                 QuantSAState.SetSharedData(_sharedData);
 
                 return _sharedData;

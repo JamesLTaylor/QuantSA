@@ -7,10 +7,11 @@
     <ProjectGuid>{F8101F09-3ABD-472E-A9A6-D3D45E748E06}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantSA.ProductExtensions</RootNamespace>
-    <AssemblyName>QuantSA.ProductExtensions</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>QuantSA.CoreExtensions</RootNamespace>
+    <AssemblyName>QuantSA.CoreExtensions</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\SharedData.cs" />
     <Compile Include="Products\Rates\SwapFactory.cs" />
     <Compile Include="SAMarket\BesaJseBondEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

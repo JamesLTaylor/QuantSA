@@ -1,13 +1,10 @@
 ﻿using QuantSA.Core.Products.Rates;
 using QuantSA.Shared.Dates;
-using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Solution.Test
 {
     public static class TestHelperProducts
     {
-
-
         public static IRSwap ZARSwap()
         {
             var quarters = 8;

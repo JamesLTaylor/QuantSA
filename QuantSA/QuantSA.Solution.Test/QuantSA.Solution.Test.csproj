@@ -55,7 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelperProducts.cs" />
     <Compile Include="TestHelpers.cs" />
-    <Compile Include="TestSharedData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
