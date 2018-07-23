@@ -52,15 +52,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Addin\ExcelTypeConverterTests.cs" />
+    <Compile Include="Config\StaticDataTests.cs" />
     <Compile Include="Functions\ObjectViewerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeConverters\ConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TypeConverters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\QuantSA.CoreExtensions\QuantSA.CoreExtensions.csproj">
       <Project>{f8101f09-3abd-472e-a9a6-d3d45e748e06}</Project>
@@ -73,6 +73,10 @@
     <ProjectReference Include="..\QuantSA.Excel.AddIn\QuantSA.Excel.Addin.csproj">
       <Project>{EA77E2CE-18A6-4532-8465-4FB45B3F9C62}</Project>
       <Name>QuantSA.Excel.Addin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Excel.Functions\QuantSA.Excel.Functions.csproj">
+      <Project>{0EE19FE5-6C46-40AE-9CCE-1D43C9C29F57}</Project>
+      <Name>QuantSA.Excel.Functions</Name>
     </ProjectReference>
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{EE53E241-C329-4D56-965A-F6E2BB1FCE50}</Project>
@@ -93,4 +97,9 @@
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets'))" />
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(SolutionDir)..\ExcelExamples\*.xlsx $(TargetDir)\ExcelExamples\ /sy
+xcopy $(SolutionDir)..\Scripts\*.* $(TargetDir)\Scripts\ /sy
+xcopy $(SolutionDir)..\StaticData\*.* $(TargetDir)\StaticData\ /sy</PostBuildEvent>
+  </PropertyGroup>
 </Project>

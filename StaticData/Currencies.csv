@@ -1,4 +1,4 @@
-Name,ISO Code,Name,default FloatRateIndex,default Calendar
-ZAR*,ZAR,South African rand,ZAR.JIBAR.3M,ZA
-USD,USD,United States dollar,USD.LIBOR.3M,US
-EUR,EUR,Euro,EUR.EURIBOR.3M,EU
+ISO Code,Name,default FloatRateIndex,default Calendar
+ZAR*,South African rand,ZAR.JIBAR.3M,ZA
+USD,United States dollar,USD.LIBOR.3M,US
+EUR,Euro,EUR.EURIBOR.3M,EU
