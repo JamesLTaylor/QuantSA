@@ -1,5 +1,5 @@
 ﻿Date exerciseDate = new Date(2017, 08, 28);
-Share share = new Share("AAA", Currency.ZAR);
+Share share = new Share("AAA", new Currency("ZAR"));
 double strike = 100.0;
 
 public override List<Cashflow> GetCFs()

@@ -1,12 +1,11 @@
-﻿using Accord.Math;
-using Accord.Statistics.Distributions.Univariate;
-using Accord.Statistics.Models.Regression.Linear;
-using QuantSA.General;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
 using QuantSA.Core.Primitives;
+using QuantSA.Core.Serialization;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
@@ -31,50 +30,52 @@ namespace QuantSA.Valuation
     ///         Each simulator produces MarketObservables internally
     ///         Each product gets these observables set as if time has passed and these values have indeed been observed.
     ///         The product then uses its contractual definitions to calculate what its cashflows would be under this simulated state of the world
-    /// 7: The simulator keeps track of the portfolio's cashflows accross each realization of a state of the world.
+    /// 7: The simulator keeps track of the portfolio's cashflows across each realization of a state of the world.
     /// </remarks>
     public class Coordinator
     {
-        // Settings
-        private bool useThreads = true;
-        private int maxThreads = 4;
-        private int N;
+        private readonly List<Simulator> _availableSimulators;
+        private readonly int _numberOfPaths;
 
         // Simulators and associated data
-        private NumeraireSimulator numeraire;
-        private List<Simulator> simulators;
-        Dictionary<MarketObservable, int> indexSources;
-        Date valueDate;
-        Currency valueCurrency;
-        List<Date> allDates;
+        private readonly NumeraireSimulator _numeraireSimulator;
+        private List<Date> _allDates;
 
         // Portfolio information
-        List<IProduct> allTrades;
-        List<int> originalTrades;
+        private List<IProduct> _allTrades;
+        private int _maxThreads = 4;
+        private List<int> _originalTrades;
+
         /// <summary>
-        /// Trades in <see cref="allTrades"/> that are options with the indices of what they exercise into.
+        /// Trades in <see cref="_allTrades"/> that are options with the indices of what they exercise into.
         /// </summary>
-        Dictionary<int, List<int>> postExerciseTrades;
-        
+        private Dictionary<int, List<int>> _postExerciseTrades;
+
+        private double[,] _regressedValues;
+
         // Simulated data
-        SimulatedCashflows simulatedCFs;
-        SimulatedRegressors simulatedRegs;
-        double[,] regressedValues;
-        
+        private SimulatedCashflows _simulatedCFs;
+
+        private SimulatedRegressors _simulatedRegs;
+
+        // Settings
+        private bool _useThreads = true;
+
+        private Date _valueDate;
 
 
         /// <summary>
         /// The main constructor for the Coordinator.
         /// </summary>
-        /// <param name="numeraire">A special simulator that also includes the numeraire. There is only one of these.</param>        
-        /// <param name="simulators">Optionally any extra simulators independent of the first.  Can be an empty list.</param>
-        public Coordinator(NumeraireSimulator numeraire, List<Simulator> simulators, int N)
+        /// <param name="numeraireSimulator">A special simulator that also includes the numeraire. There is only one of these.</param>        
+        /// <param name="availableSimulators">Optionally any extra simulators independent of the first.  Can be an empty list.</param>
+        /// <param name="numberOfPaths"></param>
+        public Coordinator(NumeraireSimulator numeraireSimulator, List<Simulator> availableSimulators,
+            int numberOfPaths)
         {
-            this.numeraire = numeraire;
-            this.simulators = simulators;
-            this.simulators.Insert(0, numeraire);
-            this.N = N;
-            valueCurrency = numeraire.GetNumeraireCurrency();
+            _numeraireSimulator = numeraireSimulator;
+            _availableSimulators = availableSimulators;
+            _numberOfPaths = numberOfPaths;
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace QuantSA.Valuation
         /// <param name="useThreads">if set to <c>true</c> then the coordinator will perform calculation on multiple threads.</param>
         public void SetThreadedness(bool useThreads)
         {
-            this.useThreads = useThreads;
+            _useThreads = useThreads;
         }
 
         /// <summary>
@@ -95,8 +96,8 @@ namespace QuantSA.Valuation
         /// <param name="maxThreads">The maximum number of threads to use.</param>
         public void SetThreadedness(bool useThreads, int maxThreads)
         {
-            this.useThreads = useThreads;
-            this.maxThreads = maxThreads;
+            _useThreads = useThreads;
+            _maxThreads = maxThreads;
         }
 
 
@@ -106,49 +107,42 @@ namespace QuantSA.Valuation
         ///     the 
         /// </summary>
         /// <param name="portfolio"></param>
-        /// <param name="fwdValueDates">The dates at which the underlying factors will be saved for later regression.</param>
-        /// <param name="simulatedCFs">The cashflows converted to the value currency and deflated witht he numeaire. Updated 
+        /// <param name="allDates">The dates at which the underlying factors will be saved for later regression.</param>
+        /// <param name="simulatedCFs">The cashflows converted to the value currency and deflated with the numeraire. Updated 
         /// by this function.</param>
-        /// <param name="simulatedRegs">The valuesor the regressors by path and date.</param>
+        /// <param name="simulatedRegs">The values of the regressors by path and date.</param>
         /// <param name="pathStart">The path start.</param>
         /// <param name="pathEnd">The path end.</param>
-        private void PerformSimulationChunk(List<IProduct> portfolio, List<Date> fwdValueDates,
+        private void PerformSimulationChunk(List<IProduct> portfolio, List<Date> allDates,
             SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs, int pathStart, int pathEnd)
         {
             // clone the simulators and portfolio if this is running multi threaded
-            List<IProduct> localPortfolio;
-            NumeraireSimulator localNumeraire = null;
-            List<Simulator> localSimulators = null;
+            var localPortfolio = portfolio.Clone();
 
-            if (useThreads)
-            {
-                localPortfolio = portfolio.Clone();
-                CopySimulators(out localNumeraire, out localSimulators);
-            }else
-            {
-                localPortfolio = portfolio;
-                localNumeraire = numeraire;
-                localSimulators = simulators;
-            }
+            var (localNumeraire, localSimulators) = GetCopyOfSimulators();
+            var mappedSimulators = AssociateFactorsWithSimulators(localPortfolio, localNumeraire, localSimulators);
+            PrepareSimulators(_valueDate, localPortfolio, allDates, localNumeraire, mappedSimulators,
+                localSimulators);
 
-            for (int pathCounter = pathStart; pathCounter < pathEnd; pathCounter++)
+            foreach (var product in localPortfolio)
+                product.SetValueDate(_valueDate);
+
+            for (var pathCounter = pathStart; pathCounter < pathEnd; pathCounter++)
             {
-                double numeraireAtValue = localNumeraire.Numeraire(valueDate);
+                var numeraireAtValue = localNumeraire.Numeraire(_valueDate);
                 // Run the simulation 
-                foreach (Simulator simulator in localSimulators)
-                {
-                    simulator.RunSimulation(pathCounter);
-                }
+                foreach (var simulator in localSimulators) simulator.RunSimulation(pathCounter);
+
                 // get the underlying factors
-                for (int fwdDateCounter = 0; fwdDateCounter < fwdValueDates.Count; fwdDateCounter++)
+                for (var fwdDateCounter = 0; fwdDateCounter < allDates.Count; fwdDateCounter++)
                 {
-                    int independentCounter = 0;
-                    foreach (Simulator simulator in localSimulators)
+                    var independentCounter = 0;
+                    foreach (var simulator in localSimulators)
                     {
-                        double[] underlyingFactors = simulator.GetUnderlyingFactors(fwdValueDates[fwdDateCounter]);
-                        for (int thisIndependentCounter = 0; thisIndependentCounter < underlyingFactors.Length; thisIndependentCounter++)
+                        var underlyingFactors = simulator.GetUnderlyingFactors(allDates[fwdDateCounter]);
+                        foreach (var factor in underlyingFactors)
                         {
-                            simulatedRegs.Add(pathCounter, fwdDateCounter, independentCounter, underlyingFactors[thisIndependentCounter]);
+                            simulatedRegs.Add(pathCounter, fwdDateCounter, independentCounter, factor);
                             independentCounter++;
                         }
                     }
@@ -156,53 +150,47 @@ namespace QuantSA.Valuation
 
                 // use the simulators that now contain a simulation to provide market observables to the 
                 // products.
-                for (int productCounter = 0; productCounter < localPortfolio.Count; productCounter++)
+                for (var productCounter = 0; productCounter < localPortfolio.Count; productCounter++)
                 {
                     var product = localPortfolio[productCounter];
                     product.Reset();
-                    foreach (MarketObservable index in product.GetRequiredIndices())
+                    foreach (var index in product.GetRequiredIndices())
                     {
-                        Simulator simulator = localSimulators[indexSources[index]];
-                        List<Date> requiredDates = product.GetRequiredIndexDates(index);
-                        double[] indices = simulator.GetIndices(index, requiredDates);
+                        var simulator = mappedSimulators[index];
+                        var requiredDates = product.GetRequiredIndexDates(index);
+                        var indices = simulator.GetIndices(index, requiredDates);
                         product.SetIndexValues(index, indices);
                     }
-                    List<Cashflow> timesAndCFS = product.GetCFs();
-                    foreach (Cashflow cf in timesAndCFS)
-                    {
-                        if (cf.Currency.Equals(valueCurrency))
+
+                    var timesAndCfs = product.GetCFs();
+                    foreach (var cf in timesAndCfs)
+                        if (cf.Currency.Equals(_numeraireSimulator.GetNumeraireCurrency()))
                         {
-                            double cfValue = cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
+                            var cfValue = cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
                             simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.Date, cfValue, cf.Currency));
                         }
                         else
                         {
-                            MarketObservable currencyPair = new CurrencyPair(cf.Currency, localNumeraire.GetNumeraireCurrency());
-                            Simulator simulator = localSimulators[indexSources[currencyPair]];
-                            double fxRate = simulator.GetIndices(currencyPair, new List<Date> { cf.Date })[0];
-                            double cfValue = fxRate * cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
+                            var currencyPair = GetCcyPair(localNumeraire, cf.Currency);
+                            var simulator = mappedSimulators[currencyPair];
+                            var fxRate = simulator.GetIndices(currencyPair, new List<Date> {cf.Date})[0];
+                            var cfValue = fxRate * cf.Amount * numeraireAtValue / localNumeraire.Numeraire(cf.Date);
                             simulatedCFs.Add(productCounter, pathCounter, new Cashflow(cf.Date, cfValue, cf.Currency));
                         }
-                    }
                 }
             }
         }
 
         /// <summary>
         /// Copies the simulators into local variables so that they can be safely used on a thread 
-        /// without changing the originals.
+        /// without changing the originals.  The first element is the numeraire simulator.
         /// </summary>
-        /// <param name="localNumeraire">The local numeraire.  The reference to this object is changed in the call.</param>
-        /// <param name="localSimulators">The local simulators.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        private void CopySimulators(out NumeraireSimulator localNumeraire, out List<Simulator> localSimulators)
+        private (NumeraireSimulator, List<Simulator>) GetCopyOfSimulators()
         {
-            localSimulators = new List<Simulator>();
-            foreach (Simulator simulator in simulators)
-            {
-                localSimulators.Add(simulator.Clone());
-            }
-            localNumeraire = (NumeraireSimulator)localSimulators[0];
+            var numeraireSim = (NumeraireSimulator) Cloner.Clone(_numeraireSimulator);
+            var allSims = new List<Simulator> {numeraireSim};
+            allSims.AddRange(_availableSimulators.Select(s => (Simulator)Cloner.Clone(s)));
+            return (numeraireSim, allSims);
         }
 
         /// <summary>
@@ -213,120 +201,120 @@ namespace QuantSA.Valuation
         /// <param name="portfolioIn">The user supplied portfolio.</param>
         /// <param name="fwdValueDates">The extra forward value dates.</param>
         private void PreparePortfolios(IProduct[] portfolioIn, Date[] fwdValueDates)
-        {            
-            allDates = fwdValueDates.Select(date => new Date(date)).ToList();
-            allDates.Add(valueDate);
-            allTrades = new List<IProduct>();
-            originalTrades = new List<int>();
-            postExerciseTrades = new Dictionary<int, List<int>>();
+        {
+            _allDates = fwdValueDates.Select(date => new Date(date)).ToList();
+            _allDates.Add(_valueDate);
+            _allTrades = new List<IProduct>();
+            _originalTrades = new List<int>();
+            _postExerciseTrades = new Dictionary<int, List<int>>();
 
-            // Add the orginal trades
-            int counter = 0;
+            // Add the original trades
+            var counter = 0;
             foreach (var product in portfolioIn)
             {
-                allTrades.Add(product.Clone());
-                originalTrades.Add(counter);                
-                IProductWithEarlyExercise option = product as IProductWithEarlyExercise;
-                if (option != null)
+                _allTrades.Add(product.Clone());
+                _originalTrades.Add(counter);
+                if (product is IProductWithEarlyExercise option)
                 {
-                    List<int> subList = new List<int>();
-                    postExerciseTrades.Add(counter, subList);
+                    var subList = new List<int>();
+                    _postExerciseTrades.Add(counter, subList);
                     counter++;
-                    allDates.AddRange(option.GetExerciseDates());
-                    List<IProduct> postExProducts = option.GetPostExProducts();
+                    _allDates.AddRange(option.GetExerciseDates());
+                    var postExProducts = option.GetPostExProducts();
                     foreach (var postExProduct in postExProducts)
                     {
-                        allTrades.Add(postExProduct);
+                        _allTrades.Add(postExProduct);
                         subList.Add(counter);
                         counter++;
                     }
                 }
-                else counter++;
+                else
+                {
+                    counter++;
+                }
             }
-            allDates = allDates.Distinct().ToList();
-            allDates.Sort();
+
+            _allDates = _allDates.Distinct().ToList();
+            _allDates.Sort();
         }
 
         /// <summary>
         /// Replaces the no exercise cashflows for the product at position <paramref name="key"/> with the cashflows based on 
         /// an estimated optimal exercise policy.
         /// </summary>
-        /// <param name="key">The postion in <see cref="allTrades"/> of the product to be updated.</param>
+        /// <param name="key">The position in <see cref="_allTrades"/> of the product to be updated.</param>
         private void ApplyEarlyExercise(int key)
         {
-            // Get pathwise regressed values of post exercise products.
-            IProductWithEarlyExercise option = allTrades[key] as IProductWithEarlyExercise;
-            List<Date> exDates = option.GetExerciseDates();
-            double[,] postExRegressedValues = new double[N, exDates.Count];
-            for (int i = 0; i < exDates.Count; i++)
+            // Get path-wise regressed values of post exercise products.
+            var option = _allTrades[key] as IProductWithEarlyExercise;
+            var exDates = option.GetExerciseDates();
+            var postExRegressedValues = new double[_numberOfPaths, exDates.Count];
+            for (var i = 0; i < exDates.Count; i++)
             {
                 // perform regression on each exercise date                
-                int postExerciseProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(exDates[i])];
-                double[] fitted = PerformRegression(exDates[i], simulatedCFs, simulatedRegs, new List<int> { postExerciseProductInd });
+                var postExerciseProductInd = _postExerciseTrades[key][option.GetPostExProductAtDate(exDates[i])];
+                var fitted = PerformRegression(exDates[i], _simulatedCFs, _simulatedRegs,
+                    new List<int> {postExerciseProductInd});
                 postExRegressedValues.SetColumn(i, fitted);
             }
 
             // Iterate backwards
-            // initially the stoppping time on all paths is infinity (actually the year 3000)
-            Date[] optimalStop = new Date[N];
-            Date finalDate = new Date(3000, 1, 1);
-            for (int i = 0; i < N; i++) optimalStop[i] = finalDate;
+            // initially the stopping time on all paths is infinity (actually the year 3000)
+            var optimalStop = new Date[_numberOfPaths];
+            var finalDate = new Date(3000, 1, 1);
+            for (var i = 0; i < _numberOfPaths; i++) optimalStop[i] = finalDate;
 
-            for (int exDateCount = exDates.Count - 1; exDateCount >= 0; exDateCount--)
+            for (var exDateCount = exDates.Count - 1; exDateCount >= 0; exDateCount--)
             {
-                Date exDate = exDates[exDateCount];
-                                
+                var exDate = exDates[exDateCount];
+
                 // Optimal flows are underlying product up to the stopping time, then the post exercise product flows afterwards
-                double[] pvOptimalCFs = Vector.Zeros(N);
-                for (int pathCount = 0; pathCount < N; pathCount++)
+                var pvOptimalCFs = Vector.Zeros(_numberOfPaths);
+                for (var pathCount = 0; pathCount < _numberOfPaths; pathCount++)
                 {
                     if (optimalStop[pathCount] < finalDate)
                     {
-                        int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
-                        foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
-                        {
+                        var exProductInd =
+                            _postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
+                        foreach (var cf in _simulatedCFs.GetCFs(exProductInd, pathCount))
                             if (cf.Date > optimalStop[pathCount])
                                 pvOptimalCFs[pathCount] += cf.Amount;
-                        }
                     }
-                    foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
-                    {
-                        if (cf.Date > valueDate && cf.Date <= optimalStop[pathCount])
+
+                    foreach (var cf in _simulatedCFs.GetCFs(key, pathCount))
+                        if (cf.Date > _valueDate && cf.Date <= optimalStop[pathCount])
                             pvOptimalCFs[pathCount] += cf.Amount;
-                    }
                 }
 
                 // update optimal stopping times
-                double[] optimalCV = simulatedRegs.FitCFs(exDate, pvOptimalCFs);
+                var optimalCV = _simulatedRegs.FitCFs(exDate, pvOptimalCFs);
 
-                for (int pathCount = 0; pathCount < N; pathCount++)
-                {
-                    if (option.IsLongOptionality(exDate) && optimalCV[pathCount] < postExRegressedValues[pathCount, exDateCount])
+                for (var pathCount = 0; pathCount < _numberOfPaths; pathCount++)
+                    if (option.IsLongOptionality(exDate) &&
+                        optimalCV[pathCount] < postExRegressedValues[pathCount, exDateCount])
                         optimalStop[pathCount] = exDate;
-                    else if (!option.IsLongOptionality(exDate) && optimalCV[pathCount] > postExRegressedValues[pathCount, exDateCount])
+                    else if (!option.IsLongOptionality(exDate) &&
+                             optimalCV[pathCount] > postExRegressedValues[pathCount, exDateCount])
                         optimalStop[pathCount] = exDate;
-                }
             }
+
             // All stopping times have been found so now we can update the cashflows.  
             // The cashflows are continuation flows up to the exercise date then cashflows from the 
             // exercise product after that.
-            List<Cashflow>[] newCFs = new List<Cashflow>[N];
-            for (int pathCount = 0; pathCount < N; pathCount++)
-            {                
+            var newCFs = new List<Cashflow>[_numberOfPaths];
+            for (var pathCount = 0; pathCount < _numberOfPaths; pathCount++)
+            {
                 newCFs[pathCount] = new List<Cashflow>();
-                int exProductInd = postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
-                foreach (Cashflow cf in simulatedCFs.GetCFs(exProductInd, pathCount))
-                {
+                var exProductInd = _postExerciseTrades[key][option.GetPostExProductAtDate(optimalStop[pathCount])];
+                foreach (var cf in _simulatedCFs.GetCFs(exProductInd, pathCount))
                     if (cf.Date > optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
-                }
-                foreach (Cashflow cf in simulatedCFs.GetCFs(key, pathCount))
-                {
-                    if (cf.Date > valueDate && cf.Date <= optimalStop[pathCount])
+                foreach (var cf in _simulatedCFs.GetCFs(key, pathCount))
+                    if (cf.Date > _valueDate && cf.Date <= optimalStop[pathCount])
                         newCFs[pathCount].Add(cf);
-                }
             }
-            simulatedCFs.Update(key, newCFs);            
+
+            _simulatedCFs.Update(key, newCFs);
         }
 
 
@@ -337,27 +325,24 @@ namespace QuantSA.Valuation
         /// </summary>
         private void ApplyEarlyExercise()
         {
-            if (useThreads)
+            if (_useThreads)
             {
-                Thread[] earlyExThreads = new Thread[postExerciseTrades.Keys.Count];
-                int i = 0;
-                foreach (int key in postExerciseTrades.Keys)
+                var earlyExThreads = new Thread[_postExerciseTrades.Keys.Count];
+                var i = 0;
+                foreach (var key in _postExerciseTrades.Keys)
                 {
                     earlyExThreads[i] = new Thread(
-                        new ThreadStart(
-                            () => ApplyEarlyExercise(key))
-                        );
+                        () => ApplyEarlyExercise(key)
+                    );
                     earlyExThreads[i].Start();
                     i++;
                 }
-                foreach (Thread thread in earlyExThreads) thread.Join();
+
+                foreach (var thread in earlyExThreads) thread.Join();
             }
             else
             {
-                foreach (int key in postExerciseTrades.Keys)
-                {
-                    ApplyEarlyExercise(key);
-                }
+                foreach (var key in _postExerciseTrades.Keys) ApplyEarlyExercise(key);
             }
         }
 
@@ -367,25 +352,25 @@ namespace QuantSA.Valuation
         private void PerformSimulation()
         {
             // Run the simulation in chunks on several threads.
-            if (useThreads && N >= 1000)
-            {                
-                Thread[] simThreads = new Thread[maxThreads];
-                int simChunkSize = (int)Math.Ceiling(N / (double)maxThreads);
-                for (int i = 0; i < maxThreads; i++)
+            if (_useThreads && _numberOfPaths >= 1000)
+            {
+                var simThreads = new Thread[_maxThreads];
+                var simChunkSize = (int) Math.Ceiling(_numberOfPaths / (double) _maxThreads);
+                for (var i = 0; i < _maxThreads; i++)
                 {
-                    int start = i * simChunkSize;
-                    int end = Math.Min(start + simChunkSize, N);
+                    var start = i * simChunkSize;
+                    var end = Math.Min(start + simChunkSize, _numberOfPaths);
                     simThreads[i] = new Thread(
-                        new ThreadStart(
-                            () => PerformSimulationChunk(allTrades, allDates, simulatedCFs, simulatedRegs, start, end))
-                        );
+                        () => PerformSimulationChunk(_allTrades, _allDates, _simulatedCFs, _simulatedRegs, start, end)
+                    );
                     simThreads[i].Start();
                 }
-                foreach (Thread thread in simThreads) thread.Join();
+
+                foreach (var thread in simThreads) thread.Join();
             }
             else
             {
-                PerformSimulationChunk(allTrades, allDates, simulatedCFs, simulatedRegs, 0, N);
+                PerformSimulationChunk(_allTrades, _allDates, _simulatedCFs, _simulatedRegs, 0, _numberOfPaths);
             }
         }
 
@@ -395,14 +380,15 @@ namespace QuantSA.Valuation
         /// </summary>
         /// <param name="fwdValueDates">The full set of forward value dates.</param>
         /// <param name="startIndex">The start index of the range.  Forward values after this date will be updated.</param>
-        /// <param name="endIndex">The end index of the range.  forward values stricly before this date will be updated.</param>
+        /// <param name="endIndex">The end index of the range.  forward values strictly before this date will be updated.</param>
         /// <param name="regressedValues">The full set of estimated forward values.</param>
-        private void ApplyForwardValueRegressionsChunk(List<Date> fwdValueDates, int startIndex, int endIndex, double[,] regressedValues)
+        private void ApplyForwardValueRegressionsChunk(List<Date> fwdValueDates, int startIndex, int endIndex,
+            double[,] regressedValues)
         {
-            for (int i = startIndex; i < endIndex; i++)
+            for (var i = startIndex; i < endIndex; i++)
             {
                 // perform regression on each forward date
-                double[] fitted = PerformRegression(fwdValueDates[i], simulatedCFs, simulatedRegs, originalTrades);
+                var fitted = PerformRegression(fwdValueDates[i], _simulatedCFs, _simulatedRegs, _originalTrades);
                 regressedValues.SetColumn(i, fitted);
             }
         }
@@ -414,28 +400,29 @@ namespace QuantSA.Valuation
         /// <param name="fwdValueDates">The dates at which forward values are required.</param>
         private double[,] ApplyForwardValueRegressions(List<Date> fwdValueDates)
         {
-            double[,] regressedValues = new double[N, fwdValueDates.Count()];
+            var regressedValues = new double[_numberOfPaths, fwdValueDates.Count];
 
-            if (fwdValueDates.Count>= 20 && useThreads)
+            if (fwdValueDates.Count >= 20 && _useThreads)
             {
-                Thread[] regressThreads = new Thread[maxThreads];
-                int regressChunkSize = (int)Math.Ceiling(fwdValueDates.Count() / (double)maxThreads);
-                for (int i = 0; i < maxThreads; i++)
+                var regressThreads = new Thread[_maxThreads];
+                var regressChunkSize = (int) Math.Ceiling(fwdValueDates.Count / (double) _maxThreads);
+                for (var i = 0; i < _maxThreads; i++)
                 {
-                    int start = i * regressChunkSize;
-                    int end = Math.Min(start + regressChunkSize, fwdValueDates.Count());
+                    var start = i * regressChunkSize;
+                    var end = Math.Min(start + regressChunkSize, fwdValueDates.Count);
                     regressThreads[i] = new Thread(
-                        new ThreadStart(
-                            () => ApplyForwardValueRegressionsChunk(fwdValueDates, start, end, regressedValues))
-                        );
+                        () => ApplyForwardValueRegressionsChunk(fwdValueDates, start, end, regressedValues)
+                    );
                     regressThreads[i].Start();
                 }
-                foreach (Thread thread in regressThreads) thread.Join();
+
+                foreach (var thread in regressThreads) thread.Join();
             }
             else
             {
-                ApplyForwardValueRegressionsChunk(fwdValueDates, 0, fwdValueDates.Count(), regressedValues);
+                ApplyForwardValueRegressionsChunk(fwdValueDates, 0, fwdValueDates.Count, regressedValues);
             }
+
             return regressedValues;
         }
 
@@ -443,21 +430,43 @@ namespace QuantSA.Valuation
         /// Performs the regression for a single date
         /// </summary>
         /// <param name="date">The date.</param>
-        /// <param name="simulatedCFs">The simulated c fs.</param>
+        /// <param name="simulatedCFs">The simulated cashflows.</param>
         /// <param name="simulatedRegs">The simulated regs.</param>
         /// <param name="subPortfolio">The sub portfolio.</param>
         /// <returns></returns>
-        private double[] PerformRegression(Date date, SimulatedCashflows simulatedCFs, SimulatedRegressors simulatedRegs,
+        private double[] PerformRegression(Date date, SimulatedCashflows simulatedCFs,
+            SimulatedRegressors simulatedRegs,
             List<int> subPortfolio)
         {
-            double[] cfs = simulatedCFs.GetPathwisePV(date, subPortfolio);
-            double[] fitted = simulatedRegs.FitCFs(date, cfs);
+            var cfs = simulatedCFs.GetPathwisePV(date, subPortfolio);
+            var fitted = simulatedRegs.FitCFs(date, cfs);
             return fitted;
+        }
+
+        private int GetNumberOfUnderlyingFactors()
+        {
+            // run one simulation to see how many independent variables each simulator provides
+            // clone the simulators and portfolio if this is running multi threaded
+            var localPortfolio = _allTrades.Clone();
+
+            var (localNumeraire, localSimulators) = GetCopyOfSimulators();
+            var mappedSimulators = AssociateFactorsWithSimulators(localPortfolio, localNumeraire, localSimulators);
+            PrepareSimulators(_valueDate, localPortfolio, _allDates, localNumeraire, mappedSimulators,
+                localSimulators);
+
+            var regressorCount = 0;
+            foreach (var simulator in localSimulators)
+            {
+                simulator.RunSimulation(0);
+                regressorCount += simulator.GetUnderlyingFactors(_allDates[0]).Length;
+            }
+
+            return regressorCount;
         }
 
 
         /// <summary>
-        /// Initializes the Coordinator, runs the suimulation, applies early exercise rules, 
+        /// Initializes the Coordinator, runs the simulation, applies early exercise rules, 
         /// derives forward value paths.
         /// </summary>
         /// <param name="portfolioIn">The portfolio in.</param>
@@ -465,18 +474,18 @@ namespace QuantSA.Valuation
         /// <param name="fwdValueDates">The forward value dates.</param>
         private void CalculateAll(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates)
         {
-            this.valueDate = valueDate;
+            _valueDate = valueDate;
             PreparePortfolios(portfolioIn, fwdValueDates);
-            AssociateFactorsWithSimulators(allTrades);
-            InitializeSimulators(allTrades, fwdValueDates.ToList());
-            simulatedCFs = new SimulatedCashflows(allTrades.Count, N); // initialized outside to allow multiple threads.
-            simulatedRegs = new SimulatedRegressors(allDates, N, simulators);
+            _simulatedCFs =
+                new SimulatedCashflows(_allTrades.Count,
+                    _numberOfPaths); // initialized outside to allow multiple threads.
+            _simulatedRegs = new SimulatedRegressors(_allDates, _numberOfPaths, GetNumberOfUnderlyingFactors());
             PerformSimulation();
             ApplyEarlyExercise();
-            if (fwdValueDates.Length>0) // Only regress is forward values are required.
-                regressedValues = ApplyForwardValueRegressions(fwdValueDates.ToList());
+            if (fwdValueDates.Length > 0) // Only regress if forward values are required.
+                _regressedValues = ApplyForwardValueRegressions(fwdValueDates.ToList());
         }
-        
+
 
         /// <summary>
         /// Gets all the data that might be of interest after a simulation.
@@ -488,25 +497,22 @@ namespace QuantSA.Valuation
         public ResultStore GetValuePaths(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates)
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
-            ResultStore results = new ResultStore();
-            results.Add("regressedFwdsPVs", regressedValues);
-            double[,] fwdCashflowPVs = new double[N, fwdValueDates.Count()];
-            for (int i = 0; i<fwdValueDates.Count(); i++)
-            {
-                fwdCashflowPVs.SetColumn(i, simulatedCFs.GetPathwisePV(fwdValueDates[i], originalTrades));
-            }
+            var results = new ResultStore();
+            results.Add("regressedFwdsPVs", _regressedValues);
+            var fwdCashflowPVs = new double[_numberOfPaths, fwdValueDates.Count()];
+            for (var i = 0; i < fwdValueDates.Length; i++)
+                fwdCashflowPVs.SetColumn(i, _simulatedCFs.GetPathwisePV(fwdValueDates[i], _originalTrades));
             results.Add("fwdCashflowPVs", fwdCashflowPVs);
 
-            for (int regressorNumber = 0; regressorNumber < simulatedRegs.GetNumberOfRegressors(); regressorNumber++)
-            {
-                results.Add("regressor" + regressorNumber.ToString(), simulatedRegs.GetRegressors(regressorNumber, fwdValueDates));
-            }
+            for (var regressorNumber = 0; regressorNumber < _simulatedRegs.GetNumberOfRegressors(); regressorNumber++)
+                results.Add("regressor" + regressorNumber,
+                    _simulatedRegs.GetRegressors(regressorNumber, fwdValueDates));
             return results;
         }
 
 
         /// <summary>
-        /// Calcualte the expected positive exposure on a portfolio.
+        /// Calculate the expected positive exposure on a portfolio.
         /// </summary>
         /// <param name="portfolioIn">The portfolio in.</param>
         /// <param name="valueDate">The value date.</param>
@@ -516,38 +522,29 @@ namespace QuantSA.Valuation
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
 
-            double[] epe = Vector.Zeros(fwdValueDates.Length);
-            List<Date> fwdValueDatesList = fwdValueDates.ToList();
+            var epe = Vector.Zeros(fwdValueDates.Length);
 
             //Debug.WriteToFile(@"c:\dev\temp\regressedValues.csv", regressedValues);            
-            for (int row = 0; row < regressedValues.GetLength(0); row++)
-            {
-                for (int col = 0; col < regressedValues.GetLength(1); col++)
-                {
-                    epe[col] += Math.Max(0, regressedValues[row, col]);
-                }
-            }
-            for (int col = 0; col < regressedValues.GetLength(1); col++)
-            {
-                epe[col] /= N;
-            }
+            for (var row = 0; row < _regressedValues.GetLength(0); row++)
+            for (var col = 0; col < _regressedValues.GetLength(1); col++)
+                epe[col] += Math.Max(0, _regressedValues[row, col]);
+            for (var col = 0; col < _regressedValues.GetLength(1); col++) epe[col] /= _numberOfPaths;
             return epe;
         }
 
         public double[,] PFE(IProduct[] portfolioIn, Date valueDate, Date[] fwdValueDates, double[] percentiles)
         {
             CalculateAll(portfolioIn, valueDate, fwdValueDates);
-            
-            double[,] pfe = new double[fwdValueDates.Length, percentiles.Length];
 
-            for (int col = 0; col < regressedValues.GetLength(1); col++)
+            var pfe = new double[fwdValueDates.Length, percentiles.Length];
+
+            for (var col = 0; col < _regressedValues.GetLength(1); col++)
             {
-                EmpiricalDistribution xDist = new EmpiricalDistribution(regressedValues.GetColumn(col));
-                for (int percCount = 0; percCount<percentiles.Length; percCount++)
-                {
+                var xDist = new EmpiricalDistribution(_regressedValues.GetColumn(col));
+                for (var percCount = 0; percCount < percentiles.Length; percCount++)
                     pfe[col, percCount] = xDist.InverseDistributionFunction(percentiles[percCount]);
-                }                
             }
+
             return pfe;
         }
 
@@ -560,7 +557,7 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         public double Value(IProduct product, Date valueDate)
         {
-            return Value(new [] { product }, valueDate);
+            return Value(new[] {product}, valueDate);
         }
 
 
@@ -570,10 +567,10 @@ namespace QuantSA.Valuation
         /// <param name="portfolioIn">The portfolio to be valued.</param>
         /// <param name="valueDate">The value date.</param>
         /// <returns></returns>
-        public double Value(IProduct[] portfolioIn, Date valueDate)
+        public double Value(IEnumerable<IProduct> portfolioIn, Date valueDate)
         {
-            CalculateAll(portfolioIn, valueDate, new Date[0]);
-            double[] pathwisePVs = simulatedCFs.GetPathwisePV(valueDate, originalTrades);
+            CalculateAll(portfolioIn.ToArray(), valueDate, new Date[0]);
+            var pathwisePVs = _simulatedCFs.GetPathwisePV(valueDate, _originalTrades);
             return pathwisePVs.Average();
         }
 
@@ -581,44 +578,62 @@ namespace QuantSA.Valuation
         /// <summary>
         /// Initializes the simulators by telling them at which dates they will need to provide which market indices.
         /// </summary>
-        /// <param name="extraDates">Extra dates over and above the contract dates where the simulators will need to 
-        /// provide their indices.</param>
-        private void InitializeSimulators(List<IProduct> portfolio, List<Date> extraDates)
+        /// <param name="valueDate"></param>
+        /// <param name="portfolio"></param>
+        /// <param name="fwdDates">Extra dates over and above the contract dates where the simulators will need to 
+        /// provide their indices.  This is likely to be forward values required in EPE and PFE profiles.</param>
+        /// <param name="numeraireSimulator"></param>
+        /// <param name="mappedSimulators"></param>
+        /// <param name="availableSimulators"></param>
+        private static void PrepareSimulators(Date valueDate, List<IProduct> portfolio, List<Date> fwdDates,
+            NumeraireSimulator numeraireSimulator, Dictionary<MarketObservable, Simulator> mappedSimulators,
+            List<Simulator> availableSimulators)
         {
             // Reset all the simulators
-            foreach (Simulator simulator in simulators)
-            { simulator.Reset(); }
+            foreach (var simulator in availableSimulators) simulator.Reset();
 
             // Set up the simulators for the times at which they will be queried
             foreach (var product in portfolio)
             {
                 product.SetValueDate(valueDate);
                 // Tell the simulators at what times indices will be required.
-                foreach (MarketObservable index in product.GetRequiredIndices())
+                foreach (var index in product.GetRequiredIndices())
                 {
-                    List<Date> requiredTimes = product.GetRequiredIndexDates(index);
-                    simulators[indexSources[index]].SetRequiredDates(index, requiredTimes);                    
-                    simulators[indexSources[index]].SetRequiredDates(index, extraDates);
+                    var requiredTimes = product.GetRequiredIndexDates(index);
+                    mappedSimulators[index].SetRequiredDates(index, requiredTimes);
+                    mappedSimulators[index].SetRequiredDates(index, fwdDates);
                 }
-                // Tell the nummeraire simulator at what times it will be required.
+
+                // Tell the numeraire simulator at what times it will be required.
                 // Tell the FX simulators at what times they will be required.
-                foreach (Currency ccy in product.GetCashflowCurrencies())
+                foreach (var ccy in product.GetCashflowCurrencies())
                 {
-                    List<Date> requiredDates = product.GetCashflowDates(ccy);
-                    numeraire.SetNumeraireDates(requiredDates);
-                    numeraire.SetNumeraireDates(extraDates);
-                    if (ccy != numeraire.GetNumeraireCurrency())
+                    var requiredDates = product.GetCashflowDates(ccy);
+                    numeraireSimulator.SetNumeraireDates(requiredDates);
+                    numeraireSimulator.SetNumeraireDates(fwdDates);
+                    if (ccy != numeraireSimulator.GetNumeraireCurrency())
                     {
-                        MarketObservable index = new CurrencyPair(ccy, numeraire.GetNumeraireCurrency());
-                        simulators[indexSources[index]].SetRequiredDates(index, requiredDates);
-                        simulators[indexSources[index]].SetRequiredDates(index, extraDates);
+                        var ccyPair = GetCcyPair(numeraireSimulator, ccy);
+                        mappedSimulators[ccyPair].SetRequiredDates(ccyPair, requiredDates);
+                        mappedSimulators[ccyPair].SetRequiredDates(ccyPair, fwdDates);
                     }
                 }
+
+                foreach (var simulator in availableSimulators)
+                    simulator.Prepare(valueDate);
+                numeraireSimulator.Prepare(valueDate);
             }
 
             // Prepare all the simulators
-            foreach (Simulator simulator in simulators)
-            { simulator.Prepare(); }
+            foreach (var simulator in availableSimulators) simulator.Prepare(valueDate);
+        }
+
+        private static MarketObservable GetCcyPair(NumeraireSimulator numeraireSimulator, Currency ccy)
+        {
+            // TODO: Currency pair should be passed in somehow rather than constructed here so that there is no risk of names not coinciding.
+            MarketObservable index = new CurrencyPair($"{ccy}{numeraireSimulator.GetNumeraireCurrency()}",
+                ccy, numeraireSimulator.GetNumeraireCurrency());
+            return index;
         }
 
         /// <summary>
@@ -632,64 +647,46 @@ namespace QuantSA.Valuation
         /// or
         /// Required currency pair: " + index.ToString() + " is not provided by any of the simulators
         /// </exception>
-        private void AssociateFactorsWithSimulators(List<IProduct> portfolio)
+        private static Dictionary<MarketObservable, Simulator> AssociateFactorsWithSimulators(
+            IEnumerable<IProduct> portfolio,
+            NumeraireSimulator numeraireSimulator,
+            List<Simulator> availableSimulators)
         {
             // Find which simulator will provide each of the potentially required MarketObservables.
-            indexSources = new Dictionary<MarketObservable, int>();
-            HashSet<Currency> requiredCurrencySet = new HashSet<Currency>();
+            var mappedSimulators = new Dictionary<MarketObservable, Simulator>();
+            var indices = new HashSet<MarketObservable>();
             foreach (var product in portfolio)
             {
-                // Associate the index simulators
-                foreach (MarketObservable index in product.GetRequiredIndices())
-                {
-                    if (!indexSources.ContainsKey(index))
-                    {
-                        bool found = false;
-                        for (int simulatorCounter=0; simulatorCounter< simulators.Count; simulatorCounter++)
-                        {
-                            if (simulators[simulatorCounter].ProvidesIndex(index))
-                            {
-                                if (!found)
-                                {
-                                    indexSources[index] = simulatorCounter;
-                                    found = true;
-                                }
-                                else throw new ArgumentException(index.ToString() + " is provided by more than one simulator.");
-                            }
-                        }
-                        if (!found) throw new IndexOutOfRangeException("Required index: " + index.ToString() + " is not provided by any of the simulators.");
-
-                    }
-                }
-
-                // Associate the currency simulators
-                foreach (Currency ccy in product.GetCashflowCurrencies())
-                {
-                    requiredCurrencySet.Add(ccy);
-                    MarketObservable index = new CurrencyPair(ccy, numeraire.GetNumeraireCurrency());
-                    if (ccy != numeraire.GetNumeraireCurrency() && !indexSources.ContainsKey(index))
-                    {
-                        bool found = false;
-                        for (int simulatorCounter = 0; simulatorCounter < simulators.Count; simulatorCounter++)
-                        {
-                            if (simulators[simulatorCounter].ProvidesIndex(index))
-                            {
-                                indexSources[index] = simulatorCounter;
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) throw new IndexNotAvailableException("Required currency pair: " + index.ToString() + " is not provided by any of the simulators");
-
-                    }
-                }
+                foreach (var index in product.GetRequiredIndices())
+                    indices.Add(index);
+                foreach (var ccy in product.GetCashflowCurrencies().Where(c => c != numeraireSimulator.GetNumeraireCurrency()))
+                    indices.Add(GetCcyPair(numeraireSimulator, ccy));
             }
 
-            // Check how many currencies are required by this portfolio, and ensure that ANY is not used as the 
-            // valuation currency if there are more than one.  Comparison needs to be done on HashCode because
-            // ANY is equal to any Currency in the comparison overloads.
-            if (requiredCurrencySet.Count > 1 && numeraire.GetNumeraireCurrency().GetHashCode() == Currency.ANY.GetHashCode())
-                throw new ArgumentException("Cannot use 'ANY' as the valuation currency when the portfolio includes cashflows in multiple currencies.");
+            foreach (var index in indices)
+            {
+                if (mappedSimulators.ContainsKey(index)) continue;
+                var found = false;
+                foreach (var sim in availableSimulators)
+                {
+                    if (!sim.ProvidesIndex(index)) continue;
+                    if (!found)
+                    {
+                        mappedSimulators[index] = sim;
+                        found = true;
+                    }
+                    else
+                    {
+                        throw new ArgumentException(index + " is provided by more than one simulator.");
+                    }
+                }
+
+                if (found) continue;
+                throw new IndexOutOfRangeException("Required index: " + index +
+                                                   " is not provided by any of the simulators.");
+            }
+
+            return mappedSimulators;
         }
     }
 }

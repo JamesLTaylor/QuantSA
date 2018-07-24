@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Shared", "QuantSA.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Shared.Test", "QuantSA.Shared.Test\QuantSA.Shared.Test.csproj", "{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuantSA.Solution.Test", "QuantSA.Solution.Test\QuantSA.Solution.Test.csproj", "{8BFBEAC7-789D-4E15-9965-5129BC7589E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,6 +190,18 @@ Global
 		{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}.Release|x64.Build.0 = Release|Any CPU
 		{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}.Release|x86.ActiveCfg = Release|Any CPU
 		{38A22B8F-1FE7-4C9A-8E24-551EA6CE0A7C}.Release|x86.Build.0 = Release|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Debug|x64.Build.0 = Debug|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Debug|x86.Build.0 = Debug|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Release|x64.ActiveCfg = Release|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Release|x64.Build.0 = Release|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{8BFBEAC7-789D-4E15-9965-5129BC7589E5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

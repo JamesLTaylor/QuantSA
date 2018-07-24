@@ -8,7 +8,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
     {
         public Type RequiredType => typeof(ICompoundingConvention);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input != null ? input as string : defaultValue;
             if (strValue == null)

@@ -20,11 +20,11 @@ Get the stored results of a calculation from a results object.
 
 ## Example Sheet
 
-    ZARSwap.xlsx
+    BermudanSwaption.xlsx
 
 ## Arguments
 
-* **resultStore** (IProvidesResultStore)The results object as returned by a call to another QuantSA function
+* **resultStore** (ResultStore)The results object as returned by a call to another QuantSA function
 * **resultName** (String)The name of the result required.  Use QSA.GetAvailableResults to get a list of all available results in this object.
 
 <!--HUMAN EDIT START-->

@@ -8,7 +8,7 @@ namespace QuantSA.General
     /// <summary>
     /// Wraps a discount curve as a forward rate forecasting curve.
     /// </summary>
-    [Serializable]
+    
     public class ForecastCurveFromDiscount : IFloatingRateSource
     {
         private readonly IDiscountingSource discountCurve;
@@ -44,7 +44,7 @@ namespace QuantSA.General
             if (date > discountCurve.GetAnchorDate())
             {
                 var df1 = discountCurve.GetDF(date);
-                var laterDate = date.AddTenor(index.tenor);
+                var laterDate = date.AddTenor(index.Tenor);
                 var df2 = discountCurve.GetDF(laterDate);
                 var dt = (laterDate - date) / 365.0;
                 var fwdRate = (df1 / df2 - 1) / dt;

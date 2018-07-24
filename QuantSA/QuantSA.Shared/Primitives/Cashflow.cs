@@ -3,7 +3,7 @@ using QuantSA.Shared.Dates;
 
 namespace QuantSA.Shared.Primitives
 {
-    [Serializable]
+    
     public class Cashflow
     {
         public Cashflow(Date date, double amount, Currency currency)

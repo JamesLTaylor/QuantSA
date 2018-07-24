@@ -72,6 +72,9 @@
     - title: CreateModelDeterministicCreditWithFXJump
       url: /CreateModelDeterministicCreditWithFXJump.html
       output: web, pdf
+    - title: CreateReferenceEntity
+      url: /CreateReferenceEntity.html
+      output: web, pdf
     - title: GetSurvivalProb
       url: /GetSurvivalProb.html
       output: web, pdf
@@ -143,6 +146,12 @@
       output: web, pdf
     - title: InterpLinear
       url: /InterpLinear.html
+      output: web, pdf
+    - title: ViewObjectPropertyNames
+      url: /ViewObjectPropertyNames.html
+      output: web, pdf
+    - title: ViewObjectPropertyValue
+      url: /ViewObjectPropertyValue.html
       output: web, pdf
   - title: Rates
     output: web, pdf

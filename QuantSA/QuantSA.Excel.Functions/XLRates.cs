@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using ExcelDna.Integration;
+using QuantSA.Core.Products.Rates;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
-using QuantSA.General.Products.Rates;
+using QuantSA.ProductExtensions.Products.Rates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -109,10 +111,12 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
             bool payFixed,
             [ExcelArgument(Description = "Flat notional for all dates.")]
-            double notional)
+            double notional,
+            [QuantSAExcelArgument(Description = "Flat notional for all dates.", Default = "DEFAULT")]
+            FloatRateIndex jibar)
         {
-            return BermudanSwaption.CreateZARBermudanSwaption(exerciseDates, longOptionality, rate, payFixed, notional,
-                startDate, tenor);
+            return SwapFactory.CreateZARBermudanSwaption(exerciseDates, longOptionality, rate, payFixed, notional,
+                startDate, tenor, jibar);
         }
 
 
@@ -132,9 +136,11 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
             bool payFixed,
             [ExcelArgument(Description = "Flat notional for all dates.")]
-            double notional)
+            double notional,
+            [QuantSAExcelArgument(Description = "The float rate index of the swap.", Default = "DEFAULT")]
+            FloatRateIndex jibar)
         {
-            return IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
+            return SwapFactory.CreateZARSwap(rate, payFixed, notional, startDate, tenor, jibar);
         }
 
 
@@ -155,11 +161,12 @@ namespace QuantSA.ExcelFunctions
             [ExcelArgument(Description = "The FRA code, e.g. '3x6'.")]
             string fraCode,
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
-            bool payFixed)
-
+            bool payFixed,
+            [QuantSAExcelArgument(Description = "The float rate index of the FRA.", Default = "ZAR.JIBAR.3M")]
+            FloatRateIndex jibar)
         {
-            var zaCalendar = StaticData.GetCalendar("ZA");
-            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, zaCalendar);
+            // TODO: JT: Get a preferred calendar from the float rate index
+            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, new Calendar("ZA"), jibar);
         }
 
 
@@ -186,7 +193,7 @@ namespace QuantSA.ExcelFunctions
 
             // Calculate the first fixing off the curve to use at all past dates.
             var df1 = curve.GetDF(valueDate);
-            var laterDate = valueDate.AddTenor(index.tenor);
+            var laterDate = valueDate.AddTenor(index.Tenor);
             var df2 = curve.GetDF(laterDate);
             var dt = (laterDate - valueDate) / 365.0;
             var rate = (df1 / df2 - 1) / dt;
@@ -228,7 +235,7 @@ namespace QuantSA.ExcelFunctions
             {
                 // Calculate the first fixing off the curve to use at all past dates.
                 var df1 = 1.0;
-                var laterDate = discountCurve.GetAnchorDate().AddTenor(floatingRateIndex.tenor);
+                var laterDate = discountCurve.GetAnchorDate().AddTenor(floatingRateIndex.Tenor);
                 var df2 = discountCurve.GetDF(laterDate);
                 var dt = (laterDate - discountCurve.GetAnchorDate()) / 365.0;
                 var rate = (df1 / df2 - 1) / dt;
@@ -327,8 +334,7 @@ namespace QuantSA.ExcelFunctions
             var anchorDate = baseCurve.GetAnchorDate();
             var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.FromYears(1))));
             var model = new HullWhite1F(baseCurve.GetCurrency(), meanReversion, flatVol, flatCurveRate, flatCurveRate,
-                anchorDate);
-            model.AddForecast(forecastIndices);
+                new[] {forecastIndices});
             return model;
         }
     }

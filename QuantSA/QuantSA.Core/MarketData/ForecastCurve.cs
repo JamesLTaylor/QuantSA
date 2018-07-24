@@ -1,4 +1,5 @@
 ﻿using System;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -10,11 +11,14 @@ namespace QuantSA.General
     /// Linearly interpolates forward rates.  Must only be used for a single floating index.  This is generally enforced 
     /// by the model using it.
     /// </summary>
-    [Serializable]
     public class ForecastCurve : IFloatingRateSource
     {
         private readonly DatesAndRates dateAndRates;
         private readonly FloatRateIndex index;
+
+        private ForecastCurve()
+        {
+        }
 
         /// <summary>
         /// Create a curve that linearly interpolates the provided forward rates.  Rates are not used to get discount factors.
@@ -30,7 +34,7 @@ namespace QuantSA.General
             Date maximumDate = null)
         {
             this.index = index;
-            dateAndRates = new DatesAndRates(Currency.ANY, anchorDate, dates, rates, maximumDate);
+            dateAndRates = new DatesAndRates(index.Currency, anchorDate, dates, rates, maximumDate);
         }
 
         public FloatRateIndex GetFloatingIndex()

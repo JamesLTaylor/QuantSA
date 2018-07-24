@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.General;
 using QuantSA.General.Formulae;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Equity;
 
 namespace ValuationTest
 {
@@ -28,7 +30,7 @@ namespace ValuationTest
             // Setup an appropriate simulation
             var shares = new[]
             {
-                new Share("AAA", Currency.ZAR)
+                new Share("AAA", TestHelpers.ZAR)
             }; // One needs to know the index that will be required by the product to simulate it.
             var valueDate = new Date(2016, 08, 28);
 
@@ -36,7 +38,7 @@ namespace ValuationTest
             var vol = new[] {0.22};
             var spotPrice = new[] {100.0};
             var correlations = new[,] {{1.0}};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate,
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate,
                 new[] {valueDate, valueDate.AddMonths(120)},
                 new[] {0.07, 0.07});
             var rateForecastCurves = new IFloatingRateSource[0];
@@ -55,7 +57,7 @@ namespace ValuationTest
             // Setup the same product statically
             var exerciseDate = new Date(2017, 08, 28);
             var strike = 100.0;
-            Product staticProduct = new EuropeanOption(new Share("AAA", Currency.ZAR), strike, exerciseDate);
+            Product staticProduct = new EuropeanOption(new Share("AAA", TestHelpers.ZAR), strike, exerciseDate);
 
             // Value the static product
             coordinator = new Coordinator(sim, new List<Simulator>(), 100000);
@@ -77,7 +79,7 @@ namespace ValuationTest
         {
             var source =
                 @"Date exerciseDate = new Date(2017, 08, 28);
-Share share = new Share(""AAA"", Currency.ZAR);
+Share share = new Share(""AAA"", new Currency(""ZAR""));
 double strike = 100.0;
 
 public override List<Cashflow> GetCFs()
@@ -91,7 +93,7 @@ public override List<Cashflow> GetCFs()
             // Setup an approriate simulation
             var shares = new[]
             {
-                new Share("AAA", Currency.ZAR)
+                new Share("AAA", TestHelpers.ZAR)
             }; // One needs to know the index that will be required by the product to simulate it.
             var valueDate = new Date(2016, 08, 28);
 
@@ -99,7 +101,7 @@ public override List<Cashflow> GetCFs()
             var vol = new[] {0.22};
             var spotPrice = new[] {100.0};
             var correlations = new[,] {{1.0}};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate,
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate,
                 new[] {valueDate, valueDate.AddMonths(120)},
                 new[] {0.07, 0.07});
             var rateForecastCurves = new IFloatingRateSource[0];
@@ -126,11 +128,11 @@ public override List<Cashflow> GetCFs()
         {
             var source =
                 @"Date date = new Date(2017, 08, 28);
-FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
+FloatRateIndex jibar = new FloatRateIndex(""ZAR.JIBAR.3M"", new Currency(""ZAR""), ""JIBAR"", Tenor.FromMonths(3));
 double dt = 91.0/365.0;
 double fixedRate = 0.071;
 double notional = 1000000.0;
-Currency currency = Currency.ZAR;
+Currency currency = new Currency(""ZAR"");
 
 public override List<Cashflow> GetCFs()
 {
@@ -145,8 +147,8 @@ public override List<Cashflow> GetCFs()
             var valueDate = new Date(2016, 9, 17);
             Date[] dates = {new Date(2016, 9, 17), new Date(2026, 9, 17)};
             double[] rates = {0.07, 0.07};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate, dates, rates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, FloatRateIndex.JIBAR3M, dates, rates);
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, dates, rates);
+            IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
             var curveSim = new DeterminsiticCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
 

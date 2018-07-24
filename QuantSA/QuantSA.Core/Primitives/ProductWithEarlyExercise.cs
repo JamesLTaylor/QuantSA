@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Core.Primitives
 {
-    [Serializable]
     public abstract class ProductWithEarlyExercise : Product, IProductWithEarlyExercise
     {
         public abstract List<IProduct> GetPostExProducts();

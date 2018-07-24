@@ -4,14 +4,17 @@ using System.Linq;
 using Accord.Math;
 using Accord.Math.Random;
 using Accord.Statistics.Distributions.Univariate;
-using QuantSA.General;
-using QuantSA.General.Dates;
+using Newtonsoft.Json;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.Valuation
+namespace QuantSA.Valuation.Models.Rates
 {
+    public delegate double MarketBonds(Date date);
+
+    public delegate double MarketForwards(Date date);
+
     /// <summary>
     /// A single factor Hull White simulator.  It can simulate a numeraire and any number of
     /// forward rates off the same curve.
@@ -19,63 +22,45 @@ namespace QuantSA.Valuation
     /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
     public class HullWhite1F : NumeraireSimulator
     {
-        public delegate double MarketBonds(Date date);
-
-        public delegate double MarketForwards(Date date);
-
+        private List<FloatRateIndex> _floatRateIndices;
+        private readonly double _inputRate;
         private readonly double a; // mean reversion
-
-        private List<Date> allDates;
-        private double[] allDatesDouble;
-        private double[] bankAccount;
         private readonly Currency currency;
-        private readonly MarketForwards fM;
-        private Dictionary<MarketObservable, Tenor> forecastTenors;
-        private readonly MarketBonds PM;
-        private double[] r;
         private readonly double r0;
-        private readonly double rate;
-        private readonly Date time0;
         private readonly double vol;
 
-        public HullWhite1F(Currency currency, double a, double vol, double r0, double rate, Date time0)
+        [JsonIgnore] private Date _anchorDate;
+        [JsonIgnore] private List<Date> allDates;
+        [JsonIgnore] private double[] allDatesDouble;
+        [JsonIgnore] private double[] bankAccount;
+        [JsonIgnore] private MarketForwards fM;
+        [JsonIgnore] private MarketBonds PM;
+        [JsonIgnore] private double[] r;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <param name="a"></param>
+        /// <param name="vol"></param>
+        /// <param name="r0"></param>
+        /// <param name="inputRate">the flat continuously compounded rate that is fitted to.</param>
+        /// <param name="floatRateIndices"></param>
+        public HullWhite1F(Currency currency, double a, double vol, double r0, double inputRate,
+            IEnumerable<FloatRateIndex> floatRateIndices = null)
         {
-            fM = date => rate;
-            PM = date => Math.Exp(-rate * (date - time0) / 365.0);
             this.a = a;
             this.vol = vol;
             this.r0 = r0;
-            this.rate = rate;
-            this.time0 = time0;
-            forecastTenors = new Dictionary<MarketObservable, Tenor>();
+            _inputRate = inputRate;
+            _floatRateIndices = floatRateIndices != null ? floatRateIndices.ToList() : new List<FloatRateIndex>();
             this.currency = currency;
         }
 
-        /// <summary>
-        /// Clones this instance.  Overridden from <see cref="Simulator"/> because the lambda functions 
-        /// don't want to serialize.
-        /// </summary>        
-        /// <returns></returns>
-        public override Simulator Clone()
+        private double Theta(Date date)
         {
-            //TODO: Take deep copies of everything.  The current implemenation is safe for use in the Coordinator though.
-            var newSimulator = new HullWhite1F(currency, a, vol, r0, rate, time0);
-            newSimulator.forecastTenors = forecastTenors;
-            newSimulator.allDates = allDates.Clone();
-            newSimulator.allDatesDouble = (double[]) allDatesDouble.Clone();
-            //newSimulator.r;
-            //newSimulator.bankAccount;
-            return newSimulator;
-        }
-
-        public void AddForecast(FloatRateIndex index)
-        {
-            forecastTenors.Add(index, index.tenor);
-        }
-
-        private double theta(Date date)
-        {
-            var t = (date - time0) / 365.0;
+            var t = (date - _anchorDate) / 365.0;
             return a * fM(date) + vol * vol / (2 * a) * (1 - Math.Exp(-2 * a * t));
         }
 
@@ -91,8 +76,8 @@ namespace QuantSA.Valuation
         private double BondPrice(double r, Date date1, Date date2)
         {
             // Equation 3.39 in Brigo Mercurio 2nd edition:
-            var T = (date2 - time0) / 365.0;
-            var t = (date1 - time0) / 365.0;
+            var T = (date2 - _anchorDate) / 365.0;
+            var t = (date1 - _anchorDate) / 365.0;
             var B = 1 / a * (1 - Math.Exp(-a * (T - t)));
             var A = PM(date2) / PM(date1);
             A *= Math.Exp(B * fM(date1) - vol * vol / (4 * a) * (1 - Math.Exp(-2 * a * t)) * B * B);
@@ -106,12 +91,16 @@ namespace QuantSA.Valuation
 
         public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
         {
-            allDates.AddRange(requiredDates);
+            if (allDates == null) allDates = requiredDates;
+            else
+                allDates.AddRange(requiredDates);
         }
 
         public override void SetNumeraireDates(List<Date> requiredDates)
         {
-            allDates.AddRange(requiredDates);
+            if (allDates == null) allDates = requiredDates;
+            else
+                allDates.AddRange(requiredDates);
         }
 
         /// <summary>
@@ -119,10 +108,13 @@ namespace QuantSA.Valuation
         /// <para/>
         /// At this point the dates are all copied.
         /// </summary>
-        public override void Prepare()
+        public override void Prepare(Date anchorDate)
         {
+            _anchorDate = anchorDate;
+            fM = date => _inputRate;
+            PM = date => Math.Exp(-_inputRate * (date - anchorDate) / 365.0);
             double minStepSize = 20;
-            allDates.Insert(0, time0);
+            allDates.Insert(0, anchorDate);
             allDates = allDates.Distinct().ToList();
             allDates.Sort();
             var newDates = new List<Date>();
@@ -152,18 +144,19 @@ namespace QuantSA.Valuation
             for (var i = 0; i < allDates.Count - 1; i++)
             {
                 var dt = (allDates[i + 1] - allDates[i]) / 365.0;
-                r[i + 1] = r[i] + (theta(allDates[i + 1]) - a * r[i]) * dt + vol * Math.Sqrt(dt) * W[i];
+                r[i + 1] = r[i] + (Theta(allDates[i + 1]) - a * r[i]) * dt + vol * Math.Sqrt(dt) * W[i];
                 bankAccount[i + 1] = bankAccount[i] * Math.Exp(r[i] * dt);
             }
         }
 
         public override double[] GetIndices(MarketObservable index, List<Date> requiredDates)
         {
+            var floatRateIndex = index as FloatRateIndex;
             var result = new double[requiredDates.Count];
             for (var i = 0; i < requiredDates.Count; i++)
             {
                 var rt = Tools.Interpolate1D(requiredDates[i].value, allDatesDouble, r, r[0], r[r.Length - 1]);
-                var tenor = forecastTenors[index];
+                var tenor = floatRateIndex.Tenor;
                 var date2 = requiredDates[i].AddTenor(tenor);
                 var bondPrice = BondPrice(rt, requiredDates[i], date2);
                 var rate = 365.0 * (1 / bondPrice - 1) / (date2 - requiredDates[i]);
@@ -186,16 +179,22 @@ namespace QuantSA.Valuation
 
         public override double Numeraire(Date valueDate)
         {
-            if (valueDate < time0)
-                throw new ArgumentException("Numeraire requested at: " + valueDate + " but model only starts at " +
-                                            time0);
-            if (valueDate == time0) return 1.0;
+            if (valueDate < _anchorDate)
+                throw new ArgumentException(
+                    $"Numeraire requested at: {valueDate} but model only starts at {_anchorDate}");
+            if (valueDate == _anchorDate) return 1.0;
             return Tools.Interpolate1D(valueDate, allDatesDouble, bankAccount, 1, bankAccount.Last());
         }
 
         public override bool ProvidesIndex(MarketObservable index)
         {
-            return forecastTenors.ContainsKey(index);
+            return _floatRateIndices.Contains(index);
+        }
+
+        public void AddForecast(FloatRateIndex index)
+        {
+            if (_floatRateIndices == null) _floatRateIndices = new List<FloatRateIndex>();
+            _floatRateIndices.Add(index);
         }
     }
 }

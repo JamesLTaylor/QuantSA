@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Accord.Math;
 using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products;
 using QuantSA.General;
 using QuantSA.General.Formulae;
@@ -10,22 +12,23 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Equity;
 
 namespace ValuationTest
 {
     /// <summary>
     /// Sample product for test simulated indices.
     /// </summary>
-    [Serializable]
     public class ProductWithDiviAndFwd : ProductWrapper
     {
-        private readonly Date dealEndDate = new Date(2019, 9, 30);
-        private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
-        private readonly Dividend dividend = new Dividend(new Share("AAA", Currency.ZAR));
-        private readonly FloatRateIndex jibar = FloatRateIndex.JIBAR3M;
-        private readonly double nShares = 1;
-        private readonly Share share = new Share("AAA", Currency.ZAR);
+        [JsonIgnore] private readonly Date dealEndDate = new Date(2019, 9, 30);
+        [JsonIgnore] private readonly Date dealStartDate = new Date(2016, 9, 30); // The issue date of the scheme
+        [JsonIgnore] private readonly Dividend dividend = new Dividend(new Share("AAA", TestHelpers.ZAR));
+        [JsonIgnore] private readonly FloatRateIndex jibar = TestHelpers.Jibar3M;
+        [JsonIgnore] private readonly double nShares = 1;
+        [JsonIgnore] private readonly Share share = new Share("AAA", TestHelpers.ZAR);
 
         public ProductWithDiviAndFwd()
         {
@@ -47,16 +50,16 @@ namespace ValuationTest
                 var observedRate = Get(jibar, periodStartDate);
                 if (loanBalance < 1e-6)
                 {
-                    cfs.Add(new Cashflow(new Date(periodEndDate), 0, Currency.ZAR));
+                    cfs.Add(new Cashflow(new Date(periodEndDate), 0, TestHelpers.ZAR));
                 }
                 else
                 {
                     loanBalance *= 1 + (observedRate + spread) * 0.25;
                     var loanReduction = 0.9 * nShares * Get(dividend, periodEndDate);
                     if (loanReduction > loanBalance)
-                        cfs.Add(new Cashflow(new Date(periodEndDate), loanBalance, Currency.ZAR));
+                        cfs.Add(new Cashflow(new Date(periodEndDate), loanBalance, TestHelpers.ZAR));
                     else
-                        cfs.Add(new Cashflow(new Date(periodEndDate), loanReduction, Currency.ZAR));
+                        cfs.Add(new Cashflow(new Date(periodEndDate), loanReduction, TestHelpers.ZAR));
                     loanBalance = Math.Max(0, loanBalance - loanReduction);
                 }
 
@@ -67,7 +70,7 @@ namespace ValuationTest
             // Check if the loan is worth more than the shares.  If yes then there is a loss on the loan, 
             // otherwise the loan can be repaid in full.
             var finalPayment = Math.Min(loanBalance, nShares * Get(share, dealEndDate));
-            cfs.Add(new Cashflow(new Date(dealEndDate), finalPayment, Currency.ZAR));
+            cfs.Add(new Cashflow(new Date(dealEndDate), finalPayment, TestHelpers.ZAR));
 
             return cfs;
         }
@@ -92,7 +95,7 @@ namespace ValuationTest
         private readonly double[] prices = {200, 50, 100};
 
         private readonly Share[] shares =
-            {new Share("ALSI", Currency.ZAR), new Share("AAA", Currency.ZAR), new Share("BBB", Currency.ZAR)};
+            {new Share("ALSI", TestHelpers.ZAR), new Share("AAA", TestHelpers.ZAR), new Share("BBB", TestHelpers.ZAR)};
 
         private readonly double[] vols = {0.22, 0.52, 0.4};
 
@@ -102,13 +105,13 @@ namespace ValuationTest
         [TestInitialize]
         public void Init()
         {
-            discountCurve = new DatesAndRates(Currency.ZAR, anchorDate,
+            discountCurve = new DatesAndRates(TestHelpers.ZAR, anchorDate,
                 new[] {anchorDate, anchorDate.AddMonths(120)},
                 new[] {0.07, 0.09});
             rateForecastCurves = new List<IFloatingRateSource>
             {
-                new ForecastCurveFromDiscount(discountCurve, FloatRateIndex.JIBAR3M,
-                    new FloatingRateFixingCurve1Rate(0.07, FloatRateIndex.JIBAR3M))
+                new ForecastCurveFromDiscount(discountCurve, TestHelpers.Jibar3M,
+                    new FloatingRateFixingCurve1Rate(0.07, TestHelpers.Jibar3M))
             }.ToArray();
         }
 
@@ -122,11 +125,11 @@ namespace ValuationTest
             sim.Reset();
             sim.SetRequiredDates(divi, dates);
             sim.SetRequiredDates(shares[0], dates);
-            sim.Prepare();
+            sim.Prepare(anchorDate);
             sim.RunSimulation(0);
             var divs = sim.GetIndices(divi, dates);
             var shareprices = sim.GetIndices(shares[0], dates);
-            var fwdRates = sim.GetIndices(FloatRateIndex.JIBAR3M, dates);
+            var fwdRates = sim.GetIndices(TestHelpers.Jibar3M, dates);
             Assert.AreEqual(shareprices[1] * 184.0 / 365 * 0.03, divs[2], 0.01);
             Assert.AreEqual(rateForecastCurves[0].GetForwardRate(dates[1]), fwdRates[1], 0.0001);
         }
@@ -141,9 +144,9 @@ namespace ValuationTest
                 rateForecastCurves);
             sim.Reset();
             var simDate = new List<Date> {anchorDate.AddMonths(120)};
-            double dt = (simDate[0] - anchorDate) / 365;
+            double dt = (simDate[0] - anchorDate) / 365.0;
             sim.SetRequiredDates(shares[0], simDate);
-            sim.Prepare();
+            sim.Prepare(anchorDate);
             for (var i = 0; i < N; i++)
             {
                 sim.RunSimulation(i);

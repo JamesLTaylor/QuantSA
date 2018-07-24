@@ -28,7 +28,7 @@ A sample model that simulates FX processes according to geometric Brownian motio
 * **anchorDate** ([Date](Date.html))The date from which the model applies
 * **numeraireCcy** ([Currency](Currency.html))The currency into which all valuations will be converted.
 * **rateSimulators** (HullWhite1F[])Hull White simulators for each of the currencies
-* **currencies** ([Currency](Currency.html)[])The list of other currencies to be simulated.
+* **currencyPairs** ([Currency](Currency.html)Pair[])The list of other currencies pairs to be simulated, they must all have the numeraire currency as their counter currency.
 * **spots** (Double[])The initial values for the FX processes at the anchor date.  These would actually need to be discounted spot rates.
 * **vols** (Double[])The volatilities for the FX processes.
 * **correlations** (Double[,])A correlation matrix for the FX processes, rows and columns must be in the order of the currencies in 'currencies'

@@ -8,7 +8,7 @@ namespace QuantSA.Shared.MarketData
     /// <summary>
     /// A an object that can provide survival probabilities for a specific <see cref="ReferenceEntity"/>
     /// </summary>
-    [Serializable]
+    
     public abstract class ISurvivalProbabilitySource
     {
         protected Date anchorDate;

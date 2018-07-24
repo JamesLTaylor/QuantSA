@@ -1,30 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.Interpolation;
-using QuantSA.General.Dates;
+using Newtonsoft.Json;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.CurvesAndSurfaces
 {
     /// <summary>
     /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 
     /// discount factors or interpolated directly.
     /// </summary>
-    [Serializable]
     public class DatesAndRates : IDiscountingSource, ICurve
     {
-        private readonly Date anchorDate;
+        private readonly Date _anchorDate;
 
         //TODO: Separate this class into one that discounts and one that interpolates.  It could be abused/misused in its current form
-        private readonly double anchorDateValue;
-        private readonly Currency currency;
-        private readonly double[] dates;
+        private readonly Currency _currency;
+        private readonly Date[] _dates;
+        private readonly Date _maximumDate;
+        private readonly double[] _rates;
 
-        [NonSerialized] private LinearSpline spline;
+        [JsonIgnore] private LinearSpline _spline;
+
+        private DatesAndRates()
+        {
+        }
 
         /// <summary>
         /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
@@ -36,72 +39,62 @@ namespace QuantSA.General
         /// <param name="maximumDate">The date beyond which interpolation will not be allowed.  If it is null or left out then the last date in dates will be used.</param>
         public DatesAndRates(Currency currency, Date anchorDate, Date[] dates, double[] rates, Date maximumDate = null)
         {
-            this.anchorDate = anchorDate;
-            for (var i = 1; i < dates.Length; i++)
-                if (dates[i].value <= dates[i - 1].value)
-                    throw new ArgumentException("Dates must be strictly increasing");
-            var datesList = new List<double>(dates.GetValues());
-            var ratesList = new List<double>(rates.Clone() as double[]);
-            if (dates[0] > anchorDate)
-            {
-                datesList.Insert(0, anchorDate.value);
-                ratesList.Insert(0, rates[0]);
-            }
-
-            if (maximumDate != null)
-            {
-                datesList.Add(maximumDate);
-                ratesList.Add(rates.Last());
-            }
-
-            anchorDateValue = anchorDate;
-            this.dates = datesList.ToArray();
-            this.rates = ratesList.ToArray();
-            this.currency = currency;
-            spline = LinearSpline.InterpolateSorted(this.dates, this.rates);
+            _currency = currency ?? throw new ArgumentNullException(nameof(currency));
+            _anchorDate = anchorDate ?? throw new ArgumentNullException(nameof(anchorDate));
+            _dates = dates ?? throw new ArgumentNullException(nameof(dates));
+            _rates = rates ?? throw new ArgumentNullException(nameof(rates));
+            _maximumDate = maximumDate;
         }
 
-        public double[] rates { get; }
-
+        [JsonIgnore]
+        private LinearSpline Spline
+        {
+            get
+            {
+                if (_spline != null) return _spline;
+                _spline = LinearSpline.InterpolateSorted(_dates.Select(d => (double) d.value).ToArray(), _rates);
+                return _spline;
+            }
+        }
 
         /// <summary>
         /// Interpolate the curve.
         /// </summary>
         /// <param name="date">The date at which the rate is required.</param>
+        /// <exception cref="ArgumentException">If <paramref name="date"/> is not in the range of the curve.</exception>
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
-            if (spline == null) spline = LinearSpline.InterpolateSorted(dates, rates);
-            if (date.value < anchorDateValue)
-                throw new ArgumentException("Interpolation date  (" + date +
-                                            ") is before the anchor date of the curve.(" + new Date(anchorDateValue) +
-                                            ")");
-            if (date.value > dates.Last())
-                throw new ArgumentException("Interpolation date (" + date + ") is after the last date on the curve.(" +
-                                            new Date(dates.Last()) + ")");
-            return spline.Interpolate(date);
+            var lastDate = _maximumDate ?? _dates.Last();
+            if (date < _anchorDate)
+                throw new ArgumentException($"Interpolation date  ({date}) is before the anchor date of the " +
+                                            $"curve.({_anchorDate})");
+            if (date > lastDate)
+                throw new ArgumentException(
+                    $"Interpolation date ({date}) is after the last date on the curve.({lastDate}");
+            return Spline.Interpolate(date);
         }
 
         public Date GetAnchorDate()
         {
-            return anchorDate;
+            return _anchorDate;
         }
 
         /// <summary>
-        /// Get a discount factor assuming the rates are continuosly compounded and the daycount in actual/365
+        /// Get a discount factor assuming the rates are continuously compounded and the daycount in actual/365
         /// </summary>
         /// <param name="date">The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to this date.</param>
         /// <returns></returns>
         public double GetDF(Date date)
         {
             var rate = InterpAtDate(date);
-            var df = Math.Exp(-rate * (date - anchorDateValue) / 365.0);
+            var df = Math.Exp(-rate * (date - _anchorDate) / 365.0);
             return df;
         }
 
         public Currency GetCurrency()
         {
-            return currency;
+            return _currency;
         }
     }
 }

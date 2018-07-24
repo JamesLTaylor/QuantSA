@@ -32,6 +32,7 @@ Create a ZAR Bermudan swaption based a ZAR quarterly, fixed for float Jibar swap
 * **rate** (Double)The fixed rate paid or received on the underlying swap.
 * **payFixed** ([Boolean](Boolean.html))Is the fixed rate paid? Enter 'TRUE' for yes.
 * **notional** (Double)Flat notional for all dates.
+* **jibar** *([FloatRateIndex](FloatRateIndex.html))Flat notional for all dates.(Default value = DEFAULT)
 
 <!--HUMAN EDIT START-->
 

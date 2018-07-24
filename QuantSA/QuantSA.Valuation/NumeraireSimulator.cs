@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using QuantSA.General;
-using System;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
@@ -9,7 +7,6 @@ namespace QuantSA.Valuation
     /// <summary>
     /// Base class for bank account numeraire simulators 
     /// </summary>
-    [Serializable]
     public abstract class NumeraireSimulator : Simulator
     {
         /// <summary>
@@ -31,6 +28,5 @@ namespace QuantSA.Valuation
         /// </summary>
         /// <param name="requiredDates">The required dates.</param>
         public abstract void SetNumeraireDates(List<Date> requiredDates);
-
     }
 }

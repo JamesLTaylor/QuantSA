@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.Shared
@@ -13,8 +12,8 @@ namespace QuantSA.Shared
     /// While this object stores 2-d arrays of objects, it is intended for these objects to only be 
     /// doubles, strings, ints and similar.
     /// </details>
-    [Serializable]
-    public class ResultStore : IProvidesResultStore
+    
+    public class ResultStore
     {
         private readonly Dictionary<string, object[,]> _data;
         private readonly Dictionary<string, object[,]> _dataDates;
@@ -29,16 +28,6 @@ namespace QuantSA.Shared
             _data = new Dictionary<string, object[,]>();
             _dataDates = new Dictionary<string, object[,]>();
             _dataStrings = new Dictionary<string, object[,]>();
-        }
-
-
-        /// <summary>
-        /// Returns itself.
-        /// </summary>
-        /// <returns></returns>
-        public ResultStore GetResultStore()
-        {
-            return this;
         }
 
         /// <summary>

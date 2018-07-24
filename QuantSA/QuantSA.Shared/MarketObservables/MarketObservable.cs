@@ -1,9 +1,8 @@
-﻿using System;
+﻿using QuantSA.Shared.Serialization;
 
 namespace QuantSA.Shared.MarketObservables
 {
-    [Serializable]
-    public abstract class MarketObservable
+    public abstract class MarketObservable : SerializableViaName
     {
         /// <summary>
         /// This needs to be implemented very carefully because it is used for generating hashcodes and 
@@ -11,6 +10,11 @@ namespace QuantSA.Shared.MarketObservables
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public override string GetName()
+        {
+            return ToString();
+        }
 
         public sealed override bool Equals(object obj)
         {

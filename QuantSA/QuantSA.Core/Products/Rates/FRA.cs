@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.Core.Products;
 using QuantSA.General.Conventions.DayCount;
-using QuantSA.Shared;
 using QuantSA.Shared.Conventions.BusinessDay;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General.Products.Rates
+namespace QuantSA.Core.Products.Rates
 {
     /// <summary>
     /// A FRA that pays the discounted flow at the near date/reset date.
     /// </summary>
     /// <seealso cref="ProductWrapper" />
-    [Serializable]
-    public class FRA : ProductWrapper, IProvidesResultStore
+    public class FRA : ProductWrapper
     {
         private readonly double accrualFraction;
         private readonly Currency ccy;
@@ -46,22 +44,8 @@ namespace QuantSA.General.Products.Rates
             this.nearDate = nearDate;
             this.farDate = farDate;
             this.floatIndex = floatIndex;
-            ccy = floatIndex.currency;
+            ccy = floatIndex.Currency;
             Init();
-        }
-
-        public ResultStore GetResultStore()
-        {
-            var result = new ResultStore();
-            result.Add("notional", notional);
-            result.Add("accrualFraction", accrualFraction);
-            result.Add("rate", rate);
-            result.Add("nearDate", nearDate);
-            result.Add("farDate", farDate);
-            result.Add("floatIndex", floatIndex.ToString());
-            result.Add("payFixed", payFixed.ToString());
-            result.Add("ccy", ccy.ToString());
-            return result;
         }
 
         /// <summary>
@@ -73,11 +57,12 @@ namespace QuantSA.General.Products.Rates
         /// <param name="fraCode">The fra code, eg '3x6'.</param>
         /// <param name="payFixed">if set to <c>true</c> the fixed rate is paid..</param>
         /// <param name="zaCalendar">The za calendar.</param>
+        /// <param name="jibar"></param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentException">
         /// </exception>
         public static FRA CreateZARFra(Date tradeDate, double notional, double rate, string fraCode, bool payFixed,
-            Calendar zaCalendar)
+            Calendar zaCalendar, FloatRateIndex jibar)
         {
             var parts = fraCode.ToLower().Trim().Split('x');
             if (parts.Length != 2)
@@ -101,7 +86,7 @@ namespace QuantSA.General.Products.Rates
             var nearDate = mf.Adjust(tradeDate.AddMonths(near), zaCalendar);
             var farDate = mf.Adjust(tradeDate.AddMonths(far), zaCalendar);
             var accrualFraction = DayCountStore.Actual365Fixed.YearFraction(nearDate, farDate);
-            return new FRA(notional, accrualFraction, rate, payFixed, nearDate, farDate, FloatRateIndex.JIBAR3M);
+            return new FRA(notional, accrualFraction, rate, payFixed, nearDate, farDate, jibar);
         }
 
         public override List<Cashflow> GetCFs()

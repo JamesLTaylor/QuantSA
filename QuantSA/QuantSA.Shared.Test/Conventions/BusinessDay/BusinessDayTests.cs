@@ -13,7 +13,7 @@ namespace GeneralTest.Conventions.BusinessDay
         public void TestAdjustments()
         {
             var dateEndOfMonth = new Date(2016, 12, 31); // Saturday
-            var calendar = new Calendar(new List<Date>()); // No holidays
+            var calendar = new Calendar("Test", new List<Date>()); // No holidays
 
             var testFollowing = BusinessDayStore.Following.Adjust(dateEndOfMonth, calendar);
             Assert.AreEqual(new Date(2017, 1, 2), testFollowing);

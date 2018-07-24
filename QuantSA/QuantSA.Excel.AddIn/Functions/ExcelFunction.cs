@@ -24,6 +24,11 @@ namespace QuantSA.Excel.Addin.Functions
             _defaultValues = defaultValues;
         }
 
+        public string GetName()
+        {
+            return _methodInfo.Name;
+        }
+
         public object[,] Eval(params object[] inputs)
         {
             try

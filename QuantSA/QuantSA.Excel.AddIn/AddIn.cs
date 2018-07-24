@@ -9,6 +9,7 @@ using QuantSA.Excel;
 using QuantSA.Excel.Addin.Functions;
 using QuantSA.Excel.Shared;
 using QuantSA.ExcelFunctions;
+using StaticData = QuantSA.Excel.Addin.Config.StaticData;
 
 /// <summary>
 /// 
@@ -16,7 +17,11 @@ using QuantSA.ExcelFunctions;
 /// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
 public class AddIn : IExcelAddIn
 {
+    /// <summary>
+    /// List of Plugin instance and assembly from which it was loaded.
+    /// </summary>
     public static List<Tuple<IQuantSAPlugin, Assembly>> Plugins = new List<Tuple<IQuantSAPlugin, Assembly>>();
+
     public static Dictionary<string, Bitmap> AssemblyImageResources;
 
     private static readonly string FunctionsFilenameUser =
@@ -32,6 +37,8 @@ public class AddIn : IExcelAddIn
                 "QuantSA");
             if (!Directory.Exists(pathString)) Directory.CreateDirectory(pathString);
             //TODO: Check if newer version of addin exists.
+
+            StaticData.Load();
 
             // Get the functions that are set for the user.
             var funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);

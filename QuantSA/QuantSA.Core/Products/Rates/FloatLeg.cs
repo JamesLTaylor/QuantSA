@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
-    [Serializable]
     public class FloatLeg : Product
     {
         protected double[] accrualFractions;
         protected Currency ccy;
-        protected MarketObservable[] floatingIndices;
+        protected FloatRateIndex[] floatingIndices;
         protected double[] indexValues;
         protected double[] notionals;
 
@@ -19,7 +18,7 @@ namespace QuantSA.General
         protected Date[] resetDates;
         protected double[] spreads;
 
-        protected Date valueDate;
+        [JsonIgnore] protected Date valueDate;
 
         protected FloatLeg()
         {

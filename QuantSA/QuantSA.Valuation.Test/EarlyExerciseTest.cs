@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {
@@ -25,8 +28,8 @@ namespace ValuationTest
             var a = 0.05;
             var vol = 0.01;
             var flatCurveRate = 0.07;
-            hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
-            hullWiteSim.AddForecast(FloatRateIndex.JIBAR3M);
+            hullWiteSim = new HullWhite1F(TestHelpers.ZAR, a, vol, flatCurveRate, flatCurveRate);
+            hullWiteSim.AddForecast(TestHelpers.Jibar3M);
 
             // Make the underlying swap
             var rate = 0.07;
@@ -34,8 +37,8 @@ namespace ValuationTest
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
             var tenor = Tenor.FromYears(5);
-            swapPay = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
-            swapRec = IRSwap.CreateZARSwap(rate, !payFixed, notional, startDate, tenor);
+            swapPay = TestHelpers.CreateZARSwap(rate, payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
+            swapRec = TestHelpers.CreateZARSwap(rate, !payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
 
             // Full set of exercise dates
             exDates = new List<Date>

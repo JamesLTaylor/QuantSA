@@ -1,6 +1,5 @@
 ﻿using System;
-using QuantSA.General;
-using QuantSA.General.Products.SAMarket;
+using QuantSA.Core.Products.SAMarket;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 

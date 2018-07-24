@@ -20,11 +20,11 @@ Get a list of available results in the results object.
 
 ## Example Sheet
 
-    ZARSwap.xlsx
+    BermudanSwaption.xlsx
 
 ## Arguments
 
-* **resultStore** (IProvidesResultStore)The results object as returned by call to another QuantSA function
+* **resultStore** (ResultStore)The results object as returned by call to another QuantSA function
 
 <!--HUMAN EDIT START-->
 

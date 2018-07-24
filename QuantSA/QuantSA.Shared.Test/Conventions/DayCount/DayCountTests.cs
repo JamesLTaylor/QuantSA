@@ -32,8 +32,8 @@ namespace GeneralTest.Conventions.DayCount
             Assert.AreEqual(32.0 / 360, DayCountStore.Thirty360Euro.YearFraction(date1, date2), 1e-9); // QuantLib case
 
             // Business 252
-            var weekendsOnly = new Calendar(new List<Date>());
-            var weekendsAndOneHoliday = new Calendar(new List<Date> {new Date(2008, 3, 21)});
+            var weekendsOnly = new Calendar("Test", new List<Date>());
+            var weekendsAndOneHoliday = new Calendar("Test", new List<Date> {new Date(2008, 3, 21)});
             IDayCountConvention business252Weekends = DayCountStore.Business252(weekendsOnly);
             IDayCountConvention business252WeekendsAndHolday = DayCountStore.Business252(weekendsAndOneHoliday);
             Assert.AreEqual(22.0 / 252, business252Weekends.YearFraction(date1, date2), 1e-9);

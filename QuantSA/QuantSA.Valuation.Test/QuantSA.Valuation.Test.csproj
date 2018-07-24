@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ValuationTest</RootNamespace>
     <AssemblyName>ValuationTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -18,6 +18,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,6 +58,9 @@
       <HintPath>..\packages\MathNet.Numerics.3.13.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
@@ -90,7 +94,6 @@
     <Compile Include="IRSwapEPETest.cs" />
     <Compile Include="EarlyExerciseTest.cs" />
     <Compile Include="SpeedTest.cs" />
-    <Compile Include="MultiCurveStripperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantSA.Core\QuantSA.Core.csproj">
@@ -100,6 +103,10 @@
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
       <Name>QuantSA.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QuantSA.Solution.Test\QuantSA.Solution.Test.csproj">
+      <Project>{8bfbeac7-789d-4e15-9965-5129bc7589e5}</Project>
+      <Name>QuantSA.Solution.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\QuantSA.Valuation\QuantSA.Valuation.csproj">
       <Project>{29e7caac-bb40-44ee-abac-4c3812aa1ad9}</Project>

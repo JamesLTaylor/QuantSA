@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
-    [Serializable]
     public class FixedLeg : Product
     {
         private readonly double[] accrualFractions;

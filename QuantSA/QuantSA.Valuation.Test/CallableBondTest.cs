@@ -2,10 +2,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.Products.Rates;
 using QuantSA.General;
-using QuantSA.General.Products.Rates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {
@@ -19,10 +20,10 @@ namespace ValuationTest
             var a = 0.05;
             var vol = 0.01;
             var flatCurveRate = 0.18;
-            var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
+            var hullWiteSim = new HullWhite1F(TestHelpers.ZAR, a, vol, flatCurveRate, flatCurveRate);
 
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
-            var callableBond = new CallableBond();
+            var callableBond = new CallableBond(TestHelpers.ZAR);
             var value1 = coordinator.Value(new Product[] {callableBond}, valueDate);
         }
     }

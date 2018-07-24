@@ -1,13 +1,11 @@
 ﻿using System;
 using QuantSA.Excel.Shared;
-using QuantSA.ExcelFunctions;
-using QuantSA.General;
-using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Shared.Serialization;
 
 namespace QuantSA.Excel.Addin.TypeConverters
 {
@@ -18,7 +16,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
     {
         public Type RequiredType => typeof(Date);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             if (input == null && defaultValue == null)
                 return null;
@@ -42,28 +40,20 @@ namespace QuantSA.Excel.Addin.TypeConverters
         }
     }
 
-    public class CurrencyConverter : IInputConverter
+    public class ObjectWithNameConverter : IInputConverter
     {
-        public Type RequiredType => typeof(Currency);
+        public Type RequiredType => typeof(SerializableViaName);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null)
-                throw new ArgumentException($"{inputName} must have a string value representing a Currency.");
-            return new Currency(strValue);
-        }
-    }
-
-    public class CalendarConverter : IInputConverter
-    {
-        public Type RequiredType => typeof(Calendar);
-
-        public object Convert(object input, string inputName, string defaultValue)
-        {
-            var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null) throw new ArgumentException($"{inputName} must be the name of a saved calendar.");
-            return StaticData.GetCalendar(strValue.ToUpper());
+                throw new ArgumentException(
+                    $"{inputName} must have a string value corresponding to a name of type {requiredType.Name}.");
+            if (QuantSAState.SharedData.TryGet(requiredType, strValue, out var instance))
+                return instance;
+            throw new ArgumentException(
+                $"{inputName} must have a string value corresponding to a name of type {requiredType.Name}.");
         }
     }
 
@@ -71,7 +61,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
     {
         public Type RequiredType => typeof(IBusinessDayConvention);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null)
@@ -102,7 +92,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
     {
         public Type RequiredType => typeof(IDayCountConvention);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null)
@@ -121,38 +111,11 @@ namespace QuantSA.Excel.Addin.TypeConverters
         }
     }
 
-    public class FloatingIndexConverter : IInputConverter
-    {
-        public Type RequiredType => typeof(FloatRateIndex);
-
-        public object Convert(object input, string inputName, string defaultValue)
-        {
-            var strValue = input == null ? defaultValue : input as string;
-            if (strValue is null)
-                throw new ArgumentException($"{inputName} must be one of the strings representing a FloatRateIndex.");
-            switch (strValue.ToUpper())
-            {
-                case "JIBAR1M": return FloatRateIndex.JIBAR1M;
-                case "JIBAR3M": return FloatRateIndex.JIBAR3M;
-                case "JIBAR6M": return FloatRateIndex.JIBAR6M;
-                case "PRIME1M_AVG": return FloatRateIndex.PRIME1M_AVG;
-                case "LIBOR1M": return FloatRateIndex.LIBOR1M;
-                case "LIBOR3M": return FloatRateIndex.LIBOR3M;
-                case "LIBOR6M": return FloatRateIndex.LIBOR6M;
-                case "EURIBOR3M": return FloatRateIndex.EURIBOR3M;
-                case "EURIBOR6M": return FloatRateIndex.EURIBOR6M;
-                default:
-                    throw new ArgumentException(strValue + " is not a known floating rate index in input: " +
-                                                inputName);
-            }
-        }
-    }
-
     public class TenorConverter : IInputConverter
     {
         public Type RequiredType => typeof(Tenor);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null) throw new ArgumentException($"{inputName} must be a string representing a Tenor.");
@@ -199,7 +162,7 @@ namespace QuantSA.Excel.Addin.TypeConverters
     {
         public Type RequiredType => typeof(ReferenceEntity);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null)
@@ -215,14 +178,14 @@ namespace QuantSA.Excel.Addin.TypeConverters
     {
         public Type RequiredType => typeof(Share);
 
-        public object Convert(object input, string inputName, string defaultValue)
+        public object Convert(object input, string inputName, string defaultValue, Type requiredType)
         {
             var strValue = input == null ? defaultValue : input as string;
             if (strValue is null) throw new ArgumentException($"{inputName} must be a string representing a Share.");
             var parts = strValue.Split('.');
             if (parts.Length != 2)
                 throw new ArgumentException(strValue + " in " + inputName + " does not correspond to a share.");
-            var ccy = new CurrencyConverter().Convert(parts[0], inputName, null) as Currency;
+            var ccy = new ObjectWithNameConverter().Convert(parts[0], inputName, null, typeof(Currency)) as Currency;
             return new Share(parts[1].ToUpper(), ccy);
         }
     }

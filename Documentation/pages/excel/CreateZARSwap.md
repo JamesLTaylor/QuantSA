@@ -30,6 +30,7 @@ Create a ZAR quarterly, fixed for float Jibar swap.
 * **rate** (Double)The fixed rate paid or received
 * **payFixed** ([Boolean](Boolean.html))Is the fixed rate paid? Enter 'TRUE' for yes.
 * **notional** (Double)Flat notional for all dates.
+* **jibar** *([FloatRateIndex](FloatRateIndex.html))The float rate index of the swap.(Default value = DEFAULT)
 
 <!--HUMAN EDIT START-->
 

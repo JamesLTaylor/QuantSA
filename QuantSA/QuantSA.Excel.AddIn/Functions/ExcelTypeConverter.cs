@@ -16,11 +16,24 @@ namespace QuantSA.Excel.Addin.Functions
     /// </summary>
     public static class ExcelTypeConverter
     {
-        private static readonly Dictionary<Type, IInputConverter> InputConverters =
+        private static readonly Dictionary<Type, IInputConverter> InputConverters1 =
             new Dictionary<Type, IInputConverter>();
 
         private static readonly Dictionary<Type, IOutputConverter> OutputConverters =
             new Dictionary<Type, IOutputConverter>();
+
+        private static bool TryGetConverter(Type requiredType, out IInputConverter converter)
+        {
+            converter = null;
+            foreach (var key in InputConverters1.Keys)
+            {
+                if (!key.IsAssignableFrom(requiredType)) continue;
+                converter = InputConverters1[key];
+                return true;
+            }
+
+            return false;
+        }
 
         public static void AddConvertersFrom(Assembly assembly)
         {
@@ -29,7 +42,7 @@ namespace QuantSA.Excel.Addin.Functions
                 if (typeof(IInputConverter).IsAssignableFrom(type))
                 {
                     var converter = Activator.CreateInstance(type) as IInputConverter;
-                    InputConverters[converter.RequiredType] = converter;
+                    InputConverters1[converter.RequiredType] = converter;
                 }
 
                 if (typeof(IOutputConverter).IsAssignableFrom(type))
@@ -183,8 +196,8 @@ namespace QuantSA.Excel.Addin.Functions
 
             if (requiredType.IsAssignableFrom(typeof(string)))
                 return input ?? defaultValue;
-            if (InputConverters.ContainsKey(requiredType))
-                return InputConverters[requiredType].Convert(input, inputName, defaultValue);
+            if (TryGetConverter(requiredType, out var converter))
+                return converter.Convert(input, inputName, defaultValue, requiredType);
 
             if (defaultValue != string.Empty) return defaultValue;
 

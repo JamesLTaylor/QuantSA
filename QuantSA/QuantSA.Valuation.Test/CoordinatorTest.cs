@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.General.Formulae;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Solution.Test;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Equity;
+using QuantSA.Valuation.Models.Rates;
 
 namespace ValuationTest
 {
@@ -24,18 +29,18 @@ namespace ValuationTest
             var exerciseDate = new Date(2017, 08, 28);
             var shareCode = "AAA";
             var strike = 100.0;
-            Product p = new EuropeanOption(new Share(shareCode, Currency.ZAR), strike, exerciseDate);
+            Product p = new EuropeanOption(new Share(shareCode, TestHelpers.ZAR), strike, exerciseDate);
 
             var shares = new[]
             {
-                new Share("AAA", Currency.ZAR)
+                new Share("AAA", TestHelpers.ZAR)
             }; // One needs to know the index that will be required by the product to simulate it.
             var valueDate = new Date(2016, 08, 28);
             var divYield = new[] { 0.02};
             var vol = new[] { 0.22};
             var spotPrice = new[] { 100.0};
             var correlations = new[,] { {1.0}};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate,
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate,
                 new[] {valueDate, valueDate.AddMonths(120)},
                 new[] {0.07, 0.07});
             var rateForecastCurves = new IFloatingRateSource[0];
@@ -57,18 +62,18 @@ namespace ValuationTest
             var exerciseDate = new Date(2017, 08, 28);
             var shareCode = "AAA";
             var strike = 100.0;
-            Product p = new EuropeanOption(new Share(shareCode, Currency.ZAR), strike, exerciseDate);
+            Product p = new EuropeanOption(new Share(shareCode, TestHelpers.ZAR), strike, exerciseDate);
 
             var shares = new[]
             {
-                new Share(shareCode, Currency.ZAR)
+                new Share(shareCode, TestHelpers.ZAR)
             }; // One needs to know the index that will be required by the product to simulate it.
             var valueDate = new Date(2016, 08, 28);
             var divYield = new[] { 0.02};
             var vol = new[] { 0.22};
             var spotPrice = new[] { 100.0};
             var correlations = new[,] { {1.0}};
-            IDiscountingSource discountCurve = new DatesAndRates(Currency.ZAR, valueDate,
+            IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate,
                 new[] {valueDate, valueDate.AddMonths(120)},
                 new[] {0.07, 0.07});
             var rateForecastCurves = new IFloatingRateSource[0];
@@ -93,15 +98,15 @@ namespace ValuationTest
             double notional = 1000000;
             var startDate = new Date(2016, 9, 17);
             var tenor = Tenor.FromYears(5);
-            var swap = IRSwap.CreateZARSwap(rate, payFixed, notional, startDate, tenor);
+            var swap = TestHelpers.CreateZARSwap(rate, payFixed, notional, startDate, tenor, TestHelpers.Jibar3M);
 
             // Set up the model
             var valueDate = new Date(2016, 9, 17);
             var a = 0.05;
             var vol = 0.01;
             var flatCurveRate = 0.07;
-            var hullWiteSim = new HullWhite1F(Currency.ZAR, a, vol, flatCurveRate, flatCurveRate, valueDate);
-            hullWiteSim.AddForecast(FloatRateIndex.JIBAR3M);
+            var hullWiteSim = new HullWhite1F(TestHelpers.ZAR, a, vol, flatCurveRate, flatCurveRate);
+            hullWiteSim.AddForecast(TestHelpers.Jibar3M);
             var coordinator = new Coordinator(hullWiteSim, new List<Simulator>(), 5000);
 
             var date = valueDate;
