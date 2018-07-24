@@ -30,7 +30,7 @@ Create a standard ZAR FRA
 * **rate** (Double)The fixed rate paid or received.
 * **fraCode** (String)The FRA code, e.g. '3x6'.
 * **payFixed** ([Boolean](Boolean.html))Is the fixed rate paid? Enter 'TRUE' for yes.
-* **jibar** *([FloatRateIndex](FloatRateIndex.html))The float rate index of the FRA.(Default value = DEFAULT)
+* **jibar** *([FloatRateIndex](FloatRateIndex.html))The float rate index of the FRA.(Default value = ZAR.JIBAR.3M)
 
 <!--HUMAN EDIT START-->
 

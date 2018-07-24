@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using QuantSA.ProductExtensions.Data;
@@ -17,7 +18,41 @@ namespace QuantSA.Excel.Addin.Config
             LoadCurrencies(sharedData);
             LoadCurrencyPairs(sharedData);
             LoadFloatRateIndices(sharedData);
+            LoadCalendars(sharedData);
             QuantSAState.SetSharedData(sharedData);
+        }
+
+        /// <summary>
+        /// Construct a Calendar with weekends and public holidays stored in a csv file. see http://www.quantsa.org/latest/Calendar.html
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="System.FormatException">Encountered date " + str + " which is not in the required format 'yyyy-mm-dd'.</exception>
+        private static void LoadCalendars(SharedData sharedData)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory + "/StaticData/Holidays/";
+            var files = Directory.GetFiles(path, "*.csv");
+            foreach (var file in files)
+            {
+                var holidayStrings = File.ReadAllLines(file);
+                var holsFromFile = new List<Date>();
+                foreach (var str in holidayStrings)
+                {
+                    var vals = str.Split('-');
+                    if (vals.Length == 3)
+                    {
+                        var date = new Date(int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2]));
+                        holsFromFile.Add(date);
+                    }
+                    else
+                    {
+                        throw new FormatException("Encountered date " + str +
+                                                  " which is not in the required format 'yyyy-mm-dd'.");
+                    }
+                }
+
+                var name = Path.GetFileNameWithoutExtension(file);
+                sharedData.Set(new Calendar(name, holsFromFile));
+            }
         }
 
         private static void LoadFloatRateIndices(SharedData sharedData)

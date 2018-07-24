@@ -7,6 +7,9 @@ namespace QuantSA.Excel.Addin.Tests.Config
     [TestClass]
     public class StaticDataTests
     {
+        /// <summary>
+        /// Tests that all the static data loads without throwing an error.
+        /// </summary>
         [TestMethod]
         public void StaticDataTest()
         {

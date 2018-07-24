@@ -21,7 +21,7 @@ namespace ProductExtensionsTest.SAMarket
             int couponDay1 = 31;
             int couponMonth2 = 7;
             int couponDay2 = 31;
-            Calendar zaCalendar = new Calendar();
+            Calendar zaCalendar = new Calendar("Test");
             var bondR2030 = new BesaJseBond(maturityDate, notional, annualCouponRate, couponMonth1, 
                 couponDay1, couponMonth2, couponDay2, zaCalendar, TestHelpers.ZAR);
 

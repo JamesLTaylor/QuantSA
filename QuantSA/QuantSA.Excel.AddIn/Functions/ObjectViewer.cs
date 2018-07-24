@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using QuantSA.Excel.Shared;
+using QuantSA.Shared.Serialization;
 
 namespace QuantSA.Excel.Addin.Functions
 {
@@ -66,8 +68,9 @@ namespace QuantSA.Excel.Addin.Functions
             }
 
             var output = GetObjectPropertyValue(objectName, propertyName);
-            var returnValue = ExcelTypeConverter.ConvertOuput(output.GetType(), output, propertyName);
-            return returnValue;
+            if (output is ISerializableViaName objWithName)
+                return ExcelTypeConverter.ConvertOuput(typeof(string), objWithName.GetName(), propertyName);
+            return ExcelTypeConverter.ConvertOuput(output.GetType(), output, propertyName);
         }
 
         private static object GetObjectPropertyValue(object instance, string propertyName)

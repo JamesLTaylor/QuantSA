@@ -68,6 +68,7 @@ namespace QuantSA.Valuation
 
         public void AddFXForecast(IFXSource fxForecastCurve)
         {
+            if (fxForecastCurve == null) return;
             if (!fxCurves.ContainsKey(fxForecastCurve.GetCurrencyPair().ToString()))
                 fxCurves.Add(fxForecastCurve.GetCurrencyPair().ToString(), fxForecastCurve);
             else

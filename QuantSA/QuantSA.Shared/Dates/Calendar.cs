@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using QuantSA.Shared.Serialization;
 
 namespace QuantSA.Shared.Dates
 {
@@ -17,53 +17,27 @@ namespace QuantSA.Shared.Dates
     /// <remarks>
     /// This class is based on Calendar in QLNET (https://github.com/amaggiulli/QLNet) 
     /// </remarks>
-    public class Calendar
+    public class Calendar : SerializableViaName
     {
-        private readonly List<Date> holidays = new List<Date>();
+        private readonly HashSet<Date> _holidays;
+        private readonly string _name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Calendar"/> class with no public holidays only weekends.
         /// </summary>        
-        public Calendar()
+        public Calendar(string name)
         {
-            holidays = new List<Date>();
+            _name = name;
+            _holidays = new HashSet<Date>();
         }
 
-        public Calendar(List<Date> holidays)
+        public Calendar(string name, IEnumerable<Date> holidays)
         {
-            this.holidays = new List<Date>();
+            _name = name;
+            _holidays = new HashSet<Date>();
             foreach (var date in holidays)
-                this.holidays.Add(new Date(date));
+                _holidays.Add(new Date(date));
         }
-
-        /// <summary>
-        /// Construct a Calendar with weekends and public holidays stored in a csv file. see http://www.quantsa.org/latest/Calendar.html
-        /// </summary>
-        /// <param name="filename">The filename of the csv file with holidays.</param>
-        /// <returns></returns>
-        /// <exception cref="System.FormatException">Encountered date " + str + " which is not in the required format 'yyyy-mm-dd'.</exception>
-        public static Calendar FromFile(string filename)
-        {
-            var holidayStrings = File.ReadAllLines(filename);
-            var holsFromFile = new List<Date>();
-            foreach (var str in holidayStrings)
-            {
-                var vals = str.Split('-');
-                if (vals.Length == 3)
-                {
-                    var date = new Date(int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2]));
-                    holsFromFile.Add(date);
-                }
-                else
-                {
-                    throw new FormatException("Encountered date " + str +
-                                              " which is not in the required format 'yyyy-mm-dd'.");
-                }
-            }
-
-            return new Calendar(holsFromFile);
-        }
-
 
         /// <summary>
         /// Determines whether the specified date is a business day.  That means not a holiday and not a weekend.
@@ -74,7 +48,7 @@ namespace QuantSA.Shared.Dates
         /// </returns>
         public bool isBusinessDay(Date date)
         {
-            if (holidays.Contains(date))
+            if (_holidays.Contains(date))
                 return false;
             return !isWeekend(date.DayOfWeek());
         }
@@ -97,7 +71,7 @@ namespace QuantSA.Shared.Dates
         /// </returns>
         public bool isHoliday(Date date)
         {
-            return holidays.Contains(date);
+            return _holidays.Contains(date);
         }
 
         /// <summary>
@@ -163,7 +137,12 @@ namespace QuantSA.Shared.Dates
         public void addHoliday(Date d)
         {
             if (isBusinessDay(d))
-                holidays.Add(d);
+                _holidays.Add(d);
+        }
+
+        public override string GetName()
+        {
+            return _name;
         }
     }
 }

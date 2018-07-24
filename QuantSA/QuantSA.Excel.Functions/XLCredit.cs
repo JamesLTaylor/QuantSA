@@ -15,6 +15,22 @@ namespace QuantSA.ExcelFunctions
     {
         [QuantSAExcelFunction(
             Description =
+                "Create a reference entity.  This can be used for things like identifying which company a CDS references.",
+            Name = "QSA.CreateReferenceEntity",
+            HasGeneratedVersion = true,
+            Category = "QSA.Credit",
+            ExampleSheet = "CDS.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateReferenceEntity.html")]
+        public static ReferenceEntity CreateCreateReferenceEntity(
+            [QuantSAExcelArgument(Description = "The reference entity whose default is covered by this CDS.")]
+            string name)
+        {
+            return new ReferenceEntity(name);
+        }
+
+        [QuantSAExcelFunction(
+            Description =
                 "Create a par style CDS.  Protection will always apply from the value date until the last payment date.",
             Name = "QSA.CreateCDS",
             HasGeneratedVersion = true,

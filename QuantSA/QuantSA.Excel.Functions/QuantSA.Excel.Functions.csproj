@@ -56,7 +56,6 @@
     </Compile>
     <Compile Include="XLConventions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StaticData.cs" />
     <Compile Include="XLCredit.cs" />
     <Compile Include="XLCurves.cs" />
     <Compile Include="XLEquities.cs" />

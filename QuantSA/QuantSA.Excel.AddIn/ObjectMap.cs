@@ -12,7 +12,6 @@ namespace QuantSA.Excel.Addin
 
         public string LatestException;
 
-
         /// <summary>
         /// Only called by Instance
         /// </summary>
@@ -88,15 +87,11 @@ namespace QuantSA.Excel.Addin
             element = null;
             if (!IsObjectName(objectName)) return false;
             if (objectName == null) throw new ArgumentNullException(nameof(objectName));
-            var nameParts = objectName.Split('.');
-            var name = nameParts[0];
-            if (_namesAndObjects.TryGetValue(name, out var entry))
-            {
-                element = entry.Obj;
-                return true;
-            }
-
-            return false;
+            var idx = objectName.LastIndexOf('.');
+            var name = objectName.Substring(0, idx);
+            if (!_namesAndObjects.TryGetValue(name, out var entry)) return false;
+            element = entry.Obj;
+            return true;
         }
 
         private struct ObjectEntry

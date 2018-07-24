@@ -162,11 +162,11 @@ namespace QuantSA.ExcelFunctions
             string fraCode,
             [ExcelArgument(Description = "Is the fixed rate paid? Enter 'TRUE' for yes.")]
             bool payFixed,
-            [QuantSAExcelArgument(Description = "The float rate index of the FRA.", Default = "DEFAULT")]
+            [QuantSAExcelArgument(Description = "The float rate index of the FRA.", Default = "ZAR.JIBAR.3M")]
             FloatRateIndex jibar)
         {
-            var zaCalendar = StaticData.GetCalendar("ZA");
-            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, zaCalendar, jibar);
+            // TODO: JT: Get a preferred calendar from the float rate index
+            return FRA.CreateZARFra(tradeDate, notional, rate, fraCode, payFixed, new Calendar("ZA"), jibar);
         }
 
 
