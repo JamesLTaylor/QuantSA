@@ -6,12 +6,32 @@ using QuantSA.General;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.ExcelFunctions
 {
     public static class XLCurves
     {
+        [QuantSAExcelFunction(
+            Description = "Create a Nelson Siegel curve from parameters.  Can be used anywhere as a curve.",
+            Name = "QSA.CreateNelsonSiegel",
+            HasGeneratedVersion = true,
+            ExampleSheet = "FitCurveNelsonSiegel.xlsx",
+            Category = "QSA.Curves",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/FitCurveNelsonSiegel.html")]
+        public static ICurve CreateNelsonSiegel(
+            [ExcelArgument(Description = "The date at which the resultant curve will be anchored.")]
+            Date anchorDate,
+            [ExcelArgument(Description = "")] double beta0,
+            [ExcelArgument(Description = "")] double beta1,
+            [ExcelArgument(Description = "")] double beta2,
+            [ExcelArgument(Description = "")] double tau)
+        {
+            return new NelsonSiegel(anchorDate, beta0, beta1, beta2, tau);
+        }
+
         [QuantSAExcelFunction(
             Description = "Create a best fit Nelson Siegel curve.  Can be used anywhere as a curve. (Curve)",
             Name = "QSA.FitCurveNelsonSiegel",
@@ -127,8 +147,29 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(
                 Description =
                     "Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency.",
-                Default = "Currency.ANY")]
+                Default = "ZAR")]
             Currency currency)
+        {
+            for (var i = 1; i < dates.Length; i++)
+                if (dates[i].value <= dates[i - 1].value)
+                    throw new ArgumentException("Dates must be strictly increasing");
+            return new DatesAndRates(currency, dates[0], dates, rates);
+        }
+
+        [QuantSAExcelFunction(Description = "Create a forecast curve for a Libor type index.",
+            Name = "QSA.CreateRateForecastCurve",
+            HasGeneratedVersion = true,
+            ExampleSheet = "Caplet.xlsx",
+            Category = "QSA.Curves",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateRateForecastCurve.html")]
+        public static IDiscountingSource CreateRateForecastCurve(
+            [ExcelArgument(Description = "The dates at which the rates apply.")]
+            Date[] dates,
+            [ExcelArgument(Description = "The rates.")]
+            double[] rates,
+            [QuantSAExcelArgument(Description = "The index that this curve forecasts.", Default = "ZAR.JIBAR.3M")]
+            FloatRateIndex floatRateIndex)
         {
             for (var i = 1; i < dates.Length; i++)
                 if (dates[i].value <= dates[i - 1].value)

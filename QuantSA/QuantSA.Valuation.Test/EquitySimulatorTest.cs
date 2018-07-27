@@ -5,6 +5,7 @@ using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.Formulae;
 using QuantSA.Core.Products;
 using QuantSA.General;
 using QuantSA.General.Formulae;

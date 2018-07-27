@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuantSA.Excel.Addin.Config;
 using QuantSA.Excel.Addin.Functions;
 using QuantSA.ExcelFunctions;
-using QuantSA.Shared.Primitives;
-using StaticData = QuantSA.Excel.Addin.Config.StaticData;
 
 namespace QuantSA.Excel.Addin.Tests.TypeConverters
 {
@@ -20,12 +19,13 @@ namespace QuantSA.Excel.Addin.Tests.TypeConverters
             var assembly = Assembly.GetAssembly(typeof(XLEquities));
             StaticData.Load();
             ExcelTypeConverter.AddConvertersFrom(Assembly.GetAssembly(typeof(AddIn)));
-            FunctionRegistration.GetDelegatesAndAttributes(assembly, "QSA", new Dictionary<string, bool>(), ref delegates, ref functionAttributes, ref functionArgumentAttributes);
+            FunctionRegistration.GetDelegatesAndAttributes(assembly, "QSA", new Dictionary<string, bool>(),
+                ref delegates, ref functionAttributes, ref functionArgumentAttributes);
 
             ExcelFunction func = null;
             foreach (var d in delegates)
             {
-                func = (ExcelFunction)d.Target;
+                func = (ExcelFunction) d.Target;
                 if (func.GetName() == functionName)
                     return func;
             }
@@ -43,6 +43,19 @@ namespace QuantSA.Excel.Addin.Tests.TypeConverters
             var result = func.Eval(new object[,] {{"curvename"}}, new object[,] {{1.0}}, new object[,] {{1.0}},
                 new object[,] {{"ZAR"}});
             Assert.IsNotNull(result);
+        }
+
+        /// <summary>
+        /// Check that an enum is correctly converted and the black formula can be used.
+        /// </summary>
+        [TestMethod]
+        public void TestThatEnumCanConvert()
+        {
+            var func = LoadAndGetExcelFunction("FormulaBlack");
+            var result = func.Eval(new object[,] {{"call"}}, new object[,] {{1.0}},
+                new object[,] {{1.0}}, new object[,] {{1.0}}, new object[,] {{1.0}},
+                new object[,] {{1.0}});
+            Assert.AreEqual(0.3829, (double) result[0, 0], 1e-4);
         }
     }
 }

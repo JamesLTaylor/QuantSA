@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
-using QuantSA.Core.Products.Rates;
+using QuantSA.Core.Formulae;
 using QuantSA.General;
-using QuantSA.General.Formulae;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
@@ -36,10 +34,10 @@ namespace ValuationTest
                 new Share("AAA", TestHelpers.ZAR)
             }; // One needs to know the index that will be required by the product to simulate it.
             var valueDate = new Date(2016, 08, 28);
-            var divYield = new[] { 0.02};
-            var vol = new[] { 0.22};
-            var spotPrice = new[] { 100.0};
-            var correlations = new[,] { {1.0}};
+            var divYield = new[] {0.02};
+            var vol = new[] {0.22};
+            var spotPrice = new[] {100.0};
+            var correlations = new[,] {{1.0}};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate,
                 new[] {valueDate, valueDate.AddMonths(120)},
                 new[] {0.07, 0.07});
@@ -69,10 +67,10 @@ namespace ValuationTest
                 new Share(shareCode, TestHelpers.ZAR)
             }; // One needs to know the index that will be required by the product to simulate it.
             var valueDate = new Date(2016, 08, 28);
-            var divYield = new[] { 0.02};
-            var vol = new[] { 0.22};
-            var spotPrice = new[] { 100.0};
-            var correlations = new[,] { {1.0}};
+            var divYield = new[] {0.02};
+            var vol = new[] {0.22};
+            var spotPrice = new[] {100.0};
+            var correlations = new[,] {{1.0}};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate,
                 new[] {valueDate, valueDate.AddMonths(120)},
                 new[] {0.07, 0.07});

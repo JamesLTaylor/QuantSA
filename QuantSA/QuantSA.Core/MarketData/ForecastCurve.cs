@@ -1,11 +1,9 @@
-﻿using System;
-using QuantSA.Core.CurvesAndSurfaces;
+﻿using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.MarketData
 {
     /// <summary>
     /// Linearly interpolates forward rates.  Must only be used for a single floating index.  This is generally enforced 
@@ -13,8 +11,8 @@ namespace QuantSA.General
     /// </summary>
     public class ForecastCurve : IFloatingRateSource
     {
-        private readonly DatesAndRates dateAndRates;
-        private readonly FloatRateIndex index;
+        private readonly DatesAndRates _dateAndRates;
+        private readonly FloatRateIndex _index;
 
         private ForecastCurve()
         {
@@ -33,18 +31,18 @@ namespace QuantSA.General
         public ForecastCurve(Date anchorDate, FloatRateIndex index, Date[] dates, double[] rates,
             Date maximumDate = null)
         {
-            this.index = index;
-            dateAndRates = new DatesAndRates(index.Currency, anchorDate, dates, rates, maximumDate);
+            _index = index;
+            _dateAndRates = new DatesAndRates(index.Currency, anchorDate, dates, rates, maximumDate);
         }
 
         public FloatRateIndex GetFloatingIndex()
         {
-            return index;
+            return _index;
         }
 
         double IFloatingRateSource.GetForwardRate(Date date)
         {
-            return dateAndRates.InterpAtDate(date);
+            return _dateAndRates.InterpAtDate(date);
         }
     }
 }

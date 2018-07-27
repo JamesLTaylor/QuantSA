@@ -6,6 +6,8 @@ using QuantSA.Core.Products.Rates;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.ProductExtensions.Products.Rates;
+using QuantSA.Shared.Conventions.Compounding;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -262,6 +264,35 @@ namespace QuantSA.ExcelFunctions
             Date date)
         {
             return curve.GetDF(date);
+        }
+
+        [QuantSAExcelFunction(
+            Description =
+                "Get the discount factor from a curve object.  The DF will be from the anchor date until the supplied date.",
+            Name = "QSA.GetDF",
+            HasGeneratedVersion = true,
+            Category = "QSA.Rates",
+            ExampleSheet = "Caplet.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/GetSimpleForward.html")]
+        public static double GetSimpleForward([ExcelArgument(Description = "The curve from which the forward is required.")]
+            IDiscountingSource curve,
+            [ExcelArgument(Description = "The start date of the required forward.  Cannot be before the " +
+                                         "anchor date of the curve.")]
+            Date startDate,
+            [ExcelArgument(Description = "The end date of the required forward.  Must be after the startDate.")]
+            Date endDate,
+            [QuantSAExcelArgument(Description = "The convention that the simple rate will be used with.",
+                Default = "ACT365")]
+            IDayCountConvention daycountConvention)
+
+        {
+            var df1 = curve.GetDF(startDate);
+            var df2 = curve.GetDF(endDate);
+            var yf = daycountConvention.YearFraction(startDate, endDate);
+            var fwdDf = df2 / df1;
+            var rate = CompoundingStore.Simple.RateFromDf(fwdDf, yf);
+            return rate;
         }
 
 

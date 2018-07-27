@@ -4,28 +4,36 @@ using Accord.Math.Optimization;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.General
+namespace QuantSA.Core.CurvesAndSurfaces
 {
     /// <summary>
-    /// 
+    /// A Nelson Siegel parametric curve.
     /// </summary>
     public class NelsonSiegel : ICurve
     {
-        private readonly Date anchorDate;
+        private readonly Date _anchorDate;
+        private readonly double _beta0;
+        private readonly double _beta1;
+        private readonly double _beta2;
+        private readonly double _tau;
 
-        private NelsonSiegel(Date anchorDate, double beta0, double beta1, double beta2, double tau)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="anchorDate"></param>
+        /// <param name="beta0"></param>
+        /// <param name="beta1"></param>
+        /// <param name="beta2"></param>
+        /// <param name="tau"></param>
+        public NelsonSiegel(Date anchorDate, double beta0, double beta1, double beta2, double tau)
         {
-            this.anchorDate = anchorDate;
-            this.beta0 = beta0;
-            this.beta1 = beta1;
-            this.beta2 = beta2;
-            this.tau = tau;
+            _anchorDate = anchorDate;
+            _beta0 = beta0;
+            _beta1 = beta1;
+            _beta2 = beta2;
+            _tau = tau;
         }
 
-        public double beta0 { get; }
-        public double beta1 { get; }
-        public double beta2 { get; }
-        public double tau { get; }
 
         /// <summary>
         ///  Interpolate the rate at required date.        
@@ -34,17 +42,15 @@ namespace QuantSA.General
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
-            return Interp(beta0, beta1, beta2, tau, date - anchorDate);
+            return Interp(_beta0, _beta1, _beta2, _tau, date - _anchorDate);
         }
-
-
-        #region static methods
-
+        
         /// <summary>
         /// Fits a Nelson Siegel curve to data
         /// </summary>
-        /// <param name="t"></param>
-        /// <param name="r"></param>
+        /// <param name="anchorDate"></param>
+        /// <param name="dates"></param>
+        /// <param name="rates"></param>
         /// <returns></returns>
         public static NelsonSiegel Fit(Date anchorDate, Date[] dates, double[] rates)
         {
@@ -82,7 +88,7 @@ namespace QuantSA.General
         /// <param name="beta1"></param>
         /// <param name="beta2"></param>
         /// <param name="tau"></param>
-        /// <param name="t">time at whihc the rate is required</param>
+        /// <param name="t">time at which the rate is required</param>
         /// <returns></returns>
         private static double Interp(double beta0, double beta1, double beta2, double tau, double t)
         {
@@ -92,7 +98,5 @@ namespace QuantSA.General
 
             return rate;
         }
-
-        #endregion // static methods
     }
 }
