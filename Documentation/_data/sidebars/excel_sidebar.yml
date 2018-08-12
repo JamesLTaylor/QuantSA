@@ -87,8 +87,14 @@
     - title: CreateDatesAndRatesCurve
       url: /CreateDatesAndRatesCurve.html
       output: web, pdf
+    - title: CreateNelsonSiegel
+      url: /CreateNelsonSiegel.html
+      output: web, pdf
     - title: CreatePCACurveSimulator
       url: /CreatePCACurveSimulator.html
+      output: web, pdf
+    - title: CreateRateForecastCurve
+      url: /CreateRateForecastCurve.html
       output: web, pdf
     - title: CurveInterp
       url: /CurveInterp.html
@@ -128,6 +134,9 @@
     folderitems:
     - title: CreateProductFromFile
       url: /CreateProductFromFile.html
+      output: web, pdf
+    - title: FormulaBlack
+      url: /FormulaBlack.html
       output: web, pdf
     - title: FormulaBlackScholes
       url: /FormulaBlackScholes.html
@@ -188,6 +197,9 @@
       output: web, pdf
     - title: GetDF
       url: /GetDF.html
+      output: web, pdf
+    - title: GetSimpleForward
+      url: /GetSimpleForward.html
       output: web, pdf
     - title: ValueZARSwap
       url: /ValueZARSwap.html

@@ -26,7 +26,7 @@ Get the year fraction or accrual fraction between two dates according to the pro
 
 * **date1** ([Date](Date.html))The first date.
 * **date2** ([Date](Date.html))The second date.
-* **convention** ([DayCountConvention](DayCountConvention.html))The day count convention to use for getting the accrual fraction.
+* **convention** *([DayCountConvention](DayCountConvention.html))The day count convention to use for getting the accrual fraction.(Default value = ACT365)
 
 <!--HUMAN EDIT START-->
 
