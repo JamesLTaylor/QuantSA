@@ -267,9 +267,8 @@ namespace QuantSA.ExcelFunctions
         }
 
         [QuantSAExcelFunction(
-            Description =
-                "Get the discount factor from a curve object.  The DF will be from the anchor date until the supplied date.",
-            Name = "QSA.GetDF",
+            Description = "Get a simple forward rate between two dates.",
+            Name = "QSA.GetSimpleForward",
             HasGeneratedVersion = true,
             Category = "QSA.Rates",
             ExampleSheet = "Caplet.xlsx",

@@ -1,6 +1,7 @@
 ﻿using System;
 using ExcelDna.Integration;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.MarketData;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.Shared.CurvesAndSurfaces;
@@ -163,7 +164,9 @@ namespace QuantSA.ExcelFunctions
             Category = "QSA.Curves",
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/CreateRateForecastCurve.html")]
-        public static IDiscountingSource CreateRateForecastCurve(
+        public static IFloatingRateSource CreateRateForecastCurve(
+            [QuantSAExcelArgument(Description = "The anchor date of the curve.")]
+            Date anchorDate,
             [ExcelArgument(Description = "The dates at which the rates apply.")]
             Date[] dates,
             [ExcelArgument(Description = "The rates.")]
@@ -173,8 +176,10 @@ namespace QuantSA.ExcelFunctions
         {
             for (var i = 1; i < dates.Length; i++)
                 if (dates[i].value <= dates[i - 1].value)
-                    throw new ArgumentException("Dates must be strictly increasing");
-            return new DatesAndRates(currency, dates[0], dates, rates);
+                    throw new ArgumentException($"{nameof(dates)} must be strictly increasing");
+            if (dates.Length != rates.Length)
+                throw new ArgumentException($"{nameof(dates)} and {nameof(rates)} must be the same length");
+            return new ForecastCurve(anchorDate, floatRateIndex, dates, rates);
         }
 
 
