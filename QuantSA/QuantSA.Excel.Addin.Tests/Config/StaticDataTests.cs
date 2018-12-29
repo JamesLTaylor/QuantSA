@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Excel.Addin.Config;
 using QuantSA.Shared.Serialization;
+using QuantSA.Shared.State;
 
 namespace QuantSA.Excel.Addin.Tests.Config
 {

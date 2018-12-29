@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using QuantSA.Shared.Serialization;
+using QuantSA.Shared.State;
 
 namespace QuantSA.Core.Serialization
 {

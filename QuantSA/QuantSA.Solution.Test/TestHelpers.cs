@@ -5,6 +5,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Shared.Serialization;
+using QuantSA.Shared.State;
 
 namespace QuantSA.Solution.Test
 {

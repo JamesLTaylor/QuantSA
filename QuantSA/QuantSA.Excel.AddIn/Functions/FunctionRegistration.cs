@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using System.Reflection;
 using ExcelDna.Integration;
+using log4net;
 using QuantSA.Excel.Shared;
+using QuantSA.Shared.State;
 
 namespace QuantSA.Excel.Addin.Functions
 {
     /// <summary>
-    /// An object that can collect all the functions with the <see cref="ExcelFunctionAttribute"/>.
+    /// An object that can collect all the functions with the <see cref="QuantSAExcelFunctionAttribute"/>.
     /// </summary>
     public static class FunctionRegistration
     {
+        static FunctionRegistration()
+        {
+        }
+
+        private static readonly ILog log = QuantSAState.LogFactory.Get(MethodBase.GetCurrentMethod().DeclaringType);
+
         public static List<string> FunctionNames = new List<string>();
 
         /// <summary>
@@ -23,6 +31,7 @@ namespace QuantSA.Excel.Addin.Functions
         /// <param name="funcsInUserFile"></param>
         public static void RegisterFrom(Assembly assembly, string addInName, Dictionary<string, bool> funcsInUserFile)
         {
+            log.Info($"Registering Excel functions from {assembly.FullName}");
             var delegates = new List<Delegate>();
             var functionAttributes = new List<object>();
             var functionArgumentAttributes = new List<List<object>>();
