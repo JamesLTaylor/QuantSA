@@ -1,6 +1,4 @@
 source "https://rubygems.org"
 
-# gem "rails"
-gem 'github-pages'
+gem 'wdm'
 gem 'jekyll'
-gem "html-proofer"
