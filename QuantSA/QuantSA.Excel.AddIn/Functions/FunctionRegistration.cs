@@ -17,7 +17,7 @@ namespace QuantSA.Excel.Addin.Functions
         {
         }
 
-        private static readonly ILog log = QuantSAState.LogFactory.Get(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = QuantSAState.LogFactory.Get(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static List<string> FunctionNames = new List<string>();
 
@@ -31,7 +31,7 @@ namespace QuantSA.Excel.Addin.Functions
         /// <param name="funcsInUserFile"></param>
         public static void RegisterFrom(Assembly assembly, string addInName, Dictionary<string, bool> funcsInUserFile)
         {
-            log.Info($"Registering Excel functions from {assembly.FullName}");
+            Log.Info($"Registering Excel functions from {assembly.FullName}");
             var delegates = new List<Delegate>();
             var functionAttributes = new List<object>();
             var functionArgumentAttributes = new List<List<object>>();
@@ -77,6 +77,9 @@ namespace QuantSA.Excel.Addin.Functions
                 foreach (var member in type.GetMembers())
                 {
                     var excelFuncAttr = member.GetCustomAttribute<QuantSAExcelFunctionAttribute>();
+                    var dnaExcelFuncAttr = member.GetCustomAttribute<ExcelFunctionAttribute>();
+                    if (dnaExcelFuncAttr!=null && excelFuncAttr==null)
+                        Log.Warn($"{dnaExcelFuncAttr.Name} is defined as an ExcelDNA function but not a QuantSA function so will be ignored");
                     if (excelFuncAttr == null) continue;
                     if (funcsInUserFile.ContainsKey(excelFuncAttr.Name))
                         excelFuncAttr.IsHidden = !funcsInUserFile[excelFuncAttr.Name];

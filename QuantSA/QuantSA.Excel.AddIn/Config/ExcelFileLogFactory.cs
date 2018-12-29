@@ -24,7 +24,7 @@ namespace QuantSA.Excel.Addin.Config
             _appender.AppendToFile = true;
 
             var layout = new PatternLayout();
-            layout.ConversionPattern = "%d [%t] %-5p %c [%logger] - %m%n";
+            layout.ConversionPattern = "%d [%t] %-5p [%logger] - %m%n";
             layout.ActivateOptions();
 
             _appender.Layout = layout;

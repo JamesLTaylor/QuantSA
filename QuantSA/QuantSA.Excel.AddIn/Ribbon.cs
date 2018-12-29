@@ -4,6 +4,7 @@ using ExcelDna.Integration;
 using ExcelDna.Integration.CustomUI;
 using QuantSA.Excel;
 using QuantSA.Excel.Addin.Properties;
+using QuantSA.Excel.Shared;
 
 [ComVisible(true)]
 public class Ribbon : ExcelRibbon
@@ -74,7 +75,7 @@ public class Ribbon : ExcelRibbon
         return base.LoadImage(imageId);
     }
 
-    [ExcelFunction(IsMacroType = true, Description = "Show information about QuantSA", Name = "QSA.ShowAbout",
+    [QuantSAExcelFunction(IsMacroType = true, Description = "Show information about QuantSA", Name = "QSA.ShowAbout",
         Category = "QSA.General", IsHidden = true)]
     public static int ShowAbout()
     {
