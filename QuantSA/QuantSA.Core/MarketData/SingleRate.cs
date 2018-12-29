@@ -7,20 +7,15 @@ namespace QuantSA.Core.MarketData
 {
     public class SingleRate : IDiscountingSource
     {
-        private readonly Date anchorDate;
+        private readonly Date _anchorDate;
         private readonly Currency _ccy;
-        private readonly double rate;
+        private readonly double _rate;
 
         private SingleRate(double rate, Date anchorDate, Currency ccy)
         {
-            this.rate = rate;
-            this.anchorDate = anchorDate;
+            _rate = rate;
+            _anchorDate = anchorDate;
             _ccy = ccy;
-        }
-
-        public Date GetAnchorDate()
-        {
-            return anchorDate;
         }
 
         public Currency GetCurrency()
@@ -30,10 +25,12 @@ namespace QuantSA.Core.MarketData
 
         public double GetDF(Date date)
         {
-            if (date < anchorDate)
+            if (date < _anchorDate)
                 throw new IndexOutOfRangeException(
                     "Discount factors are only defined at dates on or after the anchor date");
-            return Math.Exp(-rate * (date - anchorDate) / 365.0);
+            return Math.Exp(-_rate * (date - _anchorDate) / 365.0);
         }
+
+        public Date AnchorDate => _anchorDate;
     }
 }

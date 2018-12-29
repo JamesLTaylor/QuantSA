@@ -16,7 +16,7 @@ namespace QuantSA.Solution.Test
         {
             var curve = TestHelpers.FlatDiscountCurve();
             var newCurve = (DatesAndRates) Cloner.Clone(curve);
-            var testDate = curve.GetAnchorDate().AddMonths(12);
+            var testDate = curve.AnchorDate.AddMonths(12);
             Assert.AreEqual(curve.GetDF(testDate), newCurve.GetDF(testDate), 1e-8);
         }
 

@@ -237,9 +237,9 @@ namespace QuantSA.ExcelFunctions
             {
                 // Calculate the first fixing off the curve to use at all past dates.
                 var df1 = 1.0;
-                var laterDate = discountCurve.GetAnchorDate().AddTenor(floatingRateIndex.Tenor);
+                var laterDate = discountCurve.AnchorDate.AddTenor(floatingRateIndex.Tenor);
                 var df2 = discountCurve.GetDF(laterDate);
-                var dt = (laterDate - discountCurve.GetAnchorDate()) / 365.0;
+                var dt = (laterDate - discountCurve.AnchorDate) / 365.0;
                 var rate = (df1 / df2 - 1) / dt;
                 fixingCurve = new FloatingRateFixingCurve1Rate(rate, floatingRateIndex);
             }
@@ -361,7 +361,7 @@ namespace QuantSA.ExcelFunctions
                 "The indices that should be forecast with this same curve.  No spreads are added.")]
             FloatRateIndex forecastIndices)
         {
-            var anchorDate = baseCurve.GetAnchorDate();
+            var anchorDate = baseCurve.AnchorDate;
             var flatCurveRate = -Math.Log(baseCurve.GetDF(anchorDate.AddTenor(Tenor.FromYears(1))));
             var model = new HullWhite1F(baseCurve.GetCurrency(), meanReversion, flatVol, flatCurveRate, flatCurveRate,
                 new[] {forecastIndices});

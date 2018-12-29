@@ -75,11 +75,6 @@ namespace QuantSA.Core.CurvesAndSurfaces
             return Spline.Interpolate(date);
         }
 
-        public Date GetAnchorDate()
-        {
-            return _anchorDate;
-        }
-
         /// <summary>
         /// Get a discount factor assuming the rates are continuously compounded and the daycount in actual/365
         /// </summary>
@@ -96,5 +91,7 @@ namespace QuantSA.Core.CurvesAndSurfaces
         {
             return _currency;
         }
+
+        [JsonIgnore] public Date AnchorDate => _anchorDate;
     }
 }

@@ -28,11 +28,6 @@ namespace QuantSA.General
             hasParallelShift = false;
         }
 
-        public Date GetAnchorDate()
-        {
-            return underlyingCurve.GetAnchorDate();
-        }
-
         public Currency GetCurrency()
         {
             return underlyingCurve.GetCurrency();
@@ -43,10 +38,12 @@ namespace QuantSA.General
             var df = underlyingCurve.GetDF(date);
             double adjustedDF;
             if (hasParallelShift)
-                adjustedDF = df * Math.Exp(effectiveRateBump * (date - underlyingCurve.GetAnchorDate()) / 365.0);
+                adjustedDF = df * Math.Exp(effectiveRateBump * (date - underlyingCurve.AnchorDate) / 365.0);
             else
                 adjustedDF = df * 1.0;
             return adjustedDF;
         }
+
+        public Date AnchorDate => underlyingCurve.AnchorDate;
     }
 }

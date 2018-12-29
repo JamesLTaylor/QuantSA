@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Curves\RateCurveCalibrator.cs" />
     <Compile Include="Data\SharedData.cs" />
     <Compile Include="Products\Rates\SwapFactory.cs" />
     <Compile Include="SAMarket\BesaJseBondEx.cs" />

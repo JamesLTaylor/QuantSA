@@ -78,6 +78,7 @@
     <Compile Include="MarketData\ForecastCurveFromDiscount.cs" />
     <Compile Include="MarketData\FXForecastCurve.cs" />
     <Compile Include="MarketData\HazardCurve.cs" />
+    <Compile Include="MarketData\MarketDataContainer.cs" />
     <Compile Include="MarketData\ShiftedDiscountSource.cs" />
     <Compile Include="MarketData\SingleRate.cs" />
     <Compile Include="Primitives\CashflowEx.cs" />

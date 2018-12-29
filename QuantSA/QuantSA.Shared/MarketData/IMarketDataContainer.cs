@@ -5,6 +5,6 @@
     /// </summary>
     public interface IMarketDataContainer
     {
-        IDiscountingSource GetDiscountingSource(IDiscountingDescription description);
+        bool TryGet<T>(MarketDataDescription<T> marketDataDescription, out T curve) where T : class, IMarketDataSource;
     }
 }

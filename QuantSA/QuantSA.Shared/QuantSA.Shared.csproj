@@ -53,6 +53,7 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="Calculation\ICalculationState.cs" />
+    <Compile Include="MarketData\MarketDataDescription.cs" />
     <Compile Include="MarketData\ICalibrator.cs" />
     <Compile Include="MarketData\IFixingSource.cs" />
     <Compile Include="MarketObservables\BankAccountNumeraire.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="MarketData\IFloatingRateSource.cs" />
     <Compile Include="MarketData\IFXSource.cs" />
     <Compile Include="MarketData\ISurvivalProbabilitySource.cs" />
-    <Compile Include="MarketData\IDiscountingDescription.cs" />
+    <Compile Include="MarketData\DiscountingSourceDescription.cs" />
     <Compile Include="MarketData\IMarketDataContainer.cs" />
     <Compile Include="MarketData\IMarketDataSource.cs" />
     <Compile Include="MarketObservables\MarketObservable.cs" />
