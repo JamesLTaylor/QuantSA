@@ -50,7 +50,7 @@ namespace QuantSA.CoreExtensions.Curves
 
         public double Error(IMarketDataContainer marketData)
         {
-            var present = marketData.TryGet(new DiscountingSourceDescription(currency), out var curve);
+            var curve = marketData.Get(new DiscountingSourceDescription(currency));
             return 0.0;
         }
     }

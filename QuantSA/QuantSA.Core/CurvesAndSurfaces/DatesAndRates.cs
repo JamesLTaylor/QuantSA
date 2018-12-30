@@ -10,8 +10,8 @@ using QuantSA.Shared.Primitives;
 namespace QuantSA.Core.CurvesAndSurfaces
 {
     /// <summary>
-    /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 
-    /// discount factors or interpolated directly.
+    ///     A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get
+    ///     discount factors or interpolated directly.
     /// </summary>
     public class DatesAndRates : IDiscountingSource, ICurve
     {
@@ -30,13 +30,20 @@ namespace QuantSA.Core.CurvesAndSurfaces
         }
 
         /// <summary>
-        /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
+        ///     Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates
+        ///     until maximumDate
         /// </summary>
         /// <param name="currency"></param>
         /// <param name="anchorDate">Date from which the curve applies.  Interpolation before this date won't work.</param>
         /// <param name="dates">Must be sorted in increasing order.</param>
-        /// <param name="rates">The rates.  If the curve is going to be used to supply discount factors then these rates must be continuously compounded.</param>
-        /// <param name="maximumDate">The date beyond which interpolation will not be allowed.  If it is null or left out then the last date in dates will be used.</param>
+        /// <param name="rates">
+        ///     The rates.  If the curve is going to be used to supply discount factors then these rates must be
+        ///     continuously compounded.
+        /// </param>
+        /// <param name="maximumDate">
+        ///     The date beyond which interpolation will not be allowed.  If it is null or left out then the
+        ///     last date in dates will be used.
+        /// </param>
         public DatesAndRates(Currency currency, Date anchorDate, Date[] dates, double[] rates, Date maximumDate = null)
         {
             _currency = currency ?? throw new ArgumentNullException(nameof(currency));
@@ -58,10 +65,10 @@ namespace QuantSA.Core.CurvesAndSurfaces
         }
 
         /// <summary>
-        /// Interpolate the curve.
+        ///     Interpolate the curve.
         /// </summary>
         /// <param name="date">The date at which the rate is required.</param>
-        /// <exception cref="ArgumentException">If <paramref name="date"/> is not in the range of the curve.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="date" /> is not in the range of the curve.</exception>
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
@@ -76,9 +83,12 @@ namespace QuantSA.Core.CurvesAndSurfaces
         }
 
         /// <summary>
-        /// Get a discount factor assuming the rates are continuously compounded and the daycount in actual/365
+        ///     Get a discount factor assuming the rates are continuously compounded and the daycount in actual/365
         /// </summary>
-        /// <param name="date">The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to this date.</param>
+        /// <param name="date">
+        ///     The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to
+        ///     this date.
+        /// </param>
         /// <returns></returns>
         public double GetDF(Date date)
         {
@@ -92,6 +102,25 @@ namespace QuantSA.Core.CurvesAndSurfaces
             return _currency;
         }
 
-        [JsonIgnore] public Date AnchorDate => _anchorDate;
+        public Date GetAnchorDate()
+        {
+            return _anchorDate;
+        }
+
+        public string GetName()
+        {
+            return new DiscountingSourceDescription(_currency).Name;
+        }
+
+        public bool CanBeA<T>(MarketDataDescription<T> description, IMarketDataContainer marketDataContainer)
+            where T : class, IMarketDataSource
+        {
+            return description.Name == new DiscountingSourceDescription(_currency).Name;
+        }
+
+        public bool TryCalibrate(Date calibrationDate, IMarketDataContainer marketDataContainer)
+        {
+            return true;
+        }
     }
 }

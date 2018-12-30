@@ -34,7 +34,7 @@ namespace QuantSA.Core.MarketData
             IDiscountingSource counterCurrencyFXBasisCurve)
         {
             _currencyPair = currencyPair ?? throw new ArgumentNullException(nameof(currencyPair));
-            if (baseCurrencyFXBasisCurve.AnchorDate != counterCurrencyFXBasisCurve.AnchorDate)
+            if (baseCurrencyFXBasisCurve.GetAnchorDate() != counterCurrencyFXBasisCurve.GetAnchorDate())
                 throw new ArgumentException("The two basis curves must have the same anchor dates.");
             if (currencyPair.BaseCurrency != baseCurrencyFXBasisCurve.GetCurrency())
                 throw new ArgumentException("The currency of the baseCurrencyFXBasisCurve must the base currency.");

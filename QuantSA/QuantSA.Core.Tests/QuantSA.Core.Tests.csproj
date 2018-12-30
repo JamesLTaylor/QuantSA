@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurvesAndSurfaces\NelsonSiegelTest.cs" />
+    <Compile Include="MarketData\SingleRateTests.cs" />
+    <Compile Include="MarketData\MarketDataContainerTests.cs" />
     <Compile Include="Primitives\ProductTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

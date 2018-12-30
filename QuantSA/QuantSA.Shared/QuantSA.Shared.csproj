@@ -53,6 +53,7 @@
       <Link>Properties\AssemblyInfoAll.cs</Link>
     </Compile>
     <Compile Include="Calculation\ICalculationState.cs" />
+    <Compile Include="Exceptions\MissingMarketDataException.cs" />
     <Compile Include="MarketData\MarketDataDescription.cs" />
     <Compile Include="MarketData\ICalibrator.cs" />
     <Compile Include="MarketData\IFixingSource.cs" />
