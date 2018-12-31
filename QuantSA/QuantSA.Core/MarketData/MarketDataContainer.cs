@@ -37,7 +37,7 @@ namespace QuantSA.Core.MarketData
                 {
                     if (foundCurve == null)
                     {
-                        foundCurve = marketDataSource as T;
+                        foundCurve = marketDataSource.Get(marketDataDescription);
                     }
                     else
                         throw new MissingMarketDataException($"At least two curves provide the same description: {foundCurve.GetName()} and {marketDataSource.GetName()}.");

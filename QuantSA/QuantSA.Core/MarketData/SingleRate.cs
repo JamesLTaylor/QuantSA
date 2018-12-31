@@ -2,6 +2,7 @@
 using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Conventions.Compounding;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Exceptions;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
 
@@ -12,20 +13,20 @@ namespace QuantSA.Core.MarketData
     /// </summary>
     public class SingleRate : IDiscountingSource
     {
-        private readonly Currency _ccy;
+        private readonly Currency _currency;
         private readonly double _rate;
         private readonly Date _anchorDate;
 
-        public SingleRate(double rate, Date anchorDate, Currency ccy)
+        public SingleRate(double rate, Date anchorDate, Currency currency)
         {
             _rate = rate;
             _anchorDate = anchorDate;
-            _ccy = ccy;
+            _currency = currency;
         }
 
         public Currency GetCurrency()
         {
-            return _ccy;
+            return _currency;
         }
 
         public double GetDF(Date date)
@@ -43,13 +44,19 @@ namespace QuantSA.Core.MarketData
 
         public string GetName()
         {
-            return new DiscountingSourceDescription(_ccy).Name;
+            return new DiscountingSourceDescription(_currency).Name;
         }
 
         public bool CanBeA<T>(MarketDataDescription<T> description, IMarketDataContainer marketDataContainer)
             where T : class, IMarketDataSource
         {
-            return description.Name == new DiscountingSourceDescription(_ccy).Name;
+            return description.Name == new DiscountingSourceDescription(_currency).Name;
+        }
+
+        public T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource
+        {
+            if (marketDataDescription.Name == new DiscountingSourceDescription(_currency).Name) return this as T;
+            throw new MissingMarketDataException($"{GetName()} cannot be used as {marketDataDescription.Name}");
         }
 
         public bool TryCalibrate(Date calibrationDate, IMarketDataContainer marketDataContainer)
