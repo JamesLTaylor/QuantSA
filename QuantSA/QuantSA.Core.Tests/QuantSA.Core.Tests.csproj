@@ -58,6 +58,8 @@
     <Compile Include="MarketData\MarketDataContainerTests.cs" />
     <Compile Include="Primitives\ProductTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RootFinding\MultiDimNewtonTests - Copy.cs" />
+    <Compile Include="RootFinding\MultiDimNewtonTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -83,7 +83,10 @@
     <Compile Include="MarketData\SingleRate.cs" />
     <Compile Include="Optimization\VectorMinimizationResult.cs" />
     <Compile Include="Optimization\IObjectiveVectorFunction.cs" />
-    <Compile Include="Optimization\MultiDimNewton.cs" />
+    <Compile Include="RootFinding\BroydenWrapper.cs" />
+    <Compile Include="RootFinding\FunctionEvaluator.cs" />
+    <Compile Include="RootFinding\IVectorRootFinder.cs" />
+    <Compile Include="RootFinding\MultiDimNewton.cs" />
     <Compile Include="Primitives\CashflowEx.cs" />
     <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
     <Compile Include="Primitives\Product.cs" />

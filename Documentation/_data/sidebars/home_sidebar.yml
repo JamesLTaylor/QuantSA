@@ -38,6 +38,9 @@ entries:
     - title: General
       url: /home_data_general.html 
       output: web
+    - title: Curve Stripping
+      url: /home_curve_stripping.html 
+      output: web      
 
   - title: Developers
     output: web
