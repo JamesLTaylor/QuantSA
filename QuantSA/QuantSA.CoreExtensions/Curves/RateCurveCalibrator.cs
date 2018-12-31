@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
@@ -20,17 +16,17 @@ namespace QuantSA.CoreExtensions.Curves
         double Error(IMarketDataContainer marketData);
     }
 
-    public class Depo : IRateCurveInstrument
+    public class DepoCurveInstrument : IRateCurveInstrument
     {
-        private readonly Currency currency;
-        private readonly Tenor tenor;
-        private readonly double simpleRate;
+        private readonly Currency _currency;
+        private readonly double _simpleRate;
+        private readonly Tenor _tenor;
 
-        public Depo(Currency currency, Tenor tenor, double simpleRate)
+        public DepoCurveInstrument(Currency currency, Tenor tenor, double simpleRate)
         {
-            this.currency = currency;
-            this.tenor = tenor;
-            this.simpleRate = simpleRate;
+            _currency = currency;
+            _tenor = tenor;
+            _simpleRate = simpleRate;
         }
 
         public void SetCalibrationDate(Date calibrationDate)
@@ -50,13 +46,12 @@ namespace QuantSA.CoreExtensions.Curves
 
         public double Error(IMarketDataContainer marketData)
         {
-            var curve = marketData.Get(new DiscountingSourceDescription(currency));
+            var curve = marketData.Get(new DiscountingSourceDescription(_currency));
             return 0.0;
         }
     }
 
     public class RateCurveCalibrator
     {
-
     }
 }

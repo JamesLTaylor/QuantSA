@@ -55,7 +55,6 @@
     <Compile Include="Calculation\ICalculationState.cs" />
     <Compile Include="Exceptions\MissingMarketDataException.cs" />
     <Compile Include="MarketData\MarketDataDescription.cs" />
-    <Compile Include="MarketData\ICalibrator.cs" />
     <Compile Include="MarketData\IFixingSource.cs" />
     <Compile Include="MarketObservables\BankAccountNumeraire.cs" />
     <Compile Include="Primitives\Cashflow.cs" />
