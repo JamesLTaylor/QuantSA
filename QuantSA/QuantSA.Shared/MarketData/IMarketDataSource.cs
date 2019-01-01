@@ -24,12 +24,12 @@ namespace QuantSA.Shared.MarketData
 
         /// <summary>
         /// Check if this instance of a <see cref="IMarketDataSource" /> can be used by someone
-        /// requiring <paramref name="description" />
+        /// requiring <paramref name="marketDataDescription" />
         /// </summary>
-        /// <param name="description"></param>
+        /// <param name="marketDataDescription"></param>
         /// <param name="marketDataContainer"></param>
         /// <returns></returns>
-        bool CanBeA<T>(MarketDataDescription<T> description, IMarketDataContainer marketDataContainer)
+        bool CanBeA<T>(MarketDataDescription<T> marketDataDescription, IMarketDataContainer marketDataContainer)
             where T : class, IMarketDataSource;
 
         T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource;

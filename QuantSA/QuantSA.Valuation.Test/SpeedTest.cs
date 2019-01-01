@@ -4,6 +4,7 @@ using Accord.Math;
 using Accord.Math.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.MarketData;
 using QuantSA.Core.Products.Rates;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
@@ -74,7 +75,7 @@ namespace ValuationTest
             double[] ratesLong = {0.07, 0.071, 0.072, 0.073, 0.074, 0.08};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, datesLong, ratesLong);
             IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(discountCurve, TestHelpers.Jibar3M,
-                new FloatingRateFixingCurve1Rate(0.07, TestHelpers.Jibar3M));
+                new FloatingRateFixingCurve1Rate(valueDate, 0.07, TestHelpers.Jibar3M));
             var curveSim = new DeterminsiticCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
             var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);

@@ -4,77 +4,48 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.MarketData;
 using QuantSA.Core.Optimization;
 using QuantSA.Core.RootFinding;
-using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
-using QuantSA.Shared.Primitives;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.CoreExtensions.Curves
 {
-    public interface IRateCurveInstrument
+    internal class InitialValues
     {
-        void SetCalibrationDate(Date calibrationDate);
+        private readonly Dictionary<string, List<Tuple<string, Date, double>>> _storage =
+            new Dictionary<string, List<Tuple<string, Date, double>>>();
 
-        Tuple<Date, double> GetInitialValue();
-
-        double Objective();
-        void SetMarketData(IMarketDataContainer marketData);
-    }
-
-    public class DepoCurveInstrument : IRateCurveInstrument
-    {
-        private readonly Currency _currency;
-        private readonly double _simpleRate;
-        private readonly Tenor _tenor;
-        private Date _calibrationDate;
-        private double _cf;
-        private IDiscountingSource _curve;
-        private Date _maturityDate;
-
-        public DepoCurveInstrument(Currency currency, Tenor tenor, double simpleRate)
+        internal void Add(Tuple<string, Date, double> value)
         {
-            _currency = currency;
-            _tenor = tenor;
-            _simpleRate = simpleRate;
+            if (!_storage.TryGetValue(value.Item1, out var list))
+            {
+                list = new List<Tuple<string, Date, double>>();
+                _storage[value.Item1] = list;
+            }
+
+            list.Add(value);
         }
 
-        public void SetCalibrationDate(Date calibrationDate)
+        internal (Date[] dates, double[] values) GetValues(IEnumerable<string> curveNames)
         {
-            _calibrationDate = calibrationDate;
-            _maturityDate = calibrationDate.AddTenor(_tenor);
-            var yf = Actual365Fixed.Instance.YearFraction(_calibrationDate, _maturityDate);
-            _cf = 1e6 * (1 + _simpleRate * yf);
+            var combined = new List<Tuple<string, Date, double>>();
+            foreach (var curveName in curveNames)
+                combined.AddRange(_storage[curveName]);
+            combined.Sort(Comparison);
+            var dates = combined.Select(t => t.Item2).ToArray();
+            var values = combined.Select(t => t.Item3).ToArray();
+            return (dates, values);
         }
 
-        public Tuple<Date, double> GetInitialValue()
+        private int Comparison(Tuple<string, Date, double> x, Tuple<string, Date, double> y)
         {
-            return new Tuple<Date, double>(_maturityDate, _simpleRate);
-        }
-
-        public void SetMarketData(IMarketDataContainer marketData)
-        {
-            _curve = marketData.Get(new DiscountingSourceDescription(_currency));
-        }
-
-        public double Objective()
-        {
-            var df = _curve.GetDF(_maturityDate);
-            return df * _cf - 1e6;
+            return x.Item2.CompareTo(y.Item2);
         }
     }
 
-    /// <summary>
-    /// Specifies what the curve that should be stripped will look like.
-    /// </summary>
-    public interface IRateCurveSpecification
-    {
-    }
-
-    public class SingleCurveSpecification
-    {
-    }
 
     internal class ObjectiveFunction : IObjectiveVectorFunction
     {
@@ -102,18 +73,25 @@ namespace QuantSA.CoreExtensions.Curves
 
     public class RateCurveCalibrator : IMarketDataSource
     {
-        private readonly Currency _currency;
+        private readonly DiscountingSourceDescription _curveToStrip;
+
+        private readonly Dictionary<string, IFloatingRateSource> _floatingRateSources =
+            new Dictionary<string, IFloatingRateSource>();
+
+        private readonly IEnumerable<FloatRateIndex> _indicesToBaseOffDiscountCurve;
         private readonly List<IRateCurveInstrument> _instruments;
         private readonly IVectorRootFinder _rootFinder;
-        private DatesAndRates _curve;
         private Date _calibrationDate;
+        private DatesAndRates _curve;
 
         public RateCurveCalibrator(List<IRateCurveInstrument> instruments, IVectorRootFinder rootFinder,
-            Currency currency)
+            DiscountingSourceDescription curveToStrip, IEnumerable<FloatRateIndex> indicesToBaseOffDiscountCurve)
         {
             _instruments = instruments;
             _rootFinder = rootFinder;
-            _currency = currency;
+            _curveToStrip = curveToStrip;
+            _indicesToBaseOffDiscountCurve = indicesToBaseOffDiscountCurve ??
+                                             throw new ArgumentNullException(nameof(indicesToBaseOffDiscountCurve));
         }
 
         public Date GetAnchorDate()
@@ -126,44 +104,52 @@ namespace QuantSA.CoreExtensions.Curves
             return nameof(RateCurveCalibrator);
         }
 
-        public bool CanBeA<T>(MarketDataDescription<T> description, IMarketDataContainer marketDataContainer)
+        public bool CanBeA<T>(MarketDataDescription<T> marketDataDescription, IMarketDataContainer marketDataContainer)
             where T : class, IMarketDataSource
         {
-            return true;
+            if (marketDataDescription.Name == _curveToStrip.Name) return true;
+            if (_floatingRateSources.ContainsKey(marketDataDescription.Name)) return true;
+            return false;
         }
 
         public T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource
         {
-            return _curve as T;
+            if (marketDataDescription.Name == _curveToStrip.Name) return _curve as T;
+            if (_floatingRateSources.TryGetValue(marketDataDescription.Name, out var floatingRateSource))
+                return floatingRateSource as T;
+            return null;
         }
 
         public bool TryCalibrate(Date calibrationDate, IMarketDataContainer marketDataContainer)
         {
             _calibrationDate = calibrationDate;
-            var initialValues = new List<Tuple<Date, double>>();
+            var initialValues = new InitialValues();
             foreach (var instrument in _instruments)
             {
                 instrument.SetCalibrationDate(calibrationDate);
                 initialValues.Add(instrument.GetInitialValue());
             }
 
-            initialValues.Sort(Comparison);
-            var initialGuess = new DenseVector(initialValues.Select(t => t.Item2).ToArray());
-            _curve = new DatesAndRates(_currency, calibrationDate, initialValues.Select(t => t.Item1).ToArray(),
-                initialGuess.AsArray());
-            foreach (var instrument in _instruments)
+            // first curve collection
+            var curveNames = new List<string> {_curveToStrip.Name};
+            curveNames.AddRange(
+                _indicesToBaseOffDiscountCurve.Select(ind => new FloatingRateSourceDescription(ind).Name));
+
+            var initial = initialValues.GetValues(curveNames);
+
+            _curve = new DatesAndRates(_curveToStrip.Currency, calibrationDate,
+                initial.dates, initial.values);
+            foreach (var index in _indicesToBaseOffDiscountCurve)
             {
-                instrument.SetMarketData(marketDataContainer);
+                var name = new FloatingRateSourceDescription(index).Name;
+                _floatingRateSources[name] = new ForecastCurveFromDiscount(_curve, index, null);
             }
 
-            var objective = new ObjectiveFunction(_curve, _instruments.Select(i => (Func<double>) i.Objective));
-            var result = _rootFinder.FindRoot(objective, initialGuess);
-            return true;
-        }
+            foreach (var instrument in _instruments) instrument.SetMarketData(marketDataContainer);
 
-        private int Comparison(Tuple<Date, double> x, Tuple<Date, double> y)
-        {
-            return x.Item1.CompareTo(y.Item1);
+            var objective = new ObjectiveFunction(_curve, _instruments.Select(i => (Func<double>) i.Objective));
+            var result = _rootFinder.FindRoot(objective, new DenseVector(initial.values));
+            return true;
         }
     }
 }

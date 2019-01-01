@@ -47,10 +47,10 @@ namespace QuantSA.Core.MarketData
             return new DiscountingSourceDescription(_currency).Name;
         }
 
-        public bool CanBeA<T>(MarketDataDescription<T> description, IMarketDataContainer marketDataContainer)
+        public bool CanBeA<T>(MarketDataDescription<T> marketDataDescription, IMarketDataContainer marketDataContainer)
             where T : class, IMarketDataSource
         {
-            return description.Name == new DiscountingSourceDescription(_currency).Name;
+            return marketDataDescription.Name == new DiscountingSourceDescription(_currency).Name;
         }
 
         public T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource

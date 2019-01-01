@@ -1,35 +1,20 @@
-﻿using QuantSA.Shared.MarketObservables;
+﻿using Newtonsoft.Json;
+using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.MarketData
 {
     /// <summary>
-    /// A description of an <see cref="IDiscountingSource"/> and what it should be used for.  For example
-    /// the source might specify that it can be used for any discounting in a particular <see cref="Currency"/>
+    /// A description of an <see cref="IDiscountingSource" /> and what it should be used for.  For example
+    /// the source might specify that it can be used for any discounting in a particular <see cref="Currency" />
     /// or perhaps only discounting in a cashflows in currency when the trade has a particular collateral type or rule.
     /// </summary>
     public class DiscountingSourceDescription : MarketDataDescription<IDiscountingSource>
     {
-        private readonly Currency _currency;
-        private string _name;
-        private readonly FloatRateIndex _iborIndex;
         private readonly MarketObservable _collateralType;
-
-        public override string Name
-        {
-            get
-            {
-                if (_name != null)
-                    return _name;
-                if (_iborIndex!=null)
-                    _name = $"IDiscountingSource.{_currency}.{_iborIndex}";
-                else if (_collateralType!=null)
-                    _name = $"IDiscountingSource.{_currency}.{_collateralType}";
-                else
-                    _name = $"IDiscountingSource.{_currency}";
-                return _name;
-            }
-        }
+        private readonly Currency _currency;
+        private readonly FloatRateIndex _iborIndex;
+        private string _name;
 
         /// <summary>
         /// A discount curve for a single currency. Only use this when there is a single discounting curve in the currency.
@@ -61,5 +46,23 @@ namespace QuantSA.Shared.MarketData
             _currency = currency;
             _collateralType = collateralType;
         }
+
+        public override string Name
+        {
+            get
+            {
+                if (_name != null)
+                    return _name;
+                if (_iborIndex != null)
+                    _name = $"DiscountingSource.{_currency}.{_iborIndex}";
+                else if (_collateralType != null)
+                    _name = $"DiscountingSource.{_currency}.{_collateralType}";
+                else
+                    _name = $"DiscountingSource.{_currency}";
+                return _name;
+            }
+        }
+
+        [JsonIgnore] public Currency Currency => _currency;
     }
 }
