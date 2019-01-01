@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products.Rates
 {
     public class FloatLeg : Product
     {
