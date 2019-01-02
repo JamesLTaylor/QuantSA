@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Core.Primitives
@@ -20,6 +21,26 @@ namespace QuantSA.Core.Primitives
             var dates = new List<Date>();
             foreach (var cf in cfs) dates.Add(new Date(cf.Date));
             return dates;
+        }
+
+        /// <summary>
+        /// Discount and add all the cashflows to the anchor date of <paramref name="discountingSource"/>.
+        /// <para>
+        /// Assumes all cashflows are in the future and in the same currency as <paramref name="discountingSource"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="cfs"></param>
+        /// <param name="discountingSource"></param>
+        /// <returns></returns>
+        public static double PV(this List<Cashflow> cfs, IDiscountingSource discountingSource)
+        {
+            var pv = 0.0;
+            foreach (var cf in cfs)
+            {
+                pv += cf.Amount * discountingSource.GetDF(cf.Date);
+            }
+
+            return pv;
         }
     }
 }

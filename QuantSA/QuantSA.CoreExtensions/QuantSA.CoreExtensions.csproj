@@ -52,12 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Curves\FixedFloatSwapCurveInstrument.cs" />
     <Compile Include="Curves\FloatingRateSourceFromDiscountCalibrator.cs" />
+    <Compile Include="Curves\BasisSwapCurveInstrument.cs" />
     <Compile Include="Curves\FRACurveInstrument.cs" />
     <Compile Include="Curves\DepoCurveInstrument.cs" />
     <Compile Include="Curves\IRateCurveInstrument.cs" />
     <Compile Include="Curves\RateCurveCalibrator.cs" />
     <Compile Include="Data\SharedData.cs" />
+    <Compile Include="ProductPVs\Rates\FloatLegPVs.cs" />
     <Compile Include="Products\Rates\SwapFactory.cs" />
     <Compile Include="SAMarket\BesaJseBondEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

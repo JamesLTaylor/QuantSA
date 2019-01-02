@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using QuantSA.General;
+﻿using System.Collections.Generic;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -8,10 +6,9 @@ using QuantSA.Shared.Primitives;
 namespace QuantSA.Core.Products.Rates
 {
     /// <summary>
-    /// A Floating rate loan with exactly the same structure as <see cref="FloatLeg"/> but with notional flows added.
-    /// </summary>    
+    /// A Floating rate loan with exactly the same structure as <see cref="FloatLeg" /> but with notional flows added.
+    /// </summary>
     /// <seealso cref="FloatLeg" />
-    
     public class LoanFloatingRate : FloatLeg
     {
         private FloatRateIndex index;
@@ -22,15 +19,15 @@ namespace QuantSA.Core.Products.Rates
         private double spread;
 
         /// <summary>
-        /// Create a floating rate loan from a loan profile.  The first date in the profile is the disbursment date and 
+        /// Create a floating rate loan from a loan profile.  The first date in the profile is the disbursment date and
         /// the last date is the final repayment date.  Interest will due on all but the first profile date.
-        /// 
         /// </summary>
         /// <remarks>
-        /// 
         /// </remarks>
-        /// <param name="balanceDates">A date must be given for each interest date and this original disbursement date
-        /// even if the balances remain constant.</param>
+        /// <param name="balanceDates">
+        /// A date must be given for each interest date and this original disbursement date
+        /// even if the balances remain constant.
+        /// </param>
         /// <param name="simpleFixedRate">Interest will be calculated simple </param>
         /// <returns></returns>
         public static LoanFloatingRate CreateSimple(Date[] balanceDates, double[] balances, FloatRateIndex index,

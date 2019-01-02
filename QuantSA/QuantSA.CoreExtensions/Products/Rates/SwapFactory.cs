@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using QuantSA.Core.Products.Rates;
+using QuantSA.General;
+using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 
-namespace QuantSA.ProductExtensions.Products.Rates
+namespace QuantSA.CoreExtensions.Products.Rates
 {
     public class SwapFactory
     {
@@ -67,6 +69,44 @@ namespace QuantSA.ProductExtensions.Products.Rates
             var swap = CreateZARSwap(rate, payFixed, notional, startDate, tenor, floatRateIndex);
             var swaption = new BermudanSwaption(swap, exerciseDates.ToList(), longOptionality);
             return swaption;
+        }
+
+        /// <summary>
+        /// Create a <see cref="FloatLeg"/>.
+        /// </summary>
+        /// <param name="calibrationDate"></param>
+        /// <param name="tenor"></param>
+        /// <param name="index"></param>
+        /// <param name="spread"></param>
+        /// <returns></returns>
+        public static FloatLeg CreateFloatLeg(Date calibrationDate, Tenor tenor, FloatRateIndex index,
+            double spread)
+        {
+            DateGenerators.CreateDatesNoHolidays(calibrationDate, tenor, index.Tenor, out var resetDates,
+                out var paymentDates, out var accrualFractions);
+            var notionals = resetDates.Select(d => 1e6);
+            var floatingIndices = resetDates.Select(d => index);
+            var spreads = resetDates.Select(d => spread);
+            return new FloatLeg(index.Currency, paymentDates, notionals, resetDates, floatingIndices, spreads,
+                accrualFractions);
+        }
+
+        /// <summary>
+        /// Create a <see cref="FloatLeg"/>.
+        /// </summary>
+        /// <param name="calibrationDate"></param>
+        /// <param name="tenor"></param>
+        /// <param name="index"></param>
+        /// <param name="fixedRate"></param>
+        /// <returns></returns>
+        public static FixedLeg CreateFixedLeg(Date calibrationDate, Tenor tenor, FloatRateIndex index,
+            double fixedRate)
+        {
+            DateGenerators.CreateDatesNoHolidays(calibrationDate, tenor, index.Tenor, out var resetDates,
+                out var paymentDates, out var accrualFractions);
+            var notionals = resetDates.Select(d => 1e6);
+            var rates = resetDates.Select(d => fixedRate);
+            return new FixedLeg(index.Currency, paymentDates, notionals, rates, accrualFractions);
         }
     }
 }

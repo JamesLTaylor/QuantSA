@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using QuantSA.General;
 using QuantSA.Shared.Dates;
@@ -25,17 +26,17 @@ namespace QuantSA.Core.Products.Rates
         {
         }
 
-        public FloatLeg(Currency ccy, Date[] paymentDates, double[] notionals, Date[] resetDates,
-            FloatRateIndex[] floatingIndices,
-            double[] spreads, double[] accrualFractions)
+        public FloatLeg(Currency ccy, IEnumerable<Date> paymentDates, IEnumerable<double> notionals, IEnumerable<Date> resetDates,
+            IEnumerable<FloatRateIndex> floatingIndices,
+            IEnumerable<double> spreads, IEnumerable<double> accrualFractions)
         {
             this.ccy = ccy;
-            this.paymentDates = paymentDates;
-            this.notionals = notionals;
-            this.resetDates = resetDates;
-            this.floatingIndices = floatingIndices;
-            this.spreads = spreads;
-            this.accrualFractions = accrualFractions;
+            this.paymentDates = paymentDates.ToArray();
+            this.notionals = notionals.ToArray();
+            this.resetDates = resetDates.ToArray();
+            this.floatingIndices = floatingIndices.ToArray();
+            this.spreads = spreads.ToArray();
+            this.accrualFractions = accrualFractions.ToArray();
         }
 
 

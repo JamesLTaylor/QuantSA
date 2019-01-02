@@ -1,4 +1,5 @@
-﻿using QuantSA.Shared.MarketObservables;
+﻿using Newtonsoft.Json;
+using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Shared.MarketData
 {
@@ -12,7 +13,7 @@ namespace QuantSA.Shared.MarketData
             _index = index;
         }
 
-        public override string Name
+        [JsonIgnore] public override string Name
         {
             get
             {
