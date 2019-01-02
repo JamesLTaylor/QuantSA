@@ -51,7 +51,7 @@ namespace QuantSA.ExcelFunctions
         }
 
         [QuantSAExcelFunction(
-            Description = "Get the discont factor implied by an interest rate of the given convention.",
+            Description = "Get the discount factor implied by an interest rate of the given convention.",
             Name = "QSA.DFFromRate",
             HasGeneratedVersion = true,
             Category = "QSA.Conventions",
@@ -120,7 +120,8 @@ namespace QuantSA.ExcelFunctions
             Date date1,
             [QuantSAExcelArgument(Description = "The second date.")]
             Date date2,
-            [QuantSAExcelArgument(Description = "The day count convention to use for getting the accrual fraction.")]
+            [QuantSAExcelArgument(Description = "The day count convention to use for getting the accrual fraction.",
+                Default = "ACT365")]
             IDayCountConvention convention)
 
         {

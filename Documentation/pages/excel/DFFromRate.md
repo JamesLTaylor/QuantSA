@@ -3,14 +3,14 @@ title: DFFromRate
 keywords:
 last_updated: March 19, 2017
 tags:
-summary: Get the discont factor implied by an interest rate of the given convention.
+summary: Get the discount factor implied by an interest rate of the given convention.
 sidebar: excel_sidebar
 permalink: DFFromRate.html
 folder: excel
 ---
 
 ## Description
-Get the discont factor implied by an interest rate of the given convention.
+Get the discount factor implied by an interest rate of the given convention.
 
 <!--HUMAN EDIT START-->
 

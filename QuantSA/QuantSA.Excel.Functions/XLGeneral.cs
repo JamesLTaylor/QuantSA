@@ -1,5 +1,6 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.Formulae;
 using QuantSA.Excel.Shared;
 using QuantSA.General;
 using QuantSA.General.Conventions.DayCount;
@@ -34,6 +35,28 @@ namespace QuantSA.ExcelFunctions
             return BlackEtc.BlackScholes(PutOrCall.Call, strike,
                 Actual365Fixed.Instance.YearFraction(valueDate, exerciseDate),
                 spotPrice, vol, riskfreeRate, divYield);
+        }
+
+        [QuantSAExcelFunction(Description = "The Black Scholes formula for a call.",
+            IsHidden = false,
+            Name = "QSA.FormulaBlack",
+            ExampleSheet = "CapletValuation.xlsx",
+            Category = "QSA.General",
+            HelpTopic = "http://www.quantsa.org/FormulaBlack.html")]
+        public static double FormulaBlack([ExcelArgument(Description = "put or call.")]
+            PutOrCall putOrCall,
+            [ExcelArgument(Description = "The strike")]
+            double strike,
+            [ExcelArgument(Description = "The time to maturity in years from the value date to the exercise date.")]
+            double timeToExercise,
+            [ExcelArgument(Description = "The forward at the option exercise date.")]
+            double forward,
+            [ExcelArgument(Description = "Annualized volatility.")]
+            double vol,
+            [ExcelArgument(Description = "The discount factor from the value date to the settlement date of the option.")]
+            double discountFactor)
+        {
+            return BlackEtc.Black(putOrCall, strike, timeToExercise, forward, vol, discountFactor);
         }
 
 

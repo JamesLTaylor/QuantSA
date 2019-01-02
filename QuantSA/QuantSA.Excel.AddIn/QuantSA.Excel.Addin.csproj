@@ -96,6 +96,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Ribbon.cs" />
+    <Compile Include="TypeConverters\EnumConverter.cs" />
     <Compile Include="TypeConverters\Primitives.cs" />
     <Compile Include="TypeConverters\Conventions.cs" />
     <Compile Include="Functions\ExposedUtils.cs" />

@@ -1,16 +1,16 @@
 ---
-title: CreateDatesAndRatesCurve
+title: CreateRateForecastCurve
 keywords:
-last_updated: September 29, 2016
+last_updated: August 12, 2018
 tags:
-summary: Create a curve of dates and rates.
+summary: Create a forecast curve for a Libor type index.
 sidebar: excel_sidebar
-permalink: CreateDatesAndRatesCurve.html
+permalink: CreateRateForecastCurve.html
 folder: excel
 ---
 
 ## Description
-Create a curve of dates and rates.
+Create a forecast curve for a Libor type index.
 
 <!--HUMAN EDIT START-->
 
@@ -20,14 +20,15 @@ Create a curve of dates and rates.
 
 ## Example Sheet
 
-    GeneralSwap.xlsx
+    Caplet.xlsx
 
 ## Arguments
 
 * **objectName** The name that this object will be assigned on the map. Should be unique.
+* **anchorDate** ([Date](Date.html))The anchor date of the curve.
 * **dates** ([Date](Date.html)[])The dates at which the rates apply.
 * **rates** (Double[])The rates.
-* **currency** *([Currency](Currency.html))Optional: The currency that this curve can be used for discounting.  Leave blank to use for any currency.(Default value = ZAR)
+* **floatRateIndex** *([FloatRateIndex](FloatRateIndex.html))The index that this curve forecasts.(Default value = ZAR.JIBAR.3M)
 
 <!--HUMAN EDIT START-->
 
