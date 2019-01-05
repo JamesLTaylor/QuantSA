@@ -6,6 +6,7 @@ using QuantSA.CoreExtensions.Curves;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
 
 namespace ProductExtensionsTest.Curves
@@ -14,6 +15,9 @@ namespace ProductExtensionsTest.Curves
     public class RateCurveCalibratorTests
     {
         private readonly Date _calibrationDate = new Date("2018-12-31");
+        private readonly Currency _zar = TestHelpers.ZAR;
+        private readonly FloatRateIndex _jibar3M = TestHelpers.Jibar3M;
+        private readonly FloatRateIndex _jibar1D = TestHelpers.Jibar1D;
 
         [TestMethod]
         public void RateCurveCalibrator_CanCalibrateSingleCurve()
@@ -27,6 +31,32 @@ namespace ProductExtensionsTest.Curves
 
             var calib = new RateCurveCalibrator(instruments, new MultiDimNewton(1e-8, 100), discountCurve,
                 new FloatRateIndex[] {TestHelpers.Jibar3M });
+            var mdc = new MarketDataContainer();
+            mdc.Set(calib);
+            calib.TryCalibrate(_calibrationDate, mdc);
+        }
+
+        [TestMethod]
+        public void RateCurveCalibrator_CanCalibrateTwoCurves()
+        {
+            var instruments = new List<IRateCurveInstrument>();
+            var zarCsaCurveDescription = new DiscountingSourceDescription(_zar, new BankAccountNumeraire(_zar));
+            var jibarDiscountDescription = new DiscountingSourceDescription(_zar, _jibar3M);
+            instruments.Add(new DepoCurveInstrument(Tenor.FromMonths(3), 0.071, jibarDiscountDescription));
+            instruments.Add(new FixedFloatSwapCurveInstrument(Tenor.FromMonths(6), _jibar3M, 0.0, 0.07,
+                zarCsaCurveDescription, FixedFloatSwapCurveInstrument.CurveToStrip.Forecast));
+            instruments.Add(new FixedFloatSwapCurveInstrument(Tenor.FromYears(2), _jibar3M, 0.0, 0.07,
+                zarCsaCurveDescription, FixedFloatSwapCurveInstrument.CurveToStrip.Forecast));
+
+            instruments.Add(new DepoCurveInstrument(Tenor.FromDays(1), 0.06, zarCsaCurveDescription));
+            instruments.Add(new BasisSwapCurveInstrument(Tenor.FromYears(1), _jibar3M, _jibar1D, 0.0, 0.01,
+                zarCsaCurveDescription, BasisSwapCurveInstrument.CurveToStrip.DiscountCurve));
+            instruments.Add(new BasisSwapCurveInstrument(Tenor.FromYears(2), _jibar3M, _jibar1D, 0.0, 0.01,
+                zarCsaCurveDescription, BasisSwapCurveInstrument.CurveToStrip.DiscountCurve));
+
+            var calib = new RateCurveCalibrator(instruments, new MultiDimNewton(1e-8, 100), 
+                zarCsaCurveDescription, new FloatRateIndex[] { _jibar1D }, 
+                jibarDiscountDescription, new FloatRateIndex[] {_jibar3M});
             var mdc = new MarketDataContainer();
             mdc.Set(calib);
             calib.TryCalibrate(_calibrationDate, mdc);

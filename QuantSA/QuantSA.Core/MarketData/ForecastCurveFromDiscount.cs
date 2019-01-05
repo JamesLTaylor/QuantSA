@@ -43,7 +43,7 @@ namespace QuantSA.Core.MarketData
         public double GetForwardRate(Date date)
         {
             //TODO: Index should store the business day and daycount conventions of the index.            
-            if (date > _discountCurve.GetAnchorDate())
+            if (date >= _discountCurve.GetAnchorDate())
             {
                 var df1 = _discountCurve.GetDF(date);
                 var laterDate = date.AddTenor(_index.Tenor);

@@ -40,6 +40,7 @@ namespace QuantSA.Solution.Test
         public static CurrencyPair USDZAR = SetAndReturn(new CurrencyPair("USDZAR", USD, ZAR));
         public static CurrencyPair EURZAR = SetAndReturn(new CurrencyPair("EURZAR", EUR, ZAR));
         public static ReferenceEntity TestCp => SetAndReturn(new ReferenceEntity("ABC"));
+        public static FloatRateIndex Jibar1D => SetAndReturn(new FloatRateIndex("ZAR.JIBAR.1D", ZAR, "JIBAR", Tenor.FromDays(1)));
         public static FloatRateIndex Jibar3M => SetAndReturn(new FloatRateIndex("ZAR.JIBAR.3M", ZAR, "JIBAR", Tenor.FromMonths(3)));
         public static FloatRateIndex Libor3M => SetAndReturn(new FloatRateIndex("USD.LIBOR.3M", USD, "LIBOR", Tenor.FromMonths(3)));
         public static FloatRateIndex Euribor3M => SetAndReturn(new FloatRateIndex("EUR.EURIBOR.3M", EUR, "EURIBOR", Tenor.FromMonths(3)));

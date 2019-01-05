@@ -43,6 +43,7 @@ namespace QuantSA.Core.Products.Rates
         public override void SetValueDate(Date valueDate)
         {
             this.valueDate = valueDate;
+            indexValues = new double[resetDates.Length];
         }
 
         public override void Reset()
