@@ -39,6 +39,7 @@ public class AddIn : IExcelAddIn
         try
         {
             QuantSAState.SetLogger(new ExcelFileLogFactory());
+            ExcelDna.IntelliSense.IntelliSenseServer.Install();
             _log = QuantSAState.LogFactory.Get(MethodBase.GetCurrentMethod().DeclaringType);
             
             var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -90,6 +91,7 @@ public class AddIn : IExcelAddIn
 
     public void AutoClose()
     {
+        ExcelDna.IntelliSense.IntelliSenseServer.Uninstall();
     }
 
     /// <summary>

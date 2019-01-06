@@ -32,7 +32,7 @@ namespace QuantSA.Core.Serialization
             var objWithName = value as ISerializableViaName;
             serializer.Serialize(writer, objWithName.GetName());
             if (!QuantSAState.SharedData.TryGet(value.GetType(), objWithName.GetName(), out _))
-                QuantSAState.SharedData.TempAdd(objWithName);
+                QuantSAState.SharedData.Set(objWithName);
         }
     }
 }
