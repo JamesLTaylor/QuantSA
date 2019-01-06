@@ -52,6 +52,15 @@ namespace QuantSA.Core.CurvesAndSurfaces
             _dates = dates ?? throw new ArgumentNullException(nameof(dates));
             _rates = rates ?? throw new ArgumentNullException(nameof(rates));
             _maximumDate = maximumDate;
+            var sortedDates = _dates.Distinct().ToList();
+            sortedDates.Sort();
+            if (sortedDates.Count!=_dates.Length)
+                throw new ArgumentException("Dates must be unique and increasing.");
+            for (int i = 0; i < sortedDates.Count; i++)
+            {
+                if (_dates[i]!=sortedDates[i])
+                    throw new ArgumentException("Dates must be unique and increasing.");
+            }
         }
 
         [JsonIgnore]
@@ -93,6 +102,7 @@ namespace QuantSA.Core.CurvesAndSurfaces
         /// <returns></returns>
         public double GetDF(Date date)
         {
+            if (date == _anchorDate) return 1.0;
             var rate = InterpAtDate(date);
             var df = Math.Exp(-rate * (date - _anchorDate) / 365.0);
             return df;

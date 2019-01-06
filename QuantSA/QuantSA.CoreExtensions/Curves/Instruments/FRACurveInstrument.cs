@@ -3,11 +3,12 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 
-namespace QuantSA.CoreExtensions.Curves
+namespace QuantSA.CoreExtensions.Curves.Instruments
 {
     public class FRACurveInstrument : IRateCurveInstrument
     {
         private readonly Tenor _endTenor;
+        private readonly FloatRateIndex _floatRateIndex;
         private readonly FloatingRateSourceDescription _floatingRateSourceDescription;
         private readonly double _simpleRate;
         private readonly Tenor _startTenor;
@@ -20,10 +21,15 @@ namespace QuantSA.CoreExtensions.Curves
         {
             _startTenor = startTenor;
             _endTenor = endTenor;
+            _floatRateIndex = floatRateIndex;
             _simpleRate = simpleRate;
             _floatingRateSourceDescription = new FloatingRateSourceDescription(floatRateIndex);
         }
 
+        public string GetName()
+        {
+            return $"FRA.{_startTenor}x{_endTenor}.[{_floatRateIndex}]";
+        }
         public void SetCalibrationDate(Date calibrationDate)
         {
             _startDate = calibrationDate.AddTenor(_startTenor);

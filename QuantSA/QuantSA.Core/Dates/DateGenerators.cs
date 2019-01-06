@@ -53,7 +53,7 @@ namespace QuantSA.General.Dates
             var endDate = startDate.AddTenor(endTenor);
             var resetDate = new Date(startDate);
             var paymentDate = resetDate.AddTenor(periodTenor);
-            while (paymentDate < endDate)
+            while (paymentDate <= endDate)
             {
                 resetDates.Add(resetDate);
                 paymentDates.Add(paymentDate);

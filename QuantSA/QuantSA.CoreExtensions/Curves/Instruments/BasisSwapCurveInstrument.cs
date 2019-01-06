@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using MathNet.Numerics.Optimization;
 using QuantSA.Core.Products.Rates;
 using QuantSA.CoreExtensions.ProductPVs.Rates;
 using QuantSA.CoreExtensions.Products.Rates;
@@ -8,7 +7,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 
-namespace QuantSA.CoreExtensions.Curves
+namespace QuantSA.CoreExtensions.Curves.Instruments
 {
     /// <summary>
     /// A swap with two floating legs to be used in curve stripping.
@@ -69,6 +68,11 @@ namespace QuantSA.CoreExtensions.Curves
             }
         }
 
+        public string GetName()
+        {
+            return $"TenorBasisSwap.{_tenor}.[{_leg1Index}v{_leg2Index}]";
+        }
+
         public void SetCalibrationDate(Date calibrationDate)
         {
             _leg1 = SwapFactory.CreateFloatLeg(calibrationDate, _tenor, _leg1Index, _leg1Spread);
@@ -90,7 +94,7 @@ namespace QuantSA.CoreExtensions.Curves
         public double Objective()
         {
             var value1 = _leg1.CurvePV(_leg1Curve, _discountCurve);
-            var value2 = _leg1.CurvePV(_leg2Curve, _discountCurve);
+            var value2 = _leg2.CurvePV(_leg2Curve, _discountCurve);
             return value1 - value2;
         }
 

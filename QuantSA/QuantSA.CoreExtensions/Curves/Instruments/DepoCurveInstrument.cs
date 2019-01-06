@@ -3,12 +3,12 @@ using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 
-namespace QuantSA.CoreExtensions.Curves
+namespace QuantSA.CoreExtensions.Curves.Instruments
 {
     public class DepoCurveInstrument : IRateCurveInstrument
     {
-        private readonly double _simpleRate;
         private readonly DiscountingSourceDescription _discountCurve;
+        private readonly double _simpleRate;
         private readonly Tenor _tenor;
 
         private Date _calibrationDate;
@@ -21,6 +21,11 @@ namespace QuantSA.CoreExtensions.Curves
             _tenor = tenor;
             _simpleRate = simpleRate;
             _discountCurve = discountCurve;
+        }
+
+        public string GetName()
+        {
+            return $"Deposit.{_tenor}.[{_discountCurve.Currency}]";
         }
 
         public void SetCalibrationDate(Date calibrationDate)

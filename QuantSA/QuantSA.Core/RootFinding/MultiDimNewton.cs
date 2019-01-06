@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using System;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Optimization;
 using QuantSA.Core.Optimization;
 
@@ -27,7 +28,8 @@ namespace QuantSA.Core.RootFinding
                 var baseValues = objective.Value.Clone();
                 if (baseValues.AbsoluteMaximum() < _convergenceTolerance) break;
                 UpdateJacobian(jacobian, objective);
-                guess = guess - jacobian.Inverse() * baseValues;
+                var inverse = jacobian.Inverse();
+                guess = guess - inverse * baseValues;
             }
 
             var result = new VectorMinimizationResult
@@ -41,6 +43,11 @@ namespace QuantSA.Core.RootFinding
             return result;
         }
 
+        /// <summary>
+        /// Element (i, j) is the df_i/dx_j. i.e it is the partial derivative of the ith element of f with respect to the jth input.
+        /// </summary>
+        /// <param name="jacobian"></param>
+        /// <param name="objective"></param>
         private void UpdateJacobian(Matrix<double> jacobian, IObjectiveVectorFunction objective)
         {
             var baseValues = objective.Value.Clone();
@@ -49,9 +56,14 @@ namespace QuantSA.Core.RootFinding
             {
                 point[col] += shift;
                 objective.EvaluateAt(point);
+                var allZero = true;
                 for (var row = 0; row < jacobian.RowCount; row++)
+                {
                     jacobian[row, col] = (objective.Value[row] - baseValues[row]) / shift;
-
+                    if (allZero && Math.Abs(jacobian[row, col]) > 1e-12) allZero = false;
+                }
+                if (allZero)
+                    throw new ArgumentException($"instrument at position {col} has no sensitivity to any inputs.");
                 point[col] -= shift;
             }
         }

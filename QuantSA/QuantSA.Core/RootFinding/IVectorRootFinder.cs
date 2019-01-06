@@ -4,7 +4,7 @@ using QuantSA.Core.Optimization;
 namespace QuantSA.Core.RootFinding
 {
     /// <summary>
-    /// Find the root of a vector valued function.
+    /// Find the root of a vector valued function, mutates the provided <see cref="IObjectiveVectorFunction"/>.
     /// </summary>
     public interface IVectorRootFinder
     {

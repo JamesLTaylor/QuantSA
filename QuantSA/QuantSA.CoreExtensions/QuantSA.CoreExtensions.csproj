@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
@@ -52,13 +55,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Curves\FixedFloatSwapCurveInstrument.cs" />
+    <Compile Include="Curves\Instruments\FixedFloatSwapCurveInstrument.cs" />
     <Compile Include="Curves\FloatingRateSourceFromDiscountCalibrator.cs" />
-    <Compile Include="Curves\BasisSwapCurveInstrument.cs" />
-    <Compile Include="Curves\FRACurveInstrument.cs" />
-    <Compile Include="Curves\DepoCurveInstrument.cs" />
+    <Compile Include="Curves\Instruments\BasisSwapCurveInstrument.cs" />
+    <Compile Include="Curves\Instruments\FRACurveInstrument.cs" />
+    <Compile Include="Curves\Instruments\DepoCurveInstrument.cs" />
+    <Compile Include="Curves\InitialValueCollector.cs" />
     <Compile Include="Curves\IRateCurveInstrument.cs" />
     <Compile Include="Curves\RateCurveCalibrator.cs" />
+    <Compile Include="Curves\TwoCurveObjectiveFunction.cs" />
     <Compile Include="Data\SharedData.cs" />
     <Compile Include="ProductPVs\Rates\FloatLegPVs.cs" />
     <Compile Include="Products\Rates\SwapFactory.cs" />

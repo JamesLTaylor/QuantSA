@@ -32,6 +32,14 @@ namespace QuantSA.Shared.MarketData
         bool CanBeA<T>(MarketDataDescription<T> marketDataDescription, IMarketDataContainer marketDataContainer)
             where T : class, IMarketDataSource;
 
+        /// <summary>
+        /// Get a curve that can act uniquely as the requested type. When the <see cref="IMarketDataSource"/> is a
+        /// set of curves then a single one is returned.  When the <see cref="IMarketDataSource"/> is a single
+        /// curve returns itself.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="marketDataDescription"></param>
+        /// <returns></returns>
         T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource;
 
         /// <summary>

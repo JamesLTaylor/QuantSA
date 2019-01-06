@@ -6,6 +6,8 @@ namespace QuantSA.CoreExtensions.Curves
 {
     public interface IRateCurveInstrument
     {
+        string GetName();
+
         void SetCalibrationDate(Date calibrationDate);
 
         /// <summary>

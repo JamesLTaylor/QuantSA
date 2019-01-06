@@ -9,7 +9,7 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 
-namespace QuantSA.CoreExtensions.Curves
+namespace QuantSA.CoreExtensions.Curves.Instruments
 {
     public class FixedFloatSwapCurveInstrument : IRateCurveInstrument
     {
@@ -22,6 +22,7 @@ namespace QuantSA.CoreExtensions.Curves
         private readonly DiscountingSourceDescription _discountCurveDescription;
         private readonly double _fixedRate;
         private readonly FloatRateIndex _index;
+        private readonly string _nameOfCurveToStrip;
         private readonly double _spread;
         private readonly Tenor _tenor;
         private IDiscountingSource _discountCurve;
@@ -30,7 +31,6 @@ namespace QuantSA.CoreExtensions.Curves
 
         private FloatLeg _floatLeg;
         private IFloatingRateSource _forecastCurve;
-        private readonly string _nameOfCurveToStrip;
 
 
         public FixedFloatSwapCurveInstrument(Tenor tenor, FloatRateIndex index, double spread, double fixedRate,
@@ -56,6 +56,11 @@ namespace QuantSA.CoreExtensions.Curves
                 default:
                     throw new ArgumentOutOfRangeException(nameof(curveToStrip), curveToStrip, null);
             }
+        }
+
+        public string GetName()
+        {
+            return $"FixedFloatSwap.{_tenor}.[{_index}]";
         }
 
         public void SetCalibrationDate(Date calibrationDate)

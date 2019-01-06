@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.MarketData;
 using QuantSA.Core.RootFinding;
 using QuantSA.CoreExtensions.Curves;
+using QuantSA.CoreExtensions.Curves.Instruments;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Shared.State;
 using QuantSA.Solution.Test;
 
-namespace ProductExtensionsTest.Curves
+namespace QuantSA.CoreExtensions.Tests.Curves
 {
     [TestClass]
     public class RateCurveCalibratorTests
@@ -18,6 +22,12 @@ namespace ProductExtensionsTest.Curves
         private readonly Currency _zar = TestHelpers.ZAR;
         private readonly FloatRateIndex _jibar3M = TestHelpers.Jibar3M;
         private readonly FloatRateIndex _jibar1D = TestHelpers.Jibar1D;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            QuantSAState.SetLogger(new TestLogger());
+        }
 
         [TestMethod]
         public void RateCurveCalibrator_CanCalibrateSingleCurve()
@@ -34,6 +44,9 @@ namespace ProductExtensionsTest.Curves
             var mdc = new MarketDataContainer();
             mdc.Set(calib);
             calib.TryCalibrate(_calibrationDate, mdc);
+            var testValues = instruments.Select(inst => Math.Abs(inst.Objective()));
+            var maxTestValue = testValues.Max();
+            Assert.AreEqual(0.0, maxTestValue, 1e-8);
         }
 
         [TestMethod]
@@ -60,6 +73,9 @@ namespace ProductExtensionsTest.Curves
             var mdc = new MarketDataContainer();
             mdc.Set(calib);
             calib.TryCalibrate(_calibrationDate, mdc);
+            var testValues = instruments.Select(inst => Math.Abs(inst.Objective()));
+            var maxTestValue = testValues.Max();
+            Assert.AreEqual(0.0, maxTestValue, 1e-8);
         }
     }
 }
