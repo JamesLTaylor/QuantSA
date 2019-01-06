@@ -3,7 +3,7 @@ using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.Shared.MarketData
 {
-    public interface IFloatingRateSource
+    public interface IFloatingRateSource : IMarketDataSource
     {
         /// <summary>
         /// The forward rate that applies on <paramref name="date"/>.

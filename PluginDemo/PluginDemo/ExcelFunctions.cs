@@ -1,6 +1,9 @@
 ﻿using QuantSA.Excel.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
+using QuantSA.Shared.Primitives;
+using QuantSA.Shared.Serialization;
+using QuantSA.Shared.State;
 
 namespace PluginDemo
 {
@@ -28,7 +31,8 @@ namespace PluginDemo
             [QuantSAExcelArgument(Description = "")]
             double rate)
         {
-            return new PluginDiscount(anchorDate, rate);
+            var currency = QuantSAState.SharedData.Get<Currency>("ZAR");
+            return new PluginDiscount(anchorDate, rate, currency);
         }
 
         [QuantSAExcelFunction(Description = "",

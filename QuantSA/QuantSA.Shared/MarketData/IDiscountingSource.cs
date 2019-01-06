@@ -1,17 +1,10 @@
-﻿using QuantSA.General;
-using QuantSA.Shared.Dates;
+﻿using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.MarketData
 {
-    public interface IDiscountingSource
+    public interface IDiscountingSource : IMarketDataSource
     {
-        /// <summary>
-        /// The earliest date after which discount factors can be obtained.
-        /// </summary>
-        /// <returns></returns>
-        Date GetAnchorDate();
-
         /// <summary>
         /// The currency of cashflows for which this curve should be used for discounting.
         /// </summary>

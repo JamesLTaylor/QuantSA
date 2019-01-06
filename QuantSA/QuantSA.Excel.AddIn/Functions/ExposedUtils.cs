@@ -12,7 +12,7 @@ namespace QuantSA.Excel.Addin.Functions
     /// </summary>
     public class ExposedUtils
     {
-        [ExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "",
             Name = "QSA.LatestError",
             Category = "QSA.General",
             IsMacroType = true,
@@ -33,7 +33,7 @@ namespace QuantSA.Excel.Addin.Functions
             return "";
         }
 
-        [ExcelFunction(Description = "",
+        [QuantSAExcelFunction(Description = "",
             Name = "QSA.OpenExampleSheetsDir",
             Category = "QSA.General",
             IsMacroType = true,

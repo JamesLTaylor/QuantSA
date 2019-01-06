@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using QuantSA.Shared.Serialization;
+using QuantSA.Shared.State;
 
 namespace QuantSA.Core.Serialization
 {
@@ -31,7 +32,7 @@ namespace QuantSA.Core.Serialization
             var objWithName = value as ISerializableViaName;
             serializer.Serialize(writer, objWithName.GetName());
             if (!QuantSAState.SharedData.TryGet(value.GetType(), objWithName.GetName(), out _))
-                QuantSAState.SharedData.TempAdd(objWithName);
+                QuantSAState.SharedData.Set(objWithName);
         }
     }
 }

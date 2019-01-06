@@ -1,3 +1,4 @@
 <DnaLibrary Name="QuantSA (v0.3.0-alpha)" RuntimeVersion="v4.0">
-  <ExternalLibrary Path="QuantSA.Excel.Addin.dll" ExplicitExports="true" ExplicitRegistration='true' />  
+  <ExternalLibrary Path="QuantSA.Excel.Addin.dll" ExplicitExports="true" ExplicitRegistration='true' />
+  <Reference Path="ExcelDna.IntelliSense.dll" Pack="false" />
 </DnaLibrary>

@@ -117,6 +117,9 @@
     - title: CreateEquityModel
       url: /CreateEquityModel.html
       output: web, pdf
+    - title: CreateShare
+      url: /CreateShare.html
+      output: web, pdf
   - title: FX
     output: web, pdf
     folderitems:
@@ -155,6 +158,15 @@
       output: web, pdf
     - title: InterpLinear
       url: /InterpLinear.html
+      output: web, pdf
+    - title: LatestError
+      url: /LatestError.html
+      output: web, pdf
+    - title: OpenExampleSheetsDir
+      url: /OpenExampleSheetsDir.html
+      output: web, pdf
+    - title: ShowAbout
+      url: /ShowAbout.html
       output: web, pdf
     - title: ViewObjectPropertyNames
       url: /ViewObjectPropertyNames.html

@@ -1,10 +1,18 @@
-﻿namespace QuantSA.Shared.MarketData
+﻿using QuantSA.Shared.Dates;
+
+namespace QuantSA.Shared.MarketData
 {
     /// <summary>
     /// A collection of <see cref="IMarketDataSource"/>s.
     /// </summary>
-    internal interface IMarketDataContainer
+    public interface IMarketDataContainer
     {
-        IDiscountingSource GetDiscountingSource(IDiscountingDescription description);
+        bool Contains<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource;
+
+        T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource;
+
+        void Set(IMarketDataSource curve);
+
+        void Calibrate(Date calibrationDate);
     }
 }

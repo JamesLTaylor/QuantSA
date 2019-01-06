@@ -31,11 +31,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,7 +55,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Curves\Instruments\FixedFloatSwapCurveInstrument.cs" />
+    <Compile Include="Curves\FloatingRateSourceFromDiscountCalibrator.cs" />
+    <Compile Include="Curves\Instruments\BasisSwapCurveInstrument.cs" />
+    <Compile Include="Curves\Instruments\FRACurveInstrument.cs" />
+    <Compile Include="Curves\Instruments\DepoCurveInstrument.cs" />
+    <Compile Include="Curves\InitialValueCollector.cs" />
+    <Compile Include="Curves\IRateCurveInstrument.cs" />
+    <Compile Include="Curves\RateCurveCalibrator.cs" />
+    <Compile Include="Curves\TwoCurveObjectiveFunction.cs" />
     <Compile Include="Data\SharedData.cs" />
+    <Compile Include="ProductPVs\Rates\FloatLegPVs.cs" />
     <Compile Include="Products\Rates\SwapFactory.cs" />
     <Compile Include="SAMarket\BesaJseBondEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

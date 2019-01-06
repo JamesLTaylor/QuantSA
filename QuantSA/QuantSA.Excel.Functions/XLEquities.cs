@@ -4,6 +4,8 @@ using QuantSA.Excel.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Shared.Primitives;
+using QuantSA.Shared.State;
 using QuantSA.Valuation.Models.Equity;
 
 namespace QuantSA.ExcelFunctions
@@ -42,6 +44,22 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "Strike")]double strike)
         {
             return new EuropeanOption(share, strike, exerciseDate);
+        }
+        
+        [QuantSAExcelFunction(Description = "Create a share object that can be used by products and models and add it to the static data for QuantSA. Acts like " +
+                                            "the static data files that add currencies.",
+            Name = "QSA.CreateShare",
+            HasGeneratedVersion = true,
+            Category = "QSA.Equities",
+            ExampleSheet = "EquityValuation.xlsx",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/CreateShare.html")]
+        public static string CreateShare([QuantSAExcelArgument]string shareCode,
+            [QuantSAExcelArgument]Currency currency)
+        {
+            var share = new Share(shareCode, currency);
+            QuantSAState.SharedData.Set(share);
+            return share.GetName();
         }
     }
 }

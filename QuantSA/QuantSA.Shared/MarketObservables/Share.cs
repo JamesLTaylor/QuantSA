@@ -11,7 +11,7 @@ namespace QuantSA.Shared.MarketObservables
         {
             this.shareCode = shareCode;
             this.currency = currency;
-            toString = "SHARE:PRICE:" + currency + ":" + shareCode;
+            toString = "SHARE:" + currency + ":" + shareCode;
         }
 
         public Currency currency { get; }

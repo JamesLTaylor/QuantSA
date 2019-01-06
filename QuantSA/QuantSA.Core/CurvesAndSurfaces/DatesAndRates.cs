@@ -4,13 +4,14 @@ using MathNet.Numerics.Interpolation;
 using Newtonsoft.Json;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Exceptions;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Core.CurvesAndSurfaces
 {
     /// <summary>
-    /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get 
+    /// A collection of dates and rates for interpolating.  The rates can be used as continuously compounded rates to get
     /// discount factors or interpolated directly.
     /// </summary>
     public class DatesAndRates : IDiscountingSource, ICurve
@@ -21,7 +22,7 @@ namespace QuantSA.Core.CurvesAndSurfaces
         private readonly Currency _currency;
         private readonly Date[] _dates;
         private readonly Date _maximumDate;
-        private readonly double[] _rates;
+        private double[] _rates;
 
         [JsonIgnore] private LinearSpline _spline;
 
@@ -30,13 +31,20 @@ namespace QuantSA.Core.CurvesAndSurfaces
         }
 
         /// <summary>
-        /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates until maximumDate
+        /// Creates a curve.  The curve will be flat from the anchor date to the first date and from the last date in dates
+        /// until maximumDate
         /// </summary>
         /// <param name="currency"></param>
         /// <param name="anchorDate">Date from which the curve applies.  Interpolation before this date won't work.</param>
         /// <param name="dates">Must be sorted in increasing order.</param>
-        /// <param name="rates">The rates.  If the curve is going to be used to supply discount factors then these rates must be continuously compounded.</param>
-        /// <param name="maximumDate">The date beyond which interpolation will not be allowed.  If it is null or left out then the last date in dates will be used.</param>
+        /// <param name="rates">
+        /// The rates.  If the curve is going to be used to supply discount factors then these rates must be
+        /// continuously compounded.
+        /// </param>
+        /// <param name="maximumDate">
+        /// The date beyond which interpolation will not be allowed.  If it is null or left out then the
+        /// last date in dates will be used.
+        /// </param>
         public DatesAndRates(Currency currency, Date anchorDate, Date[] dates, double[] rates, Date maximumDate = null)
         {
             _currency = currency ?? throw new ArgumentNullException(nameof(currency));
@@ -44,6 +52,15 @@ namespace QuantSA.Core.CurvesAndSurfaces
             _dates = dates ?? throw new ArgumentNullException(nameof(dates));
             _rates = rates ?? throw new ArgumentNullException(nameof(rates));
             _maximumDate = maximumDate;
+            var sortedDates = _dates.Distinct().ToList();
+            sortedDates.Sort();
+            if (sortedDates.Count!=_dates.Length)
+                throw new ArgumentException("Dates must be unique and increasing.");
+            for (int i = 0; i < sortedDates.Count; i++)
+            {
+                if (_dates[i]!=sortedDates[i])
+                    throw new ArgumentException("Dates must be unique and increasing.");
+            }
         }
 
         [JsonIgnore]
@@ -61,7 +78,7 @@ namespace QuantSA.Core.CurvesAndSurfaces
         /// Interpolate the curve.
         /// </summary>
         /// <param name="date">The date at which the rate is required.</param>
-        /// <exception cref="ArgumentException">If <paramref name="date"/> is not in the range of the curve.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="date" /> is not in the range of the curve.</exception>
         /// <returns></returns>
         public double InterpAtDate(Date date)
         {
@@ -75,18 +92,17 @@ namespace QuantSA.Core.CurvesAndSurfaces
             return Spline.Interpolate(date);
         }
 
-        public Date GetAnchorDate()
-        {
-            return _anchorDate;
-        }
-
         /// <summary>
         /// Get a discount factor assuming the rates are continuously compounded and the daycount in actual/365
         /// </summary>
-        /// <param name="date">The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to this date.</param>
+        /// <param name="date">
+        /// The date at which the discount factor (DF) is required.  The DF will apply from the anchor date to
+        /// this date.
+        /// </param>
         /// <returns></returns>
         public double GetDF(Date date)
         {
+            if (date == _anchorDate) return 1.0;
             var rate = InterpAtDate(date);
             var df = Math.Exp(-rate * (date - _anchorDate) / 365.0);
             return df;
@@ -95,6 +111,39 @@ namespace QuantSA.Core.CurvesAndSurfaces
         public Currency GetCurrency()
         {
             return _currency;
+        }
+
+        public Date GetAnchorDate()
+        {
+            return _anchorDate;
+        }
+
+        public string GetName()
+        {
+            return new DiscountingSourceDescription(_currency).Name;
+        }
+
+        public bool CanBeA<T>(MarketDataDescription<T> marketDataDescription, IMarketDataContainer marketDataContainer)
+            where T : class, IMarketDataSource
+        {
+            return marketDataDescription.Name == new DiscountingSourceDescription(_currency).Name;
+        }
+
+        public T Get<T>(MarketDataDescription<T> marketDataDescription) where T : class, IMarketDataSource
+        {
+            if (marketDataDescription.Name == new DiscountingSourceDescription(_currency).Name) return this as T;
+            throw new MissingMarketDataException($"{GetName()} cannot be used as {marketDataDescription.Name}");
+        }
+
+        public bool TryCalibrate(Date calibrationDate, IMarketDataContainer marketDataContainer)
+        {
+            return true;
+        }
+
+        public void Mutate(double[] rates)
+        {
+            _rates = rates;
+            _spline = null;
         }
     }
 }

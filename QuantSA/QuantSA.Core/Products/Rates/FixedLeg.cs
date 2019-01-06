@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using System.Linq;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -25,14 +24,15 @@ namespace QuantSA.General
         {
         }
 
-        public FixedLeg(Currency ccy, Date[] paymentDates, double[] notionals, double[] rates,
-            double[] accrualFractions)
+        public FixedLeg(Currency ccy, IEnumerable<Date> paymentDates, IEnumerable<double> notionals,
+            IEnumerable<double> rates,
+            IEnumerable<double> accrualFractions)
         {
             this.ccy = ccy;
-            this.paymentDates = paymentDates;
-            this.notionals = notionals;
-            this.rates = rates;
-            this.accrualFractions = accrualFractions;
+            this.paymentDates = paymentDates.ToArray();
+            this.notionals = notionals.ToArray();
+            this.rates = rates.ToArray();
+            this.accrualFractions = accrualFractions.ToArray();
         }
 
         public override List<Cashflow> GetCFs()

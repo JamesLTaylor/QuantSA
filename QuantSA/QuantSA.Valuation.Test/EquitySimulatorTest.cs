@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Formulae;
+using QuantSA.Core.MarketData;
 using QuantSA.Core.Products;
 using QuantSA.General;
 using QuantSA.General.Formulae;
@@ -112,7 +113,7 @@ namespace ValuationTest
             rateForecastCurves = new List<IFloatingRateSource>
             {
                 new ForecastCurveFromDiscount(discountCurve, TestHelpers.Jibar3M,
-                    new FloatingRateFixingCurve1Rate(0.07, TestHelpers.Jibar3M))
+                    new FloatingRateFixingCurve1Rate(anchorDate,0.07, TestHelpers.Jibar3M))
             }.ToArray();
         }
 

@@ -5,10 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ExcelDna.Integration;
+using log4net;
 using QuantSA.Excel;
+using QuantSA.Excel.Addin.Config;
 using QuantSA.Excel.Addin.Functions;
 using QuantSA.Excel.Shared;
 using QuantSA.ExcelFunctions;
+using QuantSA.Shared.State;
 using StaticData = QuantSA.Excel.Addin.Config.StaticData;
 
 /// <summary>
@@ -28,33 +31,45 @@ public class AddIn : IExcelAddIn
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
         "\\QuantSA\\functions_user.csv"; // user editable to control which function appear
 
+    private ILog _log;
+
     // Called when addin opens
     public void AutoOpen()
     {
         try
         {
+            QuantSAState.SetLogger(new ExcelFileLogFactory());
+            ExcelDna.IntelliSense.IntelliSenseServer.Install();
+            _log = QuantSAState.LogFactory.Get(MethodBase.GetCurrentMethod().DeclaringType);
+            
             var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "QuantSA");
             if (!Directory.Exists(pathString)) Directory.CreateDirectory(pathString);
             //TODO: Check if newer version of addin exists.
 
+            _log.Info("Loading static data");
             StaticData.Load();
 
+            _log.Info("Check custom function visibility");
             // Get the functions that are set for the user.
             var funcsInUserFile = GetFunctionVisibility(FunctionsFilenameUser);
             
             //Check in the installation folder for any dlls that include a class of type IQuantSAPlugin
             AssemblyImageResources = new Dictionary<string, Bitmap>();
+            _log.Info("Check for plugins");
             GetPlugins();
             var assemblies = new[]
             {
                 Assembly.GetAssembly(typeof(XLEquities)),
                 Assembly.GetAssembly(typeof(AddIn))
             };
+            _log.Info("Add converters");
             foreach (var tuple in Plugins)
                 ExcelTypeConverter.AddConvertersFrom(tuple.Item2);
             foreach (var assembly in assemblies)
                 ExcelTypeConverter.AddConvertersFrom(assembly);
+
+            _log.Info("Register user functions");
             foreach (var tuple in Plugins)
                 FunctionRegistration.RegisterFrom(tuple.Item2, tuple.Item1.GetShortName(), funcsInUserFile);
             foreach (var assembly in assemblies)
@@ -63,6 +78,7 @@ public class AddIn : IExcelAddIn
         }
         catch (Exception e)
         {
+            _log.Error(e);
             var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "QuantSA");
             var fileName = Path.Combine(pathString, "QuantSAError.txt");
@@ -75,6 +91,7 @@ public class AddIn : IExcelAddIn
 
     public void AutoClose()
     {
+        ExcelDna.IntelliSense.IntelliSenseServer.Uninstall();
     }
 
     /// <summary>

@@ -45,8 +45,8 @@
     <Reference Include="Accord.Statistics, Version=3.2.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.Statistics.3.2.0\lib\net45\Accord.Statistics.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.3.13.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -54,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -78,8 +79,14 @@
     <Compile Include="MarketData\ForecastCurveFromDiscount.cs" />
     <Compile Include="MarketData\FXForecastCurve.cs" />
     <Compile Include="MarketData\HazardCurve.cs" />
-    <Compile Include="MarketData\ShiftedDiscountSource.cs" />
+    <Compile Include="MarketData\MarketDataContainer.cs" />
     <Compile Include="MarketData\SingleRate.cs" />
+    <Compile Include="Optimization\VectorMinimizationResult.cs" />
+    <Compile Include="Optimization\IObjectiveVectorFunction.cs" />
+    <Compile Include="RootFinding\BroydenWrapper.cs" />
+    <Compile Include="RootFinding\FunctionEvaluator.cs" />
+    <Compile Include="RootFinding\IVectorRootFinder.cs" />
+    <Compile Include="RootFinding\MultiDimNewton.cs" />
     <Compile Include="Primitives\CashflowEx.cs" />
     <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
     <Compile Include="Primitives\Product.cs" />

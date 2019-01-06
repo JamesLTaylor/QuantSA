@@ -5,7 +5,7 @@ using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Solution.Test;
 
-namespace ProductExtensionsTest.SAMarket
+namespace QuantSA.CoreExtensions.Tests.SAMarket
 {
     [TestClass]
     public class BesaJseBondTest

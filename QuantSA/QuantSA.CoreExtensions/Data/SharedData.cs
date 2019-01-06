@@ -19,11 +19,6 @@ namespace QuantSA.ProductExtensions.Data
             return dictForType.TryGetValue(name, out serializableViaName);
         }
 
-        public void TempAdd(ISerializableViaName serializableViaName)
-        {
-            Set(serializableViaName);
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -56,9 +51,9 @@ namespace QuantSA.ProductExtensions.Data
                 _typeNameAndInstances[instance.GetType()] = dictForType;
             }
 
-            if (dictForType.ContainsKey(instance.GetName()))
-                throw new ArgumentException(
-                    $"Shared instance of {instance.GetType().Name} with name {instance.GetName()} has already been set.");
+            //if (dictForType.ContainsKey(instance.GetName()))
+            //    throw new ArgumentException(
+            //        $"Shared instance of {instance.GetType().Name} with name {instance.GetName()} has already been set.");
             dictForType[instance.GetName()] = instance;
         }
     }
