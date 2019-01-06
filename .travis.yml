@@ -7,6 +7,8 @@ before_install:
 - npm install gulp
 - npm install --global gulp-cli
 - npm install vinyl-ftp gulp-util minimist
+- rvm use 1.9.3
+- gem install bundler 
 - cd ./Documentation
 install:
 - bundle install
