@@ -12,7 +12,7 @@ folder: home
 # Mechanics
 
  * The dlls are versioned by the contents of `./QuantSA/AssemblyInfoAll.cs`.
- * The version displayed alongside the Excel add-in is the string in `./QuantSA/ExcelAddin/QuantSA.dna`.
+ * The version displayed alongside the Excel add-in is the string in `./QuantSA/QuantSA.Excel.AddIn/QuantSA.dna`.
  * The version displayed in the help pages is in `./Documentation/_config.yml`
 
 Once a build is released these files will be updated to the next target version in the repo and all development in the master branch will be towards
