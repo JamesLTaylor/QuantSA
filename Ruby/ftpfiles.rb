@@ -8,13 +8,12 @@ puts "Starting"
 username = ARGV[0]
 password = ARGV[1]
 
-ftp = Net::FTP.new(host='quantsa.org', username = username, password=password)
-ftp.passive = true
+ftp = Net::FTP.new(host='quantsa.org', username = username, password=password, passive=true)
 ftp.chdir('public_html')
 files = Dir.glob("../Documentation/_site/*.*")
 for f in files    
     puts "putting #{f}"
-    ftp.puttextfile(f)
+    #ftp.puttextfile(f)
 end
 ftp.close
 
