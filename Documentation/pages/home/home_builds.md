@@ -2,7 +2,7 @@
 title: Automated builds
 summary: The QuantSA automated builds and release process.
 keywords: 
-last_updated: December 26, 2016
+last_updated: January 10, 2018
 tags: developers
 sidebar: home_sidebar
 permalink: home_builds.html
