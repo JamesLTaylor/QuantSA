@@ -13,7 +13,7 @@ ftp.chdir('public_html')
 files = Dir.glob("../Documentation/_site/*.*")
 for f in files    
     puts "putting #{f}"
-    ftp.puttextfile(f)
+    #ftp.puttextfile(f)
 end
 ftp.close
 
