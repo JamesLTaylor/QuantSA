@@ -17,8 +17,8 @@ script:
 - rm ./_site/tocpage/index.html
 - bundle exec htmlproofer ./_site --allow-hash-href --disable-external
 after_success:
-- cd ..
-- gulp deploy --user $FTP_USER --password $FTP_PWD
+- cd ../ruby/
+- ruby ftpfiles.rb $FTP_USER $FTP_PWD
 env:
   global:
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
