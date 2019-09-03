@@ -126,8 +126,7 @@ namespace ValuationTest
             Assert.AreEqual(1555002, epe[0], 5000);
             Assert.AreEqual(2170370, epe[87], 5000);
             Assert.AreEqual(0, epe[155], 5);
-
-            //Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_singlethread_10000.csv", epe);
+            //QuantSA.Shared.Debug.Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_singlethread_10000.csv", epe);
         }
     }
 }
