@@ -26,13 +26,4 @@ namespace QuantSA.General
             return 0.0;
         }
     }
-
-    public class Stripper
-    {
-        public static void ZARSwapCurve(double jibar, string[] fraDescriptions, double[] fraRates, int[] swapTenors,
-            double[] swapRates)
-        {
-            // Create FRAs and swaps
-        }
-    }
 }

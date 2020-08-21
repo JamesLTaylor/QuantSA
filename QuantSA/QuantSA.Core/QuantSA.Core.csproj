@@ -1,137 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{65DA30BB-96AD-40A3-BB56-FEB27738C75A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuantSA.Core</RootNamespace>
-    <AssemblyName>QuantSA.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Accord, Version=3.2.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.3.2.0\lib\net45\Accord.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math, Version=3.2.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Math.3.2.0\lib\net45\Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Math.3.2.0\lib\net45\Accord.Math.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics, Version=3.2.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Statistics.3.2.0\lib\net45\Accord.Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Accord.Statistics" Version="3.8.0" />
+    <PackageReference Include="MathNet.Numerics" Version="4.12.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.CodeDom" Version="4.7.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="CurvesAndSurfaces\DatesAndRates.cs" />
-    <Compile Include="CurvesAndSurfaces\CurveEx.cs" />
-    <Compile Include="CurvesAndSurfaces\InterpolatedCurve.cs" />
-    <Compile Include="CurvesAndSurfaces\NelsonSiegel.cs" />
-    <Compile Include="CurveTools\PCACurveSimulator.cs" />
-    <Compile Include="CurveTools\ZARSwapCurveStripper.cs" />
-    <Compile Include="DataAnalysis\PCA.cs" />
-    <Compile Include="Dates\DateExtensions.cs" />
-    <Compile Include="Dates\DateGenerators.cs" />
-    <Compile Include="Formulae\BlackEtc.cs" />
-    <Compile Include="Formulae\JSEBondPrice.cs" />
-    <Compile Include="MarketData\FloatingRateFixingCurve1Rate.cs" />
-    <Compile Include="MarketData\ForecastCurve.cs" />
-    <Compile Include="MarketData\ForecastCurveFromDiscount.cs" />
-    <Compile Include="MarketData\FXForecastCurve.cs" />
-    <Compile Include="MarketData\HazardCurve.cs" />
-    <Compile Include="MarketData\MarketDataContainer.cs" />
-    <Compile Include="MarketData\SingleRate.cs" />
-    <Compile Include="Optimization\VectorMinimizationResult.cs" />
-    <Compile Include="Optimization\IObjectiveVectorFunction.cs" />
-    <Compile Include="RootFinding\BroydenWrapper.cs" />
-    <Compile Include="RootFinding\FunctionEvaluator.cs" />
-    <Compile Include="RootFinding\IVectorRootFinder.cs" />
-    <Compile Include="RootFinding\MultiDimNewton.cs" />
-    <Compile Include="Primitives\CashflowEx.cs" />
-    <Compile Include="Primitives\ProductWithEarlyExercise.cs" />
-    <Compile Include="Primitives\Product.cs" />
-    <Compile Include="Primitives\ProductEx.cs" />
-    <Compile Include="Products\Credit\CDS.cs" />
-    <Compile Include="Products\Equity\EuropeanOption.cs" />
-    <Compile Include="Products\FX\CCIRS.cs" />
-    <Compile Include="Products\ProductWrapper.cs" />
-    <Compile Include="Products\Rates\BermudanSwaption.cs" />
-    <Compile Include="Products\Rates\CallableBond.cs" />
-    <Compile Include="Products\Rates\CashLeg.cs" />
-    <Compile Include="Products\Rates\FixedLeg.cs" />
-    <Compile Include="Products\Rates\FloatLeg.cs" />
-    <Compile Include="Products\Rates\FRA.cs" />
-    <Compile Include="Products\Rates\GeneralSwap.cs" />
-    <Compile Include="Products\Rates\IRSwap.cs" />
-    <Compile Include="Products\Rates\LoanFixedRate.cs" />
-    <Compile Include="Products\Rates\LoanFloatingRate.cs" />
-    <Compile Include="Products\RuntimeProduct.cs" />
-    <Compile Include="Products\SAMarket\BesaJseBond.cs" />
-    <Compile Include="Products\Swap.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\AllFieldsContractResolver.cs" />
-    <Compile Include="Serialization\Cloner.cs" />
-    <Compile Include="Serialization\DateConverter.cs" />
-    <Compile Include="Serialization\NameSerializer.cs" />
-    <Compile Include="Serialization\Reflector.cs" />
-    <Compile Include="Serialization\TenorConverter.cs" />
+    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
-      <Project>{ee53e241-c329-4d56-965a-f6e2bb1fce50}</Project>
-      <Name>QuantSA.Shared</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Accord.3.2.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.2.0\build\Accord.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Accord.3.2.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.2.0\build\Accord.targets'))" />
-  </Target>
+
 </Project>
