@@ -62,9 +62,9 @@ namespace ValuationTest
             var meanJibar = fwdSpotValues.GetColumn(2).Mean();
             var meanLibor = fwdSpotValues.GetColumn(3).Mean();
             var meanEuribor = fwdSpotValues.GetColumn(4).Mean();
-            Assert.AreEqual(15.7, meanUSDZAR, 0.1);
+            Assert.AreEqual(15.0, meanUSDZAR, 0.1);
             Assert.AreEqual(17.2, meanEURZAR, 0.1);
-            Assert.AreEqual(0.071, meanJibar, 1e-4);
+            Assert.AreEqual(0.07, meanJibar, 2e-3);
             Assert.AreEqual(0.01, meanLibor, 1e-4);
             Assert.AreEqual(0.005, meanEuribor, 1e-4);
         }
@@ -123,8 +123,8 @@ namespace ValuationTest
             var coord = new Coordinator(model, new List<Simulator>(), 1000);
             //coord.SetThreadedness(false);
             var epe = coord.EPE(portfolio.ToArray(), valueDate, fwdValueDates);
-            Assert.AreEqual(1555002, epe[0], 5000);
-            Assert.AreEqual(2170370, epe[87], 5000);
+            Assert.AreEqual(1489695, epe[0], 5000);
+            Assert.AreEqual(2194183, epe[87], 5000);
             Assert.AreEqual(0, epe[155], 5);
             //QuantSA.Shared.Debug.Debug.WriteToFile("c:\\dev\\quantsa\\temp\\epeTest_singlethread_10000.csv", epe);
         }

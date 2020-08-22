@@ -16,7 +16,7 @@ namespace QuantSA.Valuation.Models.CreditFX
     /// <para/>
     /// Regression variables are FX, defaultedFlag (0,1), 1 year default probability
     /// </summary>
-    /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
+    /// <seealso cref="NumeraireSimulator" />
     public class DeterministicCreditWithFXJump : NumeraireSimulator
     {
         private readonly MarketObservable _currencyPair;
@@ -30,6 +30,8 @@ namespace QuantSA.Valuation.Models.CreditFX
         [JsonIgnore] private Date _anchorDate;
         [JsonIgnore] private double _simDefaultTime;
         [JsonIgnore] private Dictionary<int, double> _simulation; // stores the simulated share prices at each required date
+        [JsonIgnore] private NormalDistribution _normal;
+        [JsonIgnore] private UniformContinuousDistribution _uniform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterministicCreditWithFXJump"/> class.
@@ -135,6 +137,9 @@ namespace QuantSA.Valuation.Models.CreditFX
             _anchorDate = anchorDate;
             _allRequiredDates = _allRequiredDates.Distinct().ToList();
             _allRequiredDates.Sort();
+            _normal = new NormalDistribution();
+            _uniform = new UniformContinuousDistribution();
+            Generator.Seed = -533776581; // This magic number is: "DeterministicCreditWithFXJump".GetHashCode();
         }
 
         /// <summary>
@@ -149,14 +154,11 @@ namespace QuantSA.Valuation.Models.CreditFX
             var oldFxFwd = spot;
             double newFXfwd;
 
-            // Simulate the default
-            var normal = new NormalDistribution();
-            var uniform = new UniformContinuousDistribution();
+
             var hazEst = _survivalProbSource.GetSP(_survivalProbSource.getAnchorDate().AddTenor(Tenor.FromYears(1)));
             hazEst = -Math.Log(hazEst);
-            Generator.Seed =
-                -533776581 * simNumber; // This magic number is: "DeterministicCreditWithFXJump".GetHashCode();
-            var tau = uniform.Generate();
+            // Simulate the default
+            var tau = _uniform.Generate();
             tau = Math.Log(tau) / -hazEst;
             _simDefaultTime = _anchorDate.value + tau * 365;
 
@@ -169,7 +171,7 @@ namespace QuantSA.Valuation.Models.CreditFX
 
                 dt = dt / 365.0;
                 var sdt = Math.Sqrt(dt);
-                var dW = normal.Generate();
+                var dW = _normal.Generate();
                 // TODO: drift needs to be adjusted for default rate * jump size
                 simRate = simRate * newFXfwd / oldFxFwd * Math.Exp(-0.5 * _fxVol * _fxVol * dt + _fxVol * sdt * dW);
                 if (_simDefaultTime < _allRequiredDates[timeCounter])

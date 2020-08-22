@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
 using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 

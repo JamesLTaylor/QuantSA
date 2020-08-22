@@ -50,7 +50,7 @@ namespace QuantSA.Core.MarketData
                 throw new ArgumentException(
                     "Survival probabilities are only defined from the anchor date of the curve.");
             var rate = Tools.Interpolate1D(date.value, _dates.GetValues(), _hazardRates, _hazardRates[0],
-                _hazardRates[_hazardRates.Length() - 1]);
+                _hazardRates[_hazardRates.Length - 1]);
             return Math.Exp(-rate * (date - anchorDate) / 365.0);
         }
     }

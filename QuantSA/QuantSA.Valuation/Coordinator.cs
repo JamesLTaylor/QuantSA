@@ -352,7 +352,7 @@ namespace QuantSA.Valuation
         private void PerformSimulation()
         {
             // Run the simulation in chunks on several threads.
-            if (_useThreads && _numberOfPaths >= 1000)
+            if (_useThreads && _numberOfPaths >= 100000)
             {
                 var simThreads = new Thread[_maxThreads];
                 var simChunkSize = (int) Math.Ceiling(_numberOfPaths / (double) _maxThreads);

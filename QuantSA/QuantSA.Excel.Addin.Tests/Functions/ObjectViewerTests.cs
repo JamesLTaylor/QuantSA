@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Excel.Addin.Functions;
-using QuantSA.Solution.Test;
 
 namespace QuantSA.Excel.Addin.Tests.Functions
 {
@@ -13,7 +12,7 @@ namespace QuantSA.Excel.Addin.Tests.Functions
         [TestInitialize]
         public void SetUp()
         {
-            _swap = TestHelpers.ZARSwap();
+            _swap = ExcelTestHelpers.ZARSwap();
         }
 
         [TestMethod]

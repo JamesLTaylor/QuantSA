@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 
 namespace GeneralTest
@@ -22,6 +21,15 @@ namespace GeneralTest
             var swapRates = new[]{0.0784, 0.0797, 0.0809, 0.0819, 0.0829, 0.0836, 0.0842, 0.0846, 0.0852, 0.0853, 0.0845};
 
             Stripper.ZARSwapCurve(jibar, fraDescriptions, fraRates, swapTenors, swapRates);
+        }
+    }
+
+    public class Stripper
+    {
+        public static void ZARSwapCurve(double jibar, string[] fraDescriptions, double[] fraRates, int[] swapTenors,
+            double[] swapRates)
+        {
+            // Create FRAs and swaps
         }
     }
 }

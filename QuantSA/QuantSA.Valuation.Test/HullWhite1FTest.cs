@@ -46,7 +46,7 @@ namespace ValuationTest
             var discountedFRA = simFwdValues.GetColumn(0).Subtract(impliedFwd);
             discountedFRA = Elementwise.Multiply(discountedFRA, simFwdValues.GetColumn(1));
             var actual = discountedFRA.Mean();
-            Assert.AreEqual(0.0, actual, 1e-4);
+            Assert.AreEqual(0.0, actual, 2e-4);
         }
     }
 }

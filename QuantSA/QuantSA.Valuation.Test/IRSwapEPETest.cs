@@ -46,9 +46,9 @@ namespace ValuationTest
             var epe = coordinator.EPE(new Product[] {swap}, valueDate, fwdValueDates.ToArray());
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
-            Assert.AreEqual(2560, epe[0], 100.0);
-            Assert.AreEqual(6630, epe[90], 100.0);
-            Assert.AreEqual(734, epe[182], 30);
+            Assert.AreEqual(2392, epe[0], 100.0);
+            Assert.AreEqual(6560, epe[90], 100.0);
+            Assert.AreEqual(712, epe[182], 30);
         }
     }
 }

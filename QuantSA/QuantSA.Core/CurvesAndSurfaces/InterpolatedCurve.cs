@@ -1,6 +1,5 @@
 ﻿using System;
 using MathNet.Numerics.Interpolation;
-using QuantSA.General;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 

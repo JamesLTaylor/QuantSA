@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using  System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Excel.Addin.Config;
@@ -22,10 +22,9 @@ namespace QuantSA.Excel.Addin.Tests.TypeConverters
             FunctionRegistration.GetDelegatesAndAttributes(assembly, "QSA", new Dictionary<string, bool>(),
                 ref delegates, ref functionAttributes, ref functionArgumentAttributes);
 
-            ExcelFunction func = null;
             foreach (var d in delegates)
             {
-                func = (ExcelFunction) d.Target;
+                var func = (ExcelFunction) d.Target;
                 if (func.GetName() == functionName)
                     return func;
             }

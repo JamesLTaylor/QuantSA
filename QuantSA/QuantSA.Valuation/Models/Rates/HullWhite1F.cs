@@ -36,6 +36,7 @@ namespace QuantSA.Valuation.Models.Rates
         [JsonIgnore] private MarketForwards fM;
         [JsonIgnore] private MarketBonds PM;
         [JsonIgnore] private double[] r;
+        [JsonIgnore] private NormalDistribution _dist;
 
 
         /// <summary>
@@ -130,13 +131,13 @@ namespace QuantSA.Valuation.Models.Rates
 
             allDates = newDates;
             allDatesDouble = allDates.Select(date => (double) date).ToArray();
+            _dist = new NormalDistribution();
+            Generator.Seed = -1585814591; // This magic number is: "HW1FSimulator".GetHashCode();
         }
 
         public override void RunSimulation(int simNumber)
         {
-            var dist = new NormalDistribution();
-            Generator.Seed = -1585814591 * simNumber; // This magic number is: "HW1FSimulator".GetHashCode();
-            var W = dist.Generate(allDates.Count - 1);
+            var W = _dist.Generate(allDates.Count - 1);
             r = new double[allDates.Count];
             bankAccount = new double[allDates.Count];
             r[0] = r0;

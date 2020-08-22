@@ -1,9 +1,15 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.General
 {
@@ -58,29 +64,15 @@ namespace QuantSA.General
         /// <exception cref="System.Exception">The defined type must derive from QuantSA.General.Product</exception>
         public static Product CreateFromString(string productName, string sourceCode)
         {
-            var codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            var parameters = new CompilerParameters {GenerateInMemory = true};
-            var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            UpdateReferencedAssemblies(parameters, folder);
-
             var expandedSourceCode = Expand(productName, sourceCode);
+            var assembly = RoslynCompile(expandedSourceCode);
 
-            var results = codeProvider.CompileAssemblyFromSource(parameters, expandedSourceCode);
-            ProcessErrors(results);
-
-            var typeName = results.CompiledAssembly.DefinedTypes.First().Name;
-            var productType = results.CompiledAssembly.GetType(typeName);
+            var typeName = assembly.DefinedTypes.First().Name;
+            var productType = assembly.GetType(typeName);
             if (!typeof(Product).IsAssignableFrom(productType))
                 throw new Exception("The defined type must derive from QuantSA.General.Product");
 
             return (Product) Activator.CreateInstance(productType);
-        }
-
-        private static void UpdateReferencedAssemblies(CompilerParameters parameters, string folder)
-        {
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Shared.dll"));
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Core.dll"));
-            parameters.ReferencedAssemblies.Add(Path.Combine(folder, "QuantSA.Valuation.dll"));
         }
 
         /// <summary>
@@ -116,6 +108,69 @@ namespace QuantSA.General
             sb.AppendLine("}");
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Get an assembly that is compiled from <paramref name="codeToCompile"/>.
+        /// 
+        /// Based off https://stackoverflow.com/a/51128354 and
+        /// https://github.com/joelmartinez/dotnet-core-roslyn-sample/blob/master/Program.cs
+        /// </summary>
+        /// <param name="codeToCompile"></param>
+        /// <returns></returns>
+        private static Assembly RoslynCompile(string codeToCompile)
+        {
+            SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);
+
+            string assemblyName = Path.GetRandomFileName();
+            var refPaths = new[] {
+                GetAssemblyByName("System.Private.CoreLib"),
+                GetAssemblyByName("System.Runtime"),
+                GetAssemblyByName("System.Collections"),
+                GetAssemblyByName("QuantSA.Shared"),
+                GetAssemblyByName("QuantSA.Core"),
+                GetAssemblyByName("netstandard")
+            };
+            MetadataReference[] references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();
+
+            CSharpCompilation compilation = CSharpCompilation.Create(
+                assemblyName,
+                new[] { syntaxTree },
+                references,
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+            Assembly assembly = null;
+            using (var ms = new MemoryStream())
+            {
+                EmitResult result = compilation.Emit(ms);
+
+                if (!result.Success)
+                {
+                    IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
+                        diagnostic.IsWarningAsError ||
+                        diagnostic.Severity == DiagnosticSeverity.Error);
+
+                    foreach (Diagnostic diagnostic in failures)
+                    {
+                        Console.Error.WriteLine("\t{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
+                    }
+                }
+                else
+                {
+                    ms.Seek(0, SeekOrigin.Begin);
+                    assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
+                }
+            }
+
+            return assembly;
+        }
+
+        private static string GetAssemblyByName(string name)
+        {
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(a => a.GetName().Name == name);
+            if (assembly == null)
+                throw new FileNotFoundException($"Could not find assembly {name}. Make sure it is loaded.");
+            return assembly.Location;
         }
     }
 }
