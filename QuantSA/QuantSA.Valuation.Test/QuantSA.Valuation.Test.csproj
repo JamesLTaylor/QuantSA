@@ -20,4 +20,10 @@
     <ProjectReference Include="..\QuantSA.Valuation\QuantSA.Valuation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ScriptEuropeanOption.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
