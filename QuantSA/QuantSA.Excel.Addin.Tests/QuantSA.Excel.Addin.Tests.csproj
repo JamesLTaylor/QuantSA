@@ -58,6 +58,7 @@
     <Compile Include="Config\StaticDataTests.cs" />
     <Compile Include="Functions\ObjectViewerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ExcelTestHelpers.cs" />
     <Compile Include="TypeConverters\ConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,10 +85,6 @@
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj">
       <Project>{EE53E241-C329-4D56-965A-F6E2BB1FCE50}</Project>
       <Name>QuantSA.Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuantSA.Solution.Test\QuantSA.Solution.Test.csproj">
-      <Project>{8BFBEAC7-789D-4E15-9965-5129BC7589E5}</Project>
-      <Name>QuantSA.Solution.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

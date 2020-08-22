@@ -59,8 +59,8 @@ namespace ValuationTest
             var zarValue = coord.Value(new[] {cdsZAR}, anchorDate);
             var usdValue = coord.Value(new[] {cdsUSD}, anchorDate);
 
-            Assert.AreEqual(0.0, zarValue, 800.0); // about 2bp
-            Assert.AreEqual(0.0, usdValue, 800.0); // about 2bp            
+            Assert.AreEqual(0.0, zarValue, 1600.0); // about 4bp
+            Assert.AreEqual(0.0, usdValue, 1600.0); // about 4bp            
         }
     }
 }

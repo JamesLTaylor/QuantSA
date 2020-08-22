@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using  System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Excel.Addin.Config;
