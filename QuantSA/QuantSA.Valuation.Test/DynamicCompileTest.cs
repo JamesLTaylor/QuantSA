@@ -88,7 +88,7 @@ double strike = 100.0;
 public override List<Cashflow> GetCFs()
 {
     double amount = Math.Max(0, Get(share, exerciseDate) - strike);
-    return new List<Cashflow> { new Cashflow(exerciseDate, amount, share.currency) };
+    return new List<Cashflow> { new Cashflow(exerciseDate, amount, share.Currency) };
 }";
             // Make a product at runtime
             var runtimeProduct = RuntimeProduct.CreateFromString("MyEuropeanOption", source);

@@ -35,7 +35,7 @@ namespace QuantSA.Core.Products
         private Dictionary<MarketObservable, List<Date>> _indexAndDates;
 
         private Dictionary<MarketObservable, List<double>> _indexAndValues;
-        private Date _valueDate;
+        protected Date valueDate;
 
         protected ProductWrapper()
         {
@@ -47,7 +47,7 @@ namespace QuantSA.Core.Products
         /// <param name="currency"></param>
         protected ProductWrapper(Currency currency)
         {
-            this._currency = currency;
+            _currency = currency;
             _indexAndDates = new Dictionary<MarketObservable, List<Date>>();
             _indexAndValues = new Dictionary<MarketObservable, List<double>>();
             _getIndexValueToUse = GetNormal;
@@ -140,7 +140,7 @@ namespace QuantSA.Core.Products
         /// <param name="cfDates"></param>
         protected void SetCashflowDates(List<Date> cfDates)
         {
-            this._cfDates = cfDates;
+            _cfDates = cfDates;
         }
 
         private delegate double GetIndexValueDelegate(MarketObservable index, Date date);
@@ -180,7 +180,7 @@ namespace QuantSA.Core.Products
 
         public override void SetValueDate(Date valueDate)
         {
-            this._valueDate = valueDate;
+            this.valueDate = valueDate;
         }
 
         #endregion

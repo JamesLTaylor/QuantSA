@@ -33,7 +33,7 @@ namespace QuantSA.CoreExtensions.Test.Curves
         public void RateCurveCalibrator_CanCalibrateSingleCurve()
         {
             var instruments = new List<IRateCurveInstrument>();
-            DiscountingSourceDescription discountCurve = new DiscountingSourceDescription(TestHelpers.ZAR);
+            var discountCurve = new DiscountingSourceDescription(TestHelpers.ZAR);
             instruments.Add(new DepoCurveInstrument(Tenor.FromMonths(1), 0.071, discountCurve));
             instruments.Add(new DepoCurveInstrument(Tenor.FromMonths(3), 0.072, discountCurve));
             instruments.Add(new DepoCurveInstrument(Tenor.FromMonths(6), 0.073, discountCurve));
