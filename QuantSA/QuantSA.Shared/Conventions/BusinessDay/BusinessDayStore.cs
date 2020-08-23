@@ -31,7 +31,7 @@ namespace QuantSA.Shared.Conventions.BusinessDay
         public Date Adjust(Date date, Calendar calendar)
         {
             var newDate = new Date(date);
-            while (!calendar.isBusinessDay(newDate))
+            while (!calendar.IsBusinessDay(newDate))
                 newDate = newDate.AddDays(1);
             return newDate;
         }
@@ -53,7 +53,7 @@ namespace QuantSA.Shared.Conventions.BusinessDay
         public Date Adjust(Date date, Calendar calendar)
         {
             var newDate = new Date(date);
-            while (!calendar.isBusinessDay(newDate))
+            while (!calendar.IsBusinessDay(newDate))
             {
                 newDate = newDate.AddDays(1);
                 if (newDate.Month != date.Month)
@@ -79,7 +79,7 @@ namespace QuantSA.Shared.Conventions.BusinessDay
         public Date Adjust(Date date, Calendar calendar)
         {
             var newDate = new Date(date);
-            while (!calendar.isBusinessDay(newDate)) newDate = newDate.AddDays(-1);
+            while (!calendar.IsBusinessDay(newDate)) newDate = newDate.AddDays(-1);
             return newDate;
         }
     }
@@ -100,7 +100,7 @@ namespace QuantSA.Shared.Conventions.BusinessDay
         public Date Adjust(Date date, Calendar calendar)
         {
             var newDate = new Date(date);
-            while (!calendar.isBusinessDay(newDate))
+            while (!calendar.IsBusinessDay(newDate))
             {
                 newDate = newDate.AddDays(-1);
                 if (newDate.Month != date.Month)

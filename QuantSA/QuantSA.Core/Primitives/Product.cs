@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using QuantSA.Core.Serialization;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Primitives
 {
     public abstract class Product : IProduct
     {
         /// <summary>
         /// The identifier of the product instance.  
         /// </summary>
-        public string id { get; protected set; } = "Not Set";
+        public string ID { get; protected set; } = "Not Set";
 
-        public string type { get; protected set; } = "Not Set";
+        public string Type { get; protected set; } = "Not Set";
 
         /// <summary>
         /// Set the value date of the contract.

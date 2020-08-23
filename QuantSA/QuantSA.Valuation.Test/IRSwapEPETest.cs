@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.Core.Products.Rates;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
-using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class IRSwapEPETest
@@ -43,7 +39,7 @@ namespace ValuationTest
                 date = date.AddTenor(Tenor.FromDays(10));
             }
 
-            var epe = coordinator.EPE(new Product[] {swap}, valueDate, fwdValueDates.ToArray());
+            var epe = coordinator.EPE(new IProduct[] {swap}, valueDate, fwdValueDates.ToArray());
             //Debug.WriteToFile(@"c:\dev\temp\epe_rate08_vol005.csv", epe);
 
             Assert.AreEqual(2392, epe[0], 100.0);

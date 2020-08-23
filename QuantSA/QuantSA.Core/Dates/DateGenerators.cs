@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using QuantSA.General.Conventions.DayCount;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.General.Dates
+namespace QuantSA.Core.Dates
 {
     public static class DateGenerators
     {
@@ -15,6 +15,8 @@ namespace QuantSA.General.Dates
         /// <param name="periodTenor">The period tenor.</param>
         /// <param name="startDate">The start date.</param>
         /// <param name="numberOfDates">The number of dates.</param>
+        /// <param name="paymentDates"></param>
+        /// <param name="accrualFractions"></param>
         /// <returns></returns>
         public static void CreateDatesNoHolidays(Tenor periodTenor, Date startDate, int numberOfDates,
             out Date[] paymentDates, out double[] accrualFractions)
@@ -42,6 +44,9 @@ namespace QuantSA.General.Dates
         /// <param name="startDate">The start date.</param>
         /// <param name="endTenor"></param>
         /// <param name="periodTenor">The period tenor.</param>
+        /// <param name="resetDates"></param>
+        /// <param name="paymentDates"></param>
+        /// <param name="accrualFractions"></param>
         /// <returns></returns>
         public static void CreateDatesNoHolidays(Date startDate, Tenor endTenor, Tenor periodTenor,
             out List<Date> resetDates, out List<Date> paymentDates, out List<double> accrualFractions)

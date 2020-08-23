@@ -2,7 +2,7 @@
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 
-namespace QuantSA.General
+namespace QuantSA.Core.MarketData
 {
     /// <summary>
     /// Provides fixes for the past at a single rate.  This should only be used an an expediency, rather use

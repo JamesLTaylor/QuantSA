@@ -1,6 +1,6 @@
 ﻿using System;
-using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Conventions.Compounding;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Exceptions;
 using QuantSA.Shared.MarketData;

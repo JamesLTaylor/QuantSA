@@ -1,4 +1,5 @@
-﻿using QuantSA.General;
+﻿using QuantSA.Core.Primitives;
+using QuantSA.Core.Products.Equity;
 using QuantSA.Valuation;
 using QuantSA.Excel.Shared;
 using QuantSA.Shared.Dates;

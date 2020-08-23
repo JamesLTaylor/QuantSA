@@ -74,7 +74,7 @@ namespace QuantSA.Valuation.Models.Equity
             if (index is Dividend)
             {
                 var result = Vector.Zeros(requiredTimes.Count);
-                var shareIndex = _shares.IndexOf(((Dividend) index).underlying);
+                var shareIndex = _shares.IndexOf(((Dividend) index).Underlying);
                 var divCounter = 0;
                 foreach (int dateInt in _allRequiredDates)
                 {
@@ -119,7 +119,7 @@ namespace QuantSA.Valuation.Models.Equity
 
             var divIndex = index as Dividend;
             if (divIndex != null)
-                return _shares.Contains(divIndex.underlying);
+                return _shares.Contains(divIndex.Underlying);
             return false;
         }
 

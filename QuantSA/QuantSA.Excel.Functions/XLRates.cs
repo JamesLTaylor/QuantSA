@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ExcelDna.Integration;
 using QuantSA.Core.MarketData;
+using QuantSA.Core.Primitives;
 using QuantSA.Core.Products.Rates;
 using QuantSA.CoreExtensions.Products.Rates;
 using QuantSA.Excel.Shared;
-using QuantSA.General;
 using QuantSA.Shared.Conventions.Compounding;
 using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
@@ -204,7 +204,7 @@ namespace QuantSA.ExcelFunctions
             //Set up the valuation engine.
             IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(curve, index,
                 new FloatingRateFixingCurve1Rate(valueDate, rate, index));
-            var curveSim = new DeterminsiticCurves(curve);
+            var curveSim = new DeterministicCurves(curve);
             curveSim.AddRateForecast(forecastCurve);
             var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
 

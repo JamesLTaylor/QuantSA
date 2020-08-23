@@ -5,15 +5,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Formulae;
 using QuantSA.Core.MarketData;
-using QuantSA.General;
+using QuantSA.Core.Primitives;
+using QuantSA.Core.Products;
+using QuantSA.Core.Products.Equity;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
+using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     /// <summary>
     /// Tests the compiling of a product at runtime.
@@ -150,7 +152,7 @@ public override List<Cashflow> GetCFs()
             double[] rates = {0.07, 0.07};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, dates, rates);
             IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
-            var curveSim = new DeterminsiticCurves(discountCurve);
+            var curveSim = new DeterministicCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
 
             // Run the valuation

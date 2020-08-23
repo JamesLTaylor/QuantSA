@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
-namespace GeneralTest.Conventions.DayCount
+namespace QuantSA.Shared.Test.Conventions.DayCount
 {
     [TestClass]
     public class DayCountTests

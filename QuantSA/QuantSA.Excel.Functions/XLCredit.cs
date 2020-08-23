@@ -1,12 +1,11 @@
 ﻿using System;
 using QuantSA.Core.MarketData;
+using QuantSA.Core.Products.Credit;
 using QuantSA.Excel.Shared;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.CreditFX;
 
 namespace QuantSA.ExcelFunctions
@@ -74,7 +73,7 @@ namespace QuantSA.ExcelFunctions
         public static DeterministicCreditWithFXJump CreateModelDeterministicCreditWithFXJump(
             [QuantSAExcelArgument(Description =
                 "A curve that provides survival probabilities.  Usually a hazard curve.")]
-            ISurvivalProbabilitySource survivalProbSource,
+            SurvivalProbabilitySource survivalProbSource,
             [QuantSAExcelArgument(Description =
                 "The currency pair to be simulated.  It should have the value currency as its counter currency.")]
             CurrencyPair currencyPair,
@@ -134,7 +133,7 @@ namespace QuantSA.ExcelFunctions
             HelpTopic = "http://www.quantsa.org/GetSurvivalProb.html")]
         public static double GetSurvivalProb(
             [QuantSAExcelArgument(Description = "The hazard rate curve or other source of default probabilities.")]
-            ISurvivalProbabilitySource survivalProbabilitySource,
+            SurvivalProbabilitySource survivalProbabilitySource,
             [QuantSAExcelArgument(Description =
                 "If date2 is omitted the date until which survival is calculated.  If date2 is provided the date from which survival is calculated.")]
             Date date1,

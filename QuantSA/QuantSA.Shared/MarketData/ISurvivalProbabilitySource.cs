@@ -1,5 +1,4 @@
 ﻿using System;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 
@@ -9,12 +8,12 @@ namespace QuantSA.Shared.MarketData
     /// A an object that can provide survival probabilities for a specific <see cref="ReferenceEntity"/>
     /// </summary>
     
-    public abstract class ISurvivalProbabilitySource
+    public abstract class SurvivalProbabilitySource
     {
         protected Date anchorDate;
         protected ReferenceEntity referenceEntity;
 
-        public ISurvivalProbabilitySource(ReferenceEntity referenceEntity, Date anchorDate)
+        public SurvivalProbabilitySource(ReferenceEntity referenceEntity, Date anchorDate)
         {
             this.referenceEntity = referenceEntity;
             this.anchorDate = anchorDate;
@@ -24,7 +23,7 @@ namespace QuantSA.Shared.MarketData
         /// The earliest date after which survival probabilities can be obtained.
         /// </summary>
         /// <returns></returns>
-        public virtual Date getAnchorDate()
+        public virtual Date GetAnchorDate()
         {
             return anchorDate;
         }

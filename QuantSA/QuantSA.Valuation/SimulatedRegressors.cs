@@ -11,13 +11,13 @@ namespace QuantSA.Valuation
     /// </summary>
     internal class SimulatedRegressors
     {
-        private readonly List<Date> dates;
-        private readonly int nSims;
+        private readonly List<Date> _dates;
+        private readonly int _nSims;
 
         /// <summary>
         /// The regressors.  Index order is simulation number, date number, regressor number
         /// </summary>
-        private readonly double[,,] regressors;
+        private readonly double[,,] _regressors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulatedRegressors"/> class.  Uses the provided simulators to
@@ -28,11 +28,12 @@ namespace QuantSA.Valuation
         /// </summary>
         /// <param name="dates">The dates as which regressors will be stored.</param>
         /// <param name="nSims">The number of  simulations.</param>
+        /// <param name="regressorCount"></param>
         public SimulatedRegressors(List<Date> dates, int nSims, int regressorCount)
         {
-            this.dates = dates;
-            this.nSims = nSims;
-            regressors = new double[nSims, dates.Count, regressorCount];
+            this._dates = dates;
+            this._nSims = nSims;
+            _regressors = new double[nSims, dates.Count, regressorCount];
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace QuantSA.Valuation
         /// <param name="value">The value to be inserted.</param>
         public void Add(int simNumber, int dateNumber, int regressorNumber, double value)
         {
-            regressors[simNumber, dateNumber, regressorNumber] = value;
+            _regressors[simNumber, dateNumber, regressorNumber] = value;
         }
 
         /// <summary>
@@ -55,15 +56,15 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         private double[][] GetPolynomialValsRegular(Date date, int order)
         {
-            var col = dates.FindIndex(d => d == date);
-            var result = new double[regressors.GetLength(0)][];
-            for (var row = 0; row < regressors.GetLength(0); row++)
+            var col = _dates.FindIndex(d => d == date);
+            var result = new double[_regressors.GetLength(0)][];
+            for (var row = 0; row < _regressors.GetLength(0); row++)
             {
-                var rowValues = new double[1 + order * regressors.GetLength(2)];
+                var rowValues = new double[1 + order * _regressors.GetLength(2)];
                 rowValues[0] = 1;
-                for (var i = 0; i < regressors.GetLength(2); i++)
+                for (var i = 0; i < _regressors.GetLength(2); i++)
                 {
-                    var x = regressors[row, col, i];
+                    var x = _regressors[row, col, i];
                     rowValues[1 + i * order] = x;
                     for (var orderCounter = 1; orderCounter < order; orderCounter++)
                         rowValues[1 + i * order + orderCounter] = rowValues[i * order + orderCounter] * x;
@@ -100,9 +101,9 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         private double[] GetSingleX(int dateCol, int regressorNumber)
         {
-            var result = new double[regressors.GetLength(0)];
+            var result = new double[_regressors.GetLength(0)];
             for (var i = 0; i < result.Length; i++)
-                result[i] = regressors[i, dateCol, regressorNumber];
+                result[i] = _regressors[i, dateCol, regressorNumber];
             return result;
         }
 
@@ -112,10 +113,10 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         private double[][] GetIntrinsic(Date date, int order)
         {
-            var col = dates.FindIndex(d => d == date);
-            var result = new double[regressors.GetLength(0)][];
+            var col = _dates.FindIndex(d => d == date);
+            var result = new double[_regressors.GetLength(0)][];
 
-            for (var regressorNumber = 0; regressorNumber < regressors.GetLength(2); regressorNumber++)
+            for (var regressorNumber = 0; regressorNumber < _regressors.GetLength(2); regressorNumber++)
             {
                 // For each regressor get the partition of the possible values
                 var xVec = GetSingleX(col, regressorNumber);
@@ -123,13 +124,13 @@ namespace QuantSA.Valuation
                 var strikes = new double[order - 1];
                 for (var i = 1; i < order; i++) strikes[i - 1] = xDist.InverseDistributionFunction((double) i / order);
                 // Create the values of the basis functions for each regressor
-                for (var row = 0; row < regressors.GetLength(0); row++)
+                for (var row = 0; row < _regressors.GetLength(0); row++)
                 {
                     double[] rowValues;
                     if (regressorNumber == 0
                     ) // On the first pass for the first regressor, create the rows on the result matrix.
                     {
-                        rowValues = new double[1 + order * regressors.GetLength(2)];
+                        rowValues = new double[1 + order * _regressors.GetLength(2)];
                         rowValues[0] = 1;
                         result[row] = rowValues;
                     }
@@ -138,7 +139,7 @@ namespace QuantSA.Valuation
                         rowValues = result[row];
                     }
 
-                    var x = regressors[row, col, regressorNumber];
+                    var x = _regressors[row, col, regressorNumber];
                     rowValues[1 + regressorNumber * order] = Math.Max(0, strikes[0] - x);
                     for (var orderCounter = 0; orderCounter < order - 1; orderCounter++)
                         rowValues[2 + regressorNumber * order + orderCounter] = Math.Max(0, x - strikes[orderCounter]);
@@ -154,7 +155,7 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         public int GetNumberOfRegressors()
         {
-            return regressors.GetLength(2);
+            return _regressors.GetLength(2);
         }
 
         /// <summary>
@@ -165,11 +166,11 @@ namespace QuantSA.Valuation
         /// <returns></returns>
         public double[,] GetRegressors(int regressorNumber, Date[] fwdValueDates)
         {
-            var result = new double[nSims, fwdValueDates.Length];
+            var result = new double[_nSims, fwdValueDates.Length];
             for (var j = 0; j < fwdValueDates.Length; j++)
             {
-                var dateCol = dates.FindIndex(d => d == fwdValueDates[j]);
-                for (var i = 0; i < nSims; i++) result[i, j] = regressors[i, dateCol, regressorNumber];
+                var dateCol = _dates.FindIndex(d => d == fwdValueDates[j]);
+                for (var i = 0; i < _nSims; i++) result[i, j] = _regressors[i, dateCol, regressorNumber];
             }
 
             return result;

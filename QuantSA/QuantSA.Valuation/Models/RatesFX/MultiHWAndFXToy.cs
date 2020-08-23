@@ -9,7 +9,7 @@ using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation.Models.Rates;
 
-namespace QuantSA.Valuation.Models
+namespace QuantSA.Valuation.Models.RatesFX
 {
     public class MultiHWAndFXToy : NumeraireSimulator
     {

@@ -2,16 +2,15 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.MarketData;
+using QuantSA.Core.Primitives;
 using QuantSA.Core.Products.Rates;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class RateProductTest
@@ -38,7 +37,7 @@ namespace ValuationTest
             double[] rates = {0.07, 0.07};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, dates, rates);
             IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
-            var curveSim = new DeterminsiticCurves(discountCurve);
+            var curveSim = new DeterministicCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
             var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
 
@@ -109,7 +108,7 @@ namespace ValuationTest
             double[] rates = {0.07, 0.07};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, dates, rates);
             IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
-            var curveSim = new DeterminsiticCurves(discountCurve);
+            var curveSim = new DeterministicCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
 
             // Run the valuation

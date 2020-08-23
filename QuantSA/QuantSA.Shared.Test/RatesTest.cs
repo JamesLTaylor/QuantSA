@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Dates;
 
-namespace GeneralTest
+namespace QuantSA.Shared.Test
 {
     [TestClass]
     public class RatesTest

@@ -1,9 +1,10 @@
 ﻿using System;
 using ExcelDna.Integration;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.CurveTools;
+using QuantSA.Core.DataAnalysis;
 using QuantSA.Core.MarketData;
 using QuantSA.Excel.Shared;
-using QuantSA.General;
 using QuantSA.Shared.CurvesAndSurfaces;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;

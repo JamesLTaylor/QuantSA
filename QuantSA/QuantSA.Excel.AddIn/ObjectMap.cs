@@ -94,7 +94,7 @@ namespace QuantSA.Excel.Addin
             return true;
         }
 
-        private struct ObjectEntry
+        private readonly struct ObjectEntry
         {
             public ObjectEntry(object obj, string uniqueID)
             {

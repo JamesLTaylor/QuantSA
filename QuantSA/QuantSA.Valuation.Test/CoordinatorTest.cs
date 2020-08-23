@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Formulae;
-using QuantSA.General;
+using QuantSA.Core.Primitives;
+using QuantSA.Core.Products.Equity;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
 using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class CoordinatorTest

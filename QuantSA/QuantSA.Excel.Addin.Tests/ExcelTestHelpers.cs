@@ -1,6 +1,6 @@
 ﻿using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Products.Rates;
-using QuantSA.ProductExtensions.Data;
+using QuantSA.CoreExtensions.Data;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -38,54 +38,9 @@ namespace QuantSA.Excel.Addin.Tests
             return instance;
         }
 
-        public static Currency ZAR = SetAndReturn(new Currency("ZAR"));
-        public static Currency EUR = SetAndReturn(new Currency("EUR"));
-        public static Currency USD = SetAndReturn(new Currency("USD"));
-        public static CurrencyPair USDZAR = SetAndReturn(new CurrencyPair("USDZAR", USD, ZAR));
-        public static CurrencyPair EURZAR = SetAndReturn(new CurrencyPair("EURZAR", EUR, ZAR));
-        public static ReferenceEntity TestCp => SetAndReturn(new ReferenceEntity("ABC"));
-        public static FloatRateIndex Jibar1D => SetAndReturn(new FloatRateIndex("ZAR.JIBAR.1D", ZAR, "JIBAR", Tenor.FromDays(1)));
+        public static readonly Currency ZAR = SetAndReturn(new Currency("ZAR"));
         public static FloatRateIndex Jibar3M => SetAndReturn(new FloatRateIndex("ZAR.JIBAR.3M", ZAR, "JIBAR", Tenor.FromMonths(3)));
-        public static FloatRateIndex Libor3M => SetAndReturn(new FloatRateIndex("USD.LIBOR.3M", USD, "LIBOR", Tenor.FromMonths(3)));
-        public static FloatRateIndex Euribor3M => SetAndReturn(new FloatRateIndex("EUR.EURIBOR.3M", EUR, "EURIBOR", Tenor.FromMonths(3)));
 
-        /// <summary>
-        /// Constructor for ZAR market standard, fixed for float 3m Jibar swap.
-        /// </summary>
-        /// <param name="rate">The fixed rate paid or received</param>
-        /// <param name="payFixed">Is the fixed rate paid?</param>
-        /// <param name="notional">Flat notional for all dates.</param>
-        /// <param name="startDate">First reset date of swap</param>
-        /// <param name="tenor">Tenor of swap, must be a whole number of years.</param>
-        /// <returns></returns>
-        public static IRSwap CreateZARSwap(double rate, bool payFixed, double notional, Date startDate, Tenor tenor, FloatRateIndex jibar)
-        {
-            var quarters = tenor.Years * 4 + tenor.Months / 3;
-            var indexDates = new Date[quarters];
-            var paymentDates = new Date[quarters];
-            var spreads = new double[quarters];
-            var accrualFractions = new double[quarters];
-            var notionals = new double[quarters];
-            var fixedRate = rate;
-            var ccy = ZAR;
-
-            var date1 = new Date(startDate);
-
-            for (var i = 0; i < quarters; i++)
-            {
-                var date2 = startDate.AddMonths(3 * (i + 1));
-                indexDates[i] = new Date(date1);
-                paymentDates[i] = new Date(date2);
-                spreads[i] = 0.0;
-                accrualFractions[i] = (date2 - date1) / 365.0;
-                notionals[i] = notional;
-                date1 = new Date(date2);
-            }
-
-            var newSwap = new IRSwap(payFixed ? -1 : 1, indexDates, paymentDates, jibar, spreads, accrualFractions,
-                notionals, fixedRate, ccy);
-            return newSwap;
-        }
 
         public static IRSwap ZARSwap()
         {

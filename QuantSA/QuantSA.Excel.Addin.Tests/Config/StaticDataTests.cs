@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Excel.Addin.Config;
-using QuantSA.Shared.Serialization;
 using QuantSA.Shared.State;
 
 namespace QuantSA.Excel.Addin.Tests.Config
@@ -16,6 +15,7 @@ namespace QuantSA.Excel.Addin.Tests.Config
         {
             StaticData.Load();
             var loaded = QuantSAState.SharedData;
+            Assert.IsNotNull(loaded);
         }
     }
 }

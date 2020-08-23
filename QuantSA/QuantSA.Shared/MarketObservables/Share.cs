@@ -4,21 +4,21 @@ namespace QuantSA.Shared.MarketObservables
 {
     public class Share : MarketObservable
     {
-        private readonly string toString;
-        internal string shareCode;
+        private readonly string _toString;
+        internal readonly string ShareCode;
 
         public Share(string shareCode, Currency currency)
         {
-            this.shareCode = shareCode;
-            this.currency = currency;
-            toString = "SHARE:" + currency + ":" + shareCode;
+            ShareCode = shareCode;
+            Currency = currency;
+            _toString = "SHARE:" + currency + ":" + shareCode;
         }
 
-        public Currency currency { get; }
+        public Currency Currency { get; }
 
         public override string ToString()
         {
-            return toString;
+            return _toString;
         }
     }
 }

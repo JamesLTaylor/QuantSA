@@ -9,9 +9,9 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-using QuantSA.Shared.Primitives;
+using QuantSA.Core.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products
 {
     public class RuntimeProduct
     {

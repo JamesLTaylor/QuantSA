@@ -13,7 +13,7 @@ using QuantSA.Shared.Primitives;
 using QuantSA.Shared.State;
 using QuantSA.Solution.Test;
 
-namespace QuantSA.CoreExtensions.Tests.Curves
+namespace QuantSA.CoreExtensions.Test.Curves
 {
     [TestClass]
     public class RateCurveCalibratorTests

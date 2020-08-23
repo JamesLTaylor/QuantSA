@@ -1,23 +1,21 @@
-﻿using System;
-
-namespace QuantSA.Shared.MarketObservables
+﻿namespace QuantSA.Shared.MarketObservables
 {
     
     public class Dividend : MarketObservable
     {
-        private readonly string toString;
+        private readonly string _toString;
 
         public Dividend(Share underlying)
         {
-            this.underlying = underlying;
-            toString = "SHARE:DIVI:" + underlying.currency + ":" + underlying.shareCode;
+            this.Underlying = underlying;
+            _toString = "SHARE:DIVI:" + underlying.Currency + ":" + underlying.ShareCode;
         }
 
-        public Share underlying { get; }
+        public Share Underlying { get; }
 
         public override string ToString()
         {
-            return toString;
+            return _toString;
         }
     }
 }

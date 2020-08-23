@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Dates;
 
-namespace GeneralTest.Dates
+namespace QuantSA.Shared.Test.Dates
 {
     [TestClass]
     public class TenorTests

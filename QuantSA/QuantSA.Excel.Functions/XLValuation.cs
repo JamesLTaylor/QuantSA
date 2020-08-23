@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using ExcelDna.Integration;
+using QuantSA.Core.Primitives;
 using QuantSA.Excel.Shared;
-using QuantSA.General;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
+using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -28,7 +30,7 @@ namespace QuantSA.ExcelFunctions
                 Default = null)]
             IFXSource[] fxForecastCurves)
         {
-            var model = new DeterminsiticCurves(discountCurve);
+            var model = new DeterministicCurves(discountCurve);
             model.AddRateForecast(rateForecastCurves);
             if (fxForecastCurves != null)
                 model.AddFXForecast(fxForecastCurves);
@@ -71,7 +73,7 @@ namespace QuantSA.ExcelFunctions
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/EPE.html")]
         public static double[] EPE([ExcelArgument(Description = "A list of products.")]
-            Product[] products,
+            IProduct[] products,
             [ExcelArgument(Description = "The value date.")]
             Date valueDate,
             [ExcelArgument(Description = "The dates at which the expected positive exposure is required.")]
@@ -95,7 +97,7 @@ namespace QuantSA.ExcelFunctions
             IsHidden = false,
             HelpTopic = "http://www.quantsa.org/PFE.html")]
         public static double[,] PFE([ExcelArgument(Description = "A list of products.")]
-            Product[] products,
+            IProduct[] products,
             [ExcelArgument(Description = "The value date.")]
             Date valueDate,
             [ExcelArgument(Description = "The dates at which the expected positive exposure is required.")]

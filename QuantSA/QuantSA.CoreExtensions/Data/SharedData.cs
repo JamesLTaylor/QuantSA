@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using QuantSA.Shared.Serialization;
 
-namespace QuantSA.ProductExtensions.Data
+namespace QuantSA.CoreExtensions.Data
 {
     /// <summary>
     /// A storage for shared data definitions.

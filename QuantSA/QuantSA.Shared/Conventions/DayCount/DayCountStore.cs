@@ -1,5 +1,4 @@
-﻿using QuantSA.General.Conventions.DayCount;
-using QuantSA.Shared.Dates;
+﻿using QuantSA.Shared.Dates;
 
 namespace QuantSA.Shared.Conventions.DayCount
 {

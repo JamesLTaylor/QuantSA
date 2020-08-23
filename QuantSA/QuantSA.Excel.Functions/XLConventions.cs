@@ -1,7 +1,5 @@
 ﻿using System;
 using QuantSA.Excel.Shared;
-using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Dates;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Conventions.Compounding;
 using QuantSA.Shared.Conventions.DayCount;
@@ -104,7 +102,7 @@ namespace QuantSA.ExcelFunctions
             Calendar calendar)
 
         {
-            return calendar.isHoliday(date) ? 1 : 0;
+            return calendar.IsHoliday(date) ? 1 : 0;
         }
 
         [QuantSAExcelFunction(

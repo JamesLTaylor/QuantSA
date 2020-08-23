@@ -2,15 +2,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.MarketData;
-using QuantSA.General;
+using QuantSA.Core.Primitives;
+using QuantSA.Core.Products.Rates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
-using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     /// <summary>
     /// Tests some FX products.
@@ -39,7 +38,7 @@ namespace ValuationTest
             IDiscountingSource usdCurve = new DatesAndRates(TestHelpers.USD, valueDate, dates, usdRates);
             IFloatingRateSource forecastCurve = new ForecastCurve(valueDate, TestHelpers.Jibar3M, dates, rates);
             IFXSource fxSource = new FXForecastCurve(TestHelpers.USDZAR, 13.66, usdCurve, zarBasis);
-            var curveSim = new DeterminsiticCurves(discountCurve);
+            var curveSim = new DeterministicCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
             curveSim.AddFXForecast(fxSource);
             var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);

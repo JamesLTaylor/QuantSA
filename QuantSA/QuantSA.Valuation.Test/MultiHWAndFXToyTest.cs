@@ -4,16 +4,14 @@ using Accord.Math;
 using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.Products.Rates;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
-using QuantSA.Valuation.Models;
 using QuantSA.Valuation.Models.Rates;
+using QuantSA.Valuation.Models.RatesFX;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class MultiHWAndFXToyTest
@@ -110,12 +108,14 @@ namespace ValuationTest
             var model = new MultiHWAndFXToy(valueDate, TestHelpers.ZAR, new[] {zarRatesSim, usdRatesSim, eurRatesSim},
                 currencyPairs, spots, vols, correlations);
 
-            var portfolio = new List<Product>();
-            portfolio.Add(CreateFloatingLeg(TestHelpers.ZAR, valueDate, -15e6, TestHelpers.Jibar3M, 7));
-            portfolio.Add(CreateFloatingLeg(TestHelpers.EUR, valueDate, +1e6, TestHelpers.Euribor3M, 7));
-            portfolio.Add(CreateFloatingLeg(TestHelpers.ZAR, valueDate, 13e6, TestHelpers.Jibar3M, 13));
-            portfolio.Add(CreateFloatingLeg(TestHelpers.USD, valueDate, -1e6, TestHelpers.Euribor3M, 13));
-            portfolio.Add(TestHelpers.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.FromYears(4), TestHelpers.Jibar3M));
+            var portfolio = new List<IProduct>
+            {
+                CreateFloatingLeg(TestHelpers.ZAR, valueDate, -15e6, TestHelpers.Jibar3M, 7),
+                CreateFloatingLeg(TestHelpers.EUR, valueDate, +1e6, TestHelpers.Euribor3M, 7),
+                CreateFloatingLeg(TestHelpers.ZAR, valueDate, 13e6, TestHelpers.Jibar3M, 13),
+                CreateFloatingLeg(TestHelpers.USD, valueDate, -1e6, TestHelpers.Euribor3M, 13),
+                TestHelpers.CreateZARSwap(0.07, true, 20e6, valueDate, Tenor.FromYears(4), TestHelpers.Jibar3M)
+            };
 
             var stepInMonths = 1;
             var fwdValueDates = Enumerable.Range(1, 13 * 12 / stepInMonths)

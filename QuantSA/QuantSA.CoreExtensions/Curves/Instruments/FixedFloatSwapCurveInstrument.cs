@@ -4,7 +4,6 @@ using QuantSA.Core.Primitives;
 using QuantSA.Core.Products.Rates;
 using QuantSA.CoreExtensions.ProductPVs.Rates;
 using QuantSA.CoreExtensions.Products.Rates;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;

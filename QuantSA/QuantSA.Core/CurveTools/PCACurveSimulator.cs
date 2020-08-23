@@ -6,21 +6,21 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 using Normal = MathNet.Numerics.Distributions.Normal;
 
-namespace QuantSA.General
+namespace QuantSA.Core.CurveTools
 {
     public class PCACurveSimulator
     {
         /// <summary>
         /// The principle components in rows.
         /// </summary>
-        private readonly double[,] components;
+        private readonly double[,] _components;
 
-        private readonly bool floorAtZero;
-        private readonly double[] initialRates;
-        private readonly double multiplier;
-        private readonly Tenor[] tenors;
-        private readonly bool useRelative;
-        private readonly double[] vols;
+        private readonly bool _floorAtZero;
+        private readonly double[] _initialRates;
+        private readonly double _multiplier;
+        private readonly Tenor[] _tenors;
+        private readonly bool _useRelative;
+        private readonly double[] _vols;
 
 
         /// <summary>
@@ -28,9 +28,9 @@ namespace QuantSA.General
         /// </summary>
         /// <param name="anchorDate"></param>
         /// <param name="initialRates"></param>
-        /// <param name="tenorMonths"></param>
+        /// <param name="tenors"></param>
         /// <param name="components">Can be passed in rows or columns.  The orientation will be 
-        /// checked by comparing with the length of <paramref name="tenorMonths"/> </param>
+        /// checked by comparing with the length of <paramref name="tenors"/> </param>
         /// <param name="vols"></param>
         /// <param name="multiplier"></param>
         /// <param name="useRelative"></param>
@@ -44,33 +44,33 @@ namespace QuantSA.General
                 throw new ArgumentException(
                     "Simulator must not use all the components."); //Also makes the orientation ambiguous.
             if (components.GetLength(0) == initialRates.Length && components.GetLength(1) < initialRates.Length)
-                this.components = components.Transpose();
+                _components = components.Transpose();
             else if (components.GetLength(0) < initialRates.Length && components.GetLength(1) == initialRates.Length)
-                this.components = components;
+                _components = components;
             else
                 throw new ArgumentException(
                     "The components data must either have the same number of columns as the length of the provided tenors if the components are provided in rows, or the same rows if they are provided in columns.");
 
             if (tenors.Length != initialRates.Length)
                 throw new ArgumentException("The provided dates tenors and initial rates must be the same length.");
-            if (vols.Length != this.components.GetLength(0))
+            if (vols.Length != _components.GetLength(0))
                 throw new ArgumentException("The number of vols must be the same as the number of components.");
 
-            this.anchorDate = anchorDate;
-            this.initialRates = initialRates;
-            this.tenors = tenors;
-            this.vols = vols;
-            this.multiplier = multiplier;
-            this.useRelative = useRelative;
-            this.floorAtZero = floorAtZero;
+            AnchorDate = anchorDate;
+            _initialRates = initialRates;
+            _tenors = tenors;
+            _vols = vols;
+            _multiplier = multiplier;
+            _useRelative = useRelative;
+            _floorAtZero = floorAtZero;
         }
 
-        public Date anchorDate { get; }
+        private Date AnchorDate { get; }
 
 
         /// <summary>
         /// Produce a vector of curves where the element at index i is a realization of a simulation at 
-        /// simulationDates i.  If you require the rates directly use <see cref="GetSimulatedRates(Date[])"/>
+        /// simulationDates i.  If you require the rates directly use <see cref="GetSimulatedRates(Date[],Tenor[])"/>
         /// </summary>
         /// <param name="simulationDates">Dates on which the simulation is run.  Must all be greater than the 
         /// anchor date.</param>
@@ -79,10 +79,10 @@ namespace QuantSA.General
         {
             var results = new ICurve[simulationDates.Length];
             var dist = new Normal();
-            var previousDate = anchorDate;
+            var previousDate = AnchorDate;
 
-            var previousRates = initialRates.Clone() as double[];
-            var currentRates = new double[initialRates.Length];
+            var previousRates = _initialRates.Clone() as double[];
+            var currentRates = new double[_initialRates.Length];
 
             // Iterate through the simulation dates
             for (var simCounter = 0; simCounter < simulationDates.Length; simCounter++)
@@ -90,7 +90,7 @@ namespace QuantSA.General
                 var currentDate = simulationDates[simCounter];
                 var dt = (currentDate - previousDate) / 365.0;
                 var sdt = Math.Sqrt(dt);
-                var curveDates = new Date[initialRates.Length];
+                var curveDates = new Date[_initialRates.Length];
 
                 // Random realizations to be used in simulation.
                 var eps1 = dist.Sample();
@@ -98,27 +98,27 @@ namespace QuantSA.General
                 var eps3 = dist.Sample();
 
                 // Iterate through the dates on the curve
-                for (var i = 0; i < initialRates.Length; i++)
+                for (var i = 0; i < _initialRates.Length; i++)
                 {
-                    curveDates[i] = simulationDates[simCounter].AddTenor(tenors[i]);
-                    if (useRelative)
+                    curveDates[i] = simulationDates[simCounter].AddTenor(_tenors[i]);
+                    if (_useRelative)
                     {
                         //TODO: add mean correction.
-                        var exponent = components[0, i] * vols[0] * sdt * eps1 +
-                                       components[1, i] * vols[1] * sdt * eps2 +
-                                       components[2, i] * vols[2] * sdt * eps3;
+                        var exponent = _components[0, i] * _vols[0] * sdt * eps1 +
+                                       _components[1, i] * _vols[1] * sdt * eps2 +
+                                       _components[2, i] * _vols[2] * sdt * eps3;
                         currentRates[i] = previousRates[i] * Math.Exp(exponent);
                     }
                     else
                     {
-                        var change = components[0, i] * vols[0] * sdt * eps1 + components[1, i] * vols[1] * sdt * eps2 +
-                                     components[2, i] * vols[2] * sdt * eps3;
+                        var change = _components[0, i] * _vols[0] * sdt * eps1 + _components[1, i] * _vols[1] * sdt * eps2 +
+                                     _components[2, i] * _vols[2] * sdt * eps3;
                         currentRates[i] = previousRates[i] + change;
-                        if (floorAtZero) currentRates[i] = Math.Max(0.0, currentRates[i]);
+                        if (_floorAtZero) currentRates[i] = Math.Max(0.0, currentRates[i]);
                     }
                 }
 
-                currentRates = currentRates.Multiply(multiplier);
+                currentRates = currentRates.Multiply(_multiplier);
                 results[simCounter] = new DatesAndRates(new Currency("IGNORE"), simulationDates[simCounter], curveDates, currentRates,
                     simulationDates[simCounter].AddMonths(360));
                 previousRates = currentRates.Clone() as double[];

@@ -3,7 +3,7 @@ using QuantSA.Core.Products.SAMarket;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.ProductExtensions.SAMarket
+namespace QuantSA.CoreExtensions.SAMarket
 {
     public static class BesaJseBondEx
     {
@@ -39,48 +39,48 @@ namespace QuantSA.ProductExtensions.SAMarket
         {
             var N = 100.0;
             var typicalCoupon = N * bond.annualCouponRate / 2;
-            var T0 = bond.GetLastCouponDateOnOrBefore(settleDate);
-            var T1 = bond.GetNextCouponDate(T0);
-            var n = (int) Math.Round((bond.maturityDate - T1) / 182.625);
-            var tradingWithNextCoupon = T1 - settleDate > bond.booksCloseDateDays;
-            var d = tradingWithNextCoupon ? settleDate - T0 : settleDate - T1;
+            var t0 = bond.GetLastCouponDateOnOrBefore(settleDate);
+            var t1 = bond.GetNextCouponDate(t0);
+            var n = (int) Math.Round((bond.maturityDate - t1) / 182.625);
+            var tradingWithNextCoupon = t1 - settleDate > bond.booksCloseDateDays;
+            var d = tradingWithNextCoupon ? settleDate - t0 : settleDate - t1;
             var unroundedAccrued = N * bond.annualCouponRate * d / 365.0;
             var roundedAccrued = Math.Round(unroundedAccrued, 5);
             var couponAtT1 = tradingWithNextCoupon ? typicalCoupon : 0.0;
-            var V = 1 / (1 + ytm / 2);
+            var v = 1 / (1 + ytm / 2);
 
             double brokenPeriodDf;
             if (n > 0)
-                brokenPeriodDf = Math.Pow(V, ((double) T1 - settleDate) / (T1 - T0));
+                brokenPeriodDf = Math.Pow(v, ((double) t1 - settleDate) / (t1 - t0));
             else
-                brokenPeriodDf = 1 / (1 + ytm * ((double) T1 - settleDate) / 365.0);
+                brokenPeriodDf = 1 / (1 + ytm * ((double) t1 - settleDate) / 365.0);
 
             var unroundedAip = brokenPeriodDf *
-                               (couponAtT1 + typicalCoupon * V * (1 - Math.Pow(V, n)) / (1 - V) + N * Math.Pow(V, n));
+                               (couponAtT1 + typicalCoupon * v * (1 - Math.Pow(v, n)) / (1 - v) + N * Math.Pow(v, n));
 
             var unroundedClean = unroundedAip - unroundedAccrued;
             var roundedClean = Math.Round(unroundedClean, 5);
             var roundedAip = roundedClean + roundedAccrued;
 
             var results = new ResultStore();
-            results.Add(Keys.roundedAip, roundedAip);
-            results.Add(Keys.roundedClean, roundedClean);
-            results.Add(Keys.unroundedAip, unroundedAip);
-            results.Add(Keys.unroundedClean, unroundedClean);
-            results.Add(Keys.unroundedAccrued, unroundedAccrued);
-            results.Add(Keys.tradingWithNextCoupon, tradingWithNextCoupon ? 1.0 : 0.0);
+            results.Add(Keys.RoundedAip, roundedAip);
+            results.Add(Keys.RoundedClean, roundedClean);
+            results.Add(Keys.UnroundedAip, unroundedAip);
+            results.Add(Keys.UnroundedClean, unroundedClean);
+            results.Add(Keys.UnroundedAccrued, unroundedAccrued);
+            results.Add(Keys.TradingWithNextCoupon, tradingWithNextCoupon ? 1.0 : 0.0);
 
             return results;
         }
 
         public static class Keys
         {
-            public const string roundedAip = "roundedAip";
-            public const string roundedClean = "roundedClean";
-            public const string unroundedAip = "unroundedAip";
-            public const string unroundedClean = "unroundedClean";
-            public const string unroundedAccrued = "unroundedAccrued";
-            public const string tradingWithNextCoupon = "tradingWithNextCoupon";
+            public const string RoundedAip = "roundedAip";
+            public const string RoundedClean = "roundedClean";
+            public const string UnroundedAip = "unroundedAip";
+            public const string UnroundedClean = "unroundedClean";
+            public const string UnroundedAccrued = "unroundedAccrued";
+            public const string TradingWithNextCoupon = "tradingWithNextCoupon";
         }
     }
 }
