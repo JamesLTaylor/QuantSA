@@ -57,7 +57,7 @@ namespace QuantSA.Valuation.Models.Equity
             foreach (var floatingRateSource in rateForecastCurves)
             {
                 if (floatingRateSource == null) continue;
-                this._rateForecastCurves.Add(floatingRateSource.GetFloatingIndex().ToString(), floatingRateSource);
+                _rateForecastCurves.Add(floatingRateSource.GetFloatingIndex().ToString(), floatingRateSource);
             }
         }
 

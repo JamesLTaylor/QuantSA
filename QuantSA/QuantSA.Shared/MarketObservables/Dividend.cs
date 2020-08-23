@@ -7,7 +7,7 @@
 
         public Dividend(Share underlying)
         {
-            this.Underlying = underlying;
+            Underlying = underlying;
             _toString = "SHARE:DIVI:" + underlying.Currency + ":" + underlying.ShareCode;
         }
 

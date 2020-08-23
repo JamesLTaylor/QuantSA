@@ -31,8 +31,8 @@ namespace QuantSA.Valuation
         /// <param name="regressorCount"></param>
         public SimulatedRegressors(List<Date> dates, int nSims, int regressorCount)
         {
-            this._dates = dates;
-            this._nSims = nSims;
+            _dates = dates;
+            _nSims = nSims;
             _regressors = new double[nSims, dates.Count, regressorCount];
         }
 

@@ -17,9 +17,9 @@ namespace QuantSA.Core.Products.Equity
 
         public EuropeanOption(Share share, double strike, Date exerciseDate)
         {
-            this._share = share;
-            this._strike = strike;
-            this._exerciseDate = exerciseDate;
+            _share = share;
+            _strike = strike;
+            _exerciseDate = exerciseDate;
         }
 
         public override List<Cashflow> GetCFs()
@@ -47,7 +47,7 @@ namespace QuantSA.Core.Products.Equity
 
         public override void SetValueDate(Date valueDate)
         {
-            this._valueDate = valueDate;
+            _valueDate = valueDate;
         }
 
         public override void Reset()

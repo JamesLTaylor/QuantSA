@@ -36,13 +36,13 @@ namespace QuantSA.Core.Products.Rates
         public FRA(double notional, double accrualFraction, double rate, bool payFixed, Date nearDate,
             Date farDate, FloatRateIndex floatIndex)
         {
-            this._accrualFraction = accrualFraction;
-            this._notional = notional;
-            this._rate = rate;
-            this._payFixed = payFixed;
-            this._nearDate = nearDate;
-            this._farDate = farDate;
-            this._floatIndex = floatIndex;
+            _accrualFraction = accrualFraction;
+            _notional = notional;
+            _rate = rate;
+            _payFixed = payFixed;
+            _nearDate = nearDate;
+            _farDate = farDate;
+            _floatIndex = floatIndex;
             _ccy = floatIndex.Currency;
             Init();
         }

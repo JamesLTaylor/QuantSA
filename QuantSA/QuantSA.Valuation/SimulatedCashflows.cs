@@ -15,7 +15,7 @@ namespace QuantSA.Valuation
 
         public SimulatedCashflows(int productCount, int nSims)
         {
-            this._nSims = nSims;
+            _nSims = nSims;
             _allCFs = new List<Cashflow>[productCount][];
             for (var i = 0; i < productCount; i++)
             {

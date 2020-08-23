@@ -35,7 +35,7 @@ namespace QuantSA.Valuation.Models.Rates
         public DeterministicCurves(IDiscountingSource discountCurve)
         {
             _numeraireCurrency = discountCurve.GetCurrency();
-            this._discountCurve = discountCurve;
+            _discountCurve = discountCurve;
             _forecastCurves = new Dictionary<string, IFloatingRateSource>();
             _fxCurves = new Dictionary<string, IFXSource>();
         }

@@ -8,7 +8,7 @@ namespace QuantSA.Shared.Conventions.DayCount
 
         public Business252(Calendar calendar)
         {
-            this._calendar = calendar;
+            _calendar = calendar;
         }
 
         public double YearFraction(Date date1, Date date2)

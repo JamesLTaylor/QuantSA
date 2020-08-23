@@ -29,11 +29,11 @@ namespace QuantSA.Core.Products.Rates
             IEnumerable<double> rates,
             IEnumerable<double> accrualFractions)
         {
-            this._ccy = ccy;
-            this._paymentDates = paymentDates.ToArray();
-            this._notionals = notionals.ToArray();
-            this._rates = rates.ToArray();
-            this._accrualFractions = accrualFractions.ToArray();
+            _ccy = ccy;
+            _paymentDates = paymentDates.ToArray();
+            _notionals = notionals.ToArray();
+            _rates = rates.ToArray();
+            _accrualFractions = accrualFractions.ToArray();
         }
 
         public override List<Cashflow> GetCFs()
@@ -67,7 +67,7 @@ namespace QuantSA.Core.Products.Rates
 
         public override void SetValueDate(Date valueDate)
         {
-            this._valueDate = valueDate;
+            _valueDate = valueDate;
         }
 
         public override List<Currency> GetCashflowCurrencies()

@@ -51,12 +51,12 @@ namespace QuantSA.Valuation.Models.Rates
         public HullWhite1F(Currency currency, double a, double vol, double r0, double inputRate,
             IEnumerable<FloatRateIndex> floatRateIndices = null)
         {
-            this._a = a;
-            this._vol = vol;
-            this._r0 = r0;
+            _a = a;
+            _vol = vol;
+            _r0 = r0;
             _inputRate = inputRate;
             _floatRateIndices = floatRateIndices != null ? floatRateIndices.ToList() : new List<FloatRateIndex>();
-            this._currency = currency;
+            _currency = currency;
         }
 
         private double Theta(Date date)

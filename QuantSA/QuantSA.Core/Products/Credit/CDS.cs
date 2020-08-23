@@ -122,7 +122,7 @@ namespace QuantSA.Core.Products.Credit
 
         public override void SetValueDate(Date valueDate)
         {
-            this._valueDate = valueDate;
+            _valueDate = valueDate;
         }
 
         public override List<Currency> GetCashflowCurrencies()
