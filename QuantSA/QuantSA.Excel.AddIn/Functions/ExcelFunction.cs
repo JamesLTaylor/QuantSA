@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using ExcelDna.Integration;
 
+// The delegate definitions below need to be public to work in ExcelDna
+// ReSharper disable MemberCanBePrivate.Global
+
+
 namespace QuantSA.Excel.Addin.Functions
 {
     /// <summary>
@@ -118,35 +122,35 @@ namespace QuantSA.Excel.Addin.Functions
             }
         }
 
-        private delegate object[,] XLDelegate00();
+        public delegate object[,] XLDelegate00();
 
-        private delegate object[,] XLDelegate01(object[,] arg1);
+        public delegate object[,] XLDelegate01(object[,] arg1);
 
-        private delegate object[,] XLDelegate02(object[,] arg1, object[,] arg2);
+        public delegate object[,] XLDelegate02(object[,] arg1, object[,] arg2);
 
-        private delegate object[,] XLDelegate03(object[,] arg1, object[,] arg2, object[,] arg3);
+        public delegate object[,] XLDelegate03(object[,] arg1, object[,] arg2, object[,] arg3);
 
-        private delegate object[,] XLDelegate04(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4);
+        public delegate object[,] XLDelegate04(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4);
 
-        private delegate object[,] XLDelegate05(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate05(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5);
 
-        private delegate object[,] XLDelegate06(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate06(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5, object[,] arg6);
 
-        private delegate object[,] XLDelegate07(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate07(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5, object[,] arg6, object[,] arg7);
 
-        private delegate object[,] XLDelegate08(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate08(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8);
 
-        private delegate object[,] XLDelegate09(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate09(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9);
 
-        private delegate object[,] XLDelegate10(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate10(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9, object[,] arg10);
 
-        private delegate object[,] XLDelegate11(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
+        public delegate object[,] XLDelegate11(object[,] arg1, object[,] arg2, object[,] arg3, object[,] arg4,
             object[,] arg5, object[,] arg6, object[,] arg7, object[,] arg8, object[,] arg9, object[,] arg10,
             object[,] arg11);
     }

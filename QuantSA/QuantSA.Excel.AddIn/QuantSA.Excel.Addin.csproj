@@ -118,6 +118,9 @@
     <None Include="ExcelDna.IntelliSense.xll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="ExcelDna.IntelliSense64.xll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\ExcelDna.Build.props" />
     <None Include="QuantSA Help.url">

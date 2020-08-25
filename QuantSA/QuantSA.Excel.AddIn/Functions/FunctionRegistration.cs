@@ -86,7 +86,7 @@ namespace QuantSA.Excel.Addin.Functions
 
                     var parts = excelFuncAttr.Name.Split('.');
                     if (!(parts.Length == 2 && parts[0].Equals(addInName)))
-                        throw new AddInException($"{excelFuncAttr.Name} does not following the naming " +
+                        throw new AddInException($"{excelFuncAttr.Name} does not follow the naming " +
                                                  $"convention: {addInName}.FunctionName");
                     FunctionNames.Add(excelFuncAttr.Name);
                     var method = member as MethodInfo;
