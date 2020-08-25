@@ -12,15 +12,15 @@ namespace QuantSA.Excel.Addin
         {
             InitializeComponent();
             Title = title;
-            lblMessage.Content = message;
-            lblStackTrace.Content = "";
+            LabelMessage.Content = message;
+            LabelStackTrace.Content = "";
         }
 
         public ExcelMessage(string message)
         {
             InitializeComponent();
-            lblMessage.Content = message;
-            lblStackTrace.Content = "";
+            LabelMessage.Content = message;
+            LabelStackTrace.Content = "";
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace QuantSA.Excel.Addin
         public ExcelMessage(Exception e)
         {
             InitializeComponent();
-            lblMessage.Content = e.Message;
+            LabelMessage.Content = e.Message;
             var lines = e.StackTrace.Split(new[] {"\r\n", "\n"}, StringSplitOptions.None);
             var result = "";
             for (var i = 0; i < lines.Length; i++)
@@ -47,7 +47,7 @@ namespace QuantSA.Excel.Addin
                             result = result + lines[i].Substring(j * 80) + "\r\n";
                     }
 
-            lblStackTrace.Content = result;
+            LabelStackTrace.Content = result;
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
