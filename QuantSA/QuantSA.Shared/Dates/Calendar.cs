@@ -46,18 +46,18 @@ namespace QuantSA.Shared.Dates
         /// <returns>
         ///   <c>true</c> if the specified date is neither a holiday nor a Saturday or Sunday; otherwise, <c>false</c>.
         /// </returns>
-        public bool isBusinessDay(Date date)
+        public bool IsBusinessDay(Date date)
         {
             if (_holidays.Contains(date))
                 return false;
-            return !isWeekend(date.DayOfWeek());
+            return !IsWeekend(date.DayOfWeek());
         }
 
 
         //<summary>
         // Returns <tt>true</tt> iff the weekday is Saturday or Sunday.
         //</summary>
-        public bool isWeekend(DayOfWeek w)
+        public static bool IsWeekend(DayOfWeek w)
         {
             return w == DayOfWeek.Saturday || w == DayOfWeek.Sunday;
         }
@@ -69,7 +69,7 @@ namespace QuantSA.Shared.Dates
         /// <returns>
         ///   <c>true</c> if the specified d is holiday; otherwise, <c>false</c>.
         /// </returns>
-        public bool isHoliday(Date date)
+        public bool IsHoliday(Date date)
         {
             return _holidays.Contains(date);
         }
@@ -78,7 +78,7 @@ namespace QuantSA.Shared.Dates
         /// Returns <tt>true</tt> iff the date is last business day for the
         /// month in given market.
         /// </summary>
-        public bool isEndOfMonth(Date d)
+        public bool IsEndOfMonth(Date d)
         {
             throw new NotImplementedException();
         }
@@ -86,7 +86,7 @@ namespace QuantSA.Shared.Dates
         /// <summary>
         /// last business day of the month to which the given date belongs
         /// </summary>
-        public Date endOfMonth(Date d)
+        public Date EndOfMonth(Date d)
         {
             throw new NotImplementedException();
         }
@@ -96,7 +96,7 @@ namespace QuantSA.Shared.Dates
         /// Calculates the number of business days between two given
         /// dates and returns the result.
         /// </summary>
-        public int businessDaysBetween(Date from, Date to, bool includeFirst = true, bool includeLast = false)
+        public int BusinessDaysBetween(Date from, Date to, bool includeFirst = true, bool includeLast = false)
         {
             var wd = 0;
             if (from != to)
@@ -105,23 +105,23 @@ namespace QuantSA.Shared.Dates
                 {
                     // the last one is treated separately to avoid incrementing Date::maxDate()
                     for (var d = from; d < to; d = d.AddDays(1))
-                        if (isBusinessDay(d))
+                        if (IsBusinessDay(d))
                             ++wd;
-                    if (isBusinessDay(to))
+                    if (IsBusinessDay(to))
                         ++wd;
                 }
                 else
                 {
                     for (var d = to; d < from; d = d.AddDays(1))
-                        if (isBusinessDay(d))
+                        if (IsBusinessDay(d))
                             ++wd;
-                    if (isBusinessDay(from))
+                    if (IsBusinessDay(from))
                         ++wd;
                 }
 
-                if (isBusinessDay(from) && !includeFirst)
+                if (IsBusinessDay(from) && !includeFirst)
                     wd--;
-                if (isBusinessDay(to) && !includeLast)
+                if (IsBusinessDay(to) && !includeLast)
                     wd--;
 
                 if (from > to)
@@ -134,9 +134,9 @@ namespace QuantSA.Shared.Dates
         /// <summary>
         /// Adds a date to the set of holidays for the given calendar.
         /// </summary>
-        public void addHoliday(Date d)
+        public void AddHoliday(Date d)
         {
-            if (isBusinessDay(d))
+            if (IsBusinessDay(d))
                 _holidays.Add(d);
         }
 

@@ -1,8 +1,5 @@
 ﻿using ExcelDna.Integration;
-using QuantSA.General;
-using QuantSA.Valuation.Models;
 using QuantSA.Valuation;
-using System.Linq;
 using QuantSA.Core.MarketData;
 using QuantSA.Excel.Shared;
 using QuantSA.Shared.Dates;
@@ -10,6 +7,7 @@ using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation.Models.Rates;
+using QuantSA.Valuation.Models.RatesFX;
 
 namespace QuantSA.ExcelFunctions
 {

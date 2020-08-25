@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using ExcelDna.Integration;
 using log4net;
-using QuantSA.Excel;
+using QuantSA.Excel.Addin;
 using QuantSA.Excel.Addin.Config;
 using QuantSA.Excel.Addin.Functions;
 using QuantSA.Excel.Shared;
@@ -18,6 +18,8 @@ using StaticData = QuantSA.Excel.Addin.Config.StaticData;
 /// 
 /// </summary>
 /// <seealso cref="ExcelDna.Integration.IExcelAddIn" />
+// ReSharper disable once CheckNamespace
+// Namespace is set to match ExcelDna
 public class AddIn : IExcelAddIn
 {
     /// <summary>

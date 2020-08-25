@@ -1,6 +1,6 @@
 ﻿using System;
 using Accord.Math;
-using QuantSA.General.Dates;
+using QuantSA.Core.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
@@ -13,8 +13,8 @@ namespace QuantSA.Core.MarketData
     /// The curve parameterizes lambda as a function of T, the time in years since the anchor date and 
     /// survival is given by exp(-lambda(T)*T)
     /// </summary>
-    /// <seealso cref="ISurvivalProbabilitySource" />
-    public class HazardCurve : ISurvivalProbabilitySource
+    /// <seealso cref="SurvivalProbabilitySource" />
+    public class HazardCurve : SurvivalProbabilitySource
     {
         private readonly double[] _hazardRates;
         private Date[] _dates;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using QuantSA.General;
-using QuantSA.Shared;
+﻿using System.Collections.Generic;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 
@@ -12,14 +9,14 @@ namespace QuantSA.Core.Products.Rates
     /// <remarks>
     /// This fixed rate loan has been implemented as a CashLeg with a convenient constructor.
     /// </remarks>
-    /// <seealso cref="QuantSA.General.CashLeg" />
+    /// <seealso cref="CashLeg" />
     
     public class LoanFixedRate : CashLeg
     {
-        private double[] balanceAmounts;
-        private Date[] balanceDates;
-        private Currency ccy;
-        private double fixedRate;
+        private double[] _balanceAmounts;
+        private Date[] _balanceDates;
+        private Currency _ccy;
+        private double _fixedRate;
 
         /// <summary>
         /// Create a fixed rate loan from a loan profile.  The first date in the profile is the disbursment date and 
@@ -34,11 +31,11 @@ namespace QuantSA.Core.Products.Rates
             Currency ccy)
         {
             var loan = new LoanFixedRate();
-            loan.balanceAmounts = balanceAmounts;
-            loan.balanceDates = balanceDates;
+            loan._balanceAmounts = balanceAmounts;
+            loan._balanceDates = balanceDates;
             loan.valueDate = null;
-            loan.ccy = ccy;
-            loan.fixedRate = simpleFixedRate;
+            loan._ccy = ccy;
+            loan._fixedRate = simpleFixedRate;
             loan.cfs = new List<Cashflow>();
             loan.cfs.Add(new Cashflow(balanceDates[0], -balanceAmounts[0], ccy));
 
@@ -50,7 +47,7 @@ namespace QuantSA.Core.Products.Rates
                 loan.cfs.Add(new Cashflow(balanceDates[i], notional + interest, ccy));
             }
 
-            loan.type = "LoanFixedRate";
+            loan.Type = "LoanFixedRate";
             return loan;
         }
     }

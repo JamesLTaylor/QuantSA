@@ -24,7 +24,7 @@ namespace QuantSA.Valuation.Models.CreditFX
         private readonly double _fxVol;
         private readonly double _relJumpSizeInDefault;
         private readonly double _simRecoveryRate;
-        private readonly ISurvivalProbabilitySource _survivalProbSource;
+        private readonly SurvivalProbabilitySource _survivalProbSource;
         private readonly IDiscountingSource _valueCurrencyDiscount;
         [JsonIgnore] private List<Date> _allRequiredDates; // the set of all dates that will be simulated.
         [JsonIgnore] private Date _anchorDate;
@@ -47,7 +47,7 @@ namespace QuantSA.Valuation.Models.CreditFX
         /// other currency is USD then the FX is modeled as ZAR per USD and in default the FX rate will change to:
         /// rate before default * (1 + relJumpSizeInDefault).</param>
         /// <param name="expectedRecoveryRate">The constant recovery rate that will be assumed to apply in default.</param>
-        public DeterministicCreditWithFXJump(ISurvivalProbabilitySource survivalProbSource,
+        public DeterministicCreditWithFXJump(SurvivalProbabilitySource survivalProbSource,
             CurrencyPair ccyPair, IFXSource fxSource, IDiscountingSource valueCurrencyDiscount,
             double fxVol, double relJumpSizeInDefault, double expectedRecoveryRate)
         {
@@ -155,7 +155,7 @@ namespace QuantSA.Valuation.Models.CreditFX
             double newFXfwd;
 
 
-            var hazEst = _survivalProbSource.GetSP(_survivalProbSource.getAnchorDate().AddTenor(Tenor.FromYears(1)));
+            var hazEst = _survivalProbSource.GetSP(_survivalProbSource.GetAnchorDate().AddTenor(Tenor.FromYears(1)));
             hazEst = -Math.Log(hazEst);
             // Simulate the default
             var tau = _uniform.Generate();

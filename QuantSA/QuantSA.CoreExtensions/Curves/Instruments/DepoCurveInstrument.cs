@@ -1,5 +1,5 @@
 ﻿using System;
-using QuantSA.General.Conventions.DayCount;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 

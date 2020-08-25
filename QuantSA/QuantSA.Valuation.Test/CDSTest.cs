@@ -2,17 +2,14 @@
 using Accord.Math;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.Dates;
 using QuantSA.Core.MarketData;
-using QuantSA.General;
-using QuantSA.General.Dates;
+using QuantSA.Core.Products.Credit;
 using QuantSA.Shared.Dates;
-using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.CreditFX;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class CDSTest

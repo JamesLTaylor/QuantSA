@@ -1,8 +1,7 @@
 ﻿using System;
-using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.General.Conventions.DayCount
+namespace QuantSA.Shared.Conventions.DayCount
 {
     public class Thirty360Euro : IDayCountConvention
     {

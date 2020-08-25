@@ -1,12 +1,13 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
-using ExcelDna.Integration;
 using ExcelDna.Integration.CustomUI;
-using QuantSA.Excel;
+using QuantSA.Excel.Addin;
 using QuantSA.Excel.Addin.Properties;
 using QuantSA.Excel.Shared;
 
 [ComVisible(true)]
+// ReSharper disable once CheckNamespace
+// Namespace matches ExcelDna
 public class Ribbon : ExcelRibbon
 {
     public override string GetCustomUI(string uiName)

@@ -5,6 +5,7 @@ using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
 using Newtonsoft.Json;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Exceptions;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
@@ -56,7 +57,7 @@ namespace QuantSA.Valuation.Models.Equity
             foreach (var floatingRateSource in rateForecastCurves)
             {
                 if (floatingRateSource == null) continue;
-                this._rateForecastCurves.Add(floatingRateSource.GetFloatingIndex().ToString(), floatingRateSource);
+                _rateForecastCurves.Add(floatingRateSource.GetFloatingIndex().ToString(), floatingRateSource);
             }
         }
 
@@ -73,7 +74,7 @@ namespace QuantSA.Valuation.Models.Equity
             if (index is Dividend)
             {
                 var result = Vector.Zeros(requiredTimes.Count);
-                var shareIndex = _shares.IndexOf(((Dividend) index).underlying);
+                var shareIndex = _shares.IndexOf(((Dividend) index).Underlying);
                 var divCounter = 0;
                 foreach (int dateInt in _allRequiredDates)
                 {
@@ -89,9 +90,9 @@ namespace QuantSA.Valuation.Models.Equity
 
                 return result;
             }
-            else
+            if (index is Share share)
             {
-                var shareIndex = _shares.IndexOf(index);
+                var shareIndex = _shares.IndexOf(share);
                 var result = new double[requiredTimes.Count];
                 for (var i = 0; i < requiredTimes.Count; i++)
                     if (requiredTimes[i] == _anchorDate)
@@ -100,6 +101,9 @@ namespace QuantSA.Valuation.Models.Equity
                         result[i] = _simulation[requiredTimes[i]][shareIndex];
                 return result;
             }
+
+            throw new MarketObservableNotSupportedException(
+                $"{index} is not supported by this {nameof(EquitySimulator)}");
         }
 
         /// <summary>
@@ -115,7 +119,7 @@ namespace QuantSA.Valuation.Models.Equity
 
             var divIndex = index as Dividend;
             if (divIndex != null)
-                return _shares.Contains(divIndex.underlying);
+                return _shares.Contains(divIndex.Underlying);
             return false;
         }
 

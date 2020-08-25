@@ -79,12 +79,12 @@ namespace QuantSA.Shared.Dates
             return DateTime.DaysInMonth(y, m);
         }
 
-        public static Date endOfMonth(Date d)
+        public static Date EndOfMonth(Date d)
         {
             return new Date(d - d.Day + DaysInMonth(d.Year, d.Month));
         }
 
-        public static bool isEndOfMonth(Date d)
+        public static bool IsEndOfMonth(Date d)
         {
             return d.Day == DaysInMonth(d.Year, d.Month);
         }

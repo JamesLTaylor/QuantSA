@@ -10,8 +10,8 @@ namespace QuantSA.Core.Products.SAMarket
     /// </summary>
     public class BesaJseBond : ProductWrapper
     {
-        private readonly List<Cashflow> cfs;
-        public double annualCouponRate;
+        private readonly List<Cashflow> _cfs;
+        public readonly double annualCouponRate;
 
         /// <summary>
         /// The number of days before a coupon date that the bond starts trading ex.
@@ -51,13 +51,13 @@ namespace QuantSA.Core.Products.SAMarket
             this.couponMonth2 = couponMonth2;
             this.couponDay2 = couponDay2;
 
-            cfs = new List<Cashflow> {new Cashflow(maturityDate, notional, ccy)};
+            _cfs = new List<Cashflow> {new Cashflow(maturityDate, notional, ccy)};
             Init();
         }
 
         public override List<Cashflow> GetCFs()
         {
-            return cfs;
+            return _cfs;
         }
     }
 }

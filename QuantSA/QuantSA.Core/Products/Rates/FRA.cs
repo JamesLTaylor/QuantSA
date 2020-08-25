@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuantSA.General.Conventions.DayCount;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
@@ -15,14 +14,14 @@ namespace QuantSA.Core.Products.Rates
     /// <seealso cref="ProductWrapper" />
     public class FRA : ProductWrapper
     {
-        private readonly double accrualFraction;
-        private readonly Currency ccy;
-        private readonly Date farDate;
-        private readonly FloatRateIndex floatIndex;
-        private readonly Date nearDate;
-        private readonly double notional;
-        private readonly bool payFixed;
-        private readonly double rate;
+        private readonly double _accrualFraction;
+        private readonly Currency _ccy;
+        private readonly Date _farDate;
+        private readonly FloatRateIndex _floatIndex;
+        private readonly Date _nearDate;
+        private readonly double _notional;
+        private readonly bool _payFixed;
+        private readonly double _rate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FRA"/> class.
@@ -37,14 +36,14 @@ namespace QuantSA.Core.Products.Rates
         public FRA(double notional, double accrualFraction, double rate, bool payFixed, Date nearDate,
             Date farDate, FloatRateIndex floatIndex)
         {
-            this.accrualFraction = accrualFraction;
-            this.notional = notional;
-            this.rate = rate;
-            this.payFixed = payFixed;
-            this.nearDate = nearDate;
-            this.farDate = farDate;
-            this.floatIndex = floatIndex;
-            ccy = floatIndex.Currency;
+            _accrualFraction = accrualFraction;
+            _notional = notional;
+            _rate = rate;
+            _payFixed = payFixed;
+            _nearDate = nearDate;
+            _farDate = farDate;
+            _floatIndex = floatIndex;
+            _ccy = floatIndex.Currency;
             Init();
         }
 
@@ -91,10 +90,10 @@ namespace QuantSA.Core.Products.Rates
 
         public override List<Cashflow> GetCFs()
         {
-            var indexValue = Get(floatIndex, nearDate);
-            var amount = notional * (indexValue - rate) * accrualFraction / (1 + indexValue * accrualFraction);
-            if (!payFixed) amount = -1.0 * amount;
-            return new List<Cashflow> {new Cashflow(nearDate, amount, ccy)};
+            var indexValue = Get(_floatIndex, _nearDate);
+            var amount = _notional * (indexValue - _rate) * _accrualFraction / (1 + indexValue * _accrualFraction);
+            if (!_payFixed) amount = -1.0 * amount;
+            return new List<Cashflow> {new Cashflow(_nearDate, amount, _ccy)};
         }
     }
 }

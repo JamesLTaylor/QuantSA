@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Dates;
 
-namespace GeneralTest.Conventions.BusinessDay
+namespace QuantSA.Shared.Test.Conventions.BusinessDay
 {
     [TestClass]
     public class BusinessDayTests

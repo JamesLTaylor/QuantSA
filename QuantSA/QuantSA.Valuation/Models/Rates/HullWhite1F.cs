@@ -19,23 +19,23 @@ namespace QuantSA.Valuation.Models.Rates
     /// A single factor Hull White simulator.  It can simulate a numeraire and any number of
     /// forward rates off the same curve.
     /// </summary>
-    /// <seealso cref="QuantSA.Valuation.NumeraireSimulator" />
+    /// <seealso cref="NumeraireSimulator" />
     public class HullWhite1F : NumeraireSimulator
     {
         private List<FloatRateIndex> _floatRateIndices;
         private readonly double _inputRate;
-        private readonly double a; // mean reversion
-        private readonly Currency currency;
-        private readonly double r0;
-        private readonly double vol;
+        private readonly double _a; // mean reversion
+        private readonly Currency _currency;
+        private readonly double _r0;
+        private readonly double _vol;
 
         [JsonIgnore] private Date _anchorDate;
-        [JsonIgnore] private List<Date> allDates;
-        [JsonIgnore] private double[] allDatesDouble;
-        [JsonIgnore] private double[] bankAccount;
-        [JsonIgnore] private MarketForwards fM;
-        [JsonIgnore] private MarketBonds PM;
-        [JsonIgnore] private double[] r;
+        [JsonIgnore] private List<Date> _allDates;
+        [JsonIgnore] private double[] _allDatesDouble;
+        [JsonIgnore] private double[] _bankAccount;
+        [JsonIgnore] private MarketForwards _fM;
+        [JsonIgnore] private MarketBonds _pm;
+        [JsonIgnore] private double[] _r;
         [JsonIgnore] private NormalDistribution _dist;
 
 
@@ -51,18 +51,18 @@ namespace QuantSA.Valuation.Models.Rates
         public HullWhite1F(Currency currency, double a, double vol, double r0, double inputRate,
             IEnumerable<FloatRateIndex> floatRateIndices = null)
         {
-            this.a = a;
-            this.vol = vol;
-            this.r0 = r0;
+            _a = a;
+            _vol = vol;
+            _r0 = r0;
             _inputRate = inputRate;
             _floatRateIndices = floatRateIndices != null ? floatRateIndices.ToList() : new List<FloatRateIndex>();
-            this.currency = currency;
+            _currency = currency;
         }
 
         private double Theta(Date date)
         {
             var t = (date - _anchorDate) / 365.0;
-            return a * fM(date) + vol * vol / (2 * a) * (1 - Math.Exp(-2 * a * t));
+            return _a * _fM(date) + _vol * _vol / (2 * _a) * (1 - Math.Exp(-2 * _a * t));
         }
 
 
@@ -79,29 +79,29 @@ namespace QuantSA.Valuation.Models.Rates
             // Equation 3.39 in Brigo Mercurio 2nd edition:
             var T = (date2 - _anchorDate) / 365.0;
             var t = (date1 - _anchorDate) / 365.0;
-            var B = 1 / a * (1 - Math.Exp(-a * (T - t)));
-            var A = PM(date2) / PM(date1);
-            A *= Math.Exp(B * fM(date1) - vol * vol / (4 * a) * (1 - Math.Exp(-2 * a * t)) * B * B);
+            var B = 1 / _a * (1 - Math.Exp(-_a * (T - t)));
+            var A = _pm(date2) / _pm(date1);
+            A *= Math.Exp(B * _fM(date1) - _vol * _vol / (4 * _a) * (1 - Math.Exp(-2 * _a * t)) * B * B);
             return A * Math.Exp(-B * r);
         }
 
         public override void Reset()
         {
-            allDates = new List<Date>();
+            _allDates = new List<Date>();
         }
 
         public override void SetRequiredDates(MarketObservable index, List<Date> requiredDates)
         {
-            if (allDates == null) allDates = requiredDates;
+            if (_allDates == null) _allDates = requiredDates;
             else
-                allDates.AddRange(requiredDates);
+                _allDates.AddRange(requiredDates);
         }
 
         public override void SetNumeraireDates(List<Date> requiredDates)
         {
-            if (allDates == null) allDates = requiredDates;
+            if (_allDates == null) _allDates = requiredDates;
             else
-                allDates.AddRange(requiredDates);
+                _allDates.AddRange(requiredDates);
         }
 
         /// <summary>
@@ -112,41 +112,41 @@ namespace QuantSA.Valuation.Models.Rates
         public override void Prepare(Date anchorDate)
         {
             _anchorDate = anchorDate;
-            fM = date => _inputRate;
-            PM = date => Math.Exp(-_inputRate * (date - anchorDate) / 365.0);
+            _fM = date => _inputRate;
+            _pm = date => Math.Exp(-_inputRate * (date - anchorDate) / 365.0);
             double minStepSize = 20;
-            allDates.Insert(0, anchorDate);
-            allDates = allDates.Distinct().ToList();
-            allDates.Sort();
+            _allDates.Insert(0, anchorDate);
+            _allDates = _allDates.Distinct().ToList();
+            _allDates.Sort();
             var newDates = new List<Date>();
-            newDates.Add(new Date(allDates[0]));
-            for (var i = 1; i < allDates.Count; i++)
+            newDates.Add(new Date(_allDates[0]));
+            for (var i = 1; i < _allDates.Count; i++)
             {
-                var nSteps = (int) Math.Floor((allDates[i] - allDates[i - 1]) / minStepSize);
-                var days = (allDates[i] - allDates[i - 1]) / (nSteps + 1);
+                var nSteps = (int) Math.Floor((_allDates[i] - _allDates[i - 1]) / minStepSize);
+                var days = (_allDates[i] - _allDates[i - 1]) / (nSteps + 1);
                 for (var j = 0; j < nSteps; j++)
-                    newDates.Add(new Date(allDates[i - 1].AddTenor(Tenor.FromDays((j + 1) * days))));
-                newDates.Add(new Date(allDates[i]));
+                    newDates.Add(new Date(_allDates[i - 1].AddTenor(Tenor.FromDays((j + 1) * days))));
+                newDates.Add(new Date(_allDates[i]));
             }
 
-            allDates = newDates;
-            allDatesDouble = allDates.Select(date => (double) date).ToArray();
+            _allDates = newDates;
+            _allDatesDouble = _allDates.Select(date => (double) date).ToArray();
             _dist = new NormalDistribution();
             Generator.Seed = -1585814591; // This magic number is: "HW1FSimulator".GetHashCode();
         }
 
         public override void RunSimulation(int simNumber)
         {
-            var W = _dist.Generate(allDates.Count - 1);
-            r = new double[allDates.Count];
-            bankAccount = new double[allDates.Count];
-            r[0] = r0;
-            bankAccount[0] = 1;
-            for (var i = 0; i < allDates.Count - 1; i++)
+            var W = _dist.Generate(_allDates.Count - 1);
+            _r = new double[_allDates.Count];
+            _bankAccount = new double[_allDates.Count];
+            _r[0] = _r0;
+            _bankAccount[0] = 1;
+            for (var i = 0; i < _allDates.Count - 1; i++)
             {
-                var dt = (allDates[i + 1] - allDates[i]) / 365.0;
-                r[i + 1] = r[i] + (Theta(allDates[i + 1]) - a * r[i]) * dt + vol * Math.Sqrt(dt) * W[i];
-                bankAccount[i + 1] = bankAccount[i] * Math.Exp(r[i] * dt);
+                var dt = (_allDates[i + 1] - _allDates[i]) / 365.0;
+                _r[i + 1] = _r[i] + (Theta(_allDates[i + 1]) - _a * _r[i]) * dt + _vol * Math.Sqrt(dt) * W[i];
+                _bankAccount[i + 1] = _bankAccount[i] * Math.Exp(_r[i] * dt);
             }
         }
 
@@ -156,7 +156,7 @@ namespace QuantSA.Valuation.Models.Rates
             var result = new double[requiredDates.Count];
             for (var i = 0; i < requiredDates.Count; i++)
             {
-                var rt = Tools.Interpolate1D(requiredDates[i].value, allDatesDouble, r, r[0], r[r.Length - 1]);
+                var rt = Tools.Interpolate1D(requiredDates[i].value, _allDatesDouble, _r, _r[0], _r[_r.Length - 1]);
                 var tenor = floatRateIndex.Tenor;
                 var date2 = requiredDates[i].AddTenor(tenor);
                 var bondPrice = BondPrice(rt, requiredDates[i], date2);
@@ -169,13 +169,13 @@ namespace QuantSA.Valuation.Models.Rates
 
         public override double[] GetUnderlyingFactors(Date date)
         {
-            var rt = Tools.Interpolate1D(date.value, allDatesDouble, r, r[0], r[r.Length - 1]);
+            var rt = Tools.Interpolate1D(date.value, _allDatesDouble, _r, _r[0], _r[_r.Length - 1]);
             return new[] {rt};
         }
 
         public override Currency GetNumeraireCurrency()
         {
-            return currency;
+            return _currency;
         }
 
         public override double Numeraire(Date valueDate)
@@ -184,7 +184,7 @@ namespace QuantSA.Valuation.Models.Rates
                 throw new ArgumentException(
                     $"Numeraire requested at: {valueDate} but model only starts at {_anchorDate}");
             if (valueDate == _anchorDate) return 1.0;
-            return Tools.Interpolate1D(valueDate, allDatesDouble, bankAccount, 1, bankAccount.Last());
+            return Tools.Interpolate1D(valueDate, _allDatesDouble, _bankAccount, 1, _bankAccount.Last());
         }
 
         public override bool ProvidesIndex(MarketObservable index)

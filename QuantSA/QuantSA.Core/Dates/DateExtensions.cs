@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using QuantSA.Shared.Dates;
 
-namespace QuantSA.General.Dates
+namespace QuantSA.Core.Dates
 {
     /// <summary>
     /// Extension methods for Dates and arrays of Dates
@@ -19,8 +15,8 @@ namespace QuantSA.General.Dates
         /// <returns></returns>
         public static double[] GetValues(this Date[] dates)
         {
-            double[] values = new double[dates.Length];
-            for (int i = 0; i < dates.Length; i++) { values[i] = dates[i]; }
+            var values = new double[dates.Length];
+            for (var i = 0; i < dates.Length; i++) values[i] = dates[i];
 
             return values;
         }
@@ -32,8 +28,8 @@ namespace QuantSA.General.Dates
         /// <returns></returns>
         public static List<Date> Clone(this List<Date> dates)
         {
-            List<Date> newDates = new List<Date>();
-            foreach (Date date in dates) newDates.Add(new Date(date));
+            var newDates = new List<Date>();
+            foreach (var date in dates) newDates.Add(new Date(date));
             return newDates;
         }
     }

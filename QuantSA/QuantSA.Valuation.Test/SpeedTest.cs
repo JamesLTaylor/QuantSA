@@ -5,17 +5,14 @@ using Accord.Math.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.MarketData;
-using QuantSA.Core.Products.Rates;
-using QuantSA.General;
+using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.Debug;
 using QuantSA.Shared.MarketData;
-using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
+using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class SpeedTest
@@ -65,18 +62,16 @@ namespace ValuationTest
 
             // Set up the model
             var valueDate = new Date(2016, 11, 21);
-            Date[] dates = {new Date(2016, 11, 21), new Date(2047, 11, 21)};
             Date[] datesLong =
             {
                 new Date(2016, 11, 21), new Date(2018, 11, 21), new Date(2020, 11, 21), new Date(2022, 11, 21),
                 new Date(2024, 11, 21), new Date(2047, 11, 21)
             };
-            double[] rates = {0.07, 0.07};
             double[] ratesLong = {0.07, 0.071, 0.072, 0.073, 0.074, 0.08};
             IDiscountingSource discountCurve = new DatesAndRates(TestHelpers.ZAR, valueDate, datesLong, ratesLong);
             IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(discountCurve, TestHelpers.Jibar3M,
                 new FloatingRateFixingCurve1Rate(valueDate, 0.07, TestHelpers.Jibar3M));
-            var curveSim = new DeterminsiticCurves(discountCurve);
+            var curveSim = new DeterministicCurves(discountCurve);
             curveSim.AddRateForecast(forecastCurve);
             var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
 

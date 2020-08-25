@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using Accord.Math;
 using Accord.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
-using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     [TestClass]
     public class HullWhite1FTest
@@ -44,7 +40,7 @@ namespace ValuationTest
             var dt = (simDates[1] - simDates[0]) / 365.0;
             var impliedFwd = (Math.Exp(flatRate * dt) - 1) / dt;
             var discountedFRA = simFwdValues.GetColumn(0).Subtract(impliedFwd);
-            discountedFRA = Elementwise.Multiply(discountedFRA, simFwdValues.GetColumn(1));
+            discountedFRA = discountedFRA.Multiply(simFwdValues.GetColumn(1));
             var actual = discountedFRA.Mean();
             Assert.AreEqual(0.0, actual, 2e-4);
         }

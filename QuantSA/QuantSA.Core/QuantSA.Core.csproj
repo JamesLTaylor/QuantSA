@@ -17,4 +17,8 @@
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Products\FX\" />
+  </ItemGroup>
+
 </Project>

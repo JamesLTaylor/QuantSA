@@ -242,7 +242,7 @@ namespace QuantSA.Excel.Addin.Functions
             if (suppliedType.IsArray && suppliedType.GetArrayRank() == 2)
                 return ConvertOutputMatrix(suppliedType, output, outputName);
             if (typeof(IEnumerable).IsAssignableFrom(suppliedType) && !typeof(string).IsAssignableFrom(suppliedType))
-                return ConverOutputIEnumerable(suppliedType, output);
+                return ConvertOutputIEnumerable(suppliedType, output);
             return ConvertOutputScalarTo2D(suppliedType, output, outputName);
         }
 
@@ -271,7 +271,7 @@ namespace QuantSA.Excel.Addin.Functions
             return result;
         }
 
-        private static object[,] ConverOutputIEnumerable(Type suppliedType, object output)
+        private static object[,] ConvertOutputIEnumerable(Type suppliedType, object output)
         {
             throw new NotImplementedException();
         }

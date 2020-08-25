@@ -1,24 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products.Rates
 {
     public class FixedLeg : Product
     {
-        private readonly double[] accrualFractions;
-        private readonly Currency ccy;
-        private readonly double[] notionals;
-        private readonly Date[] paymentDates;
+        private readonly double[] _accrualFractions;
+        private readonly Currency _ccy;
+        private readonly double[] _notionals;
+        private readonly Date[] _paymentDates;
 
         /// <summary>
         /// The simple rates used to calculate cashflows.
         /// </summary>
-        private readonly double[] rates;
+        private readonly double[] _rates;
 
-        private Date valueDate;
+        private Date _valueDate;
 
         public FixedLeg()
         {
@@ -28,19 +29,19 @@ namespace QuantSA.General
             IEnumerable<double> rates,
             IEnumerable<double> accrualFractions)
         {
-            this.ccy = ccy;
-            this.paymentDates = paymentDates.ToArray();
-            this.notionals = notionals.ToArray();
-            this.rates = rates.ToArray();
-            this.accrualFractions = accrualFractions.ToArray();
+            _ccy = ccy;
+            _paymentDates = paymentDates.ToArray();
+            _notionals = notionals.ToArray();
+            _rates = rates.ToArray();
+            _accrualFractions = accrualFractions.ToArray();
         }
 
         public override List<Cashflow> GetCFs()
         {
             var cfs = new List<Cashflow>();
-            for (var i = 0; i < paymentDates.Length; i++)
-                if (paymentDates[i] > valueDate)
-                    cfs.Add(new Cashflow(paymentDates[i], notionals[i] * accrualFractions[i] * rates[i], ccy));
+            for (var i = 0; i < _paymentDates.Length; i++)
+                if (_paymentDates[i] > _valueDate)
+                    cfs.Add(new Cashflow(_paymentDates[i], _notionals[i] * _accrualFractions[i] * _rates[i], _ccy));
             return cfs;
         }
 
@@ -66,20 +67,20 @@ namespace QuantSA.General
 
         public override void SetValueDate(Date valueDate)
         {
-            this.valueDate = valueDate;
+            _valueDate = valueDate;
         }
 
         public override List<Currency> GetCashflowCurrencies()
         {
-            return new List<Currency> {ccy};
+            return new List<Currency> {_ccy};
         }
 
         public override List<Date> GetCashflowDates(Currency ccy)
         {
             var dates = new List<Date>();
-            for (var i = 0; i < paymentDates.Length; i++)
-                if (paymentDates[i] > valueDate)
-                    dates.Add(paymentDates[i]);
+            for (var i = 0; i < _paymentDates.Length; i++)
+                if (_paymentDates[i] > _valueDate)
+                    dates.Add(_paymentDates[i]);
             return dates;
         }
     }

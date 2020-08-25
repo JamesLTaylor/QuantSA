@@ -1,28 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Core.CurvesAndSurfaces;
+using QuantSA.Core.Primitives;
 using QuantSA.Core.Products;
-using QuantSA.General;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketData;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Solution.Test;
-using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Equity;
 
-namespace ValuationTest
+namespace QuantSA.Valuation.Test
 {
     public class ProductWrapperEquitySample1 : ProductWrapper
     {
-        private readonly Share aaa = new Share("AAA", TestHelpers.ZAR);
-        private readonly Share alsi = new Share("ALSI", TestHelpers.ZAR);
-        private readonly Date date1 = new Date(2016, 9, 30); // The issue date of the scheme
-        private readonly Date date2 = new Date(2017, 9, 30); // The first performance measurment date
+        private readonly Share _aaa = new Share("AAA", TestHelpers.ZAR);
+        private readonly Share _alsi = new Share("ALSI", TestHelpers.ZAR);
+        private readonly Date _date1 = new Date(2016, 9, 30); // The issue date of the scheme
+        private readonly Date _date2 = new Date(2017, 9, 30); // The first performance measurment date
 
         private readonly Date
-            date3 = new Date(2018, 9, 30); // The second performance measurement date and the payment date.
+            _date3 = new Date(2018, 9, 30); // The second performance measurement date and the payment date.
 
         private readonly double threshAbs = 0.10; // AAA share must return at least 10% each year 
         private readonly double threshRel = 0.03; // AA share must outperform the ALSI by at least 3% in each year
@@ -33,15 +31,15 @@ namespace ValuationTest
         /// </summary>
         public ProductWrapperEquitySample1() : base(TestHelpers.ZAR)
         {
-            SetRequired(aaa, date1);
-            SetRequired(aaa, date2);
-            SetRequired(aaa, date3);
-            SetRequired(alsi, date1);
-            SetRequired(alsi, date2);
-            SetRequired(alsi, date3);
+            SetRequired(_aaa, _date1);
+            SetRequired(_aaa, _date2);
+            SetRequired(_aaa, _date3);
+            SetRequired(_alsi, _date1);
+            SetRequired(_alsi, _date2);
+            SetRequired(_alsi, _date3);
             // cashflow dates
             var cfDates = new List<Date>();
-            cfDates.Add(date3);
+            cfDates.Add(_date3);
             SetCashflowDates(cfDates);
             Init();
         }
@@ -50,37 +48,37 @@ namespace ValuationTest
         {
             double w1;
             double w2;
-            var year1AAAReturn = Get(aaa, date2) / Get(aaa, date1) - 1;
-            var year2AAAReturn = Get(aaa, date3) / Get(aaa, date2) - 1;
-            var year1ALSIReturn = Get(alsi, date2) / Get(alsi, date1) - 1;
-            var year2ALSIReturn = Get(alsi, date3) / Get(alsi, date2) - 1;
-            if (year1AAAReturn > threshAbs && year2AAAReturn > threshAbs)
+            var year1AaaReturn = Get(_aaa, _date2) / Get(_aaa, _date1) - 1;
+            var year2AaaReturn = Get(_aaa, _date3) / Get(_aaa, _date2) - 1;
+            var year1AlsiReturn = Get(_alsi, _date2) / Get(_alsi, _date1) - 1;
+            var year2AlsiReturn = Get(_alsi, _date3) / Get(_alsi, _date2) - 1;
+            if (year1AaaReturn > threshAbs && year2AaaReturn > threshAbs)
                 w1 = 1.0;
             else
                 w1 = 0.0;
 
-            if (year1AAAReturn - year1ALSIReturn > threshRel && year2AAAReturn - year2ALSIReturn > threshRel)
+            if (year1AaaReturn - year1AlsiReturn > threshRel && year2AaaReturn - year2AlsiReturn > threshRel)
                 w2 = 1.0;
             else
                 w2 = 0.0;
 
-            return new List<Cashflow> {new Cashflow(date3, Get(aaa, date3) * (w1 + w2), TestHelpers.ZAR)};
+            return new List<Cashflow> {new Cashflow(_date3, Get(_aaa, _date3) * (w1 + w2), TestHelpers.ZAR)};
         }
     }
 
     
     public class ProductWrapperEquitySample2 : ProductWrapper
     {
-        private readonly Share aaa = new Share("AAA", TestHelpers.ZAR);
-        private readonly Share alsi = new Share("ALSI", TestHelpers.ZAR);
-        private readonly Date date1 = new Date(2016, 9, 30); // The issue date of the scheme
-        private readonly Date date2 = new Date(2017, 9, 30); // The first performance measurment date
+        private readonly Share _aaa = new Share("AAA", TestHelpers.ZAR);
+        private readonly Share _alsi = new Share("ALSI", TestHelpers.ZAR);
+        private readonly Date _date1 = new Date(2016, 9, 30); // The issue date of the scheme
+        private readonly Date _date2 = new Date(2017, 9, 30); // The first performance measurment date
 
         private readonly Date
-            date3 = new Date(2018, 9, 30); // The second performance measurement date and the payment date.
+            _date3 = new Date(2018, 9, 30); // The second performance measurement date and the payment date.
 
-        private readonly double threshAbs = 0.10; // AAA share must return at least 10% each year 
-        private readonly double threshRel = 0.03; // AA share must outperform the ALSI by at least 3% in each year
+        private const double ThreshAbs = 0.10; // AAA share must return at least 10% each year 
+        private const double ThreshRel = 0.03; // AA share must outperform the ALSI by at least 3% in each year
 
         public ProductWrapperEquitySample2()
         {
@@ -91,21 +89,21 @@ namespace ValuationTest
         {
             double w1;
             double w2;
-            var year1AAAReturn = Get(aaa, date2) / Get(aaa, date1) - 1;
-            var year2AAAReturn = Get(aaa, date3) / Get(aaa, date2) - 1;
-            var year1ALSIReturn = Get(alsi, date2) / Get(alsi, date1) - 1;
-            var year2ALSIReturn = Get(alsi, date3) / Get(alsi, date2) - 1;
-            if (year1AAAReturn > threshAbs && year2AAAReturn > threshAbs)
+            var year1AaaReturn = Get(_aaa, _date2) / Get(_aaa, _date1) - 1;
+            var year2AaaReturn = Get(_aaa, _date3) / Get(_aaa, _date2) - 1;
+            var year1AlsiReturn = Get(_alsi, _date2) / Get(_alsi, _date1) - 1;
+            var year2AlsiReturn = Get(_alsi, _date3) / Get(_alsi, _date2) - 1;
+            if (year1AaaReturn > ThreshAbs && year2AaaReturn > ThreshAbs)
                 w1 = 1.0;
             else
                 w1 = 0.0;
 
-            if (year1AAAReturn - year1ALSIReturn > threshRel && year2AAAReturn - year2ALSIReturn > threshRel)
+            if (year1AaaReturn - year1AlsiReturn > ThreshRel && year2AaaReturn - year2AlsiReturn > ThreshRel)
                 w2 = 1.0;
             else
                 w2 = 0.0;
 
-            return new List<Cashflow> {new Cashflow(date3, Get(aaa, date3) * (w1 + w2), TestHelpers.ZAR)};
+            return new List<Cashflow> {new Cashflow(_date3, Get(_aaa, _date3) * (w1 + w2), TestHelpers.ZAR)};
         }
     }
 

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
+using QuantSA.Core.Dates;
 using QuantSA.Core.Products.Rates;
-using QuantSA.General;
-using QuantSA.General.Dates;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 

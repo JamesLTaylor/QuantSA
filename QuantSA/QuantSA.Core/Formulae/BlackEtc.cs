@@ -15,22 +15,22 @@ namespace QuantSA.Core.Formulae
         /// The Black the scholes formula
         /// </summary>
         /// <param name="putOrCall">put or call.</param>
-        /// <param name="K">The strike.</param>
+        /// <param name="strike">The strike.</param>
         /// <param name="T">The time to maturity in years.</param>
-        /// <param name="S">The underlying spot price.</param>
+        /// <param name="spot">The underlying spot price.</param>
         /// <param name="vol">The lognormal volatility of the underlying price.</param>
         /// <param name="rate">The continuous rate used for drifting the underlying and discounting the payoff.</param>
         /// <param name="div">The continuous dividend yield that decreased the drift on the underlying.</param>
         /// <returns></returns>
-        public static double BlackScholes(PutOrCall putOrCall, double K, double T, double S, double vol, double rate,
+        public static double BlackScholes(PutOrCall putOrCall, double strike, double T, double spot, double vol, double rate,
             double div)
         {
             var dist = new Normal();
             var sigmaSqrtT = vol * Math.Sqrt(T);
-            var d1 = 1 / sigmaSqrtT * (Math.Log(S / K) + rate - div + 0.5 * vol * vol);
+            var d1 = 1 / sigmaSqrtT * (Math.Log(spot / strike) + rate - div + 0.5 * vol * vol);
             var d2 = d1 - sigmaSqrtT;
-            var F = S * Math.Exp((rate - div) * T);
-            return Math.Exp(-rate * T) * (F * dist.CumulativeDistribution(d1) - K * dist.CumulativeDistribution(d2));
+            var forward = spot * Math.Exp((rate - div) * T);
+            return Math.Exp(-rate * T) * (forward * dist.CumulativeDistribution(d1) - strike * dist.CumulativeDistribution(d2));
         }
 
         /// <summary>

@@ -1,10 +1,10 @@
 ﻿using ExcelDna.Integration;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Formulae;
+using QuantSA.Core.Primitives;
+using QuantSA.Core.Products;
 using QuantSA.Excel.Shared;
-using QuantSA.General;
-using QuantSA.General.Conventions.DayCount;
-using QuantSA.General.Formulae;
+using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Dates;
 
 namespace QuantSA.ExcelFunctions

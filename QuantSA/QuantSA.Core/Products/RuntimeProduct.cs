@@ -1,6 +1,5 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,10 +7,10 @@ using System.Runtime.Loader;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Emit;
-using QuantSA.Shared.Primitives;
+using QuantSA.Core.Primitives;
+using QuantSA.Shared.Exceptions;
 
-namespace QuantSA.General
+namespace QuantSA.Core.Products
 {
     public class RuntimeProduct
     {
@@ -120,9 +119,9 @@ namespace QuantSA.General
         /// <returns></returns>
         private static Assembly RoslynCompile(string codeToCompile)
         {
-            SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);
+            var syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);
 
-            string assemblyName = Path.GetRandomFileName();
+            var assemblyName = Path.GetRandomFileName();
             var refPaths = new[] {
                 GetAssemblyByName("System.Private.CoreLib"),
                 GetAssemblyByName("System.Runtime"),
@@ -133,7 +132,7 @@ namespace QuantSA.General
             };
             MetadataReference[] references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();
 
-            CSharpCompilation compilation = CSharpCompilation.Create(
+            var compilation = CSharpCompilation.Create(
                 assemblyName,
                 new[] { syntaxTree },
                 references,
@@ -142,17 +141,17 @@ namespace QuantSA.General
             Assembly assembly = null;
             using (var ms = new MemoryStream())
             {
-                EmitResult result = compilation.Emit(ms);
+                var result = compilation.Emit(ms);
 
                 if (!result.Success)
                 {
-                    IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
+                    var failures = result.Diagnostics.Where(diagnostic =>
                         diagnostic.IsWarningAsError ||
                         diagnostic.Severity == DiagnosticSeverity.Error);
 
-                    foreach (Diagnostic diagnostic in failures)
+                    foreach (var diagnostic in failures)
                     {
-                        Console.Error.WriteLine("\t{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
+                        throw new ScriptException($"{diagnostic.Id}: {diagnostic.GetMessage()}");
                     }
                 }
                 else
