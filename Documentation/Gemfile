@@ -4,4 +4,5 @@ gem 'wdm'
 gem 'jekyll'
 gem 'html-proofer'
 gem "kramdown", ">= 2.3.0"
+gem 'net-ftp'
 
