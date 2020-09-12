@@ -13,8 +13,9 @@ puts "set ftp folder"
 files = Dir.glob("../Documentation/_site/*.*")
 puts "get all files"
 for f in files    
-    puts "putting #{f}"
-    ftp.puttextfile(f)
+	puts "skipping  #{f} because FTP is disabled"
+    # puts "putting #{f}"
+    # ftp.puttextfile(f)
 end
 ftp.close
 
