@@ -6,7 +6,7 @@ using QuantSA.Shared.MarketObservables;
 
 namespace QuantSA.CoreExtensions.Products.Rates
 {
-    public class SwapFactory
+    public static class SwapFactory
     {
         /// <summary>
         /// Constructor for ZAR market standard, fixed for float 3m Jibar swap.
