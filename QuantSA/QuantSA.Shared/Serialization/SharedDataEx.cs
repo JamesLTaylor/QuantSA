@@ -1,4 +1,5 @@
 ﻿using System;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.Shared.Serialization
 {
@@ -9,6 +10,11 @@ namespace QuantSA.Shared.Serialization
             if (!sharedData.TryGet(typeof(T), name, out var obj))
                 throw new ArgumentException($"There is no shared instance of {typeof(T).Name} with name {name}");
             return (T) obj;
+        }
+
+        public static Currency GetCurrency(this ISharedData sharedData, string name)
+        {
+            return Get<Currency>(sharedData, name);
         }
 
         public static bool TryGet<T>(this ISharedData sharedData, string name, out T obj) where T : ISerializableViaName
