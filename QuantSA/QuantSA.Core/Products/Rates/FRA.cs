@@ -15,7 +15,6 @@ namespace QuantSA.Core.Products.Rates
     public class FRA : ProductWrapper
     {
         private readonly double _accrualFraction;
-        private readonly Currency _ccy;
         private readonly Date _farDate;
         private readonly FloatRateIndex _floatIndex;
         private readonly Date _nearDate;
@@ -43,8 +42,6 @@ namespace QuantSA.Core.Products.Rates
             _nearDate = nearDate;
             _farDate = farDate;
             _floatIndex = floatIndex;
-            _ccy = floatIndex.Currency;
-            Init();
         }
 
         /// <summary>
@@ -93,7 +90,7 @@ namespace QuantSA.Core.Products.Rates
             var indexValue = Get(_floatIndex, _nearDate);
             var amount = _notional * (indexValue - _rate) * _accrualFraction / (1 + indexValue * _accrualFraction);
             if (!_payFixed) amount = -1.0 * amount;
-            return new List<Cashflow> {new Cashflow(_nearDate, amount, _ccy)};
+            return new List<Cashflow> {new Cashflow(_nearDate, amount, _floatIndex.Currency) };
         }
     }
 }

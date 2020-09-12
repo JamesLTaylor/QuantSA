@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using QuantSA.Core.Products;
 using QuantSA.Core.Serialization;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
@@ -80,7 +81,10 @@ namespace QuantSA.Core.Primitives
         /// </summary>
         public virtual IProduct Clone()
         {
-            return (Product) Cloner.Clone(this);
+            var clonedProduct = (Product) Cloner.Clone(this);
+            if (clonedProduct is ProductWrapper productWrapper)
+                productWrapper.Init();
+            return clonedProduct;
         }
     }
 }
