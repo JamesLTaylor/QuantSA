@@ -25,7 +25,7 @@ Create a model that will simulate a single FX process and default for a single r
 ## Arguments
 
 * **objectName** The name that this object will be assigned on the map. Should be unique.
-* **survivalProbSource** (ISurvivalProbabilitySource)A curve that provides survival probabilities.  Usually a hazard curve.
+* **survivalProbSource** (SurvivalProbabilitySource)A curve that provides survival probabilities.  Usually a hazard curve.
 * **currencyPair** ([Currency](Currency.html)Pair)The currency pair to be simulated.  It should have the value currency as its counter currency.
 * **fxSource** (IFXSource)The source FX spot and forwards.
 * **valueCurrencyDiscount** (IDiscountingSource)The value currency discount curve.

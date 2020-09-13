@@ -24,7 +24,7 @@ An approximate PFE for a portfolio of trades.
 
 ## Arguments
 
-* **products** (Product[])A list of products.
+* **products** (IProduct[])A list of products.
 * **valueDate** ([Date](Date.html))The value date.
 * **forwardValueDates** ([Date](Date.html)[])The dates at which the expected positive exposure is required.
 * **requiredPecentiles** (Double[])The required percentiles.  95th percentile should be entered as 0.95.  Can be a list of percentiles and the PFE will be calculated at each of the provided levels.

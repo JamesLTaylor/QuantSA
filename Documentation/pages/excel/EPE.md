@@ -24,7 +24,7 @@ Calculate the expected positive exposure for a general portfolio
 
 ## Arguments
 
-* **products** (Product[])A list of products.
+* **products** (IProduct[])A list of products.
 * **valueDate** ([Date](Date.html))The value date.
 * **forwardValueDates** ([Date](Date.html)[])The dates at which the expected positive exposure is required.
 * **model** (NumeraireSimulator)A model able to handle all the market observables required to calculate the cashflows in the portfolio.
