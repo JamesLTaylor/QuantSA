@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Accord.Statistics.Distributions.Univariate;
 using ExcelDna.Integration;
 using log4net;
 using QuantSA.Excel.Addin;
@@ -43,7 +44,7 @@ public class AddIn : IExcelAddIn
             QuantSAState.SetLogger(new ExcelFileLogFactory());
             ExcelDna.IntelliSense.IntelliSenseServer.Install();
             _log = QuantSAState.LogFactory.Get(MethodBase.GetCurrentMethod().DeclaringType);
-            
+            ManuallyUseAssemblies();
             var pathString = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "QuantSA");
             if (!Directory.Exists(pathString)) Directory.CreateDirectory(pathString);
@@ -89,6 +90,16 @@ public class AddIn : IExcelAddIn
                                      "Check the error log file for details.\n\n" +
                                      $"{fileName}");
         }
+    }
+
+    /// <summary>
+    /// Since <see cref="QuantSA.Excel.Addin"/> became a framework assembly with the others being standard assemblies
+    /// Accord was not getting loaded. Somehow manually using Accord here seems to fix that.
+    /// </summary>
+    // TODO: Work out how to have Accord available for the standard assemblies to load without this.
+    private void ManuallyUseAssemblies()
+    {
+        var xDist = new EmpiricalDistribution(new[] { 1.0, 1.1, 1.1, 1.2 });
     }
 
     public void AutoClose()
