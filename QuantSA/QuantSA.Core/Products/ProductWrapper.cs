@@ -39,18 +39,18 @@ namespace QuantSA.Core.Products
 
         protected ProductWrapper()
         {
+            _indexAndDates = new Dictionary<MarketObservable, List<Date>>();
+            _indexAndValues = new Dictionary<MarketObservable, List<double>>();
+            _getIndexValueToUse = GetNormal;
         }
 
         /// <summary>
         /// Constructor with single currency.  The only constructor.
         /// </summary>
         /// <param name="currency"></param>
-        protected ProductWrapper(Currency currency)
+        protected ProductWrapper(Currency currency) : this()
         {
             _currency = currency;
-            _indexAndDates = new Dictionary<MarketObservable, List<Date>>();
-            _indexAndValues = new Dictionary<MarketObservable, List<double>>();
-            _getIndexValueToUse = GetNormal;
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace QuantSA.Core.Products
         /// are required and at which times the cashflows take place.  All the MarketObservable values
         /// are set to 0.1 so the getCFs method must work fine for this value even if it is unnatural.
         /// </summary>
-        protected void Init()
+        public void Init()
         {
             _indexAndDates = new Dictionary<MarketObservable, List<Date>>();
             _indexAndValues = new Dictionary<MarketObservable, List<double>>();
@@ -181,6 +181,7 @@ namespace QuantSA.Core.Products
         public override void SetValueDate(Date valueDate)
         {
             this.valueDate = valueDate;
+            Init();
         }
 
         #endregion

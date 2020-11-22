@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PluginDemo</RootNamespace>
     <AssemblyName>PluginDemo</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,17 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExcelDna.Integration, Version=0.34.6373.42344, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExcelDna.Integration.0.34.6\lib\ExcelDna.Integration.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="ExcelDna.Integration">
+      <HintPath>..\..\QuantSA\packages\ExcelDna.Integration.1.1.0\lib\ExcelDna.Integration.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="QuantSA.Excel.Shared">
-      <HintPath>..\..\QuantSA\QuantSA.Excel.Shared\bin\Debug\QuantSA.Excel.Shared.dll</HintPath>
+      <HintPath>..\..\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Excel.Shared.dll</HintPath>
     </Reference>
     <Reference Include="QuantSA.Shared">
-      <HintPath>..\..\QuantSA\QuantSA.Shared\bin\Debug\QuantSA.Shared.dll</HintPath>
+      <HintPath>..\..\QuantSA\QuantSA.Excel.AddIn\bin\Debug\QuantSA.Shared.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
