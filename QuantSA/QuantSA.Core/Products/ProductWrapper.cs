@@ -35,7 +35,7 @@ namespace QuantSA.Core.Products
         private Dictionary<MarketObservable, List<Date>> _indexAndDates;
 
         private Dictionary<MarketObservable, List<double>> _indexAndValues;
-        private Date _valueDate;
+        protected Date valueDate;
 
         protected ProductWrapper()
         {
@@ -180,7 +180,7 @@ namespace QuantSA.Core.Products
 
         public override void SetValueDate(Date valueDate)
         {
-            _valueDate = valueDate;
+            this.valueDate = valueDate;
             Init();
         }
 
