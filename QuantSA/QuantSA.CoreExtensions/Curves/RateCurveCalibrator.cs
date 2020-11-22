@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics.Optimization;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.MarketData;
 using QuantSA.Core.RootFinding;
@@ -108,7 +109,7 @@ namespace QuantSA.CoreExtensions.Curves
             objective.SetBenchmarkObjectives(_instruments, marketDataContainer);
 
             var result = _rootFinder.FindRoot(objective, objective.InitialValues);
-            return true;
+            return result.ReasonForExit == ExitCondition.Converged;
         }
 
         private DatesAndRates InitializeCurve(Date calibrationDate, InitialValueCollector initialValueCollector,
