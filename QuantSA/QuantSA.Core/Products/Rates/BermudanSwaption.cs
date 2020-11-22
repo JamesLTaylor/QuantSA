@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
@@ -24,8 +23,6 @@ namespace QuantSA.Core.Products.Rates
         private readonly List<Date> _exDates;
         private readonly bool _longOptionality;
         private readonly Product _postExerciseSwap;
-
-        [JsonIgnore] private Date _valueDate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BermudanSwaption" /> class.
@@ -89,7 +86,6 @@ namespace QuantSA.Core.Products.Rates
         /// <param name="valueDate"></param>
         public override void SetValueDate(Date valueDate)
         {
-            _valueDate = valueDate;
         }
 
         public override void Reset()

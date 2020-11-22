@@ -40,7 +40,7 @@ namespace QuantSA.CoreExtensions.Test.Curves
             instruments.Add(new FRACurveInstrument(Tenor.FromMonths(6), Tenor.FromMonths(9), TestHelpers.Jibar3M, 0.073));
 
             var calib = new RateCurveCalibrator(instruments, new MultiDimNewton(1e-8, 100), discountCurve,
-                new FloatRateIndex[] {TestHelpers.Jibar3M });
+                new [] {TestHelpers.Jibar3M });
             var mdc = new MarketDataContainer();
             mdc.Set(calib);
             calib.TryCalibrate(_calibrationDate, mdc);
@@ -68,8 +68,8 @@ namespace QuantSA.CoreExtensions.Test.Curves
                 zarCsaCurveDescription, BasisSwapCurveInstrument.CurveToStrip.DiscountCurve));
 
             var calib = new RateCurveCalibrator(instruments, new MultiDimNewton(1e-8, 100), 
-                zarCsaCurveDescription, new FloatRateIndex[] { _jibar1D }, 
-                jibarDiscountDescription, new FloatRateIndex[] {_jibar3M});
+                zarCsaCurveDescription, new [] { _jibar1D }, 
+                jibarDiscountDescription, new [] {_jibar3M});
             var mdc = new MarketDataContainer();
             mdc.Set(calib);
             calib.TryCalibrate(_calibrationDate, mdc);

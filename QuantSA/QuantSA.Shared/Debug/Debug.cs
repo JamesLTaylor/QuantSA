@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 
 namespace QuantSA.Shared.Debug
@@ -28,7 +29,7 @@ namespace QuantSA.Shared.Debug
                     for (var col = 0; col < values[row].Length; col++)
                     {
                         if (col > 0) sr.Write(",");
-                        sr.Write(values[row][col].ToString());
+                        sr.Write(values[row][col].ToString(CultureInfo.InvariantCulture));
                     }
                 }
             }
@@ -50,7 +51,7 @@ namespace QuantSA.Shared.Debug
                     for (var col = 0; col < values.GetLength(1); col++)
                     {
                         if (col > 0) sr.Write(",");
-                        sr.Write(values[row, col].ToString());
+                        sr.Write(values[row, col].ToString(CultureInfo.InvariantCulture));
                     }
                 }
             }
@@ -69,7 +70,7 @@ namespace QuantSA.Shared.Debug
                 for (var row = 0; row < values.GetLength(0); row++)
                 {
                     if (row > 0) sr.Write("\n");
-                    sr.Write(values[row].ToString());
+                    sr.Write(values[row].ToString(CultureInfo.InvariantCulture));
                 }
             }
         }

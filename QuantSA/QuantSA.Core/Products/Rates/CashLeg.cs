@@ -72,9 +72,9 @@ namespace QuantSA.Core.Products.Rates
             // Nothing to do.
         }
 
-        public override void SetValueDate(Date valueDate)
+        public override void SetValueDate(Date newValueDate)
         {
-            this.valueDate = valueDate;
+            valueDate = newValueDate;
         }
     }
 }

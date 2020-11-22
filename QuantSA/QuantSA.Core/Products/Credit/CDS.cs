@@ -74,7 +74,6 @@ namespace QuantSA.Core.Products.Credit
         public override List<Cashflow> GetCFs()
         {
             var cfs = new List<Cashflow>();
-            var previousDate = new Date(_valueDate);
             for (var i = 0; i < _paymentDates.Length; i++)
                 if (_paymentDates[i] > _valueDate)
                 {

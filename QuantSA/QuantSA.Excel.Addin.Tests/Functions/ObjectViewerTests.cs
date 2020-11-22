@@ -32,7 +32,7 @@ namespace QuantSA.Excel.Addin.Tests.Functions
         [TestMethod]
         public void ObjectViewer_ViewObjectPropertyValue_TwoLevel()
         {
-            var ccy = ObjectViewer.ViewObjectPropertyValue(_swap, "ccy", "code");
+            var ccy = ObjectViewer.ViewObjectPropertyValue(_swap, "_ccy", "code");
             Assert.AreEqual("ZAR", (string) ccy[0, 0]);
         }
     }
