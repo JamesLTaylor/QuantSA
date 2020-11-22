@@ -130,7 +130,7 @@ namespace QuantSA.Core.Products
                 GetAssemblyByName("QuantSA.Core"),
                 GetAssemblyByName("netstandard")
             };
-            MetadataReference[] references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();
+            var references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();
 
             var compilation = CSharpCompilation.Create(
                 assemblyName,

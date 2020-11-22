@@ -28,6 +28,10 @@ namespace QuantSA.Core.Products.Rates
         /// A date must be given for each interest date and this original disbursement date
         /// even if the balances remain constant.
         /// </param>
+        /// <param name="balances">This array must be the same length as <paramref name="balanceDates"/>.</param>
+        /// <param name="index">The rate that the interest rate payments will be based off.</param>
+        /// <param name="spread"></param>
+        /// <param name="ccy"></param>
         /// <returns></returns>
         public static LoanFloatingRate CreateSimple(Date[] balanceDates, double[] balances, FloatRateIndex index,
             double spread, Currency ccy)
