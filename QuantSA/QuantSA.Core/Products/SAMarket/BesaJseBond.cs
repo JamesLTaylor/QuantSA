@@ -39,7 +39,7 @@ namespace QuantSA.Core.Products.SAMarket
         }
 
         public BesaJseBond(Date maturityDate, double notional, double annualCouponRate,
-            int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, Calendar zaCalendar, Currency ccy)
+            int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, int booksCloseDateDays, Calendar zaCalendar, Currency ccy)
         {
             if (couponMonth1 > couponMonth2)
                 throw new ArgumentException("couponMonth1 must relate to the first coupon in the year.");
@@ -50,6 +50,7 @@ namespace QuantSA.Core.Products.SAMarket
             this.couponDay1 = couponDay1;
             this.couponMonth2 = couponMonth2;
             this.couponDay2 = couponDay2;
+            this.booksCloseDateDays = booksCloseDateDays;
 
             _cfs = new List<Cashflow> {new Cashflow(maturityDate, notional, ccy)};
             Init();
