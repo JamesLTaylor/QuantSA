@@ -20,9 +20,10 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var couponDay1 = 31;
             var couponMonth2 = 7;
             var couponDay2 = 31;
+            var booksCloseDateDays = 10;
             var zaCalendar = new Calendar("Test");
             var bondR2030 = new BesaJseBond(maturityDate, notional, annualCouponRate, couponMonth1, 
-                couponDay1, couponMonth2, couponDay2, zaCalendar, TestHelpers.ZAR);
+                couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, TestHelpers.ZAR);
 
             var ytm = 0.097;
             var results = bondR2030.GetSpotMeasures(settleDate, ytm);
