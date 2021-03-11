@@ -17,4 +17,13 @@
     <ProjectReference Include="..\QuantSA.Shared\QuantSA.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="CalendarData\TestCalendar.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\TestCalendar.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

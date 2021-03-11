@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using QuantSA.Shared.Serialization;
 
 namespace QuantSA.Shared.Dates
@@ -19,7 +22,7 @@ namespace QuantSA.Shared.Dates
     /// </remarks>
     public class Calendar : SerializableViaName
     {
-        private readonly HashSet<Date> _holidays;
+        private readonly List<Date> _holidays;
         private readonly string _name;
 
         /// <summary>
@@ -28,13 +31,13 @@ namespace QuantSA.Shared.Dates
         public Calendar(string name)
         {
             _name = name;
-            _holidays = new HashSet<Date>();
+            _holidays = GetHolidays(name);
         }
 
         public Calendar(string name, IEnumerable<Date> holidays)
         {
             _name = name;
-            _holidays = new HashSet<Date>();
+            _holidays = GetHolidays(name);
             foreach (var date in holidays)
                 _holidays.Add(new Date(date));
         }
@@ -143,6 +146,23 @@ namespace QuantSA.Shared.Dates
         public override string GetName()
         {
             return _name;
+        }
+
+        /// <summary>
+        /// Takes in a string an retrieves the holidays from the from the xml file if it exists.
+        /// </summary>
+        public List<Date> GetHolidays (string calendarName)
+        {
+            var _calendar = new List<Date>();
+            var path = Directory.GetParent(System.IO.Directory.GetCurrentDirectory())
+                .Parent.Parent.Parent.FullName + $"\\QuantSA.Shared\\CalendarData\\{calendarName}Calendar.csv";
+
+            foreach (var date in File.ReadLines(path).ToList())
+            {
+                _calendar.Add(new Date(date));
+            }
+
+            return _calendar;
         }
     }
 }
