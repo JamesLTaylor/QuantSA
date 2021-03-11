@@ -13,6 +13,7 @@ namespace QuantSA.Shared.Test.Conventions.BusinessDay
         {
             var dateEndOfMonth = new Date(2016, 12, 31); // Saturday
             var calendar = new Calendar("Test", new List<Date>()); // No holidays
+            var cal = new Calendar("ZA");
 
             var testFollowing = BusinessDayStore.Following.Adjust(dateEndOfMonth, calendar);
             Assert.AreEqual(new Date(2017, 1, 2), testFollowing);
