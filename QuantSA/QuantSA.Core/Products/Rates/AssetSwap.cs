@@ -1,53 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
-using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
-using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
+using QuantSA.Core.Products.SAMarket;
+
 
 namespace QuantSA.Core.Products.Rates
 {
-    public abstract class AssetSwap : Product
+    public class AssetSwap : ProductWrapper
     {
+        private readonly List<Cashflow> _cfs;
 
-        private readonly FixedLeg _fixedLeg;
-        private readonly FloatLeg _floatLeg;
-        private readonly Date[] _indexDates;
-        private readonly double[] _nominal;
-        private readonly Date[] _paymentDates;
-        private readonly double[] _spreads;
-        private readonly double _couponrate;
-        private readonly double[] Bondprice;
+        public string RateIndex;
 
-        [JsonIgnore] private List<Date> _futureIndexDates;
-        [JsonIgnore] private List<Date> _futurePayDates;
+        public int booksCloseDateDays;
+        public int couponDay1, couponDay2;
+        public int couponMonth1, couponMonth2;
 
-        // Product state
-        [JsonIgnore] private double[] _indexValues;
-        [JsonIgnore] private Date _valueDate;
+        public Date maturityDate;
+        public double notional;
 
-        /// <param name="couponrate"></param>
-        /// <param name="fixedleg"></param>
-        /// <param name="accrualFractions"></param>
-        /// <param name="notionals"></param>
-        /// <param name="fixedRate"></param>
+        public double annualCouponRate;
+        public Calendar zaCalendar;
+        public Currency ccy;
 
-        public AssetSwap(FixedLeg _fixedLeg, FloatLeg _floatLeg, double[] nominal, double couponrate, double[] Bondprice)
+        public BesaJseBond underlyingBond;
+        public Date settleDate;
+        public int tenorfloat;
+        public double payFixed;
+
+        public AssetSwap(double _payFixed, string RateIndex, Date maturityDate, double notional, double annualCouponRate, int couponMonth1, int couponDay1,
+            int couponMonth2, int couponDay2, int booksCloseDateDays, Calendar zaCalendar, Currency ccy)
         {
-            //initiate the variables
-          _nominal = nominal;
-          _couponrate = couponrate;
-            _fixedLeg = new FixedLeg();
-            _fixedLeg.GetCFs();
-          _floatLeg = new FloatLeg();
-          Bondprice = new Bondprice();
-         
+            //Bond 
+            var bond = new BesaJseBond(maturityDate, notional, annualCouponRate, couponMonth1,
+                   couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, ccy);
+            underlyingBond = bond;
 
-          var spreads = (Bondprice - nominal + _fixedLeg - _floatLeg) / (_fixedLeg / couponrate);
-          return spreads;
+            //Tenor of floating leg
+            var tenorFloatLeg = Convert.ToInt32(RateIndex.Substring(10, 1));
+            tenorfloat = tenorFloatLeg;
+
+            //pay Fixed
+            var interim = _payFixed;
+            payFixed = interim;
+
+            _cfs = new List<Cashflow> { new Cashflow(maturityDate, notional, ccy) };
+            Init();
 
         }
+
+        public override List<Cashflow> GetCFs()
+        {
+            return _cfs;
+        }
+
     }
 }

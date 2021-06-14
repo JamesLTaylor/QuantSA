@@ -143,6 +143,15 @@ namespace QuantSA.Shared.Dates
             return new Date(newDate);
         }
 
+        public Date SubtractTenor(Tenor tenor)       // added this here
+        {
+            var newdate = date.AddYears(tenor.Years * -1);
+            newdate = newdate.AddMonths(tenor.Months * -1);
+            newdate = newdate.AddDays(tenor.Weeks * -7 + tenor.Days);
+            return new Date(newdate);
+        }
+
+
         #region Comparisons
 
         public int CompareTo(Date compareDate)

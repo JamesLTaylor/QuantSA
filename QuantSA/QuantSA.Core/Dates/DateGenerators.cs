@@ -67,5 +67,53 @@ namespace QuantSA.Core.Dates
                 paymentDate = resetDate.AddTenor(periodTenor);
             }
         }
+
+        public static void CreateDatesNoHolidaysASWFixed(Date startDate, Date maturityDate, Tenor endTenor, Tenor periodTenor, //Have added this function here and added maturity Date to it and deleted accrualFractions
+                out List<Date> resetDates, out List<Date> paymentDates)
+        {
+            var dayCount = Actual365Fixed.Instance;
+            resetDates = new List<Date>();
+            paymentDates = new List<Date>();
+            var endDate = maturityDate;
+            var resetDate = new Date(startDate);
+            var paymentDate = resetDate.AddTenor(periodTenor);
+            while (paymentDate <= endDate)
+            {
+                resetDates.Add(resetDate);
+                paymentDates.Add(paymentDate);
+                resetDate = new Date(paymentDate);
+                paymentDate = resetDate.AddTenor(periodTenor);
+            }
+
+        }
+
+        public static void CreateDatesNoHolidaysASWfloat(Date settleDate, Date maturityDate, Tenor endTenor, Tenor periodTenor, //Have added this function here and added maturity Date to it
+                out List<Date> resetDates, out List<Date> paymentDates, out List<double> accrualFractions)
+        {
+            var dayCount = Actual365Fixed.Instance;
+            resetDates = new List<Date>();
+            paymentDates = new List<Date>();
+            accrualFractions = new List<double>();
+            var endDate = maturityDate;
+            var paymentDate = new Date(endDate);
+            var resetDate = paymentDate.SubtractTenor(periodTenor);
+            while (resetDate >= settleDate)
+            {
+                paymentDates.Add(paymentDate);
+                resetDates.Add(resetDate);
+                accrualFractions.Add(dayCount.YearFraction(resetDate, paymentDate));
+                paymentDate = new Date(resetDate);
+                resetDate = paymentDate.SubtractTenor(periodTenor);
+            }
+
+            resetDates.Reverse();
+            paymentDates.Reverse();
+            accrualFractions.Reverse();
+
+            resetDates[0] = new Date(settleDate);
+
+        }
+
+
     }
 }
