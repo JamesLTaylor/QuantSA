@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using QuantSA.Shared.Conventions.DayCount;
+using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.Shared.Dates;
+using System.Linq;
 
 namespace QuantSA.Core.Dates
 {
@@ -68,29 +70,36 @@ namespace QuantSA.Core.Dates
             }
         }
 
-        public static void CreateDatesNoHolidaysASWFixed(Date startDate, Date maturityDate, Tenor endTenor, Tenor periodTenor, //Have added this function here and added maturity Date to it and deleted accrualFractions
-                out List<Date> resetDates, out List<Date> paymentDates)
+        public static void CreateDatesASWFixed(Date startDate, Date maturityDate, Tenor endTenor, Tenor periodTenor, //Have added this function here and added maturity Date to it and deleted accrualFractions
+                out List<Date> resetDates, out List<Date> paymentDates, Calendar calendar)
         {
             var dayCount = Actual365Fixed.Instance;
+            var unAdjResetDates = new List<Date>(); ;
+            var unAdjPaymentDates = new List<Date>();
             resetDates = new List<Date>();
             paymentDates = new List<Date>();
             var endDate = maturityDate;
-            var resetDate = new Date(startDate);
-            var paymentDate = resetDate.AddTenor(periodTenor);
+            var resetDate = new Date(startDate.AddTenor(periodTenor));
+            var paymentDate = resetDate;
+
             while (paymentDate <= endDate)
             {
-                resetDates.Add(resetDate);
-                paymentDates.Add(paymentDate);
+                unAdjResetDates.Add(resetDate);
+                unAdjPaymentDates.Add(paymentDate);
+                resetDates.Add(BusinessDayStore.ModifiedFollowing.Adjust(resetDate, calendar));
+                paymentDates.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDate, calendar));
                 resetDate = new Date(paymentDate);
                 paymentDate = resetDate.AddTenor(periodTenor);
             }
 
         }
 
-        public static void CreateDatesNoHolidaysASWfloat(Date settleDate, Date maturityDate, Tenor endTenor, Tenor periodTenor, //Have added this function here and added maturity Date to it
-                out List<Date> resetDates, out List<Date> paymentDates, out List<double> accrualFractions)
+        public static void CreateDatesASWfloat(Date settleDate, Date maturityDate, Tenor endTenor, Tenor periodTenor, //Have added this function here and added maturity Date to it
+                out List<Date> resetDates, out List<Date> paymentDates, out List<double> accrualFractions, Calendar calendar)
         {
             var dayCount = Actual365Fixed.Instance;
+            var unAdjResetDates = new List<Date>(); ;
+            var unAdjPaymentDates = new List<Date>();
             resetDates = new List<Date>();
             paymentDates = new List<Date>();
             accrualFractions = new List<double>();
@@ -99,9 +108,11 @@ namespace QuantSA.Core.Dates
             var resetDate = paymentDate.SubtractTenor(periodTenor);
             while (resetDate >= settleDate)
             {
-                paymentDates.Add(paymentDate);
-                resetDates.Add(resetDate);
-                accrualFractions.Add(dayCount.YearFraction(resetDate, paymentDate));
+                unAdjPaymentDates.Add(paymentDate);
+                unAdjResetDates.Add(resetDate);
+                resetDates.Add(BusinessDayStore.ModifiedFollowing.Adjust(resetDate, calendar));
+                paymentDates.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDate, calendar));
+                accrualFractions.Add(dayCount.YearFraction(BusinessDayStore.ModifiedFollowing.Adjust(resetDate, calendar), BusinessDayStore.ModifiedFollowing.Adjust(paymentDate, calendar)));
                 paymentDate = new Date(resetDate);
                 resetDate = paymentDate.SubtractTenor(periodTenor);
             }
@@ -111,6 +122,10 @@ namespace QuantSA.Core.Dates
             accrualFractions.Reverse();
 
             resetDates[0] = new Date(settleDate);
+            var firstResetDate = resetDates.First();
+            var firstPaymentDate = paymentDates.First();
+            accrualFractions[0] = dayCount.YearFraction(firstResetDate, firstPaymentDate);
+
 
         }
 

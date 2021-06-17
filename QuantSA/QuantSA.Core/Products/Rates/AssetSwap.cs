@@ -12,6 +12,10 @@ namespace QuantSA.Core.Products.Rates
         private readonly List<Cashflow> _cfs;
 
         public string RateIndex;
+        public Date[] discountCurveDates;
+        public Date[] forecastCurveDates;
+        public double[] discountCurveRates;
+        public double[] forecastCurveRates;
 
         public int booksCloseDateDays;
         public int couponDay1, couponDay2;
@@ -30,20 +34,22 @@ namespace QuantSA.Core.Products.Rates
         public double payFixed;
 
         public AssetSwap(double _payFixed, string RateIndex, Date maturityDate, double notional, double annualCouponRate, int couponMonth1, int couponDay1,
-            int couponMonth2, int couponDay2, int booksCloseDateDays, Calendar zaCalendar, Currency ccy)
+            int couponMonth2, int couponDay2, int booksCloseDateDays, Calendar _zaCalendar, Currency ccy, Date[] _discountCurveDates, double[] _discountCurveRates,
+            Date[] _forecastCurveDates, double[] _forecastCurveRates)
         {
-            //Bond 
+            //Bond
             var bond = new BesaJseBond(maturityDate, notional, annualCouponRate, couponMonth1,
-                   couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, ccy);
+                   couponDay1, couponMonth2, couponDay2, booksCloseDateDays, _zaCalendar, ccy);
             underlyingBond = bond;
 
-            //Tenor of floating leg
-            var tenorFloatLeg = Convert.ToInt32(RateIndex.Substring(10, 1));
-            tenorfloat = tenorFloatLeg;
-
-            //pay Fixed
-            var interim = _payFixed;
-            payFixed = interim;
+            //Floating and fixed leg inputs
+            tenorfloat = Convert.ToInt32(RateIndex.Substring(10, 1));
+            payFixed = _payFixed;
+            zaCalendar = _zaCalendar;
+            discountCurveDates = _discountCurveDates;
+            forecastCurveDates = _forecastCurveDates;
+            discountCurveRates = _discountCurveRates;
+            forecastCurveRates = _forecastCurveRates;
 
             _cfs = new List<Cashflow> { new Cashflow(maturityDate, notional, ccy) };
             Init();

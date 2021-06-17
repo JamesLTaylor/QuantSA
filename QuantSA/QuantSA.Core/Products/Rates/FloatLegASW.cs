@@ -7,6 +7,7 @@ using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Core.Dates;
 
+
 namespace QuantSA.Core.Products.Rates
 {
     public class FloatLegASW : Product
@@ -109,11 +110,11 @@ namespace QuantSA.Core.Products.Rates
         }
 
         public static FloatLegASW CreateFloatLegASW(double payFixed, Date calibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double spread)
+        double spread, Calendar calendar)
         {
-            DateGenerators.CreateDatesNoHolidaysASWfloat(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates, out var accrualFractions);
-            var notionals = resetDates.Select(d => 1e8);
+            DateGenerators.CreateDatesASWfloat(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
+                out var paymentDates, out var accrualFractions, calendar);
+            var notionals = resetDates.Select(d => 1e2);
             var floatingIndices = resetDates.Select(d => index);
             var spreads = resetDates.Select(d => spread);
             return new FloatLegASW(payFixed, index.Currency, paymentDates, notionals, resetDates, floatingIndices, spreads, accrualFractions);

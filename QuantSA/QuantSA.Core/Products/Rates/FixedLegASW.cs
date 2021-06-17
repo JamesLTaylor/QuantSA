@@ -85,11 +85,11 @@ namespace QuantSA.Core.Products.Rates
         }
 
         public static FixedLegASW CreateFixedLegASW(double payFixed, Date calibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-       double fixedRate)
+       double fixedRate, Calendar calendar)
         {
-            DateGenerators.CreateDatesNoHolidaysASWFixed(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates);
-            var notionals = resetDates.Select(d => 1e8);
+            DateGenerators.CreateDatesASWFixed(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
+                out var paymentDates, calendar);
+            var notionals = resetDates.Select(d => 1e2);
             var rates = resetDates.Select(d => fixedRate);
             return new FixedLegASW(payFixed, index.Currency, paymentDates, notionals, rates);
         }

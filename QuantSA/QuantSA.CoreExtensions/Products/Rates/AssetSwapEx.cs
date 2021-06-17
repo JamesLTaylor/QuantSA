@@ -82,50 +82,24 @@ namespace QuantSA.CoreExtensions.Products.Rates
 
             var spread = 0.0;
 
-            var ASWfixedLeg = CreateFixedLegASW(assetSwap.payFixed, t1, assetSwap.underlyingBond.maturityDate, tenor, indexFixedLeg, assetSwap.underlyingBond.annualCouponRate);
+            var ASWfixedLeg = CreateFixedLegASW(assetSwap.payFixed, t1, assetSwap.underlyingBond.maturityDate, tenor, indexFixedLeg, assetSwap.underlyingBond.annualCouponRate, assetSwap.zaCalendar);
             ASWfixedLeg.SetValueDate(tradeDate);
 
-            var ASWfloatLeg = CreateFloatLegASW(assetSwap.payFixed, settleDate, assetSwap.underlyingBond.maturityDate, tenor, indexFloatLeg, spread);
+            var ASWfloatLeg = CreateFloatLegASW(assetSwap.payFixed, settleDate, assetSwap.underlyingBond.maturityDate, tenor, indexFloatLeg, spread, assetSwap.zaCalendar);
             ASWfloatLeg.SetValueDate(tradeDate);
 
-            // Create dates and rates for the discounting and forecasting curves
+            // Create discount and forecast curves
 
-            Date[] datesLong =
-            {
-                new Date(2013, 3, 6), new Date(2013, 4, 5), new Date(2013, 6, 5), new Date(2013, 9, 5), new Date(2013, 12, 5), new Date(2014, 3, 5),
-                new Date(2014, 6, 5), new Date(2014, 9, 5), new Date(2014, 12, 5), new Date(2015, 3, 5), new Date(2015, 6, 5), new Date(2015, 9, 7),
-                new Date(2015, 12, 7), new Date(2016, 3, 7), new Date(2016, 6, 6), new Date(2016, 9, 5), new Date(2016, 12, 5), new Date(2017, 3, 6),
-                new Date(2017, 6, 5), new Date(2017, 9, 5), new Date(2017, 12, 5), new Date(2018, 3, 5), new Date(2018, 6, 5), new Date(2018, 9, 5),
-                new Date(2018, 12, 5), new Date(2019, 3, 5), new Date(2019, 6, 5), new Date(2019, 9, 5), new Date(2019, 12, 5), new Date(2020, 3, 5),
-            };
-
-
-            double[] ratesLong = { 0.047697, 0.050143, 0.050922, 0.050749, 0.050611, 0.050617, 0.050767, 0.051033, 0.051397, 0.051895,
-            0.052490, 0.053086, 0.053680, 0.054276, 0.055023, 0.055774, 0.056522, 0.057265, 0.058008, 0.058756, 0.059502, 0.060245,
-            0.060957, 0.061676, 0.062394, 0.063110, 0.063791, 0.064478, 0.065165, 0.065860};
-
-            Date[] datesLong2 =
-{
-                new Date(2013, 3, 8), new Date(2013, 6, 18), new Date(2013, 9, 16), new Date(2013, 12, 17), new Date(2014, 3, 17), new Date(2014, 6, 17),
-                new Date(2014, 9, 15), new Date(2014, 12, 15), new Date(2015, 3, 16), new Date(2015, 6, 15),
-            };
-
-
-            double[] ratesLong2 = { 0.051351696, 0.050856096, 0.050677835, 0.051031921, 0.051817226, 0.052826475, 0.054142683,
-            0.056026589, 0.057742752, 0.05885857};
-
-            // Create discount and forecast curves from dates and rate above
-
-            IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, datesLong, ratesLong);
-            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, indexFloatLeg, datesLong2, ratesLong2);
+            IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, assetSwap.discountCurveDates, assetSwap.discountCurveRates);
+            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, indexFloatLeg, assetSwap.forecastCurveDates, assetSwap.forecastCurveRates);
 
             // Calculate PV of fixed and floating cashflows based on discount and forecast curves above
 
-            var fixedCashFlowsPrice = ASWfixedLeg.GetCFs().PV(discountCurve) / 1000000;
-            var floatingCashFlowsPrice = ASWfloatLeg.CurvePV1(forecastCurve, discountCurve) / 1000000;
+            var fixedCashFlowsPrice = ASWfixedLeg.GetCFs().PV(discountCurve);
+            var floatingCashFlowsPrice = ASWfloatLeg.CurvePV1(forecastCurve, discountCurve);
 
             // this is to get the denominator in for the spread calculaton that excludes the rates in the PV calcs (CurvePV2)
-            var denominatorCashFlowsPrice = ASWfloatLeg.CurvePV2(forecastCurve, discountCurve) * -100 / assetSwap.underlyingBond.notional;
+            var denominatorCashFlowsPrice = ASWfloatLeg.CurvePV2(forecastCurve, discountCurve) * -1;
 
             //This is the assetSwapSprad
             var assetSwapSpread = ((roundedAip - 100) + (fixedCashFlowsPrice) + (floatingCashFlowsPrice)) / denominatorCashFlowsPrice;
@@ -163,22 +137,22 @@ namespace QuantSA.CoreExtensions.Products.Rates
 
         //Adding the creation of a fixed leg for ASW
         public static FixedLegASW CreateFixedLegASW(double payFixed, Date nextCouponDateCalibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double fixedRate)
+        double fixedRate, Calendar calendar)
         {
-            DateGenerators.CreateDatesNoHolidaysASWFixed(nextCouponDateCalibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates);
-            var notionals = resetDates.Select(d => 1e8);
+            DateGenerators.CreateDatesASWFixed(nextCouponDateCalibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
+                out var paymentDates, calendar);
+            var notionals = resetDates.Select(d => 1e2);
             var rates = resetDates.Select(d => fixedRate);
             return new FixedLegASW(payFixed, index.Currency, paymentDates, notionals, rates);
         }
 
         //Adding the creation of a floating leg for ASW
         public static FloatLegASW CreateFloatLegASW(double payFixed, Date calibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double spread)
+        double spread, Calendar calendar)
         {
-            DateGenerators.CreateDatesNoHolidaysASWfloat(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates, out var accrualFractions);
-            var notionals = resetDates.Select(d => 1e8);
+            DateGenerators.CreateDatesASWfloat(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
+                out var paymentDates, out var accrualFractions, calendar);
+            var notionals = resetDates.Select(d => 1e2);
             var floatingIndices = resetDates.Select(d => index);
             var spreads = resetDates.Select(d => spread);
             return new FloatLegASW(payFixed, index.Currency, paymentDates, notionals, resetDates, floatingIndices, spreads, accrualFractions);
