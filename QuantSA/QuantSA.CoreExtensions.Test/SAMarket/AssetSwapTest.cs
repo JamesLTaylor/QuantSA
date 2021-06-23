@@ -1,19 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Dates;
-using QuantSA.Solution.Test;
 using QuantSA.CoreExtensions.Products.Rates;
 using QuantSA.Core.Products.Rates;
-using QuantSA.Core.Dates;
-
-using QuantSA.Shared.MarketObservables;
-using System.Linq;
 using QuantSA.Shared.Primitives;
-using QuantSA.Shared.MarketData;
-using QuantSA.Core.CurvesAndSurfaces;
-using QuantSA.Core.Primitives;
-using QuantSA.Core.MarketData;
-using QuantSA.CoreExtensions.ProductPVs.Rates;
-
 
 namespace QuantSA.CoreExtensions.Test.SAMarket
 {
@@ -38,20 +27,12 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             
             var ytm = 0.05757;
             var indexFloating = "ZAR.JIBAR.3M";
+            var payFixed = -1;
+            var ccy = new Currency("ZAR");
 
             var tradeDate = settleDate.AddDays(-3);
-            var payFixed = -1;
 
-            //Testing
-            var ccy = new Currency("ZAR");
-            var ncd = new Date(2013, 3, 15);
-            var indexFixedLeg = new FloatRateIndex("ZAR.JIBAR.6M", ccy, "JIBAR", Tenor.FromMonths(6));
-            var indexFloatLeg = new FloatRateIndex("ZAR.JIBAR.3M", ccy, "JIBAR", Tenor.FromMonths(3));
-            var nDays = 365;
-            var extra = 1;
-            var x = ((maturityDate - settleDate) / nDays) + extra;
-            var tenor = Tenor.FromYears(x);
-
+     
             Date[] holidays =
 {
                 new Date(2013, 1, 1), new Date(2013, 3, 21), new Date(2013, 3, 29), new Date(2013, 4, 1), new Date(2013, 4, 27), new Date(2013, 5, 1),
@@ -74,43 +55,23 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
                 new Date(2018, 12, 5), new Date(2019, 3, 5), new Date(2019, 6, 5), new Date(2019, 9, 5), new Date(2019, 12, 5), new Date(2020, 3, 5),
             };
 
-
-            double[] ratesLong = { 0.047697, 0.050143, 0.050922, 0.050749, 0.050611, 0.050617, 0.050767, 0.051033, 0.051397, 0.051895,
-            0.052490, 0.053086, 0.053680, 0.054276, 0.055023, 0.055774, 0.056522, 0.057265, 0.058008, 0.058756, 0.059502, 0.060245,
-            0.060957, 0.061676, 0.062394, 0.063110, 0.063791, 0.064478, 0.065165, 0.065860};
-
+            double[] ratesLong = { 0.0476968834358959, 0.0501430754329056, 0.0509218045201335, 0.0507490287827958, 0.0506113173158310, 0.0506165682297636,0.0507674467276694,0.0510331587565828, 0.0513967654284081, 0.0518952383980752,
+            0.0524896820133486, 0.0530856475345829, 0.0536795171239116, 0.0542763619213055, 0.0550232983685124, 0.0557743840043158, 0.0565215576596013, 0.0572650196269946, 0.0580081291489062, 0.0587559589725926, 0.0595015505438427, 0.0602449665660311,
+            0.0609574950515419, 0.0616761490635943, 0.0623935543507907, 0.0631097408589442, 0.0637906604035856, 0.0644782668196503, 0.0651654909303646, 0.0658597518938604};
+            
             Date[] datesLong2 =
 {
                 new Date(2013, 3, 8), new Date(2013, 6, 18), new Date(2013, 9, 16), new Date(2013, 12, 17), new Date(2014, 3, 17), new Date(2014, 6, 17),
                 new Date(2014, 9, 15), new Date(2014, 12, 15), new Date(2015, 3, 16), new Date(2015, 6, 15),
             };
 
-            double[] ratesLong2 = { 0.051351696, 0.050856096, 0.050677835, 0.051031921, 0.051817226, 0.052826475, 0.054142683,
-            0.056026589, 0.057742752, 0.05885857};
-
-            IMarketDataContainer marketData = new MarketDataContainer();
-            IFloatingRateSource _forecastCurve = marketData.Get(new FloatingRateSourceDescription(indexFloatLeg));
-            IDiscountingSource _discountCurve = marketData.Get(new DiscountingSourceDescription(TestHelpers.ZAR));
-
-            IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, datesLong, ratesLong);
-            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, indexFloatLeg, datesLong2, ratesLong2);
-
-            var ASWfixedLeg = CreateFixedLegASW(payFixed, ncd, maturityDate, tenor, indexFixedLeg, annualCouponRate, zaCalendar);
-            ASWfixedLeg.SetValueDate(tradeDate);
-
-            var fixedcash = ASWfixedLeg.GetCFs().PV(discountCurve);
-
-            var spread = 0;
-            var ASWfloatLeg = CreateFloatLegASW(payFixed, settleDate, maturityDate, tenor, indexFloatLeg, spread, zaCalendar);
-            ASWfloatLeg.SetValueDate(tradeDate);
-
-            var floatingcash = ASWfloatLeg.CurvePV1(forecastCurve, discountCurve);
-
+            double[] ratesLong2 = { 0.0513516962584837, 0.0508560960486011, 0.0506778350115049, 0.0510319212391443, 0.0518172259443010, 0.0528264747654130, 0.0541426832758913,
+            0.0560265891867828, 0.0577427520443597, 0.0588585700038349};
 
             //Create new instance of assetSwap
 
             var newSwap = new AssetSwap(payFixed, indexFloating, maturityDate, notional, annualCouponRate, couponMonth1, couponDay1,
-                couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, TestHelpers.ZAR, datesLong, ratesLong, datesLong2, ratesLong2);
+                couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, ccy, datesLong, ratesLong, datesLong2, ratesLong2);
 
             // Get assetSwap measures
 
@@ -119,28 +80,6 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var floatingprice = newSwap.AssetSwapMeasures(settleDate, ytm).GetScalar(AssetSwapEx.Keys.FloatingCashFlowsPrice);
             var denominatorprice = newSwap.AssetSwapMeasures(settleDate, ytm).GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice);
             var assetSwapSpread = newSwap.AssetSwapMeasures(settleDate, ytm).GetScalar(AssetSwapEx.Keys.AssetSwapSpread);
-
-        }
-
-        public static FloatLegASW CreateFloatLegASW(double payFixed, Date calibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double spread, Calendar calendar)
-        {
-            DateGenerators.CreateDatesASWfloat(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates, out var accrualFractions, calendar);
-            var notionals = resetDates.Select(d => 1e2);
-            var floatingIndices = resetDates.Select(d => index);
-            var spreads = resetDates.Select(d => spread);
-            return new FloatLegASW(payFixed, index.Currency, paymentDates, notionals, resetDates, floatingIndices, spreads, accrualFractions);
-        }
-
-        public static FixedLegASW CreateFixedLegASW(double payFixed, Date nextCouponDateCalibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double fixedRate, Calendar calendar)
-        {
-            DateGenerators.CreateDatesASWFixed(nextCouponDateCalibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates, calendar);
-            var notionals = resetDates.Select(d => 1e2);
-            var rates = resetDates.Select(d => fixedRate);
-            return new FixedLegASW(payFixed, index.Currency, paymentDates, notionals, rates);
 
         }
     }
