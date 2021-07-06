@@ -5,13 +5,15 @@ using QuantSA.Shared.Dates;
 using QuantSA.Shared.Primitives;
 using QuantSA.Core.Primitives;
 using QuantSA.Shared.MarketObservables;
+using QuantSA.Core.Formulae;
+
 
 namespace QuantSA.Core.Products.SAMarket
 {
     public class JSEBondOption : ProductWrapper
     {
 
-
+        // Thursday 15 July 2021 - this goes in release. Push into remote branch. Product. 
         // BOND Details
         private readonly List<Cashflow> _cfs;
         public readonly double annualCouponRate;
@@ -37,11 +39,12 @@ namespace QuantSA.Core.Products.SAMarket
         // Bond forward date
         // <summary>
         public Date forwardDate;
-        public BesaJseBond underlyingBond;
+        public BesaJseBond underlyingBond; // Should be bond forward
 
+        public PutOrCall putOrCall;
 
         public JSEBondOption(Date forwardDate, Date maturityDate, double notional, double annualCouponRate, int couponMonth1, int couponDay1,
-            int couponMonth2, int couponDay2, int booksCloseDateDays, Calendar zaCalendar, Currency ccy)
+            int couponMonth2, int couponDay2, int booksCloseDateDays, Calendar zaCalendar, Currency ccy, PutOrCall putOrCall)
         {
             if (forwardDate > maturityDate)
                 throw new ArgumentException("forward date must be before maturity date.");
@@ -51,6 +54,7 @@ namespace QuantSA.Core.Products.SAMarket
 
             underlyingBond = bond;
             this.forwardDate = forwardDate;
+            this.putOrCall = putOrCall;
         }
 
         public override List<Cashflow> GetCFs()

@@ -27,8 +27,11 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var couponDay2 = 31; //
             var booksCloseDateDays = 10; //
             var zaCalendar = new Calendar("Test"); //
+            var bondOptionR153 = new JSEBondOption(forwardDate, maturityDate, notional, annualCouponRate, couponMonth1,
+            couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, TestHelpers.ZAR, PutOrCall.Call); //
+
             var bondForwardR153 = new JSEBondForward(forwardDate, maturityDate, notional, annualCouponRate, couponMonth1,
-            couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, TestHelpers.ZAR); //
+            couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, TestHelpers.ZAR); 
 
             var ytm = 0.0930; //
             var repo = 10.75; // See example - Don't know what is going on here aka what the value should be
@@ -38,7 +41,7 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var forwardprice = bondForwardR153.ForwardPrice(settleDate, ytm, repo);
             var bondforwardprice = (double)forwardprice.GetScalar(JSEBondForwardEx.Keys.ForwardPrice);
 
-            var results = JSEBondOptionEx.BlackOption(bondForwardR153, PutOrCall.Call, strike, vol, bondforwardprice, repo);
+            var results = JSEBondOptionEx.BlackOption(bondOptionR153, strike, vol, bondforwardprice, repo);
             Assert.AreEqual(13826.13, (double)results.GetScalar(JSEBondOptionEx.Keys.BlackOption), 1e-8);
         }
     }
