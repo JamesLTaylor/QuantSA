@@ -16,11 +16,9 @@ namespace QuantSA.Core.Products.Rates
         public List<Date> indexDates;
         public List<Date> paymentDatesFixed;
         public List<Date> paymentDatesFloating;
+        public double spread;
         public FloatRateIndex index;
-        public IEnumerable<double> spreads;
         public List<double> accrualFractions;
-        public IEnumerable<double> notionalsFixed;
-        public IEnumerable<double> notionalsFloating;
         public double fixedRate;
         public Date maturityDate;
         public int couponMonth1;
@@ -30,11 +28,8 @@ namespace QuantSA.Core.Products.Rates
         public int booksCloseDateDays;
         public Calendar zaCalendar;
         public Currency ccy;
-        public BesaJseBond underlyingBond;
-
-        public IEnumerable<FloatRateIndex> floatingIndices;
         public double[] indexValues1;
-        public double spread;
+
 
         // Product state
         [JsonIgnore] private double[] indexValues;
@@ -42,8 +37,7 @@ namespace QuantSA.Core.Products.Rates
 
         public AssetSwap(double _payFixed, double _fixedRate, FloatRateIndex _index,  List<Date> _indexDates, List<Date> _payDatesFloating, 
             List<Date> _payDatesFixed, double _spread, int _couponMonth1, int _couponDay1, int _couponMonth2, int _couponDay2, int _booksCloseDateDays,
-            Date _maturityDate, List<double> _accrualFractions, IEnumerable<double> _notionalsFixed, IEnumerable<double> _notionalsFloating,
-            Calendar _zaCalendar, Currency _ccy, IEnumerable<FloatRateIndex> _floatingIndices, double[] _indexValues1, IEnumerable<double> _spreads)
+            Date _maturityDate, List<double> _accrualFractions, Calendar _zaCalendar, Currency _ccy, double[] _indexValues1)
         {
             payFixed = _payFixed;
             fixedRate = _fixedRate;
@@ -59,13 +53,9 @@ namespace QuantSA.Core.Products.Rates
             booksCloseDateDays = _booksCloseDateDays;
             maturityDate = _maturityDate;
             accrualFractions = _accrualFractions;
-            notionalsFixed = _notionalsFixed;
-            notionalsFloating = _notionalsFloating;
             zaCalendar = _zaCalendar;
             ccy = _ccy;
-            floatingIndices = _floatingIndices;
             indexValues1 = _indexValues1;
-            spreads = _spreads;
 
         }
 
@@ -143,14 +133,14 @@ namespace QuantSA.Core.Products.Rates
             for (var i = 0; i < paymentDatesFloating.Count; i++)
                 if (paymentDatesFloating[i] > _valueDate)
                 {
-                    var floatingAmount = -payFixed * notionalsFloating.ElementAt(i) * accrualFractions[i] * (indexValues.ElementAt(i) + spreads.ElementAt(i));
+                    var floatingAmount = -payFixed * 100 * accrualFractions[i] * (indexValues.ElementAt(i) + spread);
                     cfs.Add(new Cashflow(paymentDatesFloating[i], floatingAmount, ccy));
                 }
 
             for (var i = 0; i < paymentDatesFixed.Count; i++)
                 if (paymentDatesFixed[i] > _valueDate)
                 {
-                    var fixedAmount = payFixed * notionalsFixed.ElementAt(i) * 0.5 * fixedRate;
+                    var fixedAmount = payFixed * 100 * 0.5 * fixedRate;
                     cfs.Add(new Cashflow(paymentDatesFixed[i], fixedAmount, ccy));
                 }
 

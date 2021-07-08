@@ -159,10 +159,6 @@ namespace QuantSA.Solution.Test
             var firstPaymentDate = paymentDatesFloating.First();
             accrualFractions[0] = dayCount.YearFraction(firstResetDate, firstPaymentDate);
 
-            var notionalsFloating = resetDatesFloating.Select(d => 1e2);
-            var floatingIndices = resetDatesFloating.Select(d => index);
-            var spreads = resetDatesFloating.Select(d => spread);
-
             //Design Fixed leg inputs
             var unAdjPaymentDatesFixed = new List<Date>();
             var paymentDatesFixed = new List<Date>();
@@ -193,8 +189,6 @@ namespace QuantSA.Solution.Test
                 paymentDateFixed = paymentDateFixed.AddTenor(Tenor.FromMonths(6));
             }
 
-            var notionalsFixed = paymentDatesFixed.Select(d => 1e2);
-
             //Setting index values
             var indexValues1 = new double[resetDatesFloating.Count];
             for (var i = 0; i < resetDatesFloating.Count; i++)
@@ -202,8 +196,7 @@ namespace QuantSA.Solution.Test
 
             //create new instance of asset swap
             var assetSwap = new AssetSwap(payFixed, fixedRate, index, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread,
-                couponMonth1, couponDay1, couponMonth2, couponDay2, booksCloseDateDays, maturityDate, accrualFractions, notionalsFixed, notionalsFloating,
-                calendar, ccy, floatingIndices, indexValues1, spreads);
+                couponMonth1, couponDay1, couponMonth2, couponDay2, booksCloseDateDays, maturityDate, accrualFractions, calendar, ccy, indexValues1);
 
             return assetSwap;
         }
