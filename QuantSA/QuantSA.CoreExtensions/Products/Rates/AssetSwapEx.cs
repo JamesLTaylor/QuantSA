@@ -3,26 +3,26 @@ using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Shared.MarketObservables;
-using QuantSA.Shared.Primitives;
-using QuantSA.Core.Dates;
+using System.Collections.Generic;
+using QuantSA.Shared.Conventions.DayCount;
+using QuantSA.Shared.Conventions.BusinessDay;
 using System.Linq;
+using QuantSA.Shared.Primitives;
+using QuantSA.Core.MarketData;
 using QuantSA.Shared.MarketData;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Primitives;
-using QuantSA.Core.MarketData;
-using QuantSA.CoreExtensions.ProductPVs.Rates;
 
 
 namespace QuantSA.CoreExtensions.Products.Rates
 {
-
     public static class AssetSwapEx
     {
         private static Date GetLastCouponDateOnOrBefore(this AssetSwap assetSwap, Date settleDate)
         {
-            var thisYearCpn1 = new Date(settleDate.Year, assetSwap.underlyingBond.couponMonth1, assetSwap.underlyingBond.couponDay1);
-            var thisYearCpn2 = new Date(settleDate.Year, assetSwap.underlyingBond.couponMonth2, assetSwap.underlyingBond.couponDay2);
-            var lastYearCpn2 = new Date(settleDate.Year - 1, assetSwap.underlyingBond.couponMonth2, assetSwap.underlyingBond.couponDay2);
+            var thisYearCpn1 = new Date(settleDate.Year, assetSwap.couponMonth1, assetSwap.couponDay1);
+            var thisYearCpn2 = new Date(settleDate.Year, assetSwap.couponMonth2, assetSwap.couponDay2);
+            var lastYearCpn2 = new Date(settleDate.Year - 1, assetSwap.couponMonth2, assetSwap.couponDay2);
 
             if (settleDate > thisYearCpn2)
                 return thisYearCpn2;
@@ -33,23 +33,23 @@ namespace QuantSA.CoreExtensions.Products.Rates
 
         private static Date GetNextCouponDate(this AssetSwap assetSwap, Date couponDate)
         {
-            if (couponDate.Month == assetSwap.underlyingBond.couponMonth2)
-                return new Date(couponDate.Year + 1, assetSwap.underlyingBond.couponMonth1, assetSwap.underlyingBond.couponDay1);
-            return new Date(couponDate.Year, assetSwap.underlyingBond.couponMonth2, assetSwap.underlyingBond.couponDay2);
+            if (couponDate.Month == assetSwap.couponMonth2)
+                return new Date(couponDate.Year + 1, assetSwap.couponMonth1, assetSwap.couponDay1);
+            return new Date(couponDate.Year, assetSwap.couponMonth2, assetSwap.couponDay2);
         }
 
-        public static ResultStore AssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm)
+        public static ResultStore UnitedAssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm, Date[] discountCurveDates, double[] discountCurveRates, Date[] forecastCurveDates, double[] forecastCurveRates)
         {
-
+            
             //Bond Price Calculations
             var N = 100.0;
-            var typicalCoupon = N * assetSwap.underlyingBond.annualCouponRate / 2;
+            var typicalCoupon = N * assetSwap.fixedRate / 2;
             var t0 = assetSwap.GetLastCouponDateOnOrBefore(settleDate);
             var t1 = assetSwap.GetNextCouponDate(t0);
-            var n = (int)Math.Round((assetSwap.underlyingBond.maturityDate - t1) / 182.625);
-            var tradingWithNextCoupon = t1 - settleDate > assetSwap.underlyingBond.booksCloseDateDays;
+            var n = (int)Math.Round((assetSwap.maturityDate - t1) / 182.625);
+            var tradingWithNextCoupon = t1 - settleDate > assetSwap.booksCloseDateDays;
             var d = tradingWithNextCoupon ? settleDate - t0 : settleDate - t1;
-            var unroundedAccrued = N * assetSwap.underlyingBond.annualCouponRate * d / 365.0;
+            var unroundedAccrued = N * assetSwap.fixedRate * d / 365.0;
             var roundedAccrued = Math.Round(unroundedAccrued, 5);
             var couponAtT1 = tradingWithNextCoupon ? typicalCoupon : 0.0;
             var v = 1 / (1 + ytm / 2);
@@ -67,95 +67,150 @@ namespace QuantSA.CoreExtensions.Products.Rates
             var roundedClean = Math.Round(unroundedClean, 5);
             var roundedAip = roundedClean + roundedAccrued;
 
-
-            //Creating FixedLeg and FloatingLeg of assetSwap
-            var nDays = 365;
-            var extra = 1;
-            var x = ((assetSwap.underlyingBond.maturityDate - settleDate) / nDays) + extra;
-            var tenor = Tenor.FromYears(x);
-
-            var tradeDate = settleDate.AddDays(-3);
-
-            var ccy = new Currency("ZAR");
-            var indexFixedLeg = new FloatRateIndex("ZAR.JIBAR.6M", ccy, "JIBAR", Tenor.FromMonths(6));
-            var indexFloatLeg = new FloatRateIndex(assetSwap.RateIndex, ccy, "JIBAR", Tenor.FromMonths(assetSwap.tenorfloat));
-
-            var spread = 0.0;
-
-            var ASWfixedLeg = CreateFixedLegASW(assetSwap.payFixed, t1, assetSwap.underlyingBond.maturityDate, tenor, indexFixedLeg, assetSwap.underlyingBond.annualCouponRate, assetSwap.zaCalendar);
-            ASWfixedLeg.SetValueDate(tradeDate);
-
-            var ASWfloatLeg = CreateFloatLegASW(assetSwap.payFixed, settleDate, assetSwap.underlyingBond.maturityDate, tenor, indexFloatLeg, spread, assetSwap.zaCalendar);
-            ASWfloatLeg.SetValueDate(tradeDate);
+            //Create trade date
+            var unAdjTradeDate = settleDate.AddDays(-3);
+            var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, assetSwap.zaCalendar);
 
             // Create discount and forecast curves
+            IDiscountingSource discountCurve = new DatesAndRates(assetSwap.ccy, tradeDate, discountCurveDates, discountCurveRates);
+            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, assetSwap.index, forecastCurveDates, forecastCurveRates);
 
-            IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, assetSwap.discountCurveDates, assetSwap.discountCurveRates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, indexFloatLeg, assetSwap.forecastCurveDates, assetSwap.forecastCurveRates);
+            //Create Asset Swap
+            var swap = CreateAssetSwap(assetSwap.payFixed, settleDate, assetSwap.maturityDate, assetSwap.index, assetSwap.fixedRate, assetSwap.spread,
+                assetSwap.zaCalendar, assetSwap.couponMonth1, assetSwap.couponDay1, assetSwap.couponMonth2, assetSwap.couponDay2, assetSwap.booksCloseDateDays,
+                assetSwap.ccy, forecastCurve);
 
-            // Calculate PV of fixed and floating cashflows based on discount and forecast curves above
+            //Set value date
+            swap.SetValueDate(tradeDate);
 
-            var fixedCashFlowsPrice = ASWfixedLeg.GetCFs().PV(discountCurve);
-            var floatingCashFlowsPrice = ASWfloatLeg.CurvePV1(forecastCurve, discountCurve);
+            //Set index values
+            swap.SetIndexValues(assetSwap.index, swap.indexValues1);
 
-            // this is to get the denominator in for the spread calculaton that excludes the rates in the PV calcs (CurvePV2)
-            var denominatorCashFlowsPrice = ASWfloatLeg.CurvePV2(forecastCurve, discountCurve) * -1;
+            //Calculate present value of fixed and floating cashflows
+            var numeratorCFs = swap.GetCFs().PV(discountCurve);
 
-            //This is the assetSwapSprad
-            var assetSwapSpread = ((roundedAip - 100) + (fixedCashFlowsPrice) + (floatingCashFlowsPrice)) / denominatorCashFlowsPrice;
+            //Calculate present value of denominator cashflows for spread equation
+            var denomCFs = new List<Cashflow>();
+            for (var i = 0; i < swap.paymentDatesFloating.Count; i++)
+                if (i <= swap.paymentDatesFloating.Count)
+                {
+                    denomCFs.Add(new Cashflow(swap.paymentDatesFloating[i], -100 * swap.accrualFractions[i], swap.ccy));
+                }
 
-            //This is to store the results in the ResultStore
+            var denominatorCFs = denomCFs.PV(discountCurve);
+
+            var firstCF = new List<Cashflow>();
+            for (var i = 0; i < 1; i++)
+                if (i <= 1)
+                {
+                    firstCF.Add(new Cashflow(settleDate, (roundedAip - 100), swap.ccy));
+                }
+            var pvFirstCF = firstCF.PV(discountCurve);
+
+            //This is the assetSwapSpread calculation
+            var assetSwapSpread = (pvFirstCF + numeratorCFs) / denominatorCFs;
+
             var results = new ResultStore();
             results.Add(Keys.RoundedAip, roundedAip);
-            results.Add(Keys.RoundedClean, roundedClean);
-            results.Add(Keys.UnroundedAip, unroundedAip);
-            results.Add(Keys.UnroundedClean, unroundedClean);
-            results.Add(Keys.UnroundedAccrued, unroundedAccrued);
-            results.Add(Keys.TradingWithNextCoupon, tradingWithNextCoupon ? 1.0 : 0.0);
-            results.Add(Keys.FixedCashFlowsPrice, fixedCashFlowsPrice);
-            results.Add(Keys.FloatingCashFlowsPrice, floatingCashFlowsPrice);
-            results.Add(Keys.DenominatorCashFlowsPrice, denominatorCashFlowsPrice);
+            results.Add(Keys.PVFirstCF, pvFirstCF);
+            results.Add(Keys.NumeratorCashFlowsPrice, numeratorCFs);
+            results.Add(Keys.DenominatorCashFlowsPrice, denominatorCFs);
             results.Add(Keys.AssetSwapSpread, assetSwapSpread);
 
             return results;
-
         }
 
         public static class Keys
         {
             public const string RoundedAip = "roundedAip";
-            public const string RoundedClean = "roundedClean";
-            public const string UnroundedAip = "unroundedAip";
-            public const string UnroundedClean = "unroundedClean";
-            public const string UnroundedAccrued = "unroundedAccrued";
-            public const string TradingWithNextCoupon = "tradingWithNextCoupon";
-            public const string FixedCashFlowsPrice = "fixedCashFlowsPrice";
-            public const string FloatingCashFlowsPrice = "floatingCashFlowsPrice";
-            public const string DenominatorCashFlowsPrice = "denominatorCashFlowsPrice";
+            public const string PVFirstCF = "pvFirstCF";
+            public const string NumeratorCashFlowsPrice = "numeratorCFs";
+            public const string DenominatorCashFlowsPrice = "denominatorCFs";
             public const string AssetSwapSpread = "assetSwapSpread";
         }
 
-        //Adding the creation of a fixed leg for ASW
-        public static FixedLegASW CreateFixedLegASW(double payFixed, Date nextCouponDateCalibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double fixedRate, Calendar calendar)
+        public static AssetSwap CreateAssetSwap(double payFixed, Date settleDate, Date maturityDate, FloatRateIndex index,
+        double fixedRate, double spread, Calendar calendar, int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, int booksCloseDateDays, Currency ccy,
+        IFloatingRateSource forecastCurve)
         {
-            DateGenerators.CreateDatesASWFixed(nextCouponDateCalibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates, calendar);
-            var notionals = resetDates.Select(d => 1e2);
-            var rates = resetDates.Select(d => fixedRate);
-            return new FixedLegASW(payFixed, index.Currency, paymentDates, notionals, rates);
-        }
 
-        //Adding the creation of a floating leg for ASW
-        public static FloatLegASW CreateFloatLegASW(double payFixed, Date calibrationDate, Date maturityDate, Tenor tenor, FloatRateIndex index,
-        double spread, Calendar calendar)
-        {
-            DateGenerators.CreateDatesASWfloat(calibrationDate, maturityDate, tenor, index.Tenor, out var resetDates,
-                out var paymentDates, out var accrualFractions, calendar);
-            var notionals = resetDates.Select(d => 1e2);
-            var floatingIndices = resetDates.Select(d => index);
-            var spreads = resetDates.Select(d => spread);
-            return new FloatLegASW(payFixed, index.Currency, paymentDates, notionals, resetDates, floatingIndices, spreads, accrualFractions);
+            //Design floating leg inputs
+            var dayCount = Actual365Fixed.Instance;
+            var unAdjResetDatesFloating = new List<Date>();
+            var unAdjPaymentDatesFloating = new List<Date>();
+            var resetDatesFloating = new List<Date>();
+            var paymentDatesFloating = new List<Date>();
+            var accrualFractions = new List<double>();
+            var endDate = maturityDate;
+            var paymentDateFloating = new Date(endDate);
+            var resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
+            while (resetDateFloating >= settleDate)
+            {
+                unAdjPaymentDatesFloating.Add(paymentDateFloating);
+                unAdjResetDatesFloating.Add(resetDateFloating);
+                resetDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar));
+                paymentDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar));
+                accrualFractions.Add(dayCount.YearFraction(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar), BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar)));
+                paymentDateFloating = new Date(resetDateFloating);
+                resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
+            }
+
+            resetDatesFloating.Reverse();
+            paymentDatesFloating.Reverse();
+            accrualFractions.Reverse();
+
+            resetDatesFloating[0] = new Date(settleDate);
+            var firstResetDate = resetDatesFloating.First();
+            var firstPaymentDate = paymentDatesFloating.First();
+            accrualFractions[0] = dayCount.YearFraction(firstResetDate, firstPaymentDate);
+
+            var notionalsFloating = resetDatesFloating.Select(d => 1e2);
+            var floatingIndices = resetDatesFloating.Select(d => index);
+            var spreads = resetDatesFloating.Select(d => spread);
+
+            //Design Fixed leg inputs
+            var unAdjPaymentDatesFixed = new List<Date>();
+            var paymentDatesFixed = new List<Date>();
+
+            var thisYearCpn1 = new Date(settleDate.Year, couponMonth1, couponDay1);
+            var thisYearCpn2 = new Date(settleDate.Year, couponMonth2, couponDay2);
+            var lastYearCpn2 = new Date(settleDate.Year - 1, couponMonth2, couponDay2);
+
+            Date lcd; //lcd stands for last coupon date
+            if (settleDate > thisYearCpn2)
+                lcd = new Date(thisYearCpn2.Year, thisYearCpn2.Month, thisYearCpn2.Day);
+            if (settleDate > thisYearCpn1)
+                lcd = new Date(thisYearCpn1.Year, thisYearCpn1.Month, thisYearCpn1.Day);
+            lcd = new Date(lastYearCpn2.Year, lastYearCpn2.Month, lastYearCpn2.Day);
+
+            Date ncd; //ncd stands for next coupon date
+            if (lcd.Month == couponMonth2)
+                ncd = new Date(lcd.Year + 1, couponMonth1, couponDay1);
+            else
+                ncd = new Date(lcd.Year, couponMonth2, couponDay2);
+
+            var paymentDateFixed = new Date(ncd.AddTenor(Tenor.FromMonths(6)));
+
+            while (paymentDateFixed <= endDate)
+            {
+                unAdjPaymentDatesFixed.Add(paymentDateFixed);
+                paymentDatesFixed.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFixed, calendar));
+                paymentDateFixed = paymentDateFixed.AddTenor(Tenor.FromMonths(6));
+            }
+
+            var notionalsFixed = paymentDatesFixed.Select(d => 1e2);
+
+            //Setting index values
+            var indexValues1 = new double[resetDatesFloating.Count];
+            for (var i = 0; i < resetDatesFloating.Count; i++)
+                indexValues1[i] = forecastCurve.GetForwardRate(resetDatesFloating[i]);
+
+            //create new instance of asset swap
+            var assetSwap = new AssetSwap(payFixed, fixedRate, index, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread, 
+                couponMonth1, couponDay1, couponMonth2, couponDay2, booksCloseDateDays, maturityDate, accrualFractions,notionalsFixed, notionalsFloating,
+                calendar, ccy, floatingIndices, indexValues1, spreads);
+
+            return assetSwap;
         }
     }
 }

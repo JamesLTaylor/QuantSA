@@ -143,7 +143,7 @@ namespace QuantSA.Shared.Dates
             return new Date(newDate);
         }
 
-        public Date SubtractTenor(Tenor tenor)       // added this here
+        public Date SubtractTenor(Tenor tenor)       
         {
             var newdate = date.AddYears(tenor.Years * -1);
             newdate = newdate.AddMonths(tenor.Months * -1);

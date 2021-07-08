@@ -6,6 +6,12 @@ using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Shared.Serialization;
 using QuantSA.Shared.State;
+using QuantSA.Shared.MarketData;
+using System.Collections.Generic;
+using QuantSA.Shared.Conventions.DayCount;
+using QuantSA.Shared.Conventions.BusinessDay;
+using System.Linq;
+
 
 namespace QuantSA.Solution.Test
 {
@@ -116,6 +122,90 @@ namespace QuantSA.Solution.Test
             var dates = new[] {AnchorDate, AnchorDate.AddMonths(120)};
             var rates = new[] {0.07, 0.07};
             return new DatesAndRates(ZAR, AnchorDate, dates, rates);
+        }
+
+        public static AssetSwap CreateAssetSwap(double payFixed, Date settleDate, Date maturityDate, FloatRateIndex index,
+        double fixedRate, double spread, Calendar calendar, int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, int booksCloseDateDays, Currency ccy,
+        IFloatingRateSource forecastCurve)
+        {
+
+            //Design floating leg inputs
+            var dayCount = Actual365Fixed.Instance;
+            var unAdjResetDatesFloating = new List<Date>();
+            var unAdjPaymentDatesFloating = new List<Date>();
+            var resetDatesFloating = new List<Date>();
+            var paymentDatesFloating = new List<Date>();
+            var accrualFractions = new List<double>();
+            var endDate = maturityDate;
+            var paymentDateFloating = new Date(endDate);
+            var resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
+            while (resetDateFloating >= settleDate)
+            {
+                unAdjPaymentDatesFloating.Add(paymentDateFloating);
+                unAdjResetDatesFloating.Add(resetDateFloating);
+                resetDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar));
+                paymentDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar));
+                accrualFractions.Add(dayCount.YearFraction(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar), BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar)));
+                paymentDateFloating = new Date(resetDateFloating);
+                resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
+            }
+
+            resetDatesFloating.Reverse();
+            paymentDatesFloating.Reverse();
+            accrualFractions.Reverse();
+
+            resetDatesFloating[0] = new Date(settleDate);
+            var firstResetDate = resetDatesFloating.First();
+            var firstPaymentDate = paymentDatesFloating.First();
+            accrualFractions[0] = dayCount.YearFraction(firstResetDate, firstPaymentDate);
+
+            var notionalsFloating = resetDatesFloating.Select(d => 1e2);
+            var floatingIndices = resetDatesFloating.Select(d => index);
+            var spreads = resetDatesFloating.Select(d => spread);
+
+            //Design Fixed leg inputs
+            var unAdjPaymentDatesFixed = new List<Date>();
+            var paymentDatesFixed = new List<Date>();
+
+            var thisYearCpn1 = new Date(settleDate.Year, couponMonth1, couponDay1);
+            var thisYearCpn2 = new Date(settleDate.Year, couponMonth2, couponDay2);
+            var lastYearCpn2 = new Date(settleDate.Year - 1, couponMonth2, couponDay2);
+
+            Date lcd; //lcd stands for last coupon date
+            if (settleDate > thisYearCpn2)
+                lcd = new Date(thisYearCpn2.Year, thisYearCpn2.Month, thisYearCpn2.Day);
+            if (settleDate > thisYearCpn1)
+                lcd = new Date(thisYearCpn1.Year, thisYearCpn1.Month, thisYearCpn1.Day);
+            lcd = new Date(lastYearCpn2.Year, lastYearCpn2.Month, lastYearCpn2.Day);
+
+            Date ncd; //ncd stands for next coupon date
+            if (lcd.Month == couponMonth2)
+                ncd = new Date(lcd.Year + 1, couponMonth1, couponDay1);
+            else
+                ncd = new Date(lcd.Year, couponMonth2, couponDay2);
+
+            var paymentDateFixed = new Date(ncd.AddTenor(Tenor.FromMonths(6)));
+
+            while (paymentDateFixed <= endDate)
+            {
+                unAdjPaymentDatesFixed.Add(paymentDateFixed);
+                paymentDatesFixed.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFixed, calendar));
+                paymentDateFixed = paymentDateFixed.AddTenor(Tenor.FromMonths(6));
+            }
+
+            var notionalsFixed = paymentDatesFixed.Select(d => 1e2);
+
+            //Setting index values
+            var indexValues1 = new double[resetDatesFloating.Count];
+            for (var i = 0; i < resetDatesFloating.Count; i++)
+                indexValues1[i] = forecastCurve.GetForwardRate(resetDatesFloating[i]);
+
+            //create new instance of asset swap
+            var assetSwap = new AssetSwap(payFixed, fixedRate, index, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread,
+                couponMonth1, couponDay1, couponMonth2, couponDay2, booksCloseDateDays, maturityDate, accrualFractions, notionalsFixed, notionalsFloating,
+                calendar, ccy, floatingIndices, indexValues1, spreads);
+
+            return assetSwap;
         }
     }
 }
