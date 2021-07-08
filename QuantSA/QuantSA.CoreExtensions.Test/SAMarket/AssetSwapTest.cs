@@ -81,11 +81,11 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var swap = TestHelpers.CreateAssetSwap(payFixed, settleDate, maturityDate, index, fixedRate, spread, zaCalendar, couponMonth1, couponDay1,
                 couponMonth2, couponDay2, booksCloseDateDays, ccy, forecastCurve);
 
-            var bondprice = swap.UnitedAssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.RoundedAip);
-            var first = swap.UnitedAssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.PVFirstCF);
-            var num = swap.UnitedAssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.NumeratorCashFlowsPrice);
-            var denom = swap.UnitedAssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice);
-            var ASW = swap.UnitedAssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.AssetSwapSpread);
+            var bondprice = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.RoundedAip);
+            var first = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.PVFirstCF);
+            var num = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.NumeratorCashFlowsPrice);
+            var denom = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice);
+            var ASW = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.AssetSwapSpread);
 
         }
     }

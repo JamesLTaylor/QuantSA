@@ -38,7 +38,7 @@ namespace QuantSA.CoreExtensions.Products.Rates
             return new Date(couponDate.Year, assetSwap.couponMonth2, assetSwap.couponDay2);
         }
 
-        public static ResultStore UnitedAssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm, Date[] discountCurveDates, double[] discountCurveRates, Date[] forecastCurveDates, double[] forecastCurveRates)
+        public static ResultStore AssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm, Date[] discountCurveDates, double[] discountCurveRates, Date[] forecastCurveDates, double[] forecastCurveRates)
         {
             
             //Bond Price Calculations
