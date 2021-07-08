@@ -14,11 +14,11 @@ namespace QuantSA.CoreExtensions.SAMarket
 {
     public static class JSEBondOptionEx
     {
-        public static ResultStore BlackOption(JSEBondOption bondforward, double strike, double vol, double bondforwardprice, double repo) // JSEBondOption input + Enum product class
+        public static ResultStore BlackOption(JSEBondOption bondoption, double strike, double vol, double bondforwardprice, double repo)
         {
             var dist = new Normal();
-            var forwardDate = bondforward.forwardDate;
-            var settleDate = bondforward.settleDate;
+            var forwardDate = bondoption.forwardDate;
+            var settleDate = bondoption.settleDate;
             var timeToMaturity = (double)(forwardDate - settleDate) / 365;
             var sigmaSqrtT = vol * Math.Sqrt(timeToMaturity);
             var d1 = 1 / sigmaSqrtT * (Math.Log(bondforwardprice / strike) + 0.5 * vol * vol);
@@ -26,7 +26,7 @@ namespace QuantSA.CoreExtensions.SAMarket
 
             var discountFactor = Math.Exp(-repo * timeToMaturity);
 
-            var optionPrice = (int)bondforward.putOrCall * discountFactor * (bondforwardprice * dist.CumulativeDistribution(d1) - strike * dist.CumulativeDistribution(d2));
+            var optionPrice = (int)bondoption.putOrCall * discountFactor * (bondforwardprice * dist.CumulativeDistribution(d1) - strike * dist.CumulativeDistribution(d2));
             var resultStore = new ResultStore();
             resultStore.Add(Keys.BlackOption, optionPrice);
             return resultStore;

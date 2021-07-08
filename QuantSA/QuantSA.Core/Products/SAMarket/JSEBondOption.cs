@@ -39,7 +39,7 @@ namespace QuantSA.Core.Products.SAMarket
         // Bond forward date
         // <summary>
         public Date forwardDate;
-        public BesaJseBond underlyingBond; // Should be bond forward
+        public BesaJseBond underlyingBond;
 
         public PutOrCall putOrCall;
 

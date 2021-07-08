@@ -34,7 +34,7 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, TestHelpers.ZAR); 
 
             var ytm = 0.0930; //
-            var repo = 10.75; // See example - Don't know what is going on here aka what the value should be
+            var repo = 10.75; // See example
             var strike = 1100555.9; //
             var vol = 0.07; //
 
