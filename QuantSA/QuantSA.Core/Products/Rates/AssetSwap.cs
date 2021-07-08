@@ -132,7 +132,7 @@ namespace QuantSA.Core.Products.Rates
             for (var i = 0; i < paymentDatesFloating.Count; i++)
                 if (paymentDatesFloating[i] > _valueDate)
                 {
-                    var floatingAmount = -payFixed * 100 * accrualFractions[i] * (indexValues.ElementAt(i) + spread);
+                    var floatingAmount = -payFixed * 100 * accrualFractions[i] * (indexValues[i] + spread);
                     cfs.Add(new Cashflow(paymentDatesFloating[i], floatingAmount, ccy));
                 }
 
