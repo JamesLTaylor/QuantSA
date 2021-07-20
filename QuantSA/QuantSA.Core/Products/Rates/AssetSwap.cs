@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
-using QuantSA.Core.Products.SAMarket;
+
 
 namespace QuantSA.Core.Products.Rates
 {
@@ -17,25 +18,39 @@ namespace QuantSA.Core.Products.Rates
         public double spread;
         public FloatRateIndex index;
         public List<double> accrualFractions;
+        public double fixedRate;
+        public Date maturityDate;
+        public int couponMonth1;
+        public int couponDay1;
+        public int couponMonth2;
+        public int couponDay2;
+        public int booksCloseDateDays;
         public Calendar zaCalendar;
         public Currency ccy;
         public double[] indexValues1;
-        public BesaJseBond underlyingBond;
+
 
         // Product state
         [JsonIgnore] private double[] indexValues;
         [JsonIgnore] private Date _valueDate;
 
-        public AssetSwap(double _payFixed, FloatRateIndex _index, BesaJseBond besaJseBond, List<Date> _indexDates, List<Date> _payDatesFloating, 
-            List<Date> _payDatesFixed, double _spread, List<double> _accrualFractions, Calendar _zaCalendar, Currency _ccy, double[] _indexValues1)
+        public AssetSwap(double _payFixed, double _fixedRate, FloatRateIndex _index,  List<Date> _indexDates, List<Date> _payDatesFloating, 
+            List<Date> _payDatesFixed, double _spread, int _couponMonth1, int _couponDay1, int _couponMonth2, int _couponDay2, int _booksCloseDateDays,
+            Date _maturityDate, List<double> _accrualFractions, Calendar _zaCalendar, Currency _ccy, double[] _indexValues1)
         {
             payFixed = _payFixed;
+            fixedRate = _fixedRate;
             index = _index;
-            underlyingBond = besaJseBond;
             indexDates = _indexDates;
             paymentDatesFloating = _payDatesFloating;
             paymentDatesFixed = _payDatesFixed;
             spread = _spread;
+            couponMonth1 = _couponMonth1;
+            couponDay1 = _couponDay1;
+            couponMonth2 = _couponMonth2;
+            couponDay2 = _couponDay2;
+            booksCloseDateDays = _booksCloseDateDays;
+            maturityDate = _maturityDate;
             accrualFractions = _accrualFractions;
             zaCalendar = _zaCalendar;
             ccy = _ccy;
@@ -124,7 +139,7 @@ namespace QuantSA.Core.Products.Rates
             for (var i = 0; i < paymentDatesFixed.Count; i++)
                 if (paymentDatesFixed[i] > _valueDate)
                 {
-                    var fixedAmount = payFixed * 100 * 0.5 * underlyingBond.annualCouponRate;
+                    var fixedAmount = payFixed * 100 * 0.5 * fixedRate;
                     cfs.Add(new Cashflow(paymentDatesFixed[i], fixedAmount, ccy));
                 }
 

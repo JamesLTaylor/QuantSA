@@ -7,7 +7,7 @@ using QuantSA.Shared.MarketData;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.CoreExtensions.Products.Rates;
-using QuantSA.Core.Products.SAMarket;
+
 
 namespace QuantSA.CoreExtensions.Test.SAMarket
 {
@@ -20,13 +20,12 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
         {
             var settleDate = new Date(2013, 3, 8);
             var maturityDate = new Date(2015, 9, 15);
-            var annualCouponRate = 0.135;
+            var fixedRate = 0.135;
             var couponMonth1 = 3;
             var couponDay1 = 15;
             var couponMonth2 = 9;
             var couponDay2 = 15;
             var booksCloseDateDays = 10;
-            var notional = 100000000;
             var payFixed = -1;
             
             var ccy = TestHelpers.ZAR;
@@ -47,9 +46,6 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             };
 
             var zaCalendar = new Calendar("Test", holidays);
-
-            var bond = new BesaJseBond(maturityDate, notional, annualCouponRate, couponMonth1,
-                couponDay1, couponMonth2, couponDay2, booksCloseDateDays, zaCalendar, ccy);
 
             Date[] discountDates =
            {
@@ -82,7 +78,8 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, discountDates, discountRates);
             IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, index, forecastDates, forecastRates);
 
-            var swap = TestHelpers.CreateAssetSwap(payFixed, bond, settleDate, index, spread, zaCalendar, ccy, forecastCurve);
+            var swap = TestHelpers.CreateAssetSwap(payFixed, settleDate, maturityDate, index, fixedRate, spread, zaCalendar, couponMonth1, couponDay1,
+                couponMonth2, couponDay2, booksCloseDateDays, ccy, forecastCurve);
 
             var bondprice = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.RoundedAip);
             var first = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.PVFirstCF);
