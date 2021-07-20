@@ -1,4 +1,5 @@
-﻿using QuantSA.Shared;
+﻿using System;
+using QuantSA.Shared;
 using QuantSA.Shared.Dates;
 using QuantSA.Core.Products.Rates;
 using QuantSA.Shared.MarketObservables;
@@ -11,15 +12,61 @@ using QuantSA.Core.MarketData;
 using QuantSA.Shared.MarketData;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Primitives;
-using QuantSA.Core.Products.SAMarket;
-using QuantSA.CoreExtensions.SAMarket;
+
 
 namespace QuantSA.CoreExtensions.Products.Rates
 {
     public static class AssetSwapEx
     {
+        private static Date GetLastCouponDateOnOrBefore(this AssetSwap assetSwap, Date settleDate)
+        {
+            var thisYearCpn1 = new Date(settleDate.Year, assetSwap.couponMonth1, assetSwap.couponDay1);
+            var thisYearCpn2 = new Date(settleDate.Year, assetSwap.couponMonth2, assetSwap.couponDay2);
+            var lastYearCpn2 = new Date(settleDate.Year - 1, assetSwap.couponMonth2, assetSwap.couponDay2);
+
+            if (settleDate > thisYearCpn2)
+                return thisYearCpn2;
+            if (settleDate > thisYearCpn1)
+                return thisYearCpn1;
+            return lastYearCpn2;
+        }
+
+        private static Date GetNextCouponDate(this AssetSwap assetSwap, Date couponDate)
+        {
+            if (couponDate.Month == assetSwap.couponMonth2)
+                return new Date(couponDate.Year + 1, assetSwap.couponMonth1, assetSwap.couponDay1);
+            return new Date(couponDate.Year, assetSwap.couponMonth2, assetSwap.couponDay2);
+        }
+
         public static ResultStore AssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm, Date[] discountCurveDates, double[] discountCurveRates, Date[] forecastCurveDates, double[] forecastCurveRates)
         {
+            
+            //Bond Price Calculations
+            var N = 100.0;
+            var typicalCoupon = N * assetSwap.fixedRate / 2;
+            var t0 = assetSwap.GetLastCouponDateOnOrBefore(settleDate);
+            var t1 = assetSwap.GetNextCouponDate(t0);
+            var n = (int)Math.Round((assetSwap.maturityDate - t1) / 182.625);
+            var tradingWithNextCoupon = t1 - settleDate > assetSwap.booksCloseDateDays;
+            var d = tradingWithNextCoupon ? settleDate - t0 : settleDate - t1;
+            var unroundedAccrued = N * assetSwap.fixedRate * d / 365.0;
+            var roundedAccrued = Math.Round(unroundedAccrued, 5);
+            var couponAtT1 = tradingWithNextCoupon ? typicalCoupon : 0.0;
+            var v = 1 / (1 + ytm / 2);
+
+            double brokenPeriodDf;
+            if (n > 0)
+                brokenPeriodDf = Math.Pow(v, ((double)t1 - settleDate) / (t1 - t0));
+            else
+                brokenPeriodDf = 1 / (1 + ytm * ((double)t1 - settleDate) / 365.0);
+
+            var unroundedAip = brokenPeriodDf *
+                               (couponAtT1 + typicalCoupon * v * (1 - Math.Pow(v, n)) / (1 - v) + N * Math.Pow(v, n));
+
+            var unroundedClean = unroundedAip - unroundedAccrued;
+            var roundedClean = Math.Round(unroundedClean, 5);
+            var roundedAip = roundedClean + roundedAccrued;
+
             //Create trade date
             var unAdjTradeDate = settleDate.AddDays(-3);
             var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, assetSwap.zaCalendar);
@@ -29,7 +76,9 @@ namespace QuantSA.CoreExtensions.Products.Rates
             IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, assetSwap.index, forecastCurveDates, forecastCurveRates);
 
             //Create Asset Swap
-            var swap = CreateAssetSwap(assetSwap.payFixed, assetSwap.underlyingBond, settleDate, assetSwap.index, assetSwap.spread, assetSwap.zaCalendar, assetSwap.ccy, forecastCurve);
+            var swap = CreateAssetSwap(assetSwap.payFixed, settleDate, assetSwap.maturityDate, assetSwap.index, assetSwap.fixedRate, assetSwap.spread,
+                assetSwap.zaCalendar, assetSwap.couponMonth1, assetSwap.couponDay1, assetSwap.couponMonth2, assetSwap.couponDay2, assetSwap.booksCloseDateDays,
+                assetSwap.ccy, forecastCurve);
 
             //Set value date
             swap.SetValueDate(tradeDate);
@@ -48,8 +97,6 @@ namespace QuantSA.CoreExtensions.Products.Rates
                     denomCFs.Add(new Cashflow(swap.paymentDatesFloating[i], -100 * swap.accrualFractions[i], swap.ccy));
                 }
 
-            var bondresults = assetSwap.underlyingBond.GetSpotMeasures(settleDate, ytm);
-            var roundedAip = (double)bondresults.GetScalar(BesaJseBondEx.Keys.RoundedAip);
             var denominatorCFs = denomCFs.PV(discountCurve);
 
             var firstCF = new List<Cashflow>();
@@ -82,7 +129,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
             public const string AssetSwapSpread = "assetSwapSpread";
         }
 
-        public static AssetSwap CreateAssetSwap(double payFixed, BesaJseBond besaJseBond, Date settleDate, FloatRateIndex index, double spread, Calendar calendar, Currency ccy,
+        public static AssetSwap CreateAssetSwap(double payFixed, Date settleDate, Date maturityDate, FloatRateIndex index,
+        double fixedRate, double spread, Calendar calendar, int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, int booksCloseDateDays, Currency ccy,
         IFloatingRateSource forecastCurve)
         {
 
@@ -93,7 +141,7 @@ namespace QuantSA.CoreExtensions.Products.Rates
             var resetDatesFloating = new List<Date>();
             var paymentDatesFloating = new List<Date>();
             var accrualFractions = new List<double>();
-            var endDate = besaJseBond.maturityDate;
+            var endDate = maturityDate;
             var paymentDateFloating = new Date(endDate);
             var resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
             while (resetDateFloating >= settleDate)
@@ -120,10 +168,10 @@ namespace QuantSA.CoreExtensions.Products.Rates
             var unAdjPaymentDatesFixed = new List<Date>();
             var paymentDatesFixed = new List<Date>();
 
-            var thisYearCpn1 = new Date(settleDate.Year, besaJseBond.couponMonth1, besaJseBond.couponDay1);
-            var thisYearCpn2 = new Date(settleDate.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-            var lastYearCpn2 = new Date(settleDate.Year - 1, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-            
+            var thisYearCpn1 = new Date(settleDate.Year, couponMonth1, couponDay1);
+            var thisYearCpn2 = new Date(settleDate.Year, couponMonth2, couponDay2);
+            var lastYearCpn2 = new Date(settleDate.Year - 1, couponMonth2, couponDay2);
+
             Date lcd; //lcd stands for last coupon date
             if (settleDate > thisYearCpn2)
                 lcd = new Date(thisYearCpn2.Year, thisYearCpn2.Month, thisYearCpn2.Day);
@@ -132,10 +180,10 @@ namespace QuantSA.CoreExtensions.Products.Rates
             lcd = new Date(lastYearCpn2.Year, lastYearCpn2.Month, lastYearCpn2.Day);
 
             Date ncd; //ncd stands for next coupon date
-            if (lcd.Month == besaJseBond.couponMonth2)
-                ncd = new Date(lcd.Year + 1, besaJseBond.couponMonth1, besaJseBond.couponDay1);
+            if (lcd.Month == couponMonth2)
+                ncd = new Date(lcd.Year + 1, couponMonth1, couponDay1);
             else
-                ncd = new Date(lcd.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
+                ncd = new Date(lcd.Year, couponMonth2, couponDay2);
 
             var paymentDateFixed = new Date(ncd.AddTenor(Tenor.FromMonths(6)));
 
@@ -152,8 +200,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
                 indexValues1[i] = forecastCurve.GetForwardRate(resetDatesFloating[i]);
 
             //create new instance of asset swap
-            var assetSwap = new AssetSwap(payFixed, index, besaJseBond, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread, 
-                accrualFractions, calendar, ccy, indexValues1);
+            var assetSwap = new AssetSwap(payFixed, fixedRate, index, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread, 
+                couponMonth1, couponDay1, couponMonth2, couponDay2, booksCloseDateDays, maturityDate, accrualFractions, calendar, ccy, indexValues1);
 
             return assetSwap;
         }

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using QuantSA.Shared.Conventions.DayCount;
 using QuantSA.Shared.Conventions.BusinessDay;
 using System.Linq;
-using QuantSA.Core.Products.SAMarket;
 
 
 namespace QuantSA.Solution.Test
@@ -125,7 +124,8 @@ namespace QuantSA.Solution.Test
             return new DatesAndRates(ZAR, AnchorDate, dates, rates);
         }
 
-        public static AssetSwap CreateAssetSwap(double payFixed, BesaJseBond besaJseBond, Date settleDate, FloatRateIndex index, double spread, Calendar calendar, Currency ccy,
+        public static AssetSwap CreateAssetSwap(double payFixed, Date settleDate, Date maturityDate, FloatRateIndex index,
+        double fixedRate, double spread, Calendar calendar, int couponMonth1, int couponDay1, int couponMonth2, int couponDay2, int booksCloseDateDays, Currency ccy,
         IFloatingRateSource forecastCurve)
         {
 
@@ -136,7 +136,7 @@ namespace QuantSA.Solution.Test
             var resetDatesFloating = new List<Date>();
             var paymentDatesFloating = new List<Date>();
             var accrualFractions = new List<double>();
-            var endDate = besaJseBond.maturityDate;
+            var endDate = maturityDate;
             var paymentDateFloating = new Date(endDate);
             var resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
             while (resetDateFloating >= settleDate)
@@ -163,9 +163,9 @@ namespace QuantSA.Solution.Test
             var unAdjPaymentDatesFixed = new List<Date>();
             var paymentDatesFixed = new List<Date>();
 
-            var thisYearCpn1 = new Date(settleDate.Year, besaJseBond.couponMonth1, besaJseBond.couponDay1);
-            var thisYearCpn2 = new Date(settleDate.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-            var lastYearCpn2 = new Date(settleDate.Year - 1, besaJseBond.couponMonth2, besaJseBond.couponDay2);
+            var thisYearCpn1 = new Date(settleDate.Year, couponMonth1, couponDay1);
+            var thisYearCpn2 = new Date(settleDate.Year, couponMonth2, couponDay2);
+            var lastYearCpn2 = new Date(settleDate.Year - 1, couponMonth2, couponDay2);
 
             Date lcd; //lcd stands for last coupon date
             if (settleDate > thisYearCpn2)
@@ -175,10 +175,10 @@ namespace QuantSA.Solution.Test
             lcd = new Date(lastYearCpn2.Year, lastYearCpn2.Month, lastYearCpn2.Day);
 
             Date ncd; //ncd stands for next coupon date
-            if (lcd.Month == besaJseBond.couponMonth2)
-                ncd = new Date(lcd.Year + 1, besaJseBond.couponMonth1, besaJseBond.couponDay1);
+            if (lcd.Month == couponMonth2)
+                ncd = new Date(lcd.Year + 1, couponMonth1, couponDay1);
             else
-                ncd = new Date(lcd.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
+                ncd = new Date(lcd.Year, couponMonth2, couponDay2);
 
             var paymentDateFixed = new Date(ncd.AddTenor(Tenor.FromMonths(6)));
 
@@ -195,8 +195,8 @@ namespace QuantSA.Solution.Test
                 indexValues1[i] = forecastCurve.GetForwardRate(resetDatesFloating[i]);
 
             //create new instance of asset swap
-            var assetSwap = new AssetSwap(payFixed, index, besaJseBond, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread,
-                accrualFractions, calendar, ccy, indexValues1);
+            var assetSwap = new AssetSwap(payFixed, fixedRate, index, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread,
+                couponMonth1, couponDay1, couponMonth2, couponDay2, booksCloseDateDays, maturityDate, accrualFractions, calendar, ccy, indexValues1);
 
             return assetSwap;
         }

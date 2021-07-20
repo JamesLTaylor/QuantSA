@@ -122,6 +122,7 @@ namespace QuantSA.ExcelFunctions
                 startDate, tenor, jibar);
         }
 
+
         [QuantSAExcelFunction(Description = "Create a ZAR quarterly, fixed for float Jibar swap.",
             Name = "QSA.CreateZARSwap",
             HasGeneratedVersion = true,
@@ -367,6 +368,5 @@ namespace QuantSA.ExcelFunctions
                 new[] {forecastIndices});
             return model;
         }
-
     }
 }
