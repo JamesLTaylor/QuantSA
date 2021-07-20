@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Dates;
 using QuantSA.Solution.Test;
 using QuantSA.Shared.MarketObservables;
@@ -83,12 +84,13 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, index, forecastDates, forecastRates);
 
             var swap = TestHelpers.CreateAssetSwap(payFixed, bond, settleDate, index, spread, zaCalendar, ccy, forecastCurve);
+            var results = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates);
 
-            var bondprice = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.RoundedAip);
-            var first = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.PVFirstCF);
-            var num = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.NumeratorCashFlowsPrice);
-            var denom = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice);
-            var ASW = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates).GetScalar(AssetSwapEx.Keys.AssetSwapSpread);
+            Assert.AreEqual(117.66281, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.RoundedAip), 5), 1e-8);
+            Assert.AreEqual(17.65586, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.PVFirstCF), 5), 1e-8);
+            Assert.AreEqual(-18.64524, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.NumeratorCashFlowsPrice), 5), 1e-8);
+            Assert.AreEqual(-234.90919, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice), 5), 1e-8);
+            Assert.AreEqual(0.004211756, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.AssetSwapSpread), 9), 1e-8);
 
         }
     }
