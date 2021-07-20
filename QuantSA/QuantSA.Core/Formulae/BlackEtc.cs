@@ -49,6 +49,7 @@ namespace QuantSA.Core.Formulae
             var sigmaSqrtT = vol * Math.Sqrt(T);
             var d1 = 1 / sigmaSqrtT * (Math.Log(forward / strike) + 0.5 * vol * vol);
             var d2 = d1 - sigmaSqrtT;
+
             return discountFactor * (forward * dist.CumulativeDistribution(d1) - strike * dist.CumulativeDistribution(d2));
         }
     }
