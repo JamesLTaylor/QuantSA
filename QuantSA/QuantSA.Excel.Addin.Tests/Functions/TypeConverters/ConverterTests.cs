@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using  System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Excel.Addin.Config;
@@ -24,7 +24,7 @@ namespace QuantSA.Excel.Addin.Tests.TypeConverters
 
             foreach (var d in delegates)
             {
-                var func = (ExcelFunction)d.Target;
+                var func = (ExcelFunction) d.Target;
                 if (func.GetName() == functionName)
                     return func;
             }
@@ -39,8 +39,8 @@ namespace QuantSA.Excel.Addin.Tests.TypeConverters
         public void TestThatCcyCanConvert()
         {
             var func = LoadAndGetExcelFunction("CreateDatesAndRatesCurve");
-            var result = func.Eval(new object[,] { { "curvename" } }, new object[,] { { 1.0 } }, new object[,] { { 1.0 } },
-                new object[,] { { "ZAR" } });
+            var result = func.Eval(new object[,] {{"curvename"}}, new object[,] {{1.0}}, new object[,] {{1.0}},
+                new object[,] {{"ZAR"}});
             Assert.IsNotNull(result);
         }
 
@@ -51,10 +51,10 @@ namespace QuantSA.Excel.Addin.Tests.TypeConverters
         public void TestThatEnumCanConvert()
         {
             var func = LoadAndGetExcelFunction("FormulaBlack");
-            var result = func.Eval(new object[,] { { "call" } }, new object[,] { { 1.0 } },
-                new object[,] { { 1.0 } }, new object[,] { { 1.0 } }, new object[,] { { 1.0 } },
-                new object[,] { { 1.0 } });
-            Assert.AreEqual(0.3829, (double)result[0, 0], 1e-4);
+            var result = func.Eval(new object[,] {{"call"}}, new object[,] {{1.0}},
+                new object[,] {{1.0}}, new object[,] {{1.0}}, new object[,] {{1.0}},
+                new object[,] {{1.0}});
+            Assert.AreEqual(0.3829, (double) result[0, 0], 1e-4);
         }
     }
 }
