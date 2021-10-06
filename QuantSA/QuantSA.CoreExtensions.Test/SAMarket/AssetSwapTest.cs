@@ -3,12 +3,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantSA.Shared.Dates;
 using QuantSA.Solution.Test;
 using QuantSA.Shared.MarketObservables;
-using QuantSA.Core.MarketData;
 using QuantSA.Shared.MarketData;
 using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Shared.Conventions.BusinessDay;
 using QuantSA.CoreExtensions.Products.Rates;
 using QuantSA.Core.Products.SAMarket;
+
 
 namespace QuantSA.CoreExtensions.Test.SAMarket
 {
@@ -29,12 +29,12 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var booksCloseDateDays = 10;
             var notional = 100000000;
             var payFixed = -1;
-            
+
             var ccy = TestHelpers.ZAR;
             var index = new FloatRateIndex("ZAR.JIBAR.3M", ccy, "JIBAR", Tenor.FromMonths(3));
             var ytm = 0.05757;
             var spread = 0.0;
-            
+
 
             Date[] holidays =
 {
@@ -68,29 +68,19 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
                 0.0644782668196503, 0.0651654909303646,0.0658597518938604
             };
 
-            Date[] forecastDates =
-{
-                new Date(2013, 3, 8), new Date(2013, 6, 18), new Date(2013, 9, 16), new Date(2013, 12, 17), new Date(2014, 3, 17), new Date(2014, 6, 17),
-                new Date(2014, 9, 15), new Date(2014, 12, 15), new Date(2015, 3, 16), new Date(2015, 6, 15),
-            };
-
-            double[] forecastRates = { 0.0513516962584837, 0.0508560960486011, 0.0506778350115049, 0.0510319212391443, 0.0518172259443010, 0.0528264747654130,
-                0.0541426832758913, 0.0560265891867828, 0.0577427520443597,0.0588585700038349 };
-
             var unAdjTradeDate = settleDate.AddDays(-3);
             var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, zaCalendar);
 
             IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, discountDates, discountRates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, index, forecastDates, forecastRates);
 
-            var swap = TestHelpers.CreateAssetSwap(payFixed, bond, settleDate, index, spread, zaCalendar, ccy, forecastCurve);
-            var results = swap.AssetSwapMeasures(settleDate, ytm, discountDates, discountRates, forecastDates, forecastRates);
+            var swap = TestHelpers.CreateAssetSwap(payFixed, bond, settleDate, index, spread, zaCalendar, ccy, discountCurve);
+            var results = swap.AssetSwapMeasures(settleDate, ytm, discountCurve);
 
             Assert.AreEqual(117.66281, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.RoundedAip), 5), 1e-8);
             Assert.AreEqual(17.65586, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.PVFirstCF), 5), 1e-8);
-            Assert.AreEqual(-18.64524, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.NumeratorCashFlowsPrice), 5), 1e-8);
-            Assert.AreEqual(-234.90919, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice), 5), 1e-8);
-            Assert.AreEqual(0.004211756, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.AssetSwapSpread), 9), 1e-8);
+            Assert.AreEqual(-18.645, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.NumeratorCashFlowsPrice), 3), 1e-8);
+            Assert.AreEqual(-234.909, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.DenominatorCashFlowsPrice), 3), 1e-8);
+            Assert.AreEqual(0.004211, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.AssetSwapSpread), 6), 1e-8);
 
         }
     }

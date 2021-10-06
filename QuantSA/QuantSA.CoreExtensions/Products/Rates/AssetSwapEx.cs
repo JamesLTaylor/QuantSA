@@ -9,33 +9,44 @@ using System.Linq;
 using QuantSA.Shared.Primitives;
 using QuantSA.Core.MarketData;
 using QuantSA.Shared.MarketData;
-using QuantSA.Core.CurvesAndSurfaces;
 using QuantSA.Core.Primitives;
 using QuantSA.Core.Products.SAMarket;
 using QuantSA.CoreExtensions.SAMarket;
+
 
 namespace QuantSA.CoreExtensions.Products.Rates
 {
     public static class AssetSwapEx
     {
-        public static ResultStore AssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm, Date[] discountCurveDates, double[] discountCurveRates, Date[] forecastCurveDates, double[] forecastCurveRates)
+        public static ResultStore AssetSwapMeasures(this AssetSwap assetSwap, Date settleDate, double ytm, IDiscountingSource discountCurve)
         {
-            //Create trade date
+            //Create Asset Swap
+            var swap = CreateAssetSwap(assetSwap.payFixed, assetSwap.underlyingBond, settleDate, assetSwap.index, assetSwap.spread, assetSwap.zaCalendar,
+                assetSwap.ccy, discountCurve);
+
+            //Create trade date of the swap
             var unAdjTradeDate = settleDate.AddDays(-3);
             var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, assetSwap.zaCalendar);
 
-            // Create discount and forecast curves
-            IDiscountingSource discountCurve = new DatesAndRates(assetSwap.ccy, tradeDate, discountCurveDates, discountCurveRates);
-            IFloatingRateSource forecastCurve = new ForecastCurve(tradeDate, assetSwap.index, forecastCurveDates, forecastCurveRates);
-
-            //Create Asset Swap
-            var swap = CreateAssetSwap(assetSwap.payFixed, assetSwap.underlyingBond, settleDate, assetSwap.index, assetSwap.spread, assetSwap.zaCalendar, assetSwap.ccy, forecastCurve);
-
             //Set value date
-            swap.SetValueDate(tradeDate);
+            assetSwap.SetValueDate(tradeDate);
 
-            //Set index values
-            swap.SetIndexValues(assetSwap.index, swap.indexValues1);
+            // Calculate the first fixing off the curve to use at all past dates.
+            var df1 = discountCurve.GetDF(tradeDate);
+            var laterDate = tradeDate.AddTenor(assetSwap.index.Tenor);
+            var df2 = discountCurve.GetDF(laterDate);
+            var dt = (laterDate - tradeDate) / 365.0;
+            var rate = (df1 / df2 - 1) / dt;
+
+            // Create the forecast curve from the discount curve
+            IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(discountCurve, assetSwap.index,
+                new FloatingRateFixingCurve1Rate(tradeDate, rate, assetSwap.index));
+
+            //Setting index values
+            var indexValues = new double[swap.indexDates.Count];
+            for (var i = 0; i < swap.indexDates.Count; i++)
+                indexValues[i] = forecastCurve.GetForwardRate(swap.indexDates[i]);
+            assetSwap.SetIndexValues(assetSwap.index, indexValues);
 
             //Calculate present value of fixed and floating cashflows
             var numeratorCFs = swap.GetCFs().PV(discountCurve);
@@ -82,10 +93,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
             public const string AssetSwapSpread = "assetSwapSpread";
         }
 
-        public static AssetSwap CreateAssetSwap(double payFixed, BesaJseBond besaJseBond, Date settleDate, FloatRateIndex index, double spread, Calendar calendar, Currency ccy,
-        IFloatingRateSource forecastCurve)
+        public static AssetSwap CreateAssetSwap(double payFixed, BesaJseBond besaJseBond, Date settleDate, FloatRateIndex index, double spread, Calendar calendar, Currency ccy, IDiscountingSource discountCurve)
         {
-
             //Design floating leg inputs
             var dayCount = Actual365Fixed.Instance;
             var unAdjResetDatesFloating = new List<Date>();
@@ -102,7 +111,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
                 unAdjResetDatesFloating.Add(resetDateFloating);
                 resetDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar));
                 paymentDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar));
-                accrualFractions.Add(dayCount.YearFraction(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar), BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar)));
+                accrualFractions.Add(dayCount.YearFraction(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar),
+                    BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar)));
                 paymentDateFloating = new Date(resetDateFloating);
                 resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
             }
@@ -123,7 +133,7 @@ namespace QuantSA.CoreExtensions.Products.Rates
             var thisYearCpn1 = new Date(settleDate.Year, besaJseBond.couponMonth1, besaJseBond.couponDay1);
             var thisYearCpn2 = new Date(settleDate.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
             var lastYearCpn2 = new Date(settleDate.Year - 1, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-            
+
             Date lcd; //lcd stands for last coupon date
             if (settleDate > thisYearCpn2)
                 lcd = new Date(thisYearCpn2.Year, thisYearCpn2.Month, thisYearCpn2.Day);
@@ -146,14 +156,33 @@ namespace QuantSA.CoreExtensions.Products.Rates
                 paymentDateFixed = paymentDateFixed.AddTenor(Tenor.FromMonths(6));
             }
 
-            //Setting index values
-            var indexValues1 = new double[resetDatesFloating.Count];
-            for (var i = 0; i < resetDatesFloating.Count; i++)
-                indexValues1[i] = forecastCurve.GetForwardRate(resetDatesFloating[i]);
-
             //create new instance of asset swap
-            var assetSwap = new AssetSwap(payFixed, index, besaJseBond, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread, 
-                accrualFractions, calendar, ccy, indexValues1);
+            var assetSwap = new AssetSwap(payFixed, index, besaJseBond, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread,
+                accrualFractions, calendar, ccy);
+
+            //Create trade date of the swap
+            var unAdjTradeDate = settleDate.AddDays(-3);
+            var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, assetSwap.zaCalendar);
+
+            //Set value date
+            assetSwap.SetValueDate(tradeDate);
+
+            // Calculate the first fixing off the curve to use at all past dates.
+            var df1 = discountCurve.GetDF(tradeDate);
+            var laterDate = tradeDate.AddTenor(assetSwap.index.Tenor);
+            var df2 = discountCurve.GetDF(laterDate);
+            var dt = (laterDate - tradeDate) / 365.0;
+            var rate = (df1 / df2 - 1) / dt;
+
+            // Create the forecast curve from the discount curve
+            IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(discountCurve, assetSwap.index,
+                new FloatingRateFixingCurve1Rate(tradeDate, rate, assetSwap.index));
+
+            //Setting index values
+            var indexValues = new double[assetSwap.indexDates.Count];
+            for (var i = 0; i < assetSwap.indexDates.Count; i++)
+                indexValues[i] = forecastCurve.GetForwardRate(assetSwap.indexDates[i]);
+            assetSwap.SetIndexValues(assetSwap.index, indexValues);
 
             return assetSwap;
         }

@@ -15,6 +15,8 @@ using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
+using QuantSA.Core.Products.SAMarket;
+using QuantSA.Shared.Conventions.BusinessDay;
 
 namespace QuantSA.ExcelFunctions
 {
@@ -368,5 +370,63 @@ namespace QuantSA.ExcelFunctions
                 new[] {forecastIndices});
             return model;
         }
+
+        [QuantSAExcelFunction(
+            Description = "Create a ZAR asset swap based on an underlying bond and floating rate.",
+            Name = "QSA.CreateAssetSwap",
+            HasGeneratedVersion = true,
+            ExampleSheet = "ZARAssetSwap.xlsx",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "")]
+        public static AssetSwap CreateAssetSwap(
+            [ExcelArgument(Description = "Is the fixed rate paid? Enter -1 for payFixed, 1 for receive fixed.")]
+            int payFixed,
+            [ExcelArgument(Description = "The underlying bond.")]
+            BesaJseBond besaJseBond,
+            [ExcelArgument(Description = "The settlement date of the underlying bond.")]
+            Date settleDate,
+            [ExcelArgument(Description = "A string describing the floating index of the swap.")]
+            FloatRateIndex index,
+            [ExcelArgument(Description = "The spread that will be added to the floating index.")]
+            double spread,
+            [ExcelArgument(Description = "The public holidays applicable to the swap cashflows dates.")]
+            Date[] zaHols,
+            [ExcelArgument(Description = "The currency of the cashflows.")]
+            Currency currency,
+            [ExcelArgument(Description = "The discount curve for the swap cash flows.")]
+            IDiscountingSource discountCurve)
+        {
+            var zaCalendar = new Calendar("ZA", zaHols);
+            var unAdjTradeDate = settleDate.AddDays(-3);
+            var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, zaCalendar);
+
+            return AssetSwapEx.CreateAssetSwap(payFixed, besaJseBond, settleDate, index, spread, zaCalendar, currency, discountCurve);
+        }
+
+
+        [QuantSAExcelFunction(
+           Description = "Generate the spread on the ZAR asset swap based on an underlying bond.",
+           Name = "QSA.ValueAssetSwapSpread",
+           HasGeneratedVersion = true,
+           ExampleSheet = "ZARAssetSwap.xlsx",
+           Category = "QSA.Rates",
+           IsHidden = false,
+           HelpTopic = "")]
+        public static double ValueAssetSwapSpread([ExcelArgument(Description = "The name of the swap.")]
+            AssetSwap assetSwap,
+            [ExcelArgument(Description = "The settlement date of the underlying bond.")]
+            Date settleDate,
+            [ExcelArgument(Description =
+                "The yield to maturity of the underlying bond.")]
+            double ytm,
+            [ExcelArgument(Description = "The discount curve for the swap cash flows.")]
+            IDiscountingSource discountCurve)
+        {
+            var results = assetSwap.AssetSwapMeasures(settleDate, ytm, discountCurve);
+            var spread = Math.Round((double)results.GetScalar(AssetSwapEx.Keys.AssetSwapSpread), 6);
+            return spread;
+        }
+
     }
 }
