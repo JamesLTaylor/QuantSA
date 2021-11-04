@@ -25,7 +25,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
                 assetSwap.ccy, discountCurve);
 
             //Create trade date of the swap
-            var unAdjTradeDate = settleDate.AddDays(-3);
+            var effectiveDateDays = 3;
+            var unAdjTradeDate = settleDate.AddDays(-effectiveDateDays);
             var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, assetSwap.zaCalendar);
 
             //Set value date
@@ -35,7 +36,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
             var df1 = discountCurve.GetDF(tradeDate);
             var laterDate = tradeDate.AddTenor(assetSwap.index.Tenor);
             var df2 = discountCurve.GetDF(laterDate);
-            var dt = (laterDate - tradeDate) / 365.0;
+            var noOfDays = 365;
+            var dt = (laterDate - tradeDate) / noOfDays;
             var rate = (df1 / df2 - 1) / dt;
 
             // Create the forecast curve from the discount curve
@@ -53,10 +55,11 @@ namespace QuantSA.CoreExtensions.Products.Rates
 
             //Calculate present value of denominator cashflows for spread equation
             var denomCFs = new List<Cashflow>();
+            var nominalAmount = 100;
             for (var i = 0; i < swap.paymentDatesFloating.Count; i++)
                 if (i <= swap.paymentDatesFloating.Count)
                 {
-                    denomCFs.Add(new Cashflow(swap.paymentDatesFloating[i], -100 * swap.accrualFractions[i], swap.ccy));
+                    denomCFs.Add(new Cashflow(swap.paymentDatesFloating[i], -nominalAmount * swap.accrualFractions[i], swap.ccy));
                 }
 
             var bondresults = assetSwap.underlyingBond.GetSpotMeasures(settleDate, ytm);
@@ -161,7 +164,8 @@ namespace QuantSA.CoreExtensions.Products.Rates
                 accrualFractions, calendar, ccy);
 
             //Create trade date of the swap
-            var unAdjTradeDate = settleDate.AddDays(-3);
+            var effectiveDateDays = 3;
+            var unAdjTradeDate = settleDate.AddDays(-effectiveDateDays);
             var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, assetSwap.zaCalendar);
 
             //Set value date

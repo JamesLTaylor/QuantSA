@@ -13,7 +13,6 @@ using QuantSA.Core.Products.SAMarket;
 namespace QuantSA.CoreExtensions.Test.SAMarket
 {
     [TestClass]
-
     public class AssetSwapTest
     {
         [TestMethod]
@@ -68,12 +67,13 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
                 0.0644782668196503, 0.0651654909303646,0.0658597518938604
             };
 
-            var unAdjTradeDate = settleDate.AddDays(-3);
+            var effectiveDateDays = 3;
+            var unAdjTradeDate = settleDate.AddDays(-effectiveDateDays);
             var tradeDate = BusinessDayStore.ModifiedFollowing.Adjust(unAdjTradeDate, zaCalendar);
 
             IDiscountingSource discountCurve = new DatesAndRates(ccy, tradeDate, discountDates, discountRates);
 
-            var swap = TestHelpers.CreateAssetSwap(payFixed, bond, settleDate, index, spread, zaCalendar, ccy, discountCurve);
+            var swap = AssetSwapEx.CreateAssetSwap(payFixed, bond, settleDate, index, spread, zaCalendar, ccy, discountCurve);
             var results = swap.AssetSwapMeasures(settleDate, ytm, discountCurve);
 
             Assert.AreEqual(117.66281, Math.Round((double)results.GetScalar(AssetSwapEx.Keys.RoundedAip), 5), 1e-8);

@@ -4,40 +4,40 @@ using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
-using QuantSA.Core.Products.SAMarket;
 
 
 namespace QuantSA.Core.Products.Rates
 {
-    public class AssetSwap : Product
+    public class InflationLinkedSwap : Product
     {
         public double payFixed; // -1 for payFixed, 1 for receive fixed
-        public List<Date> indexDates;
-        public List<Date> paymentDatesFixed;
-        public List<Date> paymentDatesFloating;
-        public double spread;
+        public Date startDate;
+        public double nominal;
+        public Tenor tenor;
+        public double fixedRate;
         public FloatRateIndex index;
-        public List<double> accrualFractions;
+        public double spread;
+        public Date[] indexDates;
+        public Date[] paymentDatesFloating;
+        public double[] accrualFractions;
         public Calendar zaCalendar;
         public Currency ccy;
-        public BesaJseBond underlyingBond;
-
-        [JsonIgnore] private List<Date> _futureIndexDates;
-        [JsonIgnore] private List<Date> _futurePayDates;
 
         // Product state
         [JsonIgnore] private double[] indexValues;
         [JsonIgnore] private Date _valueDate;
 
-        public AssetSwap(double _payFixed, FloatRateIndex _index, BesaJseBond besaJseBond, List<Date> _indexDates, List<Date> _payDatesFloating,
-            List<Date> _payDatesFixed, double _spread, List<double> _accrualFractions, Calendar _zaCalendar, Currency _ccy)
+        public InflationLinkedSwap(double _payFixed, Date _startDate, double _nominal, Tenor _tenor, double _fixedRate, FloatRateIndex _index, Date[] _indexDates, Date[] _payDatesFloating,
+            double _spread, double[] _accrualFractions, Calendar _zaCalendar, Currency _ccy)
         {
             payFixed = _payFixed;
+            startDate = _startDate;
+            nominal = _nominal;
+            tenor = _tenor;
+            fixedRate = _fixedRate;
             index = _index;
-            underlyingBond = besaJseBond;
             indexDates = _indexDates;
             paymentDatesFloating = _payDatesFloating;
-            paymentDatesFixed = _payDatesFixed;
             spread = _spread;
             accrualFractions = _accrualFractions;
             zaCalendar = _zaCalendar;
@@ -58,21 +58,14 @@ namespace QuantSA.Core.Products.Rates
         public override void SetValueDate(Date valueDate)
         {
             _valueDate = valueDate;
-            indexValues = new double[indexDates.Count];
-            _futurePayDates = new List<Date>();
-            _futureIndexDates = new List<Date>();
-            for (var i = 0; i < paymentDatesFloating.Count; i++)
-                if (paymentDatesFloating[i] > _valueDate)
-                {
-                    _futurePayDates.Add(paymentDatesFloating[i]);
-                    _futureIndexDates.Add(indexDates[i]);
-                }
+            indexValues = new double[indexDates.Length];
+
         }
 
         /// <summary>
         public override void Reset()
         {
-            indexValues = new double[indexDates.Count];
+            indexValues = new double[indexDates.Length];
         }
 
         /// <summary>
@@ -82,6 +75,7 @@ namespace QuantSA.Core.Products.Rates
         public override List<MarketObservable> GetRequiredIndices()
         {
             return new List<MarketObservable> { index };
+
         }
 
         /// <summary>
@@ -91,7 +85,11 @@ namespace QuantSA.Core.Products.Rates
         /// <returns></returns>
         public override List<Date> GetRequiredIndexDates(MarketObservable index)
         {
-            return _futureIndexDates;
+            var requiredDates = new List<Date>();
+            for (var i = 0; i < paymentDatesFloating.Length; i++)
+                if (paymentDatesFloating[i] > _valueDate)
+                    requiredDates.Add(indexDates[i]);
+            return requiredDates;
         }
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace QuantSA.Core.Products.Rates
         public override void SetIndexValues(MarketObservable index, double[] indexValues)
         {
             var indexCounter = 0;
-            for (var i = 0; i < paymentDatesFloating.Count; i++)
+            for (var i = 0; i < paymentDatesFloating.Length; i++)
                 if (paymentDatesFloating[i] > _valueDate)
                 {
                     this.indexValues[i] = indexValues[indexCounter];
@@ -111,25 +109,19 @@ namespace QuantSA.Core.Products.Rates
         }
 
         /// <summary>
-        /// The actual implementation of the swap contract cashflows.
+        /// The actual implementation of the contract cashflows.
         /// </summary>
         /// <returns></returns>
         public override List<Cashflow> GetCFs()
         {
             var cfs = new List<Cashflow>();
-            var stdNominal = 100;
-            for (var i = 0; i < paymentDatesFloating.Count; i++)
-                if (paymentDatesFloating[i] > _valueDate)
-                {
-                    var floatingAmount = -payFixed * stdNominal * accrualFractions[i] * (indexValues[i] + spread);
-                    cfs.Add(new Cashflow(paymentDatesFloating[i], floatingAmount, ccy));
-                }
 
-            for (var i = 0; i < paymentDatesFixed.Count; i++)
-                if (paymentDatesFixed[i] > _valueDate)
+            for (var i = 0; i < paymentDatesFloating.Length; i++)
+                if ((paymentDatesFloating[i] > _valueDate))
                 {
-                    var fixedAmount = payFixed * stdNominal * underlyingBond.annualCouponRate / 2;
-                    cfs.Add(new Cashflow(paymentDatesFixed[i], fixedAmount, ccy));
+                    var floatingAmount = -payFixed * nominal * (1 + (indexValues[i] + spread) * accrualFractions[i]);
+                    nominal = floatingAmount;
+                    cfs.Add(new Cashflow(paymentDatesFloating[i], floatingAmount, ccy));
                 }
 
             return cfs;
@@ -137,11 +129,12 @@ namespace QuantSA.Core.Products.Rates
 
         public override List<Date> GetCashflowDates(Currency ccy)
         {
-            for (var i = 0; i < paymentDatesFixed.Count; i++)
-                if (paymentDatesFixed[i] > _valueDate)
-                    _futurePayDates.Add(paymentDatesFixed[i]);
+            var dates = new List<Date>();
+            for (var i = 0; i < paymentDatesFloating.Length; i++)
+                if (paymentDatesFloating[i] > _valueDate)
+                    dates.Add(paymentDatesFloating[i]);
 
-            return _futurePayDates;
+            return dates;
         }
 
         public override List<Currency> GetCashflowCurrencies()
@@ -150,5 +143,5 @@ namespace QuantSA.Core.Products.Rates
         }
 
     }
-}
 
+}
