@@ -15,6 +15,10 @@ namespace QuantSA.Core.Formulae
         public static double GetCPI(Date cpiDate, Date[] cpiDates, double[] cpiRates)
         {
             var indexOfCpiDate = Array.IndexOf(cpiDates, new Date(cpiDate.Year, cpiDate.Month, 1));
+
+            if ((indexOfCpiDate < 0) || (indexOfCpiDate > cpiDates.Length))
+                throw new ArgumentException("cpiDate is not found in the range of dates provided");
+            
             var actualDayInMonth = cpiDate.Day;
             var noDaysInMonth = Date.DaysInMonth(cpiDate.Year, cpiDate.Month);
 
