@@ -6,12 +6,6 @@ using QuantSA.Shared.MarketObservables;
 using QuantSA.Shared.Primitives;
 using QuantSA.Shared.Serialization;
 using QuantSA.Shared.State;
-using QuantSA.Shared.MarketData;
-using System.Collections.Generic;
-using QuantSA.Shared.Conventions.DayCount;
-using QuantSA.Shared.Conventions.BusinessDay;
-using System.Linq;
-using QuantSA.Core.Products.SAMarket;
 
 
 namespace QuantSA.Solution.Test
@@ -123,82 +117,6 @@ namespace QuantSA.Solution.Test
             var dates = new[] {AnchorDate, AnchorDate.AddMonths(120)};
             var rates = new[] {0.07, 0.07};
             return new DatesAndRates(ZAR, AnchorDate, dates, rates);
-        }
-
-        public static AssetSwap CreateAssetSwap(double payFixed, BesaJseBond besaJseBond, Date settleDate, FloatRateIndex index, double spread, Calendar calendar, Currency ccy,
-        IFloatingRateSource forecastCurve)
-        {
-
-            //Design floating leg inputs
-            var dayCount = Actual365Fixed.Instance;
-            var unAdjResetDatesFloating = new List<Date>();
-            var unAdjPaymentDatesFloating = new List<Date>();
-            var resetDatesFloating = new List<Date>();
-            var paymentDatesFloating = new List<Date>();
-            var accrualFractions = new List<double>();
-            var endDate = besaJseBond.maturityDate;
-            var paymentDateFloating = new Date(endDate);
-            var resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
-            while (resetDateFloating >= settleDate)
-            {
-                unAdjPaymentDatesFloating.Add(paymentDateFloating);
-                unAdjResetDatesFloating.Add(resetDateFloating);
-                resetDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar));
-                paymentDatesFloating.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar));
-                accrualFractions.Add(dayCount.YearFraction(BusinessDayStore.ModifiedFollowing.Adjust(resetDateFloating, calendar), BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFloating, calendar)));
-                paymentDateFloating = new Date(resetDateFloating);
-                resetDateFloating = paymentDateFloating.SubtractTenor(index.Tenor);
-            }
-
-            resetDatesFloating.Reverse();
-            paymentDatesFloating.Reverse();
-            accrualFractions.Reverse();
-
-            resetDatesFloating[0] = new Date(settleDate);
-            var firstResetDate = resetDatesFloating.First();
-            var firstPaymentDate = paymentDatesFloating.First();
-            accrualFractions[0] = dayCount.YearFraction(firstResetDate, firstPaymentDate);
-
-            //Design Fixed leg inputs
-            var unAdjPaymentDatesFixed = new List<Date>();
-            var paymentDatesFixed = new List<Date>();
-
-            var thisYearCpn1 = new Date(settleDate.Year, besaJseBond.couponMonth1, besaJseBond.couponDay1);
-            var thisYearCpn2 = new Date(settleDate.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-            var lastYearCpn2 = new Date(settleDate.Year - 1, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-
-            Date lcd; //lcd stands for last coupon date
-            if (settleDate > thisYearCpn2)
-                lcd = new Date(thisYearCpn2.Year, thisYearCpn2.Month, thisYearCpn2.Day);
-            if (settleDate > thisYearCpn1)
-                lcd = new Date(thisYearCpn1.Year, thisYearCpn1.Month, thisYearCpn1.Day);
-            lcd = new Date(lastYearCpn2.Year, lastYearCpn2.Month, lastYearCpn2.Day);
-
-            Date ncd; //ncd stands for next coupon date
-            if (lcd.Month == besaJseBond.couponMonth2)
-                ncd = new Date(lcd.Year + 1, besaJseBond.couponMonth1, besaJseBond.couponDay1);
-            else
-                ncd = new Date(lcd.Year, besaJseBond.couponMonth2, besaJseBond.couponDay2);
-
-            var paymentDateFixed = new Date(ncd.AddTenor(Tenor.FromMonths(6)));
-
-            while (paymentDateFixed <= endDate)
-            {
-                unAdjPaymentDatesFixed.Add(paymentDateFixed);
-                paymentDatesFixed.Add(BusinessDayStore.ModifiedFollowing.Adjust(paymentDateFixed, calendar));
-                paymentDateFixed = paymentDateFixed.AddTenor(Tenor.FromMonths(6));
-            }
-
-            //Setting index values
-            var indexValues1 = new double[resetDatesFloating.Count];
-            for (var i = 0; i < resetDatesFloating.Count; i++)
-                indexValues1[i] = forecastCurve.GetForwardRate(resetDatesFloating[i]);
-
-            //create new instance of asset swap
-            var assetSwap = new AssetSwap(payFixed, index, besaJseBond, resetDatesFloating, paymentDatesFloating, paymentDatesFixed, spread,
-                accrualFractions, calendar, ccy, indexValues1);
-
-            return assetSwap;
         }
     }
 }
