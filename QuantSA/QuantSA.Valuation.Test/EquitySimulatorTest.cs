@@ -197,7 +197,7 @@ namespace QuantSA.Valuation.Test
             // ALSI
             p = 0;
             strike = _prices[p] * 1.05;
-            Product call0 = new EuropeanOption(_shares[p], strike, exerciseDate);
+            Product call0 = new EuropeanOption(_shares[p], PutOrCall.Call, strike, exerciseDate);
             var value0 = coordinator.Value(new[] {call0}, _anchorDate);
             var refValue0 = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - _anchorDate) / 365.0,
                 _prices[p],
@@ -207,7 +207,7 @@ namespace QuantSA.Valuation.Test
             // AAA
             p = 1;
             strike = _prices[p] * 1.05;
-            Product call1 = new EuropeanOption(_shares[p], strike, exerciseDate);
+            Product call1 = new EuropeanOption(_shares[p], PutOrCall.Call, strike, exerciseDate);
             var value1 = coordinator.Value(new[] {call1}, _anchorDate);
             var refValue1 = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - _anchorDate) / 365.0,
                 _prices[p],
@@ -217,7 +217,7 @@ namespace QuantSA.Valuation.Test
             // BBB
             p = 2;
             strike = _prices[p] * 1.05;
-            Product call2 = new EuropeanOption(_shares[p], strike, exerciseDate);
+            Product call2 = new EuropeanOption(_shares[p], PutOrCall.Call, strike, exerciseDate);
             var value2 = coordinator.Value(new[] {call2}, _anchorDate);
             var refValue2 = BlackEtc.BlackScholes(PutOrCall.Call, strike, (exerciseDate - _anchorDate) / 365.0,
                 _prices[p],
