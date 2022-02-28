@@ -20,9 +20,9 @@ namespace QuantSA.Core.CurvesAndSurfaces
 
         //TODO: Separate this class into one that discounts and one that interpolates.  It could be abused/misused in its current form
         private readonly Currency _currency;
-        private readonly Date[] _dates;
+        public readonly Date[] _dates;
         private readonly Date _maximumDate;
-        private double[] _rates;
+        public double[] _rates;
 
         [JsonIgnore] private LinearSpline _spline;
 

@@ -21,7 +21,7 @@ namespace QuantSA.ExcelFunctions
             ExampleSheet = "EquityValuation.xlsx",
             Category = "QSA.General",
             HelpTopic = "http://www.quantsa.org/FormulaBlackScholes.html")]
-        public static double FormulaBlackScholes([ExcelArgument(Description = "Strike")]
+        public static double FormulaBlackScholes([QuantSAExcelArgument(Description = "PutOrCall")] PutOrCall putOrCall, [ExcelArgument(Description = "Strike")]
             double strike,
             [ExcelArgument(Description = "The value date as and Excel date.")]
             Date valueDate,
@@ -36,7 +36,7 @@ namespace QuantSA.ExcelFunctions
             [QuantSAExcelArgument(Description = "Continuously compounded dividend yield.", Default = "0.0")]
             double divYield)
         {
-            return BlackEtc.BlackScholes(PutOrCall.Call, strike,
+            return BlackEtc.BlackScholes(putOrCall, strike,
                 Actual365Fixed.Instance.YearFraction(valueDate, exerciseDate),
                 spotPrice, vol, riskfreeRate, divYield);
         }

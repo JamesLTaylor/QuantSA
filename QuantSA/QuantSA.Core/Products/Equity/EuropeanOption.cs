@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuantSA.Core.Formulae;
 using QuantSA.Core.Primitives;
 using QuantSA.Shared.Dates;
 using QuantSA.Shared.MarketObservables;
@@ -9,22 +10,26 @@ namespace QuantSA.Core.Products.Equity
 {
     public class EuropeanOption : Product
     {
-        private readonly Date _exerciseDate;
+        
+
+        public readonly Date _exerciseDate;
         private double _fwdPrice;
-        private readonly Share _share;
-        private readonly double _strike;
+        public readonly Share _share;
+        public readonly PutOrCall _putOrCall;
+        public readonly double _strike;
         private Date _valueDate;
 
-        public EuropeanOption(Share share, double strike, Date exerciseDate)
+        public EuropeanOption(Share share, PutOrCall putOrCall, double strike, Date exerciseDate)
         {
             _share = share;
+            _putOrCall = putOrCall;
             _strike = strike;
             _exerciseDate = exerciseDate;
         }
 
         public override List<Cashflow> GetCFs()
         {
-            var amount = Math.Max(0, _fwdPrice - _strike);
+            var amount = Math.Max(0, (double) _putOrCall * (_fwdPrice - _strike));
             return new List<Cashflow> {new Cashflow(_exerciseDate, amount, _share.Currency)};
         }
 

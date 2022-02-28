@@ -27,7 +27,7 @@ namespace QuantSA.Valuation.Test
             var exerciseDate = new Date(2017, 08, 28);
             var shareCode = "AAA";
             var strike = 100.0;
-            Product p = new EuropeanOption(new Share(shareCode, TestHelpers.ZAR), strike, exerciseDate);
+            Product p = new EuropeanOption(new Share(shareCode, TestHelpers.ZAR), PutOrCall.Call, strike, exerciseDate);
 
             var shares = new[]
             {
@@ -60,7 +60,7 @@ namespace QuantSA.Valuation.Test
             var exerciseDate = new Date(2017, 08, 28);
             var shareCode = "AAA";
             var strike = 100.0;
-            Product p = new EuropeanOption(new Share(shareCode, TestHelpers.ZAR), strike, exerciseDate);
+            Product p = new EuropeanOption(new Share(shareCode, TestHelpers.ZAR), PutOrCall.Call, strike, exerciseDate);
 
             var shares = new[]
             {
