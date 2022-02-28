@@ -60,7 +60,7 @@ namespace QuantSA.Valuation.Test
             // Setup the same product statically
             var exerciseDate = new Date(2017, 08, 28);
             var strike = 100.0;
-            Product staticProduct = new EuropeanOption(new Share("AAA", TestHelpers.ZAR), strike, exerciseDate);
+            Product staticProduct = new EuropeanOption(new Share("AAA", TestHelpers.ZAR), PutOrCall.Call, strike, exerciseDate);
 
             // Value the static product
             coordinator = new Coordinator(sim, new List<Simulator>(), 100000);
