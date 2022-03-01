@@ -36,7 +36,7 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var vol = 0.07; //
 
             var results = JSEBondOptionEx.BlackOption(bondOptionR153, strike, vol, repo, bondForwardR153, ytm);
-            Assert.AreEqual(103.85470134714154, (double)results.GetScalar(JSEBondOptionEx.Keys.BlackOption), 1e-8);
+            Assert.AreEqual(103.8547113436135, (double)results.GetScalar(JSEBondOptionEx.Keys.BlackOption), 1e-8);
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
 
             var results = bondR153.GetSpotMeasures(settleDate, ytm);
             Assert.AreEqual(110.400707433627, (double)results.GetScalar(BesaJseBondEx.Keys.UnroundedAip), 1e-8);
-            Assert.AreEqual(110.4007, (double)results.GetScalar(BesaJseBondEx.Keys.RoundedAip), 1e-8);
+            Assert.AreEqual(110.40071, (double)results.GetScalar(BesaJseBondEx.Keys.RoundedAip), 1e-8);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace QuantSA.CoreExtensions.Test.SAMarket
             var repo = 0.1075;
 
             var results = bondForward.ForwardPrice(settleDate, ytm, repo);
-            Assert.AreEqual(106.7657852, (double)results.GetScalar(JSEBondForwardEx.Keys.ForwardPrice), 1e-8);
+            Assert.AreEqual(106.76579546732876, (double)results.GetScalar(JSEBondForwardEx.Keys.ForwardPrice), 1e-8);
         }
     }
 }

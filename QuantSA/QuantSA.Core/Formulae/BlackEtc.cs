@@ -30,7 +30,8 @@ namespace QuantSA.Core.Formulae
             var d1 = 1 / sigmaSqrtT * (Math.Log(spot / strike) + rate - div + 0.5 * vol * vol);
             var d2 = d1 - sigmaSqrtT;
             var forward = spot * Math.Exp((rate - div) * T);
-            return Math.Exp(-rate * T) * (forward * dist.CumulativeDistribution(d1) - strike * dist.CumulativeDistribution(d2));
+            var flag = (double)putOrCall;
+            return flag*Math.Exp(-rate * T) * (forward * dist.CumulativeDistribution(flag*d1) - strike * dist.CumulativeDistribution(flag*d2));
         }
 
         /// <summary>
@@ -49,8 +50,8 @@ namespace QuantSA.Core.Formulae
             var sigmaSqrtT = vol * Math.Sqrt(T);
             var d1 = 1 / sigmaSqrtT * (Math.Log(forward / strike) + 0.5 * vol * vol);
             var d2 = d1 - sigmaSqrtT;
-
-            return discountFactor * (forward * dist.CumulativeDistribution(d1) - strike * dist.CumulativeDistribution(d2));
+            var flag = (double)putOrCall;
+            return flag*discountFactor * (forward * dist.CumulativeDistribution(flag * d1) - strike * dist.CumulativeDistribution(flag*d2));
         }
     }
 }
