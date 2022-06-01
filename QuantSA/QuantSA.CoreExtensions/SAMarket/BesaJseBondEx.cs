@@ -4,12 +4,13 @@ using System.Linq;
 using QuantSA.Core.Products.SAMarket;
 using QuantSA.Shared;
 using QuantSA.Shared.Dates;
+using QuantSA.Shared.Primitives;
 
 namespace QuantSA.CoreExtensions.SAMarket
 {
     public static class BesaJseBondEx
     {
-        public enum OptionPriceandGreeks
+        public enum BondPriceandSensitivities
         {
             UnroundedAIP,
             RoundedAIP,
@@ -23,6 +24,71 @@ namespace QuantSA.CoreExtensions.SAMarket
             Duration,
             Convexity
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="bond"></param>
+        /// <param name="settleDate"></param>
+        /// <returns>a list of the remaining cashflow dates of a JSE Bond</returns>
+        public static List<Date> BondCashflowDates(this BesaJseBond bond, Date settleDate)
+        {
+            var mat_date = bond.maturityDate;
+
+            if (settleDate > mat_date)
+                throw new ArgumentException("settlement date must be before forward date.");
+
+            var cf_dates = new List<Date>();
+
+            var yr = settleDate.Year;
+
+            while (yr >= settleDate.Year && yr < mat_date.Year + 1)
+            {
+                var coupondate1 = (new Date(yr, bond.couponMonth1, bond.couponDay1));
+                var coupondate2 = (new Date(yr, bond.couponMonth2, bond.couponDay2));
+
+                if (coupondate1 > settleDate && coupondate1 <= mat_date)
+                {
+                    cf_dates.Add(coupondate1);
+                }
+
+                if (coupondate2 > settleDate && coupondate1 <= mat_date)
+                {
+                    cf_dates.Add(coupondate2);
+                }
+
+                yr += 1;
+            }
+            return cf_dates;
+        }
+
+        public static List<Cashflow> BondCashflows(this BesaJseBond bond, Date settleDate)
+        {
+            var bond_cfs = new List<Cashflow>();
+            var typicalCoupon = 100 * bond.annualCouponRate / 2;
+            var zar = new Currency("ZAR");
+
+            var cf_dates = bond.BondCashflowDates(settleDate);
+
+            Date date;
+
+            for (int i = 0;  i < cf_dates.Count; i++)
+            {
+                date = cf_dates[i];
+
+                if (date == bond.maturityDate)
+                {
+                    bond_cfs.Add(new Cashflow(date, 100 + typicalCoupon, zar));
+                }
+                else
+                {
+                    bond_cfs.Add(new Cashflow(date, typicalCoupon, zar));
+                }
+            }
+
+            return bond_cfs;
+        }
+
         private static Date GetLastCouponDateOnOrBefore(this BesaJseBond bond, Date settleDate)
         {
             var thisYearCpn1 = new Date(settleDate.Year, bond.couponMonth1, bond.couponDay1);
