@@ -27,7 +27,7 @@ namespace QuantSA.Core.Formulae
         {
             var dist = new Normal();
             var sigmaSqrtT = vol * Math.Sqrt(T);
-            var d1 = 1 / sigmaSqrtT * (Math.Log(spot / strike) + rate - div + 0.5 * vol * vol);
+            var d1 = 1 / sigmaSqrtT * (Math.Log(spot / strike) + (rate - div + 0.5 * vol * vol) * T);
             var d2 = d1 - sigmaSqrtT;
             var forward = spot * Math.Exp((rate - div) * T);
             var flag = (double)putOrCall;

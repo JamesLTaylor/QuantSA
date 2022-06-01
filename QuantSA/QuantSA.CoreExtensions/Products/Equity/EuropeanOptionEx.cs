@@ -26,13 +26,13 @@ namespace QuantSA.CoreExtensions.Products.Equity
 
         private static double D1(double spot, double strike, double vol, double rate, double div, double T)
         {
-            double D1 = (Math.Log(spot / strike) + (rate - div + 0.5 * vol * vol)) / (vol * Math.Sqrt(T));
+            double D1 = (Math.Log(spot / strike) + (rate - div + 0.5 * vol * vol) * T) / (vol * Math.Sqrt(T));
             return D1;
         }
 
         private static double D2(double spot, double strike, double vol, double rate, double div, double T)
         {
-            double D2 = (Math.Log(spot / strike) + (rate - div - 0.5 * vol * vol)) / (vol * Math.Sqrt(T));
+            double D2 = (Math.Log(spot / strike) + (rate - div - 0.5 * vol * vol) * T) / (vol * Math.Sqrt(T));
             return D2;
         }
 
