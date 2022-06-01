@@ -6,11 +6,10 @@ using QuantSA.Shared.Primitives;
 namespace QuantSA.Core.Products.SAMarket
 {
     /// <summary>
-    /// SA T-bill.
+    /// The market standard bond traded on the JSE, formerly the BESA.
     /// </summary>
     public class TBill : ProductWrapper
     {
-        public Date maturityDate;
         private readonly List<Cashflow> _cfs;
 
         public override List<Cashflow> GetCFs()
