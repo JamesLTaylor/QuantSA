@@ -197,6 +197,32 @@ namespace QuantSA.ExcelFunctions
             return value;
         }
 
+        [QuantSAExcelFunction(
+            Description =
+                "The zero risk of a ZAR Swap based on the same curve used for forecasting and discounting.",
+            Name = "QSA.ZARSwapZeroCurveRisk",
+            HasGeneratedVersion = true,
+            ExampleSheet = "ZARSwap.xlsx",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/ValueZARSwap.html")]
+        public static double[] ZARSwapZeroCurveRisk([ExcelArgument(Description = "The name of the swap.")]
+            IRSwap swap,
+            [ExcelArgument(Description = "The date on which valuation is required.  Cannot be before the anchor date of the curve.")] 
+            Date valueDate,
+            [ExcelArgument(Description = "The dates at which the rates apply.")]
+            Date[] dates,
+            [ExcelArgument(Description = "The rates.")]
+            double[] rates,
+            [QuantSAExcelArgument(Description = "Optional: The currency that this curve can be used for discounting.",
+                Default = "ZAR")]
+            Currency currency)
+        {
+            var zeroRisk = IRSwapEx.SwapZeroRisk(swap, valueDate, dates, rates, currency);
+
+            return zeroRisk;
+        }
+
 
         [QuantSAExcelFunction(
             Description = "Create a curve to forecast floating interest rates based on a discount curve.",
