@@ -67,5 +67,6 @@ namespace QuantSA.Core.Dates
                 paymentDate = resetDate.AddTenor(periodTenor);
             }
         }
+
     }
 }

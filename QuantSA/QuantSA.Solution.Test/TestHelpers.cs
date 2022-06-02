@@ -7,6 +7,7 @@ using QuantSA.Shared.Primitives;
 using QuantSA.Shared.Serialization;
 using QuantSA.Shared.State;
 
+
 namespace QuantSA.Solution.Test
 {
     public static class TestHelpers

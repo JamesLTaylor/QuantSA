@@ -16,6 +16,8 @@ using QuantSA.Shared.Primitives;
 using QuantSA.Valuation;
 using QuantSA.Valuation.Models.Rates;
 
+
+
 namespace QuantSA.ExcelFunctions
 {
     public class XLRates
@@ -191,26 +193,34 @@ namespace QuantSA.ExcelFunctions
                 "The discounting curve.  Will also be used for forecasting Jibar and providing the most recent required Jibar fix.")]
             IDiscountingSource curve)
         {
-            // Get the required objects off the map                                                
-            var index = swap.GetFloatingIndex();
-
-            // Calculate the first fixing off the curve to use at all past dates.
-            var df1 = curve.GetDF(valueDate);
-            var laterDate = valueDate.AddTenor(index.Tenor);
-            var df2 = curve.GetDF(laterDate);
-            var dt = (laterDate - valueDate) / 365.0;
-            var rate = (df1 / df2 - 1) / dt;
-
-            //Set up the valuation engine.
-            IFloatingRateSource forecastCurve = new ForecastCurveFromDiscount(curve, index,
-                new FloatingRateFixingCurve1Rate(valueDate, rate, index));
-            var curveSim = new DeterministicCurves(curve);
-            curveSim.AddRateForecast(forecastCurve);
-            var coordinator = new Coordinator(curveSim, new List<Simulator>(), 1);
-
-            // Run the valuation
-            var value = coordinator.Value(new Product[] {swap}, valueDate);
+            var value = IRSwapEx.ValueSwap(swap, valueDate, curve);
             return value;
+        }
+
+        [QuantSAExcelFunction(
+            Description =
+                "The zero risk of a ZAR Swap based on the same curve used for forecasting and discounting.",
+            Name = "QSA.ZARSwapZeroCurveRisk",
+            HasGeneratedVersion = true,
+            ExampleSheet = "ZARSwap.xlsx",
+            Category = "QSA.Rates",
+            IsHidden = false,
+            HelpTopic = "http://www.quantsa.org/ValueZARSwap.html")]
+        public static double[] ZARSwapZeroCurveRisk([ExcelArgument(Description = "The name of the swap.")]
+            IRSwap swap,
+            [ExcelArgument(Description = "The date on which valuation is required.  Cannot be before the anchor date of the curve.")] 
+            Date valueDate,
+            [ExcelArgument(Description = "The dates at which the rates apply.")]
+            Date[] dates,
+            [ExcelArgument(Description = "The rates.")]
+            double[] rates,
+            [QuantSAExcelArgument(Description = "Optional: The currency that this curve can be used for discounting.",
+                Default = "ZAR")]
+            Currency currency)
+        {
+            var zeroRisk = IRSwapEx.SwapZeroRisk(swap, valueDate, dates, rates, currency);
+
+            return zeroRisk;
         }
 
 
