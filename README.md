@@ -1,6 +1,6 @@
 # QuantSA
 
-An open source quant finance library for South Africa.
+As you can gather by looking at his repo, this is a stale project. It was meant to be an open source quant finance library for South Africa. I still think such a thing is possible and would be an optimal use of everyone's time. Who knows one day I or someone else may pick it up again. There will always be some cashflows to discount.
 
 |Status|Description|
 |:----:|-----------|
@@ -8,7 +8,7 @@ An open source quant finance library for South Africa.
 |[![Build Status](https://travis-ci.org/JamesLTaylor/QuantSA.svg?branch=master)](https://travis-ci.org/JamesLTaylor/QuantSA)|Travis CI: Ruby script for Jekyll user docs and HTML checker.|
 
 # Website
-www.QuantSA.org
+[www.QuantSA.org](https://www.cogn.co.za/QuantSA)
 
 # Vision
 * To make an excel add-in that is freely available and quick and easy to use for common quant finance tasks in South Africa.  
